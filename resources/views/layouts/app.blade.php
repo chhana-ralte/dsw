@@ -29,6 +29,7 @@
 
             <!-- Page Content -->
             <main>
+                hehe
                 {{ $slot }}
             </main>
         </div>
