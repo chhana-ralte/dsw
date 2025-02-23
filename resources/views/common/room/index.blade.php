@@ -5,17 +5,23 @@
     <x-container>
         <x-block>
             @if(count($rooms)>0)
-                <table class="table table-hover table-auto table-striped">
+                <table class="table table-hover table-auto">
                     <thead>
                         <tr>
-                        <th>Hostel name</th><th>Gender</th><tr>
+                        <th>Room No</th><th>Capacity</th><th>Available</th><tr>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($rooms as $r)
-                        <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
+                            @if($r->capacity == $r->available)
+                                <tr class="table-default">
+                            @else
+                                <tr class="table-danger">
+                            @endif
+
                             <td><a href="/room/{{ $r->id }}">{{ $r->roomno }}</a></td>
-                            <td>{{ $r->roomno }}</td>
+                            <td>{{ $r->capacity }}</td>
+                            <td>{{ $r->available }}</td>
                         </tr>
                         @endforeach
                     </tbody>

@@ -8,22 +8,54 @@ use App\Models\Hostel;
 use App\Models\Seat;
 use App\Http\Controllers\HostelController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\SeatController;
 
 use Illuminate\Support\Facades\DB;
 
 Route::get('/', function () {
-    //return "Hello";
+    return "Hello";
     return view('welcome');
 });
-
+Route::get('/h', function(){
+    $hostel = Hostel::where('name',$_GET['hostel'])->first();
+    return $hostel->vacant();
+});
 Route::get('/hostel/{hostel}/occupants',[HostelController::class,'occupants']);
 Route::resource('hostel', HostelController::class);
 Route::resource('hostel.room', RoomController::class)->shallow();
+Route::resource('room.seat', SeatController::class)->shallow();
 
-
+Route::get('generateRooms' ,function(){
+    return "Hello";
+    App\Models\Room::truncate();
+    $hostels = App\Models\Hostel::orderBy('gender')->orderBy('name')->get();
+    foreach($hostels as $ht){
+        $rooms = DB::table($ht->name)
+            ->select('Roomno','Type')
+            ->where('Roomno','<>','')
+            ->orderBy('Roomno')
+            ->groupBy('Roomno','Type')
+            ->get();
+            //return $rooms;
+        foreach($rooms as $r){
+            $capacity = ($r->Type == 'Single' ? 1 : ($r->Type == 'Double' ? 2 : 3));
+            App\Models\Room::create([
+                'hostel_id' => $ht->id,
+                'roomno' => $r->Roomno,
+                'capacity' => $capacity,
+                'available' => $capacity,
+                'type' => $r->Type
+            ]);
+        }
+        //exit();
+    }
+    return "Done";
+});
 
 Route::get('/generateSeats', function(){
-    return "Hello";
+    return "Comment out to generate seats";
+    exit();
+    App\Models\Seat::truncate();
     $rooms = Room::all();
 
     foreach($rooms as $r){
@@ -38,9 +70,14 @@ Route::get('/generateSeats', function(){
 });
 
 Route::get('/allot',function(){
-    return "Hello";
+    return "Comment out to allot hostels";
+    exit();
+    App\Models\Person::truncate();
+    App\Models\Student::truncate();
+    App\Models\AllotHostel::truncate();
+    App\Models\AllotSeat::truncate();
     foreach(App\Models\Hostel::all() as $hostel){
-        $list = DB::table($hostel->name)
+        $list_of_hostellers = DB::table($hostel->name)
             ->select('*')
             ->where('name','<>','')
             ->get();
@@ -51,7 +88,7 @@ Route::get('/allot',function(){
         // }
         // $str .= "</table>";
         // return $str;
-        foreach($list as $l){
+        foreach($list_of_hostellers as $l){
             $person = App\Models\Person::create([
                 'name' => $l->Name,
                 'state' => $l->State,
@@ -59,7 +96,7 @@ Route::get('/allot',function(){
                 'address' => $l->State,
             ]);
 
-            if($l->Course != '' && $l->Department != ''){
+            if($l->Course != '' || $l->Department != ''){
                 $student = App\Models\Student::create([
                     'person_id' => $person->id,
                     'course' => $l->Course,

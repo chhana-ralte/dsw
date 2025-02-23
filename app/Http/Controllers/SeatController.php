@@ -4,14 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\Seat;
+use App\Models\Hostel;
+use App\Models\Room;
+
 class SeatController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Room $room)
     {
-        //
+        $seats = Seat::where('room_id',$room->id)->orderBy('serial')->get();
+        $data = [
+            'seats' => $seats,
+            'room' => $room
+        ];
+        return view('common.seat.index',$data);
     }
 
     /**

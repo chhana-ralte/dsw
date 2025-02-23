@@ -67,11 +67,14 @@ class HostelController extends Controller
             ->get();
         
         $allot_hostels = AllotHostel::where('hostel_id',$hostel->id)
-            ->whereNotIn('id',$allot_seats->pluck('id'))
+            ->whereNotIn('id',$allot_seats->pluck('allot_hostel_id'))
             ->get();
-
+        
+        $seats = Seat::whereIn('room_id',$room_ids)->get();
+        
         $data = [
             'hostel' => $hostel,
+            'seats' => $seats,
             'allot_seats' => $allot_seats,
             'allot_hostels' => $allot_hostels,
         ];
