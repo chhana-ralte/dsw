@@ -19,7 +19,7 @@
                                 <tr class="table-danger">
                             @endif
 
-                            <td><a href="/room/{{ $r->id }}">{{ $r->roomno }}</a></td>
+                            <td><a href="/room/{{ $r->id }}/seat">{{ $r->roomno }}</a></td>
                             <td>{{ $r->capacity }}</td>
                             <td>{{ $r->available }}</td>
                         </tr>

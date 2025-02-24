@@ -16,6 +16,8 @@ class Seat extends Model
         return AllotSeat::where('seat_id',$this->id)->where('valid',1)->first();
     }
 
+    //public function
+
     public function exOccupants(){
 
     }

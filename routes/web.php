@@ -53,8 +53,8 @@ Route::get('generateRooms' ,function(){
 });
 
 Route::get('/generateSeats', function(){
-    return "Comment out to generate seats";
-    exit();
+    // return "Comment out to generate seats";
+    // exit();
     App\Models\Seat::truncate();
     $rooms = Room::all();
 
@@ -70,8 +70,8 @@ Route::get('/generateSeats', function(){
 });
 
 Route::get('/allot',function(){
-    return "Comment out to allot hostels";
-    exit();
+    // return "Comment out to allot hostels";
+    // exit();
     App\Models\Person::truncate();
     App\Models\Student::truncate();
     App\Models\AllotHostel::truncate();
