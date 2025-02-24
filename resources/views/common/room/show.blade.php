@@ -1,9 +1,9 @@
 <x-layout>
-    <x-slot name="header">
-        {{ $room->roomno }}
-    </x-slot>
     <x-container>
         <x-block>
+            <x-slot name="header">
+                {{ $room->roomno }}
+            </x-slot>
             <table class="table table-hover table-auto table-striped">
                 <tbody>
                     @foreach($seats as $s)

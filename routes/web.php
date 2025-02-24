@@ -9,6 +9,8 @@ use App\Models\Seat;
 use App\Http\Controllers\HostelController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\SeatController;
+use App\Http\Controllers\AllotHostelController;
+use App\Http\Controllers\AllotSeatController;
 
 use Illuminate\Support\Facades\DB;
 
@@ -24,6 +26,25 @@ Route::get('/hostel/{hostel}/occupants',[HostelController::class,'occupants']);
 Route::resource('hostel', HostelController::class);
 Route::resource('hostel.room', RoomController::class)->shallow();
 Route::resource('room.seat', SeatController::class)->shallow();
+Route::resource('allot_hostel', AllotHostelController::class);
+
+Route::get('/allot_hostel/{id}/allotSeat', [AllotSeatController::class, 'allotSeat']);
+Route::post('/allot_hostel/{id}/allotSeat', [AllotSeatController::class, 'allotSeatStore']);
+
+
+Route::controller(App\Http\Controllers\AjaxController::class)->group(function(){
+    Route::get('/ajaxroom/{id}/seat','getSeats');
+    Route::post('/ajax/allot_seat_store','allotSeatStore');
+});
+
+
+
+
+
+
+
+
+
 
 Route::get('generateRooms' ,function(){
     return "Hello";
@@ -53,8 +74,8 @@ Route::get('generateRooms' ,function(){
 });
 
 Route::get('/generateSeats', function(){
-    // return "Comment out to generate seats";
-    // exit();
+    return "Comment out to generate seats";
+    exit();
     App\Models\Seat::truncate();
     $rooms = Room::all();
 
@@ -70,8 +91,8 @@ Route::get('/generateSeats', function(){
 });
 
 Route::get('/allot',function(){
-    // return "Comment out to allot hostels";
-    // exit();
+    return "Comment out to allot hostels";
+    exit();
     App\Models\Person::truncate();
     App\Models\Student::truncate();
     App\Models\AllotHostel::truncate();

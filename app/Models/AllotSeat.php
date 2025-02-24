@@ -11,4 +11,8 @@ class AllotSeat extends Model
     public function allot_hostel(){
         return $this->belongsTo(AllotHostel::class);
     }
+
+    public function seat(){
+        return $this->belongsTo(Seat::class);
+    }
 }
