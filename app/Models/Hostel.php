@@ -27,6 +27,10 @@ class Hostel extends Model
         //return Room::where('hostel_id',$this->id)->sum('available');
     }
 
+    public function remarks(){
+        return $this->hasMany(HostelRemark::class);
+    }
+
     public function vacant(){
         return $this->available() - $this->filled();
     }

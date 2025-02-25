@@ -31,6 +31,8 @@ Route::resource('allot_hostel', AllotHostelController::class);
 Route::get('/allot_hostel/{id}/allotSeat', [AllotSeatController::class, 'allotSeat']);
 Route::post('/allot_hostel/{id}/allotSeat', [AllotSeatController::class, 'allotSeatStore']);
 
+Route::get('/room/{id}/remark', [RoomController::class, 'remark']);
+Route::post('/room/{id}/remark', [RoomController::class, 'remarkStore']);
 
 Route::controller(App\Http\Controllers\AjaxController::class)->group(function(){
     Route::get('/ajaxroom/{id}/seat','getSeats');

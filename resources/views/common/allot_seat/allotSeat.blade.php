@@ -5,7 +5,7 @@
                 Room allotment for {{ $allot_hostel->person->name }} in {{ $allot_hostel->hostel->name }}
             </x-slot>
             <div class="container">
-                <div class="form-group row">
+                <div class="form-group row mb-2">
                     <div class="col col-md-3">
                         <label for="roomno">Room No.:</label>
                     </div>
@@ -18,7 +18,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-group row seat_row" hidden>
+                <div class="form-group row seat_row mb-2" hidden>
                     <div class="col col-md-3">
                         <label for="seat">Seat No.:</label>
                     </div>
@@ -28,7 +28,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-group row button_row" hidden>
+                <div class="form-group row button_row mb-2" hidden>
                     <div class="col col-md-3">
                     
                     </div>

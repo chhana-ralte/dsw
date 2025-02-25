@@ -1,9 +1,9 @@
 <x-layout>
-    <x-slot name="header">
-        {{ __('Hostels') }}
-    </x-slot>
     <x-container>
         <x-block>
+            <x-slot name="heading">
+                {{ __('Halls of Residence in Mizoram University') }}
+            </x-slot>
             @if(count($hostels)>0)
                 <table class="table table-hover table-auto table-striped">
                     <thead>

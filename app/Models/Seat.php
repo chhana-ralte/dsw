@@ -16,6 +16,15 @@ class Seat extends Model
         return AllotSeat::where('seat_id',$this->id)->where('valid',1)->first();
     }
 
+    public function active_allot_seats(){
+        return AllotSeat::where('seat_id',$this->id)->where('valid',1)->get();
+    }
+
+
+    public function remarks(){
+        return $this->hasMany(SeatRemark::class);
+    }
+
     //public function
 
     public function exOccupants(){

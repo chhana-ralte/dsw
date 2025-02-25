@@ -1,19 +1,30 @@
 <x-layout>
-    <x-slot name="header">
-        {{ $hostel->name }}
-    </x-slot>
     <x-container>
         <x-block>
-            <a class="btn btn-primary btn-lg" href="/hostel/{{ $hostel->id }}/room">ROOMS</a>
-            <a class="btn btn-primary btn-lg" href="/hostel/{{ $hostel->id }}/occupants">Occupants</a>
-            <table class="table table-hover table-auto table-striped">
-                <tbody>
-                    <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
-                        <td><a href="/hostel/{{ $hostel->id }}">{{ $hostel->name }}</a></td>
-                        <td>{{ $hostel->gender }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <x-slot name="heading">
+                {{ $hostel->name }} Hall of Residence
+            </x-slot>
+
+            <section id="Menu">
+                <div class="container">     
+                    <div class="row mb-4">
+                        <a class="col-sm-3 bg-primary" href="/hostel/{{ $hostel->id }}/room">
+                            <div class="col col-md-4 bg-primary  mx-auto">
+                                <span class="btn btn-primary">
+                                    <h4>Rooms</h4>
+                                </span>
+                            </div>
+                        </a>
+                        <a class="col-sm-3 bg-secondary" href="/hostel/{{ $hostel->id }}/occupants">
+                            <div class="col col-md-4 mx-auto">
+                                <span class="btn btn-secondary">
+                                    <h4>Occupants</h4>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </section>
         </x-block>
     </x-container>
 </x-layout>

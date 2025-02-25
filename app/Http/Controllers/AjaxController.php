@@ -22,8 +22,9 @@ class AjaxController extends Controller
             }
             else{
                 $current_seat->update([
-                    'valid' => 0
-                 
+                    'valid' => 0,
+                    'leave_dt' => date('Y-m-d'),
+                    'to_dt' => date('Y-m-d')
                 ]);
             }
         }

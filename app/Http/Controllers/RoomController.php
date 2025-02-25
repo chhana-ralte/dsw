@@ -75,4 +75,18 @@ class RoomController extends Controller
     {
         //
     }
+
+    public function remark($id){
+        $room = Room::findOrFail($id);
+        return view('common.room.remark',['room' => $room]);
+    }
+
+    public function remarkStore($id){
+        \App\Models\RoomRemark::create([
+            'room_id' => $id,
+            'remark_dt' => date('Y-m-d'),
+            'remark' => request()->remark
+        ]);
+        return $id;
+    }
 }

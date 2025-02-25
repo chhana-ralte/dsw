@@ -14,4 +14,8 @@ class Room extends Model
     public function seats(){
         return $this->hasMany(Seat::class);
     }
+
+    public function remarks(){
+        return $this->hasMany(RoomRemark::class);
+    }
 }
