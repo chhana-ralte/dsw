@@ -7,7 +7,7 @@ use App\Models\Hostel;
 use App\Models\Room;
 use App\Models\Seat;
 use App\Models\AllotSeat;
-use App\Models\Allothostel;
+use App\Models\AllotHostel;
 
 
 class HostelController extends Controller
