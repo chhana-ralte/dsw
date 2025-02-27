@@ -3,6 +3,9 @@
         <x-block>
             <x-slot name="heading">
                 Personal information
+                <p>
+                    <a class="btn btn-secondary btn-sm" href="/hostel/{{ $allot_hostel->hostel->id }}/occupants">back</a>
+                </p>
             </x-slot>
             <table class="table table-hover table-auto">
                 <tr>
@@ -33,11 +36,12 @@
                 Seat Allotment Information
             </x-slot>
             @if(count($allot_hostel->allot_seats)>0)
-                    @foreach($allot_hostel->allot_seats as $as)
-                        {{ $as->seat->room->roomno }} <br>
-                    @endforeach
+                @foreach($allot_hostel->allot_seats as $as)
+                    {{ $as->seat->room->hostel->name }}: {{ $as->seat->room->roomno }}/{{ $as->seat->serial }} ({{ $as->valid?'Valid':'Invalid' }})<br>
+                @endforeach
+                <a class="btn btn-primary" href="/allot_hostel/{{ $allot_hostel->id }}/allotSeat">Allot another seat</a>
             @else
-                <a class="btn btn-primary" href="/allot_hostel/{{ $allot_hostel->id }}/allotSeat">Allot Seat</a>
+                <a class="btn btn-primary" href="/allot_hostel/{{ $allot_hostel->id }}/allotSeat">Allot seat</a>
             @endif
         </x-block>
     </x-container>

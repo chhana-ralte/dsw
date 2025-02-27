@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\AllotSeat;
 use App\Models\Seat;
 use App\Models\Hostel;
 use App\Models\Room;
@@ -70,5 +71,31 @@ class SeatController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function allotSeat($seat_id){
+        $seat = Seat::findOrFail($seat_id);
+
+        $data = [
+            'seat' => $seat
+        ];
+        return view('common.seat.allotSeat',$data);
+    }
+
+    public function allotSeatStore($seat_id){
+        AllotSeat::where('seat_id',$seat_id)->where('valid',1)->update([
+            'valid' => 0,
+            'leave_dt' => date('Y-m-d'),
+            'to_dt' => date('Y-m-d')
+        ]);
+        //return "Partial";
+        AllotSeat::create([
+            'allot_hostel_id' => request()->allot_hostel_id,
+            'seat_id' => $seat_id,
+            'from_dt' => date('Y-m-d'),
+            'to_dt' => date('Y-m-d'),
+            'valid' => 1
+        ]);
+        return "Success";
     }
 }

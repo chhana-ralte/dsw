@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AjaxController extends Controller
 {
@@ -38,5 +39,27 @@ class AjaxController extends Controller
         ]);
     
         return "Success";
+    }
+
+    public function deallocateSeat($seat_id){
+        //return $seat_id;
+        \App\Models\AllotSeat::where('seat_id',$seat_id)->where('valid',1)->update([
+            'valid' => 0,
+            'leave_dt' => date('Y-m-d'),
+            'to_dt' => date('Y-m-d')
+        ]);
+        return "Success";
+    }
+
+    public function getAllotHostels($hostel_id){
+        $search = $_GET['search'];
+        $data = DB::table('people')->join('allot_hostels','people.id','=','allot_hostels.person_id')
+            ->select('allot_hostels.id','people.name','people.address')
+            ->where('allot_hostels.hostel_id',$hostel_id)
+            ->whereLike('name','%' . $search . '%')
+            ->get();
+            
+        //$data = \App\Models\Person::whereLike('name','%' . $search . '%')->get();
+        return $data;
     }
 }

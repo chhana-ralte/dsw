@@ -3,6 +3,9 @@
         <x-block>
             <x-slot name="heading">
                 Rooms in {{ $hostel->name }} Hall of Residence
+                <p>
+                    <a class="btn btn-secondary btn-sm" href="/hostel/{{ $hostel->id }}">back</a>
+                </p>
             </x-slot>
             @if(count($rooms)>0)
                 <table class="table table-hover table-auto">

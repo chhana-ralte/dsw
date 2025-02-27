@@ -17,7 +17,7 @@ return new class extends Migration
             $table->ForeignIdFor(App\Models\Seat::class);
             $table->date('from_dt')->nullable();
             $table->date('to_dt')->nullable();
-            $table->boolean('leave_dt')->nullable();
+            $table->date('leave_dt')->nullable();
             $table->boolean('valid')->default(1);
             $table->timestamps();
         });

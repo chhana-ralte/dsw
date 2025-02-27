@@ -2,9 +2,18 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                {{ $hostel->name }}
+                Residents of {{ $hostel->name }} Hall of Residence
             </x-slot>
             <table class="table table-hover table-auto">
+                <thead>
+                    <tr>
+                        <th>Seat No.</th>
+                        <th>Name</th>
+                        <th>Course</th>
+                        <th>Department</th>
+                        <th>MZU ID</th>
+                    </tr>
+                </thead>
                 <tbody>
                     @foreach($seats as $s)
                         @if($s->allot_seat())
@@ -12,7 +21,7 @@
                         @else
                             <tr class="table-active">
                         @endif
-                        <td><a href="/seat/{{ $s->id }}">{{ $s->room->roomno }}/{{ $s->serial }}</a></td>
+                        <td>{{ $s->room->roomno }}/{{ $s->serial }}</td>
                         @if($s->allot_seat())
                             <td><a href='/allot_hostel/{{ $s->allot_seat()->allot_hostel->id }}'>{{ $s->allot_seat()->allot_hostel->person->name }}</a></td>
                             @if($s->allot_seat()->allot_hostel->person->student())
