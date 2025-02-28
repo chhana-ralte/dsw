@@ -57,7 +57,12 @@ class RoomController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $seats = Seat::where('room_id',$id)->orderBy('serial')->get();
+        $data = [
+            'room' => Room::findOrFail($id),
+            'seats' => $seats
+        ];
+        return view('common.room.edit',$data);
     }
 
     /**
@@ -65,7 +70,7 @@ class RoomController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        return redirect("/room/$id")->with(['message' => ['type' => 'info','text' => "Updated successfully"]]);
     }
 
     /**

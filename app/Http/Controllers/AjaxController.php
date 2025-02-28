@@ -62,4 +62,6 @@ class AjaxController extends Controller
         //$data = \App\Models\Person::whereLike('name','%' . $search . '%')->get();
         return $data;
     }
+
+    //public function
 }

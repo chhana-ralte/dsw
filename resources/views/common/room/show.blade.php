@@ -4,7 +4,10 @@
             <x-slot name="heading">
                     Room No.: {{ $room->roomno }} of {{ $room->hostel->name }}
                 <p>
-                    <a class="btn btn-secondary btn-sm" href="/hostel/{{ $room->hostel->id }}/room">back</a>
+                    <a class="btn btn-secondary btn-sm" href="/hostel/{{ $room->hostel->id }}/room">Back</a>
+                    <a class="btn btn-secondary btn-sm" href="/room/{{ $room->id }}/edit">Edit</a>
+                    <a class="btn btn-secondary btn-sm" href="/room/{{ $room->id }}/remark">Remark</a>
+                    <a class="btn btn-secondary btn-sm" href="/room/{{ $room->id }}/seat">Seats</a>
                 </p>
             </x-slot>
         </x-block>

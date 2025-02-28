@@ -46,7 +46,7 @@ class SeatController extends Controller
     public function show(string $id)
     {
         $seat = Seat::find($id);
-        return $seat;
+        return view('common.seat.show',['seat' => $seat]);
     }
 
     /**

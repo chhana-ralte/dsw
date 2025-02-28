@@ -26,19 +26,6 @@
                             <td>{{ $r->capacity }}</td>
                             <td>{{ $r->available }}</td>
                             <td>
-                                <div class="dropdown">
-                                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        ...
-                                    </a>
-
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="/room/{{ $r->id }}/remark">Add remark</a></li>
-                                        <li><a class="dropdown-item" href="/room/{{ $r->id }}/delete">Delete Room</a></li>
-                                        <li><a class="dropdown-item" href="/room/{{ $r->id }}/edit">Edit Room</a></li>
-                                        </ul>
-                                </div>
-                            </td>
-                            <td>
                                 @if(count($r->remarks))
                                     <ul>
                                     @foreach($r->remarks as $rm)
@@ -46,6 +33,18 @@
                                     @endforeach
                                     </ul>
                                 @endif
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        ...
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="/room/{{ $r->id }}/remark">Remark</a></li>
+                                        <li><a class="dropdown-item" href="/room/{{ $r->id }}/delete">Delete Room</a></li>
+                                        <li><a class="dropdown-item" href="/room/{{ $r->id }}/edit">Edit Room</a></li>
+                                        </ul>
+                                </div>
                             </td>
                         </tr>
                         @endforeach
