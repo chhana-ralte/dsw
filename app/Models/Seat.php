@@ -25,6 +25,19 @@ class Seat extends Model
         return $this->hasMany(SeatRemark::class);
     }
 
+    public function vacant(){
+        if(!$this->available){
+            return 0;
+        }
+        else{
+            if(AllotSeat::where('seat_id',$this->id)->where('valid',1)->exists()){
+                return 0;
+            }
+            else{
+                return 1;
+            }
+        }
+    }
     //public function
 
     public function exOccupants(){

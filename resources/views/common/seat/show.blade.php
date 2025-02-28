@@ -3,16 +3,65 @@
         <x-block>
             <x-slot name="heading">
                 Seat {{ $seat->serial }} in room: {{ $seat->room->roomno }}
+                <p>
+                    <a class="btn btn-secondary btn-sm" href="/room/{{ $seat->room->id }}/seat">back</a>
+                    <a class="btn btn-secondary btn-sm" href="/seat/{{ $seat->id }}/edit">Edit</a>
+                    <button class="btn btn-danger btn-sm delete">Delete</button>
+                    <a class="btn btn-secondary btn-sm" href="/seat/{{ $seat->id }}/remark">Remark</a>
+                </p>
             </x-slot>
-            <table class="table table-hover table-auto table-striped">
-                <tbody>
-                    <tr><th>Seat No.</th><th>Available?</th><th>Vacant?</th></tr>
-                    <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
-                        <td>{{ $seat->available ? 'Yes':'No' }}</td>
-                        <td>{{ $seat->allot_seat() ?'No' : 'Yes' }}</td>
-                    </tr>
-                </tbody>
-            </table>
         </x-block>
+        <x-block>
+            <x-slot name="heading">
+                Current status
+            </x-slot>
+            <div class="form-group row mb-3">
+                <label class="col col-md-4">Whether available?</label>
+                <div class="col col-md-4">{{ $seat->available? 'Yes':'No' }}</div>
+            </div>
+            
+        </x-block>
+
+        @if(count($seat->remarks))
+            <x-block>
+                <x-slot name="heading">
+                    Seat Remarks
+                </x-slot>
+                <div>
+                    <ul>
+                        @foreach($seat->remarks as $rm)
+                            <li>{{ $rm->remark_dt }}: {{ $rm->remark }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                
+            </x-block>
+        @endif
     </x-container>
+<script>
+$(document).ready(function(){
+    $.ajaxSetup({
+        headers : {
+            'X-CSRF-TOKEN' : $("meta[name='csrf-token']").attr('content')
+        }
+    });
+
+    $("button.delete").click(function(){
+        if(confirm("Are you sure you want to delete the seat?")){
+            $.ajax({
+                url : "/seat/{{ $seat->id }}",
+                type : "delete",
+                success : function(data,status){
+                    
+                    alert("Deleted");
+                    location.replace("/room/{{ $seat->room->id }}/seat");
+                },
+                error : function(){
+                    alert("Error");
+                }
+            });
+        }
+    });
+});
+</script>
 </x-layout>

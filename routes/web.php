@@ -36,6 +36,8 @@ Route::post('/seat/{id}/allotSeat', [SeatController::class, 'allotSeatStore']);
 
 Route::get('/room/{id}/remark', [RoomController::class, 'remark']);
 Route::post('/room/{id}/remark', [RoomController::class, 'remarkStore']);
+Route::get('/seat/{id}/remark', [SeatController::class, 'remark']);
+Route::post('/seat/{id}/remark', [SeatController::class, 'remarkStore']);
 
 Route::controller(App\Http\Controllers\AjaxController::class)->group(function(){
     Route::get('/ajaxroom/{id}/seat','getSeats');
@@ -55,7 +57,8 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function(){
 
 
 Route::get('generateRooms' ,function(){
-    return "Hello";
+    // return "Hello";
+    // exit();
     App\Models\Room::truncate();
     $hostels = App\Models\Hostel::orderBy('gender')->orderBy('name')->get();
     foreach($hostels as $ht){
@@ -67,7 +70,7 @@ Route::get('generateRooms' ,function(){
             ->get();
             //return $rooms;
         foreach($rooms as $r){
-            $capacity = ($r->Type == 'Single' ? 1 : ($r->Type == 'Double' ? 2 : 3));
+            $capacity = ($r->Type == 'Single' ? '1' : ($r->Type == 'Double' ? 2 : 3));
             App\Models\Room::create([
                 'hostel_id' => $ht->id,
                 'roomno' => $r->Roomno,
@@ -78,12 +81,12 @@ Route::get('generateRooms' ,function(){
         }
         //exit();
     }
-    return "Done";
+    return "Room Generation Done";
 });
 
 Route::get('/generateSeats', function(){
-    return "Comment out to generate seats";
-    exit();
+    // return "Comment out to generate seats";
+    // exit();
     App\Models\Seat::truncate();
     $rooms = Room::all();
 
@@ -95,12 +98,12 @@ Route::get('/generateSeats', function(){
             ]);
         }
     }
-    return "Done";
+    return "Seat Generation Done";
 });
 
 Route::get('/allot',function(){
-    return "Comment out to allot hostels";
-    exit();
+    // return "Comment out to allot hostels";
+    // exit();
     App\Models\Person::truncate();
     App\Models\Student::truncate();
     App\Models\AllotHostel::truncate();
@@ -164,7 +167,7 @@ Route::get('/allot',function(){
             }
         }
     }
-    return "Done";
+    return "Mass Allotment Done";
 });
 
 Route::get('/dashboard', function () {

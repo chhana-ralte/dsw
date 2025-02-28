@@ -5,15 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\AllotSeat;
+use App\Models\SeatRemark;
 use App\Models\Seat;
 use App\Models\Hostel;
 use App\Models\Room;
 
 class SeatController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Room $room)
     {
         $seats = Seat::where('room_id',$room->id)->orderBy('serial')->get();
@@ -24,53 +22,88 @@ class SeatController extends Controller
         return view('common.seat.index',$data);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(Room $room)
     {
-        //
+        return view('common.seat.create',['room' => $room]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(Room $room, Request $request)
     {
-        //
+        if(Seat::where('room_id',$room->id)->where('serial',$request->serial)->exists()){
+            return redirect("/room/$room->id/seat/create")->with(['message' => ['type' => 'danger', 'text' => 'Seat serial already exists']])->withInput();
+        }
+
+        if(!is_numeric($request->serial)){
+            return redirect("/room/$room->id/seat/create")->with(['message' => ['type' => 'danger', 'text' => 'Serial should be numeric value']])->withInput();
+        }
+
+        //return $request->available;
+        $seat = Seat::create([
+            'serial' => $request->serial,
+            'room_id' => $room->id,
+            'available' => $request->available ? 1:0
+        ]);
+
+        Room::where('id',$seat->room_id)->update([
+            'capacity' => Seat::where('room_id',$seat->room_id)->count(),
+            'available' => Seat::where('room_id',$seat->room_id)->sum('available')
+        ]);
+        return redirect("/room/$room->id/seat")->with(['message' => ['type' => 'info', 'text' => 'New seat created in']]);
+
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $seat = Seat::find($id);
         return view('common.seat.show',['seat' => $seat]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
-        //
+        $seat = Seat::find($id);
+        return view('common.seat.edit',['seat' => $seat]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        //
+        $seat = Seat::find($id);
+        if(Seat::where('room_id',$seat->room->id)->where('serial',$request->serial)->where('id','<>',$seat->id)->exists()){
+            return redirect("seat/$seat->id/edit")->with(['message' => ['type' => 'danger', 'text' => 'Seat serial already exists']])->withInput();
+        }
+
+        if(!is_numeric($request->serial)){
+            return redirect("seat/$seat->id/edit")->with(['message' => ['type' => 'danger', 'text' => 'Serial should be numeric value']])->withInput();
+        }
+
+        //return $request->available;
+        $seat->update([
+            'serial' => $request->serial,
+            'available' => $request->available ? 1:0
+        ]);
+
+        Room::where('id',$seat->room_id)->update([
+            'capacity' => Seat::where('room_id',$seat->room_id)->count(),
+            'available' => Seat::where('room_id',$seat->room_id)->sum('available')
+        ]);
+        return redirect("/seat/$seat->id")->with(['message' => ['type' => 'info', 'text' => 'Seat updated']]);
+
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //
+        $seat = Seat::find($id);
+        $room = Room::find($seat->room_id);
+
+        SeatRemark::where('seat_id',$id)->delete();
+        AllotSeat::where('seat_id',$id)->delete();
+
+        $seat->delete();
+
+        $room->update([
+            'capacity' => Seat::where('room_id',$room->id)->count(),
+            'available' => Seat::where('room_id',$room->id)->sum('available')
+        ]);
+        return "Success";
     }
 
     public function allotSeat($seat_id){
@@ -97,5 +130,19 @@ class SeatController extends Controller
             'valid' => 1
         ]);
         return "Success";
+    }
+
+    public function remark($id){
+        $seat = Seat::findOrFail($id);
+        return view('common.seat.remark',['seat' => $seat]);
+    }
+
+    public function remarkStore($id){
+        \App\Models\SeatRemark::create([
+            'seat_id' => $id,
+            'remark_dt' => date('Y-m-d'),
+            'remark' => request()->remark
+        ]);
+        return $id;
     }
 }

@@ -5,6 +5,7 @@
                 Rooms in {{ $hostel->name }} Hall of Residence
                 <p>
                     <a class="btn btn-secondary btn-sm" href="/hostel/{{ $hostel->id }}">back</a>
+                    <a class="btn btn-secondary btn-sm" href="/hostel/{{ $hostel->id }}/room/create">Create new room</a>
                 </p>
             </x-slot>
             @if(count($rooms)>0)
