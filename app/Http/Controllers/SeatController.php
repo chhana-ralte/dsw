@@ -44,6 +44,14 @@ class SeatController extends Controller
             'available' => $request->available ? 1:0
         ]);
 
+        if($request->remark){
+            SeatRemark::create([
+                'seat_id' => $seat->id,
+                'remark' => $request->remark,
+                'remark_dt' => date('Y-m-d')
+            ]);
+        }
+
         Room::where('id',$seat->room_id)->update([
             'capacity' => Seat::where('room_id',$seat->room_id)->count(),
             'available' => Seat::where('room_id',$seat->room_id)->sum('available')

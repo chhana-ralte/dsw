@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Room;
+use App\Models\RoomRemark;
 use App\Models\Hostel;
 use App\Models\Seat;
 
@@ -73,9 +74,6 @@ class RoomController extends Controller
         return redirect("/room/$room->id")->with(['message' => ['type' => 'info', 'text' => 'New room created']]);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $seats = Seat::where('room_id',$id)->orderBy('serial')->get();
@@ -86,9 +84,6 @@ class RoomController extends Controller
         return view('common.room.show',$data);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
 
