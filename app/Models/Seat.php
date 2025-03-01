@@ -12,12 +12,20 @@ class Seat extends Model
         return $this->belongsTo(Room::class);
     }
 
-    public function allot_seat(){
+    public function allot_seats(){
+        return $this->hasMany(AllotSeat::class);
+    }
+
+    public function valid_allot_seats(){
+        return AllotSeat::where('seat_id',$this->id)->where('valid',1)->get();
+    }
+
+    public function valid_allot_seat(){
         return AllotSeat::where('seat_id',$this->id)->where('valid',1)->first();
     }
 
-    public function active_allot_seats(){
-        return AllotSeat::where('seat_id',$this->id)->where('valid',1)->get();
+    public function invalid_allot_seats(){
+        return AllotSeat::where('seat_id',$this->id)->where('valid',0)->get();
     }
 
 

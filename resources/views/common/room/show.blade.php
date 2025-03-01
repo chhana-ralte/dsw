@@ -6,11 +6,14 @@
                 <p>
                     <a class="btn btn-secondary btn-sm" href="/hostel/{{ $room->hostel->id }}/room">Back</a>
                     <a class="btn btn-secondary btn-sm" href="/room/{{ $room->id }}/edit">Edit</a>
+                    <button class="btn btn-danger btn-sm delete">Delete</button>
                     <a class="btn btn-secondary btn-sm" href="/room/{{ $room->id }}/remark">Remark</a>
                     <a class="btn btn-secondary btn-sm" href="/room/{{ $room->id }}/seat">Seats</a>
                 </p>
             </x-slot>
         </x-block>
+
+
         <x-block>
             <x-slot name="heading">
                 Current occupants
@@ -27,9 +30,9 @@
                     </tr>
                     @foreach($seats as $s)
                     <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
-                        <td><a href="/seat/{{ $s->id }}">{{ $s->serial }}</a></td>
-                        @if( count($s->active_allot_seats()) > 0)
-                            @foreach($s->active_allot_seats() as $as)
+                        <td>{{ $s->serial }}</td>
+                        @if( count($s->valid_allot_seats()) > 0)
+                            @foreach($s->valid_allot_seats() as $as)
                                 <td>{{ $as->allot_hostel->person->name }}</td>
                                 @if($as->allot_hostel->person->student())
                                     <td>{{ $as->allot_hostel->person->student()->course }}</td>
@@ -51,7 +54,7 @@
                                     ...
                                 </a>
                                 <ul class="dropdown-menu">
-                                    @if( count($s->active_allot_seats()) > 0)
+                                    @if( count($s->valid_allot_seats()) > 0)
                                         <li><a class="dropdown-item" href="/seat/{{ $s->id }}/allotSeat">Allot another</a></li>
                                         <li><a class="dropdown-item deallocate" href="#" id="{{ $s->id }}">Deallocate</a></li>
                                     @else
@@ -66,7 +69,7 @@
             </table>
         </x-block>
 
-        @if(count($room->ex_allot_seats()) > 0)
+        @if(count($room->invalid_allot_seats()) > 0)
         <x-block>
             <x-slot name="heading">
                 Ex-Occupants
@@ -76,14 +79,16 @@
                     <tr>
                         <th>Seat sl.</th>
                         <th>Name</th>
+                        <th>Duration</th>
                         <th>Course</th>
                         <th>Department</th>
                         <th>MZU ID</th>
                     </tr>
-                    @foreach($room->ex_allot_seats() as $as)
+                    @foreach($room->invalid_allot_seats() as $as)
                     <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
                         <td>{{ $as->seat->serial }}</td>
                         <td>{{ $as->allot_hostel->person->name }}</td>
+                        <td>{{ $as->from_dt }} - {{ $as->to_dt }}</td>
                         @if($as->allot_hostel->person->student())
                             <td>{{ $as->allot_hostel->person->student()->course }}</td>
                             <td>{{ $as->allot_hostel->person->student()->department }}</td>
@@ -96,6 +101,27 @@
         </x-block>
         @endif
 
+        @if(count($room->remarks) > 0)
+        <x-block>
+            <x-slot name="heading">
+                Remarks about the room
+            </x-slot>
+            <table class="table table-hover table-auto table-striped">
+                <tbody>
+                    <tr>
+                        <th>Date of remark</th>
+                        <th>Remark</th>
+                    </tr>
+                    @foreach($room->remarks as $rm)
+                    <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
+                        <td>{{ $rm->remark_dt }}</td>
+                        <td>{{ $rm->remark }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </x-block>
+        @endif
 
     </x-container>
 <script>
@@ -124,6 +150,23 @@ $(document).ready(function(){
             });
         }
         //alert($(this).attr('id'));
+    });
+
+    $("button.delete").click(function(){
+        if(confirm("Are you sure you want to delete the room?")){
+            $.ajax({
+                url : "/room/{{ $room->id }}",
+                type : "delete",
+                success : function(data,status){
+                    
+                    alert("Deleted");
+                    location.replace("/hostel/{{ $room->hostel->id }}/room");
+                },
+                error : function(){
+                    alert("Error");
+                }
+            });
+        }
     });
 });
 </script>

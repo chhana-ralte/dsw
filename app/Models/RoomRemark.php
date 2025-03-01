@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class RoomRemark extends Model
 {
     public $guarded = [];
+
+    public function room(){
+        return $this->belongsTo(Room::class);
+    }
 }

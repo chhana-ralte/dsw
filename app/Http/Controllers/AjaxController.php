@@ -13,28 +13,30 @@ class AjaxController extends Controller
     }
 
     public function allotSeatStore(){
-        //return date('Y-m-d');
-        $current_seat = \App\Models\AllotSeat::where('allot_hostel_id',request()->allot_hostel_id)
-            ->where('valid',1)->first();
-        if($current_seat)
-        {
-            if($current_seat->seat_id == request()->seat_id){
-                return "Done";
-            }
-            else{
-                $current_seat->update([
-                    'valid' => 0,
-                    'leave_dt' => date('Y-m-d'),
-                    'to_dt' => date('Y-m-d')
-                ]);
-            }
-        }
         
+        \App\Models\AllotSeat::where('seat_id',request()->seat_id)
+            ->where('valid',1)
+            ->update([
+                'valid' => 0,
+                'to_dt' => date('Y-m-d'),
+                'leave_dt' => date('Y-m-d')
+            ]);
+        
+        \App\Models\AllotSeat::where('allot_hostel_id',request()->allot_hostel_id)
+            ->where('valid',1)
+            ->update([
+                'valid' => 0,
+                'to_dt' => date('Y-m-d'),
+                'leave_dt' => date('Y-m-d')
+            ]);
+        
+        $allot_hostel = \App\Models\AllotHostel::findOrFail(request()->allot_hostel_id);
+
         \App\Models\AllotSeat::create([
-            'allot_hostel_id' => request()->allot_hostel_id,
+            'allot_hostel_id' => $allot_hostel->id,
             'seat_id' => request()->seat_id,
             'from_dt' => date('Y-m-d'),
-            'to_dt' => date('Y-m-d'),
+            'to_dt' => $allot_hostel->to_dt,
             'valid' => 1
         ]);
     
@@ -63,5 +65,63 @@ class AjaxController extends Controller
         return $data;
     }
 
-    //public function
+    public function get_available_seats(){
+        if(isset($_GET['hostel_id'])){
+            $hostel = \App\Models\Hostel::findOrFail($_GET['hostel_id']);
+            $room_ids = \App\Models\Room::where('hostel_id',$hostel->id)->pluck('id');
+            $seat_ids = \App\Models\Seat::whereIn('room_id',$room_ids)->pluck('id');
+        }
+        else if(isset($_GET['room_id'])){
+            $room = \App\Models\Room::findOrFail($_GET['room_id']);
+            $room_ids = [$room->id];
+            $seat_ids = \App\Models\Seat::where('room_id',$room->id)->pluck('id');
+        }
+        else{
+            return false;
+        }
+        
+        
+        //return $seat_ids;
+        $occupied_seat_ids = \App\Models\AllotSeat::whereIn('seat_id',$seat_ids)->where('valid',1)->pluck('seat_id');
+        
+        $available_seat_ids = \App\Models\Seat::whereIn('room_id',$room_ids)->whereNotIn('id',$occupied_seat_ids)->pluck('id');
+        //return $available_seat_ids;
+        $seats = DB::table('seats')->join('rooms','seats.room_id','rooms.id')
+            ->select('seats.id','rooms.roomno','rooms.id as room_id','seats.serial')
+            ->whereIn('seats.id',$available_seat_ids)
+            ->get();
+        return $seats;
+    }
+
+    public function get_all_seats(){
+        if(isset($_GET['hostel_id'])){
+            $seats = DB::table('seats')->join('rooms','seats.room_id','rooms.id')
+                ->select('seats.id','rooms.roomno','rooms.id as room_id','seats.serial')
+                ->where('rooms.hostel_id',$_GET['hostel_id'])
+                ->get();
+            return $seats;
+        }
+        else if(isset($_GET['room_id'])){
+            $seats = DB::table('seats')->join('rooms','seats.room_id','rooms.id')
+                ->select('seats.id','rooms.roomno','rooms.id as room_id','seats.serial')
+                ->where('rooms.id',$room->id)
+                ->get();
+                return $seats;
+        }
+        else{
+            return false;
+        }
+        
+        
+        //return $seat_ids;
+        $occupied_seat_ids = \App\Models\AllotSeat::whereIn('seat_id',$seat_ids)->where('valid',1)->pluck('seat_id');
+        
+        $available_seat_ids = \App\Models\Seat::whereIn('room_id',$room_ids)->whereNotIn('id',$occupied_seat_ids)->pluck('id');
+        //return $available_seat_ids;
+        $seats = DB::table('seats')->join('rooms','seats.room_id','rooms.id')
+            ->select('seats.id','rooms.roomno','rooms.id as room_id','seats.serial')
+            ->whereIn('seats.id',$available_seat_ids)
+            ->get();
+        return $seats;
+    }
 }

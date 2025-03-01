@@ -10,7 +10,7 @@
         </x-block>
         <x-block>
             <x-slot name="heading">
-                Edit
+                Editing room details
             </x-slot>
             <form method="post" action="/room/{{ $room->id }}">
                 @method("PUT")
@@ -18,21 +18,21 @@
                 <div class="form-group row mb-3">
                     <label for="roomno" class="col col-md-3">Room No.</label>
                     <div class="col col-md-4">
-                        <input type="text" class="form-control" name="roomno" value="{{ $room->roomno }}">
-                    </div>
-                </div>
-
-                <div class="form-group row mb-3">
-                    <label for="roomno" class="col col-md-3">Room No.</label>
-                    <div class="col col-md-4">
-                        <input type="text" class="form-control" name="roomno" value="{{ $room->roomno }}" required>
+                        <input type="text" class="form-control" name="roomno" value="{{ old('roomno',$room->roomno) }}">
                     </div>
                 </div>
 
                 <div class="form-group row mb-3">
                     <label for="capacity" class="col col-md-3">Capacity</label>
                     <div class="col col-md-4">
-                        <input type="text" class="form-control" name="capacity" value="{{ $room->capacity }}" required>
+                        <input type="text" class="form-control" name="capacity" value="{{ $room->capacity }}" disabled>
+                    </div>
+                </div>
+
+                <div class="form-group row mb-3">
+                    <label for="available" class="col col-md-3">Available seats</label>
+                    <div class="col col-md-4">
+                        <input type="text" class="form-control" name="available" value="{{ $room->available }}" disabled>
                     </div>
                 </div>
 
@@ -44,36 +44,6 @@
                 </div>
             </form>
         </x-block>
-
-        @if(count($room->ex_allot_seats()) > 0)
-        <x-block>
-            <x-slot name="heading">
-                Ex-Occupants
-            </x-slot>
-            <table class="table table-hover table-auto table-striped">
-                <tbody>
-                    <tr>
-                        <th>Seat sl.</th>
-                        <th>Name</th>
-                        <th>Course</th>
-                        <th>Department</th>
-                        <th>MZU ID</th>
-                    </tr>
-                    @foreach($room->ex_allot_seats() as $as)
-                    <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
-                        <td>{{ $as->seat->serial }}</td>
-                        <td>{{ $as->allot_hostel->person->name }}</td>
-                        @if($as->allot_hostel->person->student())
-                            <td>{{ $as->allot_hostel->person->student()->course }}</td>
-                            <td>{{ $as->allot_hostel->person->student()->department }}</td>
-                            <td>{{ $as->allot_hostel->person->student()->mzuid }}</td>
-                        @endif
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </x-block>
-        @endif
 
 
     </x-container>

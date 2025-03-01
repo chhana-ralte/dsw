@@ -3,6 +3,9 @@
         <x-block>
             <x-slot name="heading">
                 Residents of {{ $hostel->name }} Hall of Residence
+                <p>
+                    <a class="btn btn-secondary btn-sm" href="/hostel/{{ $hostel->id }}">Back to {{ $hostel->name }}</a>
+                </p>
             </x-slot>
             <table class="table table-hover table-auto">
                 <thead>
@@ -16,18 +19,18 @@
                 </thead>
                 <tbody>
                     @foreach($seats as $s)
-                        @if($s->allot_seat())
+                        @if($s->valid_allot_seat())
                             <tr class="table-white">
                         @else
                             <tr class="table-active">
                         @endif
                         <td>{{ $s->room->roomno }}/{{ $s->serial }}</td>
-                        @if($s->allot_seat())
-                            <td><a href='/allot_hostel/{{ $s->allot_seat()->allot_hostel->id }}'>{{ $s->allot_seat()->allot_hostel->person->name }}</a></td>
-                            @if($s->allot_seat()->allot_hostel->person->student())
-                                <td>{{ $s->allot_seat()->allot_hostel->person->student()->course }}</td>
-                                <td>{{ $s->allot_seat()->allot_hostel->person->student()->department }}</td>
-                                <td>{{ $s->allot_seat()->allot_hostel->person->student()->mzuid }}</td>
+                        @if($s->valid_allot_seat())
+                            <td><a href='/allot_hostel/{{ $s->valid_allot_seat()->allot_hostel->id }}'>{{ $s->valid_allot_seat()->allot_hostel->person->name }}</a></td>
+                            @if($s->valid_allot_seat()->allot_hostel->person->student())
+                                <td>{{ $s->valid_allot_seat()->allot_hostel->person->student()->course }}</td>
+                                <td>{{ $s->valid_allot_seat()->allot_hostel->person->student()->department }}</td>
+                                <td>{{ $s->valid_allot_seat()->allot_hostel->person->student()->mzuid }}</td>
                             @else
                                 <td colspan=3>Not a student</td>
                             @endif

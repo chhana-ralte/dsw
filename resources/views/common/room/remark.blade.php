@@ -11,13 +11,25 @@
                 <table class="table table-hover table-auto">
                     <thead>
                         <tr>
-                        <th>Date</th><th>Remark</th><tr>
+                            <th>Date</th>
+                            <th>Remark</th>
+                            <th>Manage</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($room->remarks as $rm)
                             <td>{{ $rm->remark_dt }}</td>
                             <td>{{ $rm->remark }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="#" class="btn btn-secondary">Edit</a>
+                                    <button class="btn btn-danger" type="submit" form="DeleteForm">Delete</button>
+                                </div>
+                                <form method="post" id="DeleteForm" action="/room/remark/{{ $rm->id }}" onsubmit="return confirm('Are you sure you want to delete the remark?')">
+                                    @csrf
+                                    @method('delete')
+                                </form>
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>

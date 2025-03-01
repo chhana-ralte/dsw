@@ -10,9 +10,7 @@ use App\Models\Seat;
 
 class RoomController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index(Hostel $hostel)
     {
         //return $hostel;
@@ -24,9 +22,7 @@ class RoomController extends Controller
         return view('common.room.index',$data);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
     public function create(Hostel $hostel)
     {
         return view('common.room.create',['hostel' => $hostel]);
@@ -97,12 +93,30 @@ class RoomController extends Controller
     
     public function update(Request $request, string $id)
     {
-        return redirect("/room/$id")->with(['message' => ['type' => 'info','text' => "Updated successfully"]]);
+        $room = Room::findOrFail($id);
+        if(Room::where('hostel_id',$room->hostel_id)->where('id','<>',$id)->where('roomno',$request->roomno)->exists()){
+            return redirect("/room/$room->id/edit")->with(['message' => ['type' => 'info', 'text' => 'Room No. already exists']])->withInput();
+        }
+        else{
+            $room->update([
+                'roomno' => $request->roomno,
+                'capacity' => Seat::where('room_id',$room->id)->count(),
+                'available' => Seat::where('room_id',$room->id)->sum('available')
+            ]);
+            return redirect("/room/$room->id")->with(['message' => ['type' => 'info', 'text' => 'Room updated']]);
+        }
     }
 
     public function destroy(string $room_id)
     {
-
+        $room = Room::find($room_id);
+        $seats = Seat::where('room_id',$room->id)->get();
+        \App\Models\AllotSeat::whereIn('seat_id',$seats->pluck('id'))->delete();
+        \App\Models\SeatRemark::whereIn('seat_id',$seats->pluck('id'))->delete();
+        RoomRemark::where('room_id',$room->id)->delete();
+        Seat::where('room_id',$room->id)->delete();
+        $room->delete();
+        return "Hello";
     }
 
     public function remark($id){
@@ -117,5 +131,11 @@ class RoomController extends Controller
             'remark' => request()->remark
         ]);
         return $id;
+    }
+
+    public function remarkDelete($id){
+        $room = \App\Models\RoomRemark::find($id)->room;
+        \App\Models\RoomRemark::find($id)->delete();
+        return redirect("/room/$room->id/remark")->with(['message' => ['type' => 'info', 'text' => 'Remark deleted']]);
     }
 }

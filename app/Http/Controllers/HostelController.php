@@ -32,7 +32,19 @@ class HostelController extends Controller
     public function show(string $id)
     {
         $hostel = Hostel::findOrFail($id);
-        return view('common.hostel.show',['hostel' => $hostel]);
+        $rooms = Room::where('hostel_id',$hostel->id)->get();
+        $seats = Seat::whereIn('room_id',$rooms->pluck('id'))->get();
+        $allotted_seats = AllotSeat::whereIn('seat_id',$seats->pluck('id'))->get();
+        $unallotted_seats = AllotHostel::where('hostel_id',$hostel->id)->whereNotIn('id',$allotted_seats->pluck('allot_hostel_id'))->get();
+        
+        $data = [
+            'hostel' => $hostel,
+            'rooms' => $rooms,
+            'seats' => $seats,
+            'allotted_seats' => $allotted_seats,
+            'unallotted_seats' => $unallotted_seats
+        ];
+        return view('common.hostel.show',$data);
     }
 
     /**

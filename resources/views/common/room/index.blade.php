@@ -12,7 +12,7 @@
                 <table class="table table-hover table-auto">
                     <thead>
                         <tr>
-                        <th>Room No</th><th>Capacity</th><th>Available</th><th>Manage</th><th>Remarks</th><tr>
+                            <th>Room No</th><th>Capacity</th><th>Available</th><th>Filled</th><th>Vacancy</th><th>Manage</th><th>Remarks</th><tr>
                         </tr>
                     </thead>
                     <tbody>
@@ -26,6 +26,8 @@
                             <td><a href="/room/{{ $r->id }}">{{ $r->roomno }}</a></td>
                             <td>{{ $r->capacity }}</td>
                             <td>{{ $r->available }}</td>
+                            <td>{{ $r->filled()->count() }}</td>
+                            <td>{{ $r->available - $r->filled()->count() }}</td>
                             <td>
                                 @if(count($r->remarks))
                                     <ul>

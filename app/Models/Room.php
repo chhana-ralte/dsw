@@ -19,13 +19,18 @@ class Room extends Model
         return $this->hasMany(RoomRemark::class);
     }
 
-    public function ex_allot_seats(){
+    public function filled(){
         $seat_ids = Seat::where('room_id',$this->id)->pluck('id');
+        $allot_seat_ids = AllotSeat::whereIn('seat_id',$seat_ids)->where('valid',1)->pluck('seat_id');
+        return Seat::whereIn('id',$allot_seat_ids)->get();
+        //return Seat::where('room_id',$this->id)->with('allot_seats',function())->get();
+    }
 
-        $ex_allot_seats = AllotSeat::whereIn('seat_id',$seat_ids)
-            ->where('valid',0)
-            ->orderBy('leave_dt')
-            ->get();
-        return $ex_allot_seats;
+    public function valid_allot_seats(){
+        return AllotSeat::whereIn('seat_id',$this->seats->pluck('id'))->where('valid',1)->get();
+    }
+
+    public function invalid_allot_seats(){
+        return AllotSeat::whereIn('seat_id',$this->seats->pluck('id'))->where('valid',0)->get();
     }
 }

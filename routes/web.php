@@ -38,10 +38,14 @@ Route::get('/room/{id}/remark', [RoomController::class, 'remark']);
 Route::post('/room/{id}/remark', [RoomController::class, 'remarkStore']);
 Route::get('/seat/{id}/remark', [SeatController::class, 'remark']);
 Route::post('/seat/{id}/remark', [SeatController::class, 'remarkStore']);
+Route::delete('/room/remark/{id}', [RoomController::class, 'remarkDelete']);
+
 
 Route::controller(App\Http\Controllers\AjaxController::class)->group(function(){
     Route::get('/ajaxroom/{id}/seat','getSeats');
     Route::get('/ajax/hostel/{id}/allot_hostel','getAllotHostels');
+    Route::get('/ajax/get_available_seats','get_available_seats');
+    Route::get('/ajax/get_all_seats','get_all_seats');
     Route::post('/ajax/allot_seat_store','allotSeatStore');
     Route::post('/ajax/seat/{id}/deallocate','deallocateSeat');
 
@@ -54,120 +58,126 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function(){
 
 
 
+Route::get('/generateRooms' ,function(){
+    return view('generateRooms');
+});
 
-
-Route::get('generateRooms' ,function(){
-    // return "Hello";
-    // exit();
-    App\Models\Room::truncate();
-    $hostels = App\Models\Hostel::orderBy('gender')->orderBy('name')->get();
-    foreach($hostels as $ht){
-        $rooms = DB::table($ht->name)
-            ->select('Roomno','Type')
-            ->where('Roomno','<>','')
-            ->orderBy('Roomno')
-            ->groupBy('Roomno','Type')
-            ->get();
-            //return $rooms;
-        foreach($rooms as $r){
-            $capacity = ($r->Type == 'Single' ? '1' : ($r->Type == 'Double' ? 2 : 3));
-            App\Models\Room::create([
-                'hostel_id' => $ht->id,
-                'roomno' => $r->Roomno,
-                'capacity' => $capacity,
-                'available' => $capacity,
-                'type' => $r->Type
-            ]);
+Route::post('/generateRooms' ,function(){
+    if(request()->password == "mzudsw"){
+        App\Models\Room::truncate();
+        $hostels = App\Models\Hostel::orderBy('gender')->orderBy('name')->get();
+        foreach($hostels as $ht){
+            $rooms = DB::table($ht->name)
+                ->select('Roomno','Type')
+                ->where('Roomno','<>','')
+                ->orderBy('Roomno')
+                ->groupBy('Roomno','Type')
+                ->get();
+                //return $rooms;
+            foreach($rooms as $r){
+                $capacity = ($r->Type == 'Single' ? '1' : ($r->Type == 'Double' ? 2 : 3));
+                App\Models\Room::create([
+                    'hostel_id' => $ht->id,
+                    'roomno' => $r->Roomno,
+                    'capacity' => $capacity,
+                    'available' => $capacity,
+                    'type' => $r->Type
+                ]);
+            }
+            //exit();
         }
-        //exit();
+        return "Room Generation Done";
     }
-    return "Room Generation Done";
+    else{
+        return redirect('/generateRooms')->with(['message' => ['type' => 'info', 'text' => 'Incorrect Password']]);
+    }
 });
 
 Route::get('/generateSeats', function(){
-    // return "Comment out to generate seats";
-    // exit();
-    App\Models\Seat::truncate();
-    $rooms = Room::all();
-
-    foreach($rooms as $r){
-        for($i=0; $i < $r->capacity ; $i++){
-            Seat::create([
-                'room_id' => $r->id,
-                'serial' => $i+1
-            ]);
-        }
-    }
-    return "Seat Generation Done";
+    return view('generateSeats');
 });
 
-Route::get('/allot',function(){
-    // return "Comment out to allot hostels";
-    // exit();
-    App\Models\Person::truncate();
-    App\Models\Student::truncate();
-    App\Models\AllotHostel::truncate();
-    App\Models\AllotSeat::truncate();
-    foreach(App\Models\Hostel::all() as $hostel){
-        $list_of_hostellers = DB::table($hostel->name)
-            ->select('*')
-            ->where('name','<>','')
-            ->get();
+Route::post('/generateSeats' ,function(){
+    if(request()->password == "mzudsw"){
+        App\Models\Seat::truncate();
+        $rooms = Room::all();
 
-        // $str = "<table>";
-        // foreach($list as $l){
-        //     $str .= "<tr><td>"  . $l->Name . "</td></tr>";
-        // }
-        // $str .= "</table>";
-        // return $str;
-        foreach($list_of_hostellers as $l){
-            $person = App\Models\Person::create([
-                'name' => $l->Name,
-                'state' => $l->State,
-                'category' => $l->Category,
-                'address' => $l->State,
-            ]);
-
-            if($l->Course != '' || $l->Department != ''){
-                $student = App\Models\Student::create([
-                    'person_id' => $person->id,
-                    'course' => $l->Course,
-                    'department' => $l->Department,
-                    'mzuid' => $l->MZU_id
-                ]);    
+        foreach($rooms as $r){
+            for($i=0; $i < $r->capacity ; $i++){
+                Seat::create([
+                    'room_id' => $r->id,
+                    'serial' => $i+1
+                ]);
             }
-            
-            $allot_hostel = App\Models\AllotHostel::create([
-                'person_id' => $person->id,
-                'hostel_id' => $hostel->id,
-                'from_dt' => '2024-08-01',
-                'to_dt' => '2025-07-31',
-                'valid' => 1
-            ]);
+        }
+        return "Seat Generation Done";
+    }
+});
 
-            $room = Room::where('roomno',$l->Roomno)
-                ->where('hostel_id',$hostel->id)
-                ->first();
+Route::get('/massAllot',function(){
+    return view('massAllot');
+});
+Route::post('/massAllot',function(){
+    if(request()->password == "mzudsw"){
+        App\Models\Person::truncate();
+        App\Models\Student::truncate();
+        App\Models\AllotHostel::truncate();
+        App\Models\AllotSeat::truncate();
+        foreach(App\Models\Hostel::all() as $hostel){
+            $list_of_hostellers = DB::table($hostel->name)
+                ->select('*')
+                ->where('name','<>','')
+                ->get();
 
-            $seats = Seat::where('room_id',$room->id)->orderBy('serial')->get();
-            
-            foreach($seats as $s){
-                if(App\Models\AllotSeat::where('seat_id',$s->id)->exists())
-                    continue;
-                else{
-                    App\Models\AllotSeat::create([
-                        'allot_hostel_id' => $allot_hostel->id,
-                        'seat_id' => $s->id,
-                        'from_dt' => '2024-08-01',
-                        'to_dt' => '2025-07-31',
-                        'valid' => 1
-                    ]);
-                    break;
+            foreach($list_of_hostellers as $l){
+                $person = App\Models\Person::create([
+                    'name' => $l->Name,
+                    'state' => $l->State,
+                    'category' => $l->Category,
+                    'address' => $l->State,
+                ]);
+
+                if($l->Course != '' || $l->Department != ''){
+                    $student = App\Models\Student::create([
+                        'person_id' => $person->id,
+                        'course' => $l->Course,
+                        'department' => $l->Department,
+                        'mzuid' => $l->MZU_id
+                    ]);    
+                }
+                
+                $allot_hostel = App\Models\AllotHostel::create([
+                    'person_id' => $person->id,
+                    'hostel_id' => $hostel->id,
+                    'from_dt' => '2024-08-01',
+                    'to_dt' => '2025-07-31',
+                    'valid' => 1
+                ]);
+
+                $room = Room::where('roomno',$l->Roomno)
+                    ->where('hostel_id',$hostel->id)
+                    ->first();
+
+                $seats = Seat::where('room_id',$room->id)->orderBy('serial')->get();
+                
+                foreach($seats as $s){
+                    if(App\Models\AllotSeat::where('seat_id',$s->id)->exists())
+                        continue;
+                    else{
+                        App\Models\AllotSeat::create([
+                            'allot_hostel_id' => $allot_hostel->id,
+                            'seat_id' => $s->id,
+                            'from_dt' => '2024-08-01',
+                            'to_dt' => '2025-07-31',
+                            'valid' => 1
+                        ]);
+                        break;
+                    }
                 }
             }
         }
+        return "Mass Allotment Done";
     }
-    return "Mass Allotment Done";
 });
 
 Route::get('/dashboard', function () {
