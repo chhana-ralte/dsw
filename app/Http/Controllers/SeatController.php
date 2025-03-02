@@ -84,6 +84,9 @@ class SeatController extends Controller
         }
 
         //return $request->available;
+        if(!$request->available && count($seat->valid_allot_seats()) > 0){
+            return redirect("/seat/$seat->id/edit")->with(['message' => ['type' => 'info', 'text' => 'Seat can\'t be made unavailable as it is being allotted']])->withInput();
+        }
         $seat->update([
             'serial' => $request->serial,
             'available' => $request->available ? 1:0
