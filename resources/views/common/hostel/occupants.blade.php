@@ -18,25 +18,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($seats as $s)
-                        @if($s->valid_allot_seat())
-                            <tr class="table-white">
+                    @foreach($occupants as $oc)
+                        <tr class="table-white">
+                        <td>{{ $oc->roomno }}/{{ $oc->serial }}</td>
+                       
+                        <td><a href='/allot_hostel/{{ $oc->valid_allot_seat()->allot_hostel->id }}'>{{ $oc->valid_allot_seat()->allot_hostel->person->name }}</a></td>
+                        @if($oc->valid_allot_seat()->allot_hostel->person->student())
+                            <td>{{ $oc->valid_allot_seat()->allot_hostel->person->student()->course }}</td>
+                            <td>{{ $oc->valid_allot_seat()->allot_hostel->person->student()->department }}</td>
+                            <td>{{ $oc->valid_allot_seat()->allot_hostel->person->student()->mzuid }}</td>
                         @else
-                            <tr class="table-active">
+                            <td colspan=3>Not a student</td>
                         @endif
-                        <td>{{ $s->room->roomno }}/{{ $s->serial }}</td>
-                        @if($s->valid_allot_seat())
-                            <td><a href='/allot_hostel/{{ $s->valid_allot_seat()->allot_hostel->id }}'>{{ $s->valid_allot_seat()->allot_hostel->person->name }}</a></td>
-                            @if($s->valid_allot_seat()->allot_hostel->person->student())
-                                <td>{{ $s->valid_allot_seat()->allot_hostel->person->student()->course }}</td>
-                                <td>{{ $s->valid_allot_seat()->allot_hostel->person->student()->department }}</td>
-                                <td>{{ $s->valid_allot_seat()->allot_hostel->person->student()->mzuid }}</td>
-                            @else
-                                <td colspan=3>Not a student</td>
-                            @endif
-                        @else
-                            <td>Seat vacant</td>
-                        @endif
+                        
                     </tr>
                     @endforeach
 
