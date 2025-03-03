@@ -72,51 +72,31 @@ class HostelController extends Controller
     }
 
     public function occupants(Hostel $hostel){
-        // $room_ids = Room::where('hostel_id',$hostel->id)->pluck('id');
-        // $seat_ids = Seat::whereIn('room_id',$room_ids)->pluck('id');
-        // $allot_seats = AllotSeat::WhereIn('seat_id',$seat_ids)->where('valid',1)
-        //     ->orderBy('seat_id')
-        //     ->get();
-        
-        // $allot_hostels = AllotHostel::where('hostel_id',$hostel->id)
-        //     ->whereNotIn('id',$allot_seats->pluck('allot_hostel_id'))
-        //     ->get();
-        
-        // $seats = Seat::whereIn('room_id',$room_ids)->get();
-        
-        $occupants = DB::table('hostels')->join('rooms','hostels.id','rooms.hostel_id')
-            ->join('seats','rooms.id','seats.room_id')
-            ->join('allot_seats','seats.id','allot_seats.seat_id')
-            ->join('allot_hostels','allot_hostels.id','allot_seats.allot_hostel_id')
-            ->join('people','people.id','allot_hostels.person_id')
-            ->join('students','people.id','students.person_id')
-            ->select('rooms.roomno','people.name','students.course')
-            ->where('hostels.id',$hostel->id)
-            ->where('allot_seats.valid',1)
-            ->orderBy('rooms.roomno')
-            ->orderBy('seats.serial')
+        $room_ids = Room::where('hostel_id',$hostel->id)->pluck('id');
+        $seat_ids = Seat::whereIn('room_id',$room_ids)->pluck('id');
+        $allot_seats = AllotSeat::WhereIn('seat_id',$seat_ids)->where('valid',1)
+            ->orderBy('seat_id')
             ->get();
-
-        // $occupants = DB::table('hostels')->join('rooms',function($q){
-        //                     $q->where('hostels.id','rooms.hostel_id');
-        //                 })
-        //     ->join('seats','rooms.id','seats.room_id')
-        //     ->join('allot_seats','seats.id','allot_seats.seat_id')
-        //     ->join('allot_hostels','allot_hostels.id','allot_seats.allot_hostel_id')
-        //     ->join('people','people.id','allot_hostels.person_id')
-        //     ->join('students','people.id','students.person_id')
-        //     ->select('rooms.roomno','people.name','students.course')
-        //     ->where('hostels.id',$hostel->id)
-        //     ->where('allot_seats.valid',1)
-        //     ->orderBy('rooms.roomno')
-        //     ->orderBy('seats.serial')
-        //     ->get();
         
-        return $occupants;
-        $data = [
-            'hostel' => $hostel,
-            'occupants' => $occupants
-        ];
+        $allot_hostels = AllotHostel::where('hostel_id',$hostel->id)
+            ->whereNotIn('id',$allot_seats->pluck('allot_hostel_id'))
+            ->get();
+        
+        if(isset($_GET['allot_seats']) && $_GET['allot_seats'] == 1){
+            $data = [
+                'hostel' => $hostel,
+                'allot_seats' => $allot_seats,
+                'allot_hostels' => false
+            ];
+    
+        }
+        else{
+            $data = [
+                'hostel' => $hostel,
+                'allot_hostels' => $allot_hostels,
+                'allot_seats' => false
+            ];
+        }
         //return $data;
         return view('common.hostel.occupants',$data);
     }

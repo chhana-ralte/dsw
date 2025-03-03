@@ -35,7 +35,7 @@
                                 </span>
                             </div>
                         </a>
-                        <a class="col-sm-3 bg-secondary" href="/hostel/{{ $hostel->id }}/occupants">
+                        <a class="col-sm-3 bg-secondary" href="/hostel/{{ $hostel->id }}/occupants?allot_seats=1">
                             <div class="col col-md-4 mx-auto">
                                 <span class="btn btn-secondary">
                                     <h4>Occupants</h4>
@@ -52,7 +52,7 @@
                                 </span>
                             </div>
                         </a>
-                        <a class="col-sm-3 bg-secondary" href="/hostel/{{ $hostel->id }}/occupants">
+                        <a class="col-sm-3 bg-secondary" href="/hostel/{{ $hostel->id }}/occupants?allot_seats=0">
                             <div class="col col-md-4 mx-auto">
                                 <span class="btn btn-secondary">
                                     <h4>Students having no room</h4>

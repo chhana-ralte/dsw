@@ -7,6 +7,7 @@ use App\Models\Room;
 use App\Models\RoomRemark;
 use App\Models\Hostel;
 use App\Models\Seat;
+use App\Models\AllotSeat;
 
 class RoomController extends Controller
 {
@@ -14,11 +15,46 @@ class RoomController extends Controller
     public function index(Hostel $hostel)
     {
         //return $hostel;
-        $rooms = Room::where('hostel_id',$hostel->id)->orderBy('roomno')->get();
-        $data = [
-            'hostel' => $hostel,
-            'rooms' => $rooms
-        ];
+        $rooms = Room::where('hostel_id',$hostel->id)->orderBy('roomno');
+        $seats = Seat::whereIn('room_id',$rooms->pluck('id'));
+        $allot_seats = AllotSeat::whereIn('seat_id',$seats->pluck('id'))->where('valid',1);
+        // return "Hello";
+        $allotted_seats = Seat::whereIn('id',$allot_seats->pluck('seat_id'));
+        // return "Hello";
+        $vacant_seats = $seats->whereNotIn('id',$allotted_seats->pluck('id'));
+
+        if(isset($_GET['status']) && $_GET['status'] == 'vacant'){
+            $vacant_seats = $seats->whereNotIn('id',$allotted_seats->pluck('id'));
+            $data = [
+                'hostel' => $hostel->get(),
+                'rooms' => $rooms->get(),
+                'vacant_seats' => $vacant_seats->get(),
+                'status' => 'vacant'
+            ];
+        }
+
+        else if(isset($_GET['status']) && $_GET['status'] == "non-available"){
+            $non_room = Room::whereHas('seats',function($q){
+                $q->where('available',1);
+            })->get();
+            return $non_room;
+            $non_room = Seat::whereIn('room_id',$rooms->pluck('id'))->where('available',0);
+            // 'hostel' => $hostel->get(),
+            // $unavailable_seats
+            $data = [
+                'status' => 'non-available'
+            ];
+            return $data;
+        }
+        else{
+            $data = [
+                'hostel' => $hostel->get(),
+                'rooms' => $rooms->get()
+            ];
+        }
+        
+        //return $seats->get();
+        
         return view('common.room.index',$data);
     }
 
