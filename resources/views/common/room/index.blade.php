@@ -61,9 +61,80 @@
                     No Room available
                 @endif
             @elseif($status == 'vacant')
-                Vacant tooms
+                @if(count($vacant_seats) > 0)
+                    <table class="table table-hover table-auto">
+                        <thead>
+                            <tr>
+                                <th>Seat No.</th><th>Remarks</th><tr>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($vacant_seats as $s)
+                                @if($s->available == 0)
+                                    <tr class="table-danger">
+                                @else
+                                    <tr class="table-default">
+                                @endif
+                                <td>{{ $s->room->roomno }}/{{ $s->serial }}</td>
+                                <td>
+                                    @foreach($s->remarks as $rm)
+                                        <li>{{ $rm->remark }}</li>
+                                    @endforeach
+                                </td>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
             @else
-                Non-available rooms
+                @if(count($non_rooms) > 0)
+                    <table class="table table-hover table-auto">
+                        <thead>
+                            <tr>
+                                <th>Room No.</th><th>Remarks</th><tr>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($non_rooms as $r)
+                                @if($r->available == 0 || $r->capacity == 0)
+                                    <tr class="table-danger">
+                                @else
+                                    <tr class="table-default">
+                                @endif
+                                <td>{{ $r->roomno }}</td>
+                                <td>
+                                    @foreach($r->remarks as $rm)
+                                        <li>{{ $rm->remark }}</li>
+                                    @endforeach
+                                </td>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+
+                @if(count($non_seats) > 0)
+                    <table class="table table-hover table-auto">
+                        <thead>
+                            <tr>
+                                <th>Seat No.</th><th>Remarks</th><tr>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($non_seats as $s)
+                                @if($s->available == 0 || $s->capacity == 0)
+                                    <tr class="table-danger">
+                                @else
+                                    <tr class="table-default">
+                                @endif
+                                <td>{{ $s->room->roomno }}/{{ $s->serial }}</td>
+                                <td>
+                                    @foreach($s->remarks as $rm)
+                                        <li>{{ $rm->remark }}</li>
+                                    @endforeach
+                                </td>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
             @endif
         </x-block>
     </x-container>

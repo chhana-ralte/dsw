@@ -14,7 +14,7 @@ class RoomController extends Controller
 
     public function index(Hostel $hostel)
     {
-        //return $hostel;
+        // return $hostel;
         $rooms = Room::where('hostel_id',$hostel->id)->orderBy('roomno');
         $seats = Seat::whereIn('room_id',$rooms->pluck('id'));
         $allot_seats = AllotSeat::whereIn('seat_id',$seats->pluck('id'))->where('valid',1);
@@ -26,27 +26,25 @@ class RoomController extends Controller
         if(isset($_GET['status']) && $_GET['status'] == 'vacant'){
             $vacant_seats = $seats->whereNotIn('id',$allotted_seats->pluck('id'));
             $data = [
-                'hostel' => $hostel->get(),
-                'rooms' => $rooms->get(),
+                'hostel' => $hostel,
                 'vacant_seats' => $vacant_seats->get(),
                 'status' => 'vacant'
             ];
-            return $data;
+            //return $data;
         }
 
         else if(isset($_GET['status']) && $_GET['status'] == "non-available"){
-            $non_room = Room::whereHas('seats',function($q){
-                $q->where('available',1);
-            })->get();
-            return $non_room;
-            $non_room = Seat::whereIn('room_id',$rooms->pluck('id'))->where('available',0);
-            // 'hostel' => $hostel->get(),
-            // $unavailable_seats
+            $rooms = $hostel->rooms;
+            $non_rooms = Room::where('hostel_id',$hostel->id)->where('capacity',0)->orWhere('available',0);
+            $non_seats = Seat::whereIn('room_id',$rooms->pluck('id'))->where('available',0)->whereNotIn('room_id',$non_rooms->pluck('id'));
             $data = [
+                'hostel' => $hostel,
+                'non_rooms' => $non_rooms->orderBy('roomno')->get(),
+                'non_seats' => $non_seats->orderBy('serial')->get(),
                 'status' => 'non-available'
             ];
             //return "Heklo";
-            return $data;
+            //return $data;
         }
         else{
             $data = [
