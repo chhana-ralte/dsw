@@ -82,19 +82,18 @@ class HostelController extends Controller
             ->whereNotIn('id',$allot_seats->pluck('allot_hostel_id'))
             ->get();
         
-        if(isset($_GET['allot_seats']) && $_GET['allot_seats'] == 1){
-            $data = [
-                'hostel' => $hostel,
-                'allot_seats' => $allot_seats,
-                'allot_hostels' => false
-            ];
-    
-        }
-        else{
+        if(!isset($_GET['allot_seats']) || $_GET['allot_seats'] == 0){
             $data = [
                 'hostel' => $hostel,
                 'allot_hostels' => $allot_hostels,
                 'allot_seats' => false
+            ];
+        }
+        else{
+            $data = [
+                'hostel' => $hostel,
+                'allot_seats' => $allot_seats,
+                'allot_hostels' => false
             ];
         }
         //return $data;

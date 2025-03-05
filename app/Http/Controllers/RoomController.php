@@ -31,6 +31,7 @@ class RoomController extends Controller
                 'vacant_seats' => $vacant_seats->get(),
                 'status' => 'vacant'
             ];
+            return $data;
         }
 
         else if(isset($_GET['status']) && $_GET['status'] == "non-available"){
@@ -44,13 +45,16 @@ class RoomController extends Controller
             $data = [
                 'status' => 'non-available'
             ];
+            //return "Heklo";
             return $data;
         }
         else{
             $data = [
-                'hostel' => $hostel->get(),
-                'rooms' => $rooms->get()
+                'hostel' => $hostel,
+                'rooms' => $rooms->get(),
+                'status' => 'all'
             ];
+            //return $data;
         }
         
         //return $seats->get();
