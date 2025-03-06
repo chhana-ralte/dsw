@@ -61,11 +61,16 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function(){
 Route::get('/generateRooms' ,function(){
     return view('generateRooms');
 });
-
+function startUp(){
+    $hostels = ['thorang'];
+    return $hostels;
+}
 Route::post('/generateRooms' ,function(){
     if(request()->password == "mzudsw"){
         App\Models\Room::truncate();
+        \App\Models\RoomRemark::truncate();
         $hostels = App\Models\Hostel::orderBy('gender')->orderBy('name')->get();
+        // $hostels = App\Models\Hostel::whereIn('name',startUp())->orderBy('gender')->orderBy('name')->get();
         foreach($hostels as $ht){
             $rooms = DB::table($ht->name)
                 ->select('Roomno','Type')
@@ -100,7 +105,14 @@ Route::get('/generateSeats', function(){
 Route::post('/generateSeats' ,function(){
     if(request()->password == "mzudsw"){
         App\Models\Seat::truncate();
-        $rooms = Room::all();
+        \App\Models\SeatRemark::truncate();
+
+        // Hostel::
+        // $hostels = App\Models\Hostel::whereIn('name',startUp())->orderBy('gender')->orderBy('name')->get();
+        $hostels = Hostel::all();
+        $rooms = Room::whereIn('hostel_id',$hostels->pluck('id'))->get();
+        Seat::whereIn('room_id',$rooms->pluck('id'))->delete();
+        // $rooms = Room::all();
 
         foreach($rooms as $r){
             for($i=0; $i < $r->capacity ; $i++){
@@ -119,11 +131,15 @@ Route::get('/massAllot',function(){
 });
 Route::post('/massAllot',function(){
     if(request()->password == "mzudsw"){
+
         App\Models\Person::truncate();
         App\Models\Student::truncate();
         App\Models\AllotHostel::truncate();
         App\Models\AllotSeat::truncate();
-        foreach(App\Models\Hostel::all() as $hostel){
+
+        // $hostels = App\Models\Hostel::whereIn('name',startUp())->orderBy('gender')->orderBy('name')->get();
+        $hostels = Hostel::all();
+        foreach($hostels as $hostel){
             $list_of_hostellers = DB::table($hostel->name)
                 ->select('*')
                 ->where('name','<>','')
