@@ -1,1 +1,5 @@
 @import "tailwindcss";
+
+:first-child:is(th, td):has(.dropdown.show) {
+    z-index: 2;
+}
