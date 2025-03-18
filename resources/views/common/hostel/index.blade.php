@@ -6,8 +6,7 @@
             </x-slot>
             @if (count($hostels) > 0)
                 <div style="width: 100%; overflow-x: auto; ;">
-                    <table class="table table-hover table-striped"
-                        style="overflow-x: auto; overflow: hidden; width: 300px">
+                    <table class="table table-hover table-striped">
                         <thead>
                             <tr>
                                 <th>Hostel name</th>
