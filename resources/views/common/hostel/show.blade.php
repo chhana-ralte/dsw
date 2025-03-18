@@ -2,35 +2,10 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                {{ $hostel->name }} Hall of Residence
-            </x-slot>
-            Summary
-            <table class="table table-hover table-striped">
-                <tr>
-                    <td>Total number of rooms</td>
-                    <td>{{ $rooms->count() }}</td>
-                </tr>
-                <td>Total seats available for allocation</td>
-                <td>{{ $seats->sum('available') }}</td>
-                </tr>
-                <td>Total number of students allotted</td>
-                <td>{{ $allotted_seats->count() }}</td>
-                </tr>
-                <td>Total number of seats vacant</td>
-                <td>{{ $seats->sum('available') - $allotted_seats->count() }}</td>
-                </tr>
-                <td>No. of students who are not allotted seat/room</td>
-                <td>{{ $unallotted_seats->count() }}</td>
-                </tr>
-            </table>
-        </x-block>
-
-        <x-block>
-            <x-slot name="heading">
                 Menu
             </x-slot>
 
-            <section id="Menu">
+            {{-- <section id="Menu">
                 <div class="container">
                     <div class="mb-4 row">
                         <a class="col-sm-3 bg-primary" href="/hostel/{{ $hostel->id }}/room">
@@ -66,7 +41,52 @@
                         </a>
                     </div>
                 </div>
-            </section>
+            </section> --}}
         </x-block>
+        <x-block>
+            <x-slot name="heading">
+                {{ $hostel->name }} Hall of Residence
+            </x-slot>
+            Summary
+            <table class="table table-hover table-striped">
+                <tbody>
+                    <tr>
+                        <td>Total number of rooms</td>
+                        <td>{{ $seats->count() }}</td>
+                        <td>
+                            <a href="/hostel/{{ $hostel->id }}/room" type="button" class="btn btn-primary btn-sm">
+                                view
+                            </a>
+                        </td>
+                    </tr>
+                    <td>Total seats available for allocation</td>
+                    <td>{{ $unallotted_seats->count() }}</td>
+                    <td>
+                        <a href="/hostel/{{ $hostel->id }}/room?status=vacant" type="button"
+                            class="btn btn-primary btn-sm">
+                            view
+                        </a>
+                    </td>
+                    </tr>
+                    <td>Total number of students allotted</td>
+                    <td>{{ $allotted_seats->count() }}</td>
+                    <td>
+                        <a href="/hostel/{{ $hostel->id }}/room?status=non-available" type="button"
+                            class="btn btn-primary btn-sm">
+                            view
+                        </a>
+                    </td>
+                    </tr>
+                    {{-- <td>Total number of seats vacant</td>
+                    <td>{{ $seats->sum('available') - $allotted_seats->count() }}</td>
+                    </tr> --}}
+                    <td>No. of students who are not allotted seat/room</td>
+                    <td>{{ $unallotted_seats->count() }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </x-block>
+
+
     </x-container>
 </x-layout>

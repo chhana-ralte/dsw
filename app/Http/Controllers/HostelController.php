@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Hostel;
@@ -15,7 +16,7 @@ class HostelController extends Controller
     public function index()
     {
         $hostels = Hostel::orderBy('gender')->orderBy('name')->get();
-        return view('common.hostel.index',['hostels' => $hostels]);
+        return view('common.hostel.index', ['hostels' => $hostels]);
     }
 
     public function create()
@@ -32,11 +33,13 @@ class HostelController extends Controller
     public function show(string $id)
     {
         $hostel = Hostel::findOrFail($id);
-        $rooms = Room::where('hostel_id',$hostel->id)->get();
-        $seats = Seat::whereIn('room_id',$rooms->pluck('id'))->get();
-        $allotted_seats = AllotSeat::whereIn('seat_id',$seats->pluck('id'))->get();
-        $unallotted_seats = AllotHostel::where('hostel_id',$hostel->id)->whereNotIn('id',$allotted_seats->pluck('allot_hostel_id'))->get();
-        
+        $rooms = Room::where('hostel_id', $hostel->id)->get();
+        $seats = Seat::whereIn('room_id', $rooms->pluck('id'))->get();
+        $allotted_seats = AllotSeat::whereIn('seat_id', $seats->pluck('id'))->get();
+        // $unallotted_seats = AllotHostel::where('hostel_id', $hostel->id)->whereNotIn('id', $allotted_seats->pluck('allot_hostel_id'))->get();
+        $unallotted_seats = Seat::whereIn('room_id', $rooms->pluck('id'))
+            ->whereNotIn('id', $allotted_seats->pluck('seat_id'))->get();
+
         $data = [
             'hostel' => $hostel,
             'rooms' => $rooms,
@@ -44,7 +47,7 @@ class HostelController extends Controller
             'allotted_seats' => $allotted_seats,
             'unallotted_seats' => $unallotted_seats
         ];
-        return view('common.hostel.show',$data);
+        return view('common.hostel.show', $data);
     }
 
     /**
@@ -71,25 +74,25 @@ class HostelController extends Controller
         //
     }
 
-    public function occupants(Hostel $hostel){
-        $room_ids = Room::where('hostel_id',$hostel->id)->pluck('id');
-        $seat_ids = Seat::whereIn('room_id',$room_ids)->pluck('id');
-        $allot_seats = AllotSeat::WhereIn('seat_id',$seat_ids)->where('valid',1)
+    public function occupants(Hostel $hostel)
+    {
+        $room_ids = Room::where('hostel_id', $hostel->id)->pluck('id');
+        $seat_ids = Seat::whereIn('room_id', $room_ids)->pluck('id');
+        $allot_seats = AllotSeat::WhereIn('seat_id', $seat_ids)->where('valid', 1)
             ->orderBy('seat_id')
             ->get();
-        
-        $allot_hostels = AllotHostel::where('hostel_id',$hostel->id)
-            ->whereNotIn('id',$allot_seats->pluck('allot_hostel_id'))
+
+        $allot_hostels = AllotHostel::where('hostel_id', $hostel->id)
+            ->whereNotIn('id', $allot_seats->pluck('allot_hostel_id'))
             ->get();
-        
-        if(!isset($_GET['allot_seats']) || $_GET['allot_seats'] == 0){
+
+        if (!isset($_GET['allot_seats']) || $_GET['allot_seats'] == 0) {
             $data = [
                 'hostel' => $hostel,
                 'allot_hostels' => $allot_hostels,
                 'allot_seats' => false
             ];
-        }
-        else{
+        } else {
             $data = [
                 'hostel' => $hostel,
                 'allot_seats' => $allot_seats,
@@ -97,6 +100,6 @@ class HostelController extends Controller
             ];
         }
         //return $data;
-        return view('common.hostel.occupants',$data);
+        return view('common.hostel.occupants', $data);
     }
 }
