@@ -15,10 +15,7 @@ use App\Http\Controllers\AllotSeatController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 
-Route::get('/', function () {
-    return "Hello";
-    return View('welcome');
-});
+Route::get('/', [HostelController::class, 'index']);
 Route::get('/h', function () {
     $hostel = Hostel::where('name', $_GET['hostel'])->first();
     return $hostel->vacant();
