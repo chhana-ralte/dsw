@@ -1,11 +1,11 @@
 <x-layout>
     <x-container>
-        <x-block>
+        {{-- <x-block>
             <x-slot name="heading">
                 Menu
             </x-slot>
 
-            {{-- <section id="Menu">
+            <section id="Menu">
                 <div class="container">
                     <div class="mb-4 row">
                         <a class="col-sm-3 bg-primary" href="/hostel/{{ $hostel->id }}/room">
@@ -41,8 +41,8 @@
                         </a>
                     </div>
                 </div>
-            </section> --}}
-        </x-block>
+            </section>
+        </x-block> --}}
         <x-block>
             <x-slot name="heading">
                 {{ $hostel->name }} Hall of Residence
@@ -82,6 +82,7 @@
                     </tr> --}}
                     <td>No. of students who are not allotted seat/room</td>
                     <td>{{ $unallotted_seats->count() }}</td>
+                    <td></td>
                     </tr>
                 </tbody>
             </table>
