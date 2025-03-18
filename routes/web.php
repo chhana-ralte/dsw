@@ -13,16 +13,14 @@ use App\Http\Controllers\AllotHostelController;
 use App\Http\Controllers\AllotSeatController;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\View;
 
-Route::get('/', function () {
-    return "Hello";
-    return view('welcome');
-});
-Route::get('/h', function(){
-    $hostel = Hostel::where('name',$_GET['hostel'])->first();
+Route::get('/', [HostelController::class, 'index']);
+Route::get('/h', function () {
+    $hostel = Hostel::where('name', $_GET['hostel'])->first();
     return $hostel->vacant();
 });
-Route::get('/hostel/{hostel}/occupants',[HostelController::class,'occupants']);
+Route::get('/hostel/{hostel}/occupants', [HostelController::class, 'occupants']);
 Route::resource('hostel', HostelController::class);
 Route::resource('hostel.room', RoomController::class)->shallow();
 Route::resource('room.seat', SeatController::class)->shallow();
@@ -41,14 +39,13 @@ Route::post('/seat/{id}/remark', [SeatController::class, 'remarkStore']);
 Route::delete('/room/remark/{id}', [RoomController::class, 'remarkDelete']);
 
 
-Route::controller(App\Http\Controllers\AjaxController::class)->group(function(){
-    Route::get('/ajaxroom/{id}/seat','getSeats');
-    Route::get('/ajax/hostel/{id}/allot_hostel','getAllotHostels');
-    Route::get('/ajax/get_available_seats','get_available_seats');
-    Route::get('/ajax/get_all_seats','get_all_seats');
-    Route::post('/ajax/allot_seat_store','allotSeatStore');
-    Route::post('/ajax/seat/{id}/deallocate','deallocateSeat');
-
+Route::controller(App\Http\Controllers\AjaxController::class)->group(function () {
+    Route::get('/ajaxroom/{id}/seat', 'getSeats');
+    Route::get('/ajax/hostel/{id}/allot_hostel', 'getAllotHostels');
+    Route::get('/ajax/get_available_seats', 'get_available_seats');
+    Route::get('/ajax/get_all_seats', 'get_all_seats');
+    Route::post('/ajax/allot_seat_store', 'allotSeatStore');
+    Route::post('/ajax/seat/{id}/deallocate', 'deallocateSeat');
 });
 
 
@@ -58,28 +55,29 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function(){
 
 
 
-Route::get('/generateRooms' ,function(){
+Route::get('/generateRooms', function () {
     return view('generateRooms');
 });
-function startUp(){
+function startUp()
+{
     $hostels = ['thorang'];
     return $hostels;
 }
-Route::post('/generateRooms' ,function(){
-    if(request()->password == "mzudsw"){
+Route::post('/generateRooms', function () {
+    if (request()->password == "mzudsw") {
         App\Models\Room::truncate();
         \App\Models\RoomRemark::truncate();
         $hostels = App\Models\Hostel::orderBy('gender')->orderBy('name')->get();
         // $hostels = App\Models\Hostel::whereIn('name',startUp())->orderBy('gender')->orderBy('name')->get();
-        foreach($hostels as $ht){
+        foreach ($hostels as $ht) {
             $rooms = DB::table($ht->name)
-                ->select('Roomno','Type')
-                ->where('Roomno','<>','')
+                ->select('Roomno', 'Type')
+                ->where('Roomno', '<>', '')
                 ->orderBy('Roomno')
-                ->groupBy('Roomno','Type')
+                ->groupBy('Roomno', 'Type')
                 ->get();
-                //return $rooms;
-            foreach($rooms as $r){
+            //return $rooms;
+            foreach ($rooms as $r) {
                 $capacity = ($r->Type == 'Single' ? '1' : ($r->Type == 'Double' ? 2 : 3));
                 App\Models\Room::create([
                     'hostel_id' => $ht->id,
@@ -92,33 +90,32 @@ Route::post('/generateRooms' ,function(){
             //exit();
         }
         return "Room Generation Done";
-    }
-    else{
+    } else {
         return redirect('/generateRooms')->with(['message' => ['type' => 'info', 'text' => 'Incorrect Password']]);
     }
 });
 
-Route::get('/generateSeats', function(){
+Route::get('/generateSeats', function () {
     return view('generateSeats');
 });
 
-Route::post('/generateSeats' ,function(){
-    if(request()->password == "mzudsw"){
+Route::post('/generateSeats', function () {
+    if (request()->password == "mzudsw") {
         App\Models\Seat::truncate();
         \App\Models\SeatRemark::truncate();
 
         // Hostel::
         // $hostels = App\Models\Hostel::whereIn('name',startUp())->orderBy('gender')->orderBy('name')->get();
         $hostels = Hostel::all();
-        $rooms = Room::whereIn('hostel_id',$hostels->pluck('id'))->get();
-        Seat::whereIn('room_id',$rooms->pluck('id'))->delete();
+        $rooms = Room::whereIn('hostel_id', $hostels->pluck('id'))->get();
+        Seat::whereIn('room_id', $rooms->pluck('id'))->delete();
         // $rooms = Room::all();
 
-        foreach($rooms as $r){
-            for($i=0; $i < $r->capacity ; $i++){
+        foreach ($rooms as $r) {
+            for ($i = 0; $i < $r->capacity; $i++) {
                 Seat::create([
                     'room_id' => $r->id,
-                    'serial' => $i+1
+                    'serial' => $i + 1
                 ]);
             }
         }
@@ -126,11 +123,11 @@ Route::post('/generateSeats' ,function(){
     }
 });
 
-Route::get('/massAllot',function(){
+Route::get('/massAllot', function () {
     return view('massAllot');
 });
-Route::post('/massAllot',function(){
-    if(request()->password == "mzudsw"){
+Route::post('/massAllot', function () {
+    if (request()->password == "mzudsw") {
 
         App\Models\Person::truncate();
         App\Models\Student::truncate();
@@ -139,13 +136,13 @@ Route::post('/massAllot',function(){
 
         // $hostels = App\Models\Hostel::whereIn('name',startUp())->orderBy('gender')->orderBy('name')->get();
         $hostels = Hostel::all();
-        foreach($hostels as $hostel){
+        foreach ($hostels as $hostel) {
             $list_of_hostellers = DB::table($hostel->name)
                 ->select('*')
-                ->where('name','<>','')
+                ->where('name', '<>', '')
                 ->get();
 
-            foreach($list_of_hostellers as $l){
+            foreach ($list_of_hostellers as $l) {
                 $person = App\Models\Person::create([
                     'name' => $l->Name,
                     'state' => $l->State,
@@ -153,15 +150,15 @@ Route::post('/massAllot',function(){
                     'address' => $l->State,
                 ]);
 
-                if($l->Course != '' || $l->Department != ''){
+                if ($l->Course != '' || $l->Department != '') {
                     $student = App\Models\Student::create([
                         'person_id' => $person->id,
                         'course' => $l->Course,
                         'department' => $l->Department,
                         'mzuid' => $l->MZU_id
-                    ]);    
+                    ]);
                 }
-                
+
                 $allot_hostel = App\Models\AllotHostel::create([
                     'person_id' => $person->id,
                     'hostel_id' => $hostel->id,
@@ -170,16 +167,16 @@ Route::post('/massAllot',function(){
                     'valid' => 1
                 ]);
 
-                $room = Room::where('roomno',$l->Roomno)
-                    ->where('hostel_id',$hostel->id)
+                $room = Room::where('roomno', $l->Roomno)
+                    ->where('hostel_id', $hostel->id)
                     ->first();
 
-                $seats = Seat::where('room_id',$room->id)->orderBy('serial')->get();
-                
-                foreach($seats as $s){
-                    if(App\Models\AllotSeat::where('seat_id',$s->id)->exists())
+                $seats = Seat::where('room_id', $room->id)->orderBy('serial')->get();
+
+                foreach ($seats as $s) {
+                    if (App\Models\AllotSeat::where('seat_id', $s->id)->exists())
                         continue;
-                    else{
+                    else {
                         App\Models\AllotSeat::create([
                             'allot_hostel_id' => $allot_hostel->id,
                             'seat_id' => $s->id,
@@ -206,4 +203,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
