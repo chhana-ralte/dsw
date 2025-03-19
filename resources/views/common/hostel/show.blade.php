@@ -1,6 +1,6 @@
 <x-layout>
     <x-container>
-        {{-- <x-block>
+        <x-block>
             <x-slot name="heading">
                 Menu
             </x-slot>
@@ -42,7 +42,7 @@
                     </div>
                 </div>
             </section>
-        </x-block> --}}
+        </x-block>
         <x-block>
             <x-slot name="heading">
                 {{ $hostel->name }} Hall of Residence
@@ -51,7 +51,7 @@
             <table class="table table-hover table-striped">
                 <tbody>
                     <tr>
-                        <td>Total number of rooms</td>
+                        <td>Total number of seats</td>
                         <td>{{ $seats->count() }}</td>
                         <td>
                             <a href="/hostel/{{ $hostel->id }}/room" type="button" class="btn btn-primary btn-sm">

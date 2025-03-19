@@ -58,7 +58,17 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <?php 
+                                    $capacity = 0;
+                                    $available = 0;
+                                    $filled = 0;
+                                ?>
                                 @foreach ($rooms as $r)
+                                    <?php 
+                                        $capacity += $r->capacity;
+                                        $available += $r->available;
+                                        $filled += $r->filled()->count();
+                                    ?>
                                     @if ($r->capacity == $r->available)
                                         <tr class="table-default">
                                         @else
@@ -97,6 +107,14 @@
                                     </td>
                                     </tr>
                                 @endforeach
+                                <tr>
+                                    <th>Total</th>
+                                    <th>{{ $capacity }}</th>
+                                    <th>{{ $available }}</th>
+                                    <th>{{ $filled }}</th>
+                                    <th>{{ $available - $filled }}</th>
+                                    </th>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

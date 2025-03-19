@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>MZU IT Department</title>
+    <title>MZU Hostels</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -11,12 +11,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5.css">
     <script src="https://cdn.ckeditor.com/4.24.0-lts/standard/ckeditor.js"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-@vite(['resources/css/app.css', 'resources/js/app.js'])
+
 
 <body>
 
-    <br>
+<br>
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Dean Students' Welfare</a>
@@ -64,7 +65,7 @@
                     </div>
                 @else
                     <a class="btn btn-outline-secondary" type="button" href="/login">Login</a>
-                    @endif
+                @endif
                 </div>
             </div>
         </nav>
@@ -76,8 +77,6 @@
             {{ $slot }}
         </div>
 
-
-
     </body>
 
-    </html>
+</html>

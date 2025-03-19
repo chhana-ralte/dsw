@@ -32,6 +32,9 @@ Route::post('/allot_hostel/{id}/allotSeat', [AllotSeatController::class, 'allotS
 Route::get('/seat/{id}/allotSeat', [SeatController::class, 'allotSeat']);
 Route::post('/seat/{id}/allotSeat', [SeatController::class, 'allotSeatStore']);
 
+Route::post('/room/{id}/unavailable', [RoomController::class, 'unavailable']);
+Route::get('/room/{id}/editseatavailability', [RoomController::class, 'editseatavailability']);
+Route::post('/room/{id}/editseatavailability', [RoomController::class, 'updateseatavailability']);
 Route::get('/room/{id}/remark', [RoomController::class, 'remark']);
 Route::post('/room/{id}/remark', [RoomController::class, 'remarkStore']);
 Route::get('/seat/{id}/remark', [SeatController::class, 'remark']);
@@ -70,21 +73,21 @@ Route::post('/generateRooms', function () {
         $hostels = App\Models\Hostel::orderBy('gender')->orderBy('name')->get();
         // $hostels = App\Models\Hostel::whereIn('name',startUp())->orderBy('gender')->orderBy('name')->get();
         foreach ($hostels as $ht) {
-            $rooms = DB::table($ht->name)
-                ->select('Roomno', 'Type')
+            $rooms = DB::table('dump')
+                ->select('Roomno', 'Capacity','Type')
+                ->where('Hostel', $ht->name)
                 ->where('Roomno', '<>', '')
                 ->orderBy('Roomno')
-                ->groupBy('Roomno', 'Type')
+                ->groupBy('Roomno', 'Capacity','Type')
                 ->get();
             //return $rooms;
             foreach ($rooms as $r) {
-                $capacity = ($r->Type == 'Single' ? '1' : ($r->Type == 'Double' ? 2 : 3));
                 App\Models\Room::create([
                     'hostel_id' => $ht->id,
                     'roomno' => $r->Roomno,
-                    'capacity' => $capacity,
-                    'available' => $capacity,
-                    'type' => $r->Type
+                    'capacity' => $r->Capacity,
+                    'available' => $r->Capacity,
+                    'type' => $r->Type,
                 ]);
             }
             //exit();
@@ -102,15 +105,11 @@ Route::get('/generateSeats', function () {
 Route::post('/generateSeats', function () {
     if (request()->password == "mzudsw") {
         App\Models\Seat::truncate();
-        \App\Models\SeatRemark::truncate();
+        App\Models\SeatRemark::truncate();
 
-        // Hostel::
-        // $hostels = App\Models\Hostel::whereIn('name',startUp())->orderBy('gender')->orderBy('name')->get();
-        $hostels = Hostel::all();
-        $rooms = Room::whereIn('hostel_id', $hostels->pluck('id'))->get();
-        Seat::whereIn('room_id', $rooms->pluck('id'))->delete();
-        // $rooms = Room::all();
-
+        // $hostels = Hostel::all();
+        $rooms = Room::all();
+        
         foreach ($rooms as $r) {
             for ($i = 0; $i < $r->capacity; $i++) {
                 Seat::create([
@@ -137,8 +136,9 @@ Route::post('/massAllot', function () {
         // $hostels = App\Models\Hostel::whereIn('name',startUp())->orderBy('gender')->orderBy('name')->get();
         $hostels = Hostel::all();
         foreach ($hostels as $hostel) {
-            $list_of_hostellers = DB::table($hostel->name)
+            $list_of_hostellers = DB::table('dump')
                 ->select('*')
+                ->where('Hostel', $hostel->name)
                 ->where('name', '<>', '')
                 ->get();
 

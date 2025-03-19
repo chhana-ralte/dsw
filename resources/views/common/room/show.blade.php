@@ -55,7 +55,12 @@
                                         @endif
                                     @endforeach
                                 @else
-                                    <td colspan="4">Seat Vacant</td>
+                                    <td colspan="4">
+                                        Seat Vacant
+                                        @if($s->available < 1)
+                                            (Unavailable)
+                                        @endif
+                                    </td>
                                 @endif
                                 <td>
                                     <div class="dropdown">
@@ -64,13 +69,16 @@
                                             ...
                                         </a>
                                         <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item"
+                                                href="/seat/{{ $s->id }}">View Seat</a>
+                                            </li>
                                             @if (count($s->valid_allot_seats()) > 0)
                                                 <li><a class="dropdown-item"
                                                         href="/seat/{{ $s->id }}/allotSeat">Allot another</a>
                                                 </li>
                                                 <li><a class="dropdown-item deallocate" href="#"
                                                         id="{{ $s->id }}">Deallocate</a></li>
-                                            @else
+                                            @elseif($s->available != 0)
                                                 <li><a class="dropdown-item"
                                                         href="/seat/{{ $s->id }}/allotSeat">Allot</a></li>
                                             @endif

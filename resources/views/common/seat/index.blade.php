@@ -6,6 +6,7 @@
                 <p>
                     <a class="btn btn-secondary btn-sm" href="/room/{{ $room->id }}">back</a>
                     <a class="btn btn-secondary btn-sm" href="/room/{{ $room->id }}/seat/create">Create new seat</a>
+                    <a class="btn btn-secondary btn-sm" href="/room/{{ $room->id }}/editseatavailability">Edit availability</a>
                 </p>
             </x-slot>
             <table class="table table-hover table-auto table-striped">
