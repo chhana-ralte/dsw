@@ -11,6 +11,7 @@ use App\Http\Controllers\RoomController;
 use App\Http\Controllers\SeatController;
 use App\Http\Controllers\AllotHostelController;
 use App\Http\Controllers\AllotSeatController;
+use App\Http\Controllers\UserController;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
@@ -20,11 +21,18 @@ Route::get('/h', function () {
     $hostel = Hostel::where('name', $_GET['hostel'])->first();
     return $hostel->vacant();
 });
+
+Route::get('/login', [UserController::class, 'login']);
+Route::post('/login', [UserController::class, 'logincheck']);
+Route::get('/user/changePassword', [UserController::class, 'changePassword']);
+Route::post('/user/changePassword', [UserController::class, 'changePasswordStore']);
+Route::post('/logout', [UserController::class, 'logout']);
 Route::get('/hostel/{hostel}/occupants', [HostelController::class, 'occupants']);
 Route::resource('hostel', HostelController::class);
 Route::resource('hostel.room', RoomController::class)->shallow();
 Route::resource('room.seat', SeatController::class)->shallow();
 Route::resource('allot_hostel', AllotHostelController::class);
+Route::resource('user', UserController::class);
 
 Route::get('/allot_hostel/{id}/allotSeat', [AllotSeatController::class, 'allotSeat']);
 Route::post('/allot_hostel/{id}/allotSeat', [AllotSeatController::class, 'allotSeatStore']);
@@ -47,6 +55,7 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::get('/ajax/hostel/{id}/allot_hostel', 'getAllotHostels');
     Route::get('/ajax/get_available_seats', 'get_available_seats');
     Route::get('/ajax/get_all_seats', 'get_all_seats');
+    Route::get('/ajax/get_role/{id}', 'get_role');
     Route::post('/ajax/allot_seat_store', 'allotSeatStore');
     Route::post('/ajax/seat/{id}/deallocate', 'deallocateSeat');
 });
@@ -203,4 +212,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__ . '/auth.php';
+// require __DIR__ . '/auth.php';

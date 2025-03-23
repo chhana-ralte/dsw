@@ -11,6 +11,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5.css">
     <script src="https://cdn.ckeditor.com/4.24.0-lts/standard/ckeditor.js"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 
@@ -35,25 +36,16 @@
                                 <a class="nav-link" href="/department/{{ auth()->user()->department_id }}">My Department</a>
                             </li>
                         @endif
-                        @if(auth()->user()->hasRole('Warden'))
-                            @foreach(auth()->user()->user_roles() as $role_user)
-                                @if($role_user->type == 'hostel')
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="/hostel/{{ $role_user->foreign_id }}/">{{ $role_user->hostel()->name }}</a>
-                                    </li>
-                                @endif
-                            @endforeach    
-                        @endif
+
                         @if (auth()->user()->teacher_id)
                             <li class="nav-item">
                                 <a class="nav-link" href="/user/{{ auth()->user()->id }}/attmaster">Attendance</a>
                             </li>
                         @endif
-                        @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('DSW'))
-                            <li class="nav-item">
-                                <a class="nav-link" href="/user">Users</a>
-                            </li>
-                        @endif
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/sessn">Sessions</a>
+                        </li>
 
                     @endauth
                 </ul>

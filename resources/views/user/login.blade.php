@@ -18,7 +18,7 @@
                 <Label>Username</label>
               </div>
               <div class="col-md-8">
-                <input class="form-control" type="text" name="username" required>
+                <input class="form-control" type="text" name="username" value="{{ old('username') }}" required>
               </div>
             </div>
             <div class="form-group row pt-2">

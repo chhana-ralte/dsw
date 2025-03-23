@@ -1,6 +1,6 @@
 <x-layout>
     <x-container>
-        @if($allot_seats)
+        @if(isset($seats))
         <x-block>
             <x-slot name="heading">
                 Residents of {{ $hostel->name }} Hall of Residence
@@ -20,19 +20,23 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($allot_seats as $as)
+                    @foreach($seats as $seat)
                         <tr class="table-white">
-                        <td>{{ $as->seat->room->roomno }}/{{ $as->seat->serial }}</td>
-
-                        <td><a href='/allot_hostel/{{ $as->allot_hostel->id }}'>{{ $as->allot_hostel->person->name }}</a></td>
-                        @if($as->allot_hostel->person->student())
-                            <td>{{ $as->allot_hostel->person->student()->course }}</td>
-                            <td>{{ $as->allot_hostel->person->student()->department }}</td>
-                            <td>{{ $as->allot_hostel->person->student()->mzuid }}</td>
+                        <td>{{ $seat->room->roomno }}/{{ $seat->serial }}</td>
+                        @if($seat->valid_allot_seats()->count() > 0)
+                            <td><a href='/allot_hostel/{{ $seat->valid_allot_seat()->allot_hostel->id }}'>{{ $seat->valid_allot_seat()->allot_hostel->person->name }}</a></td>
+                            @if($seat->valid_allot_seat()->allot_hostel->person->student())
+                                <td>{{ $seat->valid_allot_seat()->allot_hostel->person->student()->course }}</td>
+                                <td>{{ $seat->valid_allot_seat()->allot_hostel->person->student()->department }}</td>
+                                <td>{{ $seat->valid_allot_seat()->allot_hostel->person->student()->mzuid }}</td>
+                            @else
+                                <td colspan=3>Not a student</td>
+                            @endif
+                        @elseif($seat->available < 1)
+                            <td colspan=4>Seat is unavailable for allotment</td>
                         @else
-                            <td colspan=3>Not a student</td>
+                            <td colspan=4>Seat is vacant</td>
                         @endif
-                        
                     </tr>
                     @endforeach
                     </tbody>

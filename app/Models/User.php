@@ -36,24 +36,6 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    public function department(){
-        if($this->department_id){
-            return Department::find($this->department_id);
-        }
-        else{
-            return false;
-        }
-    }
-
-    public function teacher(){
-        if($this->teacher_id){
-            return Teacher::find($this->teacher_id);
-        }
-        else{
-            return false;
-        }
-    }
-
     protected function casts(): array
     {
         return [
@@ -66,11 +48,29 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
-    public function hasRole($strrole):bool
+    public function user_roles(){
+        return Role_User::where('user_id',$this->id)->get();
+    }
+    public function isWarden($hostel_id){
+        return Role_User::where('user_id',$this->id)->where('type','hostel')->where('foreign_id',$hostel_id)->exists();
+    }
+
+    public function hasRole($strrole)
     {
-        $role = Role::where('role',$strrole)->first();
+        $str = $strrole == 'Admin'?'Admin':($strrole=='DSW'?'DSW':'Warden');
+        // return $str;
+        $role = Role::where('role',$str)->first();
+        // $role = Role::first();
+        // return $role->role;
         return Role_User::where('user_id',$this->id)->where('role_id',$role->id)->exists();
-        //return User::where('role', $role->role)->get();
+        
+    }
+
+    public function hasWardenRole($hostel_id){
+        // return $hostel_id;
+        $role = Role::where('role','Warden')->first();
+        // return $role;
+        return Role_User::where('user_id',$this->id)->where('role_id',$role->id)->where('type','hostel')->where('foreign_id',$hostel_id)->exists();
     }
 
     public function attmasters(){

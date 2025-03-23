@@ -11,9 +11,12 @@ class AjaxController extends Controller
         $seats = \App\Models\Seat::where('room_id',$room_id)->orderBy('serial')->get();
         return $seats;
     }
+    
+    public function get_role($id){
+        return \App\Models\Role::find($id);
+    }
 
     public function allotSeatStore(){
-        
         \App\Models\AllotSeat::where('seat_id',request()->seat_id)
             ->where('valid',1)
             ->update([
@@ -84,7 +87,7 @@ class AjaxController extends Controller
         //return $seat_ids;
         $occupied_seat_ids = \App\Models\AllotSeat::whereIn('seat_id',$seat_ids)->where('valid',1)->pluck('seat_id');
         
-        $available_seat_ids = \App\Models\Seat::whereIn('room_id',$room_ids)->whereNotIn('id',$occupied_seat_ids)->pluck('id');
+        $available_seat_ids = \App\Models\Seat::where('available','<>',0)->whereIn('room_id',$room_ids)->whereNotIn('id',$occupied_seat_ids)->pluck('id');
         //return $available_seat_ids;
         $seats = DB::table('seats')->join('rooms','seats.room_id','rooms.id')
             ->select('seats.id','rooms.roomno','rooms.id as room_id','seats.serial')

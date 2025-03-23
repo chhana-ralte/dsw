@@ -51,16 +51,25 @@
             <table class="table table-hover table-striped">
                 <tbody>
                     <tr>
-                        <td>Total number of seats</td>
-                        <td>{{ $seats->count() }}</td>
+                        <td>Total number of rooms</td>
+                        <td>{{ $no_rooms }}</td>
                         <td>
                             <a href="/hostel/{{ $hostel->id }}/room" type="button" class="btn btn-primary btn-sm">
                                 view
                             </a>
                         </td>
                     </tr>
-                    <td>Total seats available for allocation</td>
-                    <td>{{ $unallotted_seats->count() }}</td>
+                    <tr>
+                        <td>Total number of seats</td>
+                        <td>{{ $no_seats }}</td>
+                        <td>
+                            <a href="/hostel/{{ $hostel->id }}/room" type="button" class="btn btn-primary btn-sm">
+                                view
+                            </a>
+                        </td>
+                    </tr>
+                    <td>Total seats available for allotment</td>
+                    <td>{{ $no_available_seats }}</td>
                     <td>
                         <a href="/hostel/{{ $hostel->id }}/room?status=vacant" type="button"
                             class="btn btn-primary btn-sm">
@@ -69,7 +78,7 @@
                     </td>
                     </tr>
                     <td>Total number of students allotted</td>
-                    <td>{{ $allotted_seats->count() }}</td>
+                    <td>{{ $no_allotted_seats }}</td>
                     <td>
                         <a href="/hostel/{{ $hostel->id }}/room?status=non-available" type="button"
                             class="btn btn-primary btn-sm">
@@ -78,10 +87,10 @@
                     </td>
                     </tr>
                     {{-- <td>Total number of seats vacant</td>
-                    <td>{{ $seats->sum('available') - $allotted_seats->count() }}</td>
+                    <td>{{ no_vacant_seats }}</td>
                     </tr> --}}
                     <td>No. of students who are not allotted seat/room</td>
-                    <td>{{ $unallotted_seats->count() }}</td>
+                    <td>{{ $no_unallotted }}</td>
                     <td></td>
                     </tr>
                 </tbody>

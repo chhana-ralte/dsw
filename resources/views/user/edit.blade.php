@@ -7,9 +7,7 @@
             <form method="post" action="/user/{{$user->id}}" class="pt-2">
                 @csrf
                 @method('patch')
-                <input type="hidden" id="department_user" value="{{ $user->hasRole('Department')?'true':'false' }}">
-                <input type="hidden" id="teacher_user" value="{{ $user->hasRole('Teacher')?'true':'false' }}">
-
+                <input type='hidden' name='warden' value='{{ $user->hasRole("Warden")?"true":"false" }}'>
                 <div class="form-group row pt-2">
                     <div class="col-md-3">
                         <label for="name">Name</label>
@@ -42,40 +40,27 @@
                         Roles
                     </div>
                     <div class="col-md-4">
-                        @foreach(\App\Models\Role::all() as $rl)
-                            <input type="checkbox" id="{{ $rl->id }}" name="roles[]" value="{{ $rl->id }}" {{$user->hasRole($rl->role)?' checked ':''}}>
-                            <label for="{{ $rl->id }}">{{ $rl->role}}</label><br>
+                        @foreach($roles as $rl)
+                            <input type="checkbox" id="role_{{ $rl->id }}" name="roles[]" value="{{ $rl->id }}" {{ $user->hasRole("$rl->role")?' checked ':'' }}>
+                            <label for="role_{{ $rl->id }}">{{ $rl->role}}</label><br>
                         @endforeach
-
                     </div>
                 </div>
-                <div class="form-group row pt-2 department">
+
+                <div class="form-group row pt-2 hostel">
                     <div class="col-md-3">
-                        <label for="email">Department</label>
+                        <label for="hostel">Hostel</label>
                     </div>
                     <div class="col-md-4">
-                        <select name="department" class="form-control">
-                            <option value="0">Select Department</option>
-                            @foreach(\App\Models\Department::orderBy('name')->get() as $dept)
-                                <option value="{{ $dept->id }}" {{ $dept->id==$user->department_id?' selected ':''}}">{{ $dept->name }}</option>
-                            @endforeach
-                        </select>
+                        
+                        @foreach(\App\Models\Hostel::orderBy('name')->get() as $hostel)
+                            <input id="hostel_{{ $hostel->id }}" type="checkbox" name="hostel[]" value="{{ $hostel->id }}" {{ $user->hasWardenRole($hostel->id)?" checked ":""}}>
+                            <label for="hostel_{{ $hostel->id }}">{{ $hostel->name}}</label><br>
+                        @endforeach
+                        
                     </div>
                 </div>                
 
-                <div class="form-group row pt-2 teacher">
-                    <div class="col-md-3">
-                        <label for="teacher">Teacher</label>
-                    </div>
-                    <div class="col-md-4">
-                        <select class="form-control" name="teacher" id="teacher">
-                            <option value="0">Select Teacher</option>
-                            @foreach(\App\Models\Teacher::all() as $t)
-                                <option value="{{ $t->id }}" {{ $t->id==$user->teacher_id?' selected ':''}}>{{ $t->person->name . ' : ' . $t->department->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div> 
 
                 <div class="form-group row pt-2">
                     <div class="col-md-3">
@@ -89,6 +74,7 @@
         </x-block>
     </x-container>
 <script>
+
 $(document).ready(function(){
     $.ajaxSetup({
         headers : {
@@ -96,41 +82,57 @@ $(document).ready(function(){
         }
     });
 
-    if($("input#department_user").val()=="false"){
-        $("div.department").hide();
+    if($("input[name='warden']").val()=="false"){
+        $("div.hostel").hide();
     }
 
-    if($("input#teacher_user").val()=="false"){
-        $("div.teacher").hide();
-    }
-
-    $("input[type='checkbox']").click(function(){
+    $("input[name='roles[]']").click(function(){
+        // alert($(this).attr('name'));
         var checked = $(this).is(':checked');
-        $.ajax({
-            url : "/role/" + $(this).attr('id') + '?checked=' + checked,
-            type : "get",
-            success : function(data,status){
-                if(data.role == "Department"){
-                    if(data.checked == 'true'){
-                        $("div.department").show();
+        if(checked){
+            $.ajax({
+                url : "/ajax/get_role/" + $(this).val(),
+                type : "get",
+                success : function(data,status){
+                    if(data.role == 'Warden'){
+                        $("div.hostel").show();
                     }
-                    else{
-                        $("div.department").hide();
-                    }
+                },
+                error : function(){
+                    alert("Error occured");
                 }
-                else if(data.role == "Teacher"){
-                    if(data.checked == 'true'){
-                        $("div.teacher").show();
-                    }
-                    else{
-                        $("div.teacher").hide();
-                    }
-                }
-            },
-            error : function(){
-                alert("Error");
-            }
-        });
+            });
+        }
+        else{
+            $("div.hostel").hide();
+        }
+
+        
+        // $.ajax({
+        //     url : "/role/" + $(this).attr('id') + '?checked=' + checked,
+        //     type : "get",
+        //     success : function(data,status){
+        //         if(data.role == "Department"){
+        //             if(data.checked == 'true'){
+        //                 $("div.department").show();
+        //             }
+        //             else{
+        //                 $("div.department").hide();
+        //             }
+        //         }
+        //         else if(data.role == "Teacher"){
+        //             if(data.checked == 'true'){
+        //                 $("div.teacher").show();
+        //             }
+        //             else{
+        //                 $("div.teacher").hide();
+        //             }
+        //         }
+        //     },
+        //     error : function(){
+        //         alert("Error");
+        //     }
+        // });
     });
     $("button.btn-delete").click(function(){
         if(confirm('Are you sure you want to delete?')){

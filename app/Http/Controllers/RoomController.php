@@ -19,18 +19,27 @@ class RoomController extends Controller
         // $rooms = Room::where('hostel_id', $hostel->id)->orderBy('roomno');
         $rooms = $hostel->rooms();
         $seats = Seat::whereIn('room_id', $rooms->pluck('id'));
+        
         $allot_seats = AllotSeat::whereIn('seat_id', $seats->pluck('id'))->where('valid', 1);
+
         if (request('status') == 'vacant') {
             $rooms->whereHas('seats', function ($seats) use ($allot_seats) {
-                $seats->whereNotIn('id', $allot_seats->pluck('seat_id'));
-            });
-        }
-        if (request('status') == 'non-available') {
-            $rooms->whereHas('seats', function ($seats) use ($allot_seats) {
-                $seats->whereIn('id', $allot_seats->pluck('seat_id'));
+                $seats->where('available',1)
+                    ->whereNotIn('id', $allot_seats->pluck('seat_id'));
             });
         }
 
+        if (request('status') == 'non-available') {
+            $rooms->whereHas('seats', function ($seats){
+                $seats->where('available', 0);
+            });
+        }
+        // if (request('status') == 'non-available') {
+        //     $rooms->whereHas('seats', function ($seats) use ($allot_seats) {
+        //         $seats->whereIn('id', $allot_seats->pluck('seat_id'));
+        //     });
+        // }
+        // return $rooms->get();
         // $allotted_seats = Seat::whereIn('id', $allot_seats->pluck('seat_id'));
 
         // $vacant_seats = $seats->whereNotIn('id', $allotted_seats->pluck('id'));
@@ -69,8 +78,7 @@ class RoomController extends Controller
 
         $data = [
             'hostel' => $hostel,
-            'rooms' => $rooms->get(),
-            'status' => 'all'
+            'rooms' => $rooms->orderBy('roomno')->get()
         ];
 
         //return $seats->get();

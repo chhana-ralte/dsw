@@ -9,14 +9,16 @@
                         <a class="btn btn-secondary btn-sm" href="/hostel/{{ $room->hostel->id }}/room">Back</a>
 
                     </div>
-                    <div class="col-auto">
-                        <button class="btn btn-danger btn-sm delete">Delete</button>
-                    </div>
                 </div>
                 <div class="pl-3 mt-2">
-                    <a class="btn btn-secondary btn-sm" href="/room/{{ $room->id }}/edit">Edit</a>
-                    <a class="btn btn-secondary btn-sm" href="/room/{{ $room->id }}/remark">Remark</a>
-                    <a class="btn btn-secondary btn-sm" href="/room/{{ $room->id }}/seat">Seats</a>
+                    @auth
+                        @if(auth()->user()->isWarden($room->hostel->id))
+                            <a class="btn btn-secondary btn-sm" href="/room/{{ $room->id }}/edit">Edit</a>
+                            <a class="btn btn-secondary btn-sm" href="/room/{{ $room->id }}/remark">Remark</a>
+                            <a class="btn btn-secondary btn-sm" href="/room/{{ $room->id }}/seat">Seats</a>
+                            <button class="btn btn-danger btn-sm delete">Delete</button>
+                        @endif
+                    @endauth
                 </div>
                 </p>
             </x-slot>
@@ -36,7 +38,11 @@
                             <th>Course</th>
                             <th>Department</th>
                             <th>MZU ID</th>
-                            <th>Allot</th>
+                            @auth
+                                @if(auth()->user()->isWarden($room->hostel->id))
+                                    <th>Action</th>
+                                @endif
+                            @endauth
                         </tr>
                         @foreach ($seats as $s)
                             <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
@@ -62,29 +68,33 @@
                                         @endif
                                     </td>
                                 @endif
-                                <td>
-                                    <div class="dropdown">
-                                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                            ...
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item"
-                                                href="/seat/{{ $s->id }}">View Seat</a>
-                                            </li>
-                                            @if (count($s->valid_allot_seats()) > 0)
-                                                <li><a class="dropdown-item"
-                                                        href="/seat/{{ $s->id }}/allotSeat">Allot another</a>
-                                                </li>
-                                                <li><a class="dropdown-item deallocate" href="#"
-                                                        id="{{ $s->id }}">Deallocate</a></li>
-                                            @elseif($s->available != 0)
-                                                <li><a class="dropdown-item"
-                                                        href="/seat/{{ $s->id }}/allotSeat">Allot</a></li>
-                                            @endif
-                                        </ul>
-                                    </div>
-                                </td>
+                                @auth
+                                    @if(auth()->user()->isWarden($room->hostel->id))
+                                        <td>
+                                            <div class="dropdown">
+                                                <a class="btn btn-secondary dropdown-toggle" href="#" role="button"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                    ...
+                                                </a>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item"
+                                                        href="/seat/{{ $s->id }}">View Seat</a>
+                                                    </li>
+                                                    @if (count($s->valid_allot_seats()) > 0)
+                                                        <li><a class="dropdown-item"
+                                                                href="/seat/{{ $s->id }}/allotSeat">Allot another</a>
+                                                        </li>
+                                                        <li><a class="dropdown-item deallocate" href="#"
+                                                                id="{{ $s->id }}">Deallocate</a></li>
+                                                    @elseif($s->available != 0)
+                                                        <li><a class="dropdown-item"
+                                                                href="/seat/{{ $s->id }}/allotSeat">Allot</a></li>
+                                                    @endif
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    @endif
+                                @endauth
                             </tr>
                         @endforeach
                     </tbody>
@@ -97,30 +107,32 @@
                 <x-slot name="heading">
                     Ex-Occupants
                 </x-slot>
-                <table class="table table-auto table-hover table-striped">
-                    <tbody>
-                        <tr>
-                            <th>Seat sl.</th>
-                            <th>Name</th>
-                            <th>Duration</th>
-                            <th>Course</th>
-                            <th>Department</th>
-                            <th>MZU ID</th>
-                        </tr>
-                        @foreach ($room->invalid_allot_seats() as $as)
-                            <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
-                                <td>{{ $as->seat->serial }}</td>
-                                <td>{{ $as->allot_hostel->person->name }}</td>
-                                <td>{{ $as->from_dt }} - {{ $as->to_dt }}</td>
-                                @if ($as->allot_hostel->person->student())
-                                    <td>{{ $as->allot_hostel->person->student()->course }}</td>
-                                    <td>{{ $as->allot_hostel->person->student()->department }}</td>
-                                    <td>{{ $as->allot_hostel->person->student()->mzuid }}</td>
-                                @endif
+                <div style="width: 100%; overflow-x:auto">
+                    <table class="table table-auto table-hover table-striped">
+                        <tbody>
+                            <tr>
+                                <th>Seat sl.</th>
+                                <th>Name</th>
+                                <th>Duration</th>
+                                <th>Course</th>
+                                <th>Department</th>
+                                <th>MZU ID</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                            @foreach ($room->invalid_allot_seats() as $as)
+                                <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
+                                    <td>{{ $as->seat->serial }}</td>
+                                    <td>{{ $as->allot_hostel->person->name }}</td>
+                                    <td>{{ $as->from_dt }} - {{ $as->to_dt }}</td>
+                                    @if ($as->allot_hostel->person->student())
+                                        <td>{{ $as->allot_hostel->person->student()->course }}</td>
+                                        <td>{{ $as->allot_hostel->person->student()->department }}</td>
+                                        <td>{{ $as->allot_hostel->person->student()->mzuid }}</td>
+                                    @endif
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </x-block>
         @endif
 
@@ -129,20 +141,22 @@
                 <x-slot name="heading">
                     Remarks about the room
                 </x-slot>
-                <table class="table table-auto table-hover table-striped">
-                    <tbody>
-                        <tr>
-                            <th>Date of remark</th>
-                            <th>Remark</th>
-                        </tr>
-                        @foreach ($room->remarks as $rm)
-                            <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
-                                <td>{{ $rm->remark_dt }}</td>
-                                <td>{{ $rm->remark }}</td>
+                <div style="width: 100%; overflow-x:auto">
+                    <table class="table table-auto table-hover table-striped">
+                        <tbody>
+                            <tr>
+                                <th>Date of remark</th>
+                                <th>Remark</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                            @foreach ($room->remarks as $rm)
+                                <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
+                                    <td>{{ $rm->remark_dt }}</td>
+                                    <td>{{ $rm->remark }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </x-block>
         @endif
 
