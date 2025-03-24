@@ -56,7 +56,7 @@
                     <div class="col-md-3">
                     </div>
                     <div class="col-md-4">
-                        <x-button type="a" href="/user">Back</x-button>
+                        <x-button type="a" href="/">Home</x-button>
                         <x-button type="submit">Change password</x-button>
                     </div>
                 </div>
@@ -70,11 +70,6 @@ $(document).ready(function(){
             'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
         }
     });
-    $("button.btn-delete").click(function(){
-        if(confirm('Are you sure you want to delete?')){
-            
-        }
-    });
-})
+});
 </script>
 </x-layout>

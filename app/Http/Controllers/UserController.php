@@ -99,10 +99,16 @@ class UserController extends Controller
     
     public function changePasswordStore(){
         $user = auth()->user();
-        $user->update([
-            'password' => Hash::make(request()->password)
-        ]);
-        return redirect('/user/changePassword')->with(['message' => ['type'=>'info', 'text'=>'Password changed']]);
+        if(request()->password == request()->confirm_password){
+            $user->update([
+                'password' => Hash::make(request()->password)
+            ]);
+            return redirect('/user/changePassword')->with(['message' => ['type'=>'info', 'text'=>'Password changed']]);
+        }
+        else{
+            return redirect('/user/changePassword')->with(['message' => ['type'=>'danger', 'text'=>'Passwords do not match']])->withInput();
+        }
+        
     }
 
     public function destroy(User $user){

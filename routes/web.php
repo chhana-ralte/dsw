@@ -12,6 +12,9 @@ use App\Http\Controllers\SeatController;
 use App\Http\Controllers\AllotHostelController;
 use App\Http\Controllers\AllotSeatController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PersonController;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\OtherController;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
@@ -28,6 +31,10 @@ Route::get('/user/changePassword', [UserController::class, 'changePassword']);
 Route::post('/user/changePassword', [UserController::class, 'changePasswordStore']);
 Route::post('/logout', [UserController::class, 'logout']);
 Route::get('/hostel/{hostel}/occupants', [HostelController::class, 'occupants']);
+
+Route::resource('person', PersonController::class);
+Route::resource('person.student', StudentController::class)->shallow();
+Route::resource('person.other', OtherController::class)->shallow();
 Route::resource('hostel', HostelController::class);
 Route::resource('hostel.room', RoomController::class)->shallow();
 Route::resource('room.seat', SeatController::class)->shallow();

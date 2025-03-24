@@ -7,5 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Other extends Model
 {
+    public $guarded = [];
     use HasFactory;
 }

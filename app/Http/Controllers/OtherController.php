@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Student;
-use App\Models\Person;
 use Illuminate\Http\Request;
+use App\Models\Person;
+use App\Models\Other;
 
-class StudentController extends Controller
+class OtherController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -25,8 +25,7 @@ class StudentController extends Controller
             'person' => $person,
             'back_link' => request('back_link')
         ];
-        return view('common.student.create',$data);
-        
+        return view('common.other.create',$data);
     }
 
     /**
@@ -34,20 +33,19 @@ class StudentController extends Controller
      */
     public function store(Request $request, $person_id)
     {
-        Student::create([
+        // return $person_id;
+        Other::create([
             'person_id' => $person_id,
-            'rollno' => $request->rollno,
-            'course' => $request->course,
-            'department' => $request->department,
+            'remark' => $request->remark,
         ]);
 
-        return redirect(request()->back_link)->with(['message' => ['type' => 'info', 'text' => 'Student info updated']]);
+        return redirect(request()->back_link)->with(['message' => ['type' => 'info', 'text' => 'Other info updated']]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Student $student)
+    public function show(string $id)
     {
         //
     }
@@ -55,32 +53,31 @@ class StudentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Student $student)
+    public function edit(Other $other)
     {
         $data = [
-            'student' => $student,
+            'other' => $other,
             'back_link' => request()->back_link
         ];
-        return view('common.student.edit',$data);
+        return view('common.other.edit',$data);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Student $student)
+    public function update(Request $request, Other $other)
     {
-        $student->update([
-            'rollno' => $request->rollno,
-            'course' => $request->course,
-            'department' => $request->department,
+        $other->update([
+            'remark' => $request->remark,
         ]);
-        return redirect(request()->back_link)->with(['message' => ['type' => 'info', 'text' => 'Student info updated']]);
+
+        return redirect(request()->back_link)->with(['message' => ['type' => 'info', 'text' => 'Other info updated']]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Student $student)
+    public function destroy(string $id)
     {
         //
     }

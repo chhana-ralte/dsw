@@ -102,8 +102,6 @@
                                                 <ul class="dropdown-menu" style="z-index: 200">
                                                     <li><a class="dropdown-item"
                                                             href="/room/{{ $r->id }}/remark">Remark</a></li>
-                                                    <li><a class="dropdown-item"
-                                                            href="/room/{{ $r->id }}/delete">Delete Room</a></li>
                                                     <li><a class="dropdown-item" href="/room/{{ $r->id }}/edit">Edit
                                                             Room</a></li>
                                                 </ul>

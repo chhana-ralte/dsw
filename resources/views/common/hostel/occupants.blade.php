@@ -29,8 +29,8 @@
                                 <td>{{ $seat->valid_allot_seat()->allot_hostel->person->student()->course }}</td>
                                 <td>{{ $seat->valid_allot_seat()->allot_hostel->person->student()->department }}</td>
                                 <td>{{ $seat->valid_allot_seat()->allot_hostel->person->student()->mzuid }}</td>
-                            @else
-                                <td colspan=3>Not a student</td>
+                            @elseif($seat->valid_allot_seat()->allot_hostel->person->other())
+                                <td colspan=3>Not a student ({{ $seat->valid_allot_seat()->allot_hostel->person->other()->remark }})</td>
                             @endif
                         @elseif($seat->available < 1)
                             <td colspan=4>Seat is unavailable for allotment</td>
@@ -72,10 +72,14 @@
                                     <td>{{ $ah->person->student()->course }}</td>
                                     <td>{{ $ah->person->student()->department }}</td>
                                     <td>{{ $ah->person->student()->mzuid }}</td>
-                                @else
-                                    <td colspan=3>Not a student</td>
+                                @elseif($ah->person->other())
+                                    <td colspan=3>Not a student ({{ $ah->person->other()->remark }})</td>
                                 @endif
-                                <td><a class="btn btn-primary" href="/allot_hostel/{{ $ah->id }}/allotSeat">Allot seat</a></td>
+                                @auth
+                                    @if(auth()->user()->isWarden($ah->hostel->id))
+                                        <td><a class="btn btn-primary" href="/allot_hostel/{{ $ah->id }}/allotSeat">Allot seat</a></td>
+                                    @endif
+                                @endauth
                             </tr>
                         @endforeach
                     @endif

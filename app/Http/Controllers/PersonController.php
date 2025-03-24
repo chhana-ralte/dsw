@@ -44,7 +44,12 @@ class PersonController extends Controller
      */
     public function edit(Person $person)
     {
-        //
+        
+        $data = [
+            'person' => $person,
+            'back_link' => request('back_link')
+        ];
+        return view('common.person.edit',$data);
     }
 
     /**
@@ -52,7 +57,17 @@ class PersonController extends Controller
      */
     public function update(Request $request, Person $person)
     {
-        //
+        $person->update([
+            'name' => request()->name,
+            'father' => request()->father,
+            'mobile' => request()->mobile,
+            'email' => request()->email,
+            'category' => request()->category,
+            'state' => request()->state,
+            'address' => request()->address,
+        ]);
+
+        return redirect(request()->back_link)->with(['message' => ['type' => 'info', 'text' => 'Personal info updated']]);
     }
 
     /**

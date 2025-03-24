@@ -9,6 +9,6 @@ class Student extends Model
     public $guarded = [];
 
     public function person(){
-        return $this->belongsTo(App\Models\Person::class);
+        return $this->belongsTo(Person::class);
     }
 }

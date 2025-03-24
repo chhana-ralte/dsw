@@ -51,6 +51,7 @@ class User extends Authenticatable
     public function user_roles(){
         return Role_User::where('user_id',$this->id)->get();
     }
+    
     public function isWarden($hostel_id){
         return Role_User::where('user_id',$this->id)->where('type','hostel')->where('foreign_id',$hostel_id)->exists();
     }
