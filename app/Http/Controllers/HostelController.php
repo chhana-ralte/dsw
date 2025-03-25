@@ -86,19 +86,16 @@ class HostelController extends Controller
 
         $seats = Seat::whereIn('room_id',$rooms->pluck('id'));
 
-
-        // $room_ids = Room::where('hostel_id', $hostel->id)->pluck('id');
         // $seat_ids = Seat::whereIn('room_id', $room_ids)->pluck('id');
         $allot_seats = AllotSeat::WhereIn('seat_id', $seats->pluck('id'))->where('valid', 1);
         //     ->orderBy('seat_id')
-        //     ->get();
         
         $allot_hostels = AllotHostel::where('hostel_id', $hostel->id)
             ->where('valid',1)
             ->whereNotIn('id', $allot_seats->pluck('allot_hostel_id'))
             ->get();
 
-        if (!isset($_GET['allot_seats']) || $_GET['allot_seats'] == 0) {
+        if (isset($_GET['allot_seats']) && $_GET['allot_seats'] == 0) {
             $data = [
                 'hostel' => $hostel,
                 'allot_hostels' => $allot_hostels,

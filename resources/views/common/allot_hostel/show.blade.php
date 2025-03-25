@@ -4,12 +4,12 @@
             <x-slot name="heading">
                 Personal information
                 @auth()
-                    @if(auth()->user()->isWarden($allot_hostel->hostel->id))
+                    @if(auth()->user()->isWardenOf($allot_hostel->hostel->id))
                         <a class="btn btn-secondary btn-sm" href="/person/{{ $allot_hostel->person->id }}/edit?back_link=/allot_hostel/{{ $allot_hostel->id }}">Edit</a>
                     @endif
                 @endauth
                 <p>
-                    <a class="btn btn-secondary btn-sm" href="/hostel/{{ $allot_hostel->hostel->id }}/occupants">Back</a>
+                    <a class="btn btn-secondary btn-sm" href="{{ $back_link }}">Back</a>
                 </p>
             </x-slot>
             <table class="table table-hover table-auto">
@@ -49,9 +49,9 @@
                 <x-slot name="heading">
                     Student Information
                     @auth()
-                        @if(auth()->user()->isWarden($allot_hostel->hostel->id))
+                        @can('update',$allot_hostel->hostel)
                             <a class="btn btn-secondary btn-sm" href="/student/{{ $allot_hostel->person->student()->id }}/edit?back_link=/allot_hostel/{{ $allot_hostel->id }}">Edit</a>
-                        @endif
+                        @endcan
                     @endauth
                 </x-slot>                
                 <table class="table table-hover table-auto">
@@ -86,7 +86,7 @@
             </x-block>
         @else
             @auth
-                @if(auth()->user()->isWarden($allot_hostel->hostel->id))
+                @can('update',$allot_hostel->hostel)
                     <x-block>
                         <x-slot name="heading">
                             Whether a student or not??
@@ -96,7 +96,7 @@
                             <a href="/person/{{ $allot_hostel->person->id }}/other/create?back_link=/allot_hostel/{{ $allot_hostel->id }}" class="btn btn-primary">Not a student</a>
                         </div>
                     </x-block>
-                @endif
+                @endcan
             @endauth
         @endif
 
@@ -109,13 +109,13 @@
                     {{ $as->seat->room->hostel->name }}: {{ $as->seat->room->roomno }}/{{ $as->seat->serial }} ({{ $as->valid?'Valid':'Invalid' }})<br>
                 @endforeach
                 @auth
-                    @if(auth()->user()->isWarden($allot_hostel->hostel->id))
+                    @can('update',$allot_hostel->hostel)
                         <a class="btn btn-primary" href="/allot_hostel/{{ $allot_hostel->id }}/allotSeat">Allot another seat</a>
-                    @endif
+                    @endcan
                 @endauth
             @else
                 @auth
-                    @if(auth()->user()->isWarden($allot_hostel->hostel->id))
+                    @can('update',$allot_hostel->hostel)
                         <a class="btn btn-primary" href="/allot_hostel/{{ $allot_hostel->id }}/allotSeat">Allot seat</a>
                     @endif
                 @endauth

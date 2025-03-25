@@ -1,6 +1,11 @@
 <x-layout>
     <x-container>
-        <x-block>
+            
+    
+    
+    
+            {{--
+            <x-block>
             <x-slot name="heading">
                 Menu
             </x-slot>
@@ -42,7 +47,12 @@
                     </div>
                 </div>
             </section>
-        </x-block>
+        </x-block> 
+        --}}
+
+
+
+
         <x-block>
             <x-slot name="heading">
                 {{ $hostel->name }} Hall of Residence
@@ -54,44 +64,65 @@
                         <td>Total number of rooms</td>
                         <td>{{ $no_rooms }}</td>
                         <td>
+                            @auth
                             <a href="/hostel/{{ $hostel->id }}/room" type="button" class="btn btn-primary btn-sm">
                                 view
                             </a>
+                            @endauth
                         </td>
                     </tr>
                     <tr>
                         <td>Total number of seats</td>
                         <td>{{ $no_seats }}</td>
                         <td>
-                            <a href="/hostel/{{ $hostel->id }}/room" type="button" class="btn btn-primary btn-sm">
-                                view
-                            </a>
+                            
                         </td>
                     </tr>
                     <td>Total seats available for allotment</td>
                     <td>{{ $no_available_seats }}</td>
                     <td>
-                        <a href="/hostel/{{ $hostel->id }}/room?status=vacant" type="button"
-                            class="btn btn-primary btn-sm">
-                            view
-                        </a>
+                        
                     </td>
                     </tr>
-                    <td>Total number of students allotted</td>
-                    <td>{{ $no_allotted_seats }}</td>
-                    <td>
-                        <a href="/hostel/{{ $hostel->id }}/room?status=non-available" type="button"
-                            class="btn btn-primary btn-sm">
-                            view
-                        </a>
-                    </td>
+                    <tr>
+                        <td>Total number of students allotted</td>
+                        <td>{{ $no_allotted_seats }}</td>
+                        
+                        <td>
+                        @auth
+                            <a href="/hostel/{{ $hostel->id }}/occupants" type="button"
+                                class="btn btn-primary btn-sm">
+                                view
+                            </a>
+                        @endauth
+                        </td>
+                        
                     </tr>
-                    {{-- <td>Total number of seats vacant</td>
-                    <td>{{ no_vacant_seats }}</td>
-                    </tr> --}}
-                    <td>No. of students who are not allotted seat/room</td>
-                    <td>{{ $no_unallotted }}</td>
-                    <td></td>
+                    <tr>
+                        <td>Total number of seats vacant</td>
+                        <td>{{ $no_vacant_seats }}</td>
+                        
+                        <td>
+                            @auth
+                            <a href="/hostel/{{ $hostel->id }}/room?status=vacant" type="button"
+                                class="btn btn-primary btn-sm">
+                                view
+                            </a>
+                            @endauth
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td>No. of students who are not allotted seat/room</td>
+                        <td>{{ $no_unallotted }}</td>
+                        <td>
+                            @auth
+                            <a href="/hostel/{{ $hostel->id }}/occupants?allot_seats=0" type="button"
+                                class="btn btn-primary btn-sm">
+                                view
+                            </a>
+                            @endauth
+                        </td>
                     </tr>
                 </tbody>
             </table>

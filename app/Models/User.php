@@ -52,8 +52,19 @@ class User extends Authenticatable
         return Role_User::where('user_id',$this->id)->get();
     }
     
-    public function isWarden($hostel_id){
-        return Role_User::where('user_id',$this->id)->where('type','hostel')->where('foreign_id',$hostel_id)->exists();
+    public function isWardenOf($hostel_id){
+        $role = Role::where('role','Warden')->first();
+        return Role_User::where('user_id',$this->id)->where('role_id',$role->id)->where('type','hostel')->where('foreign_id',$hostel_id)->exists();
+    }
+
+    public function isWarden(){
+        $role = Role::where('role','Warden')->first();
+        return Role_User::where('user_id',$this->id)->where('role_id',$role->id)->exists();
+    }
+
+    public function isAdmin(){
+        $role = Role::where('role','Admin')->orWhere('role','Super')->get();
+        return Role_User::where('user_id',$this->id)->whereIn('role_id',$role->pluck('id'))->exists();
     }
 
     public function hasRole($strrole)

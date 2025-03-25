@@ -12,12 +12,12 @@
                 </div>
                 <div class="pl-3 mt-2">
                     @auth
-                        @if(auth()->user()->isWarden($room->hostel->id))
+                        @can('update',$room->hostel)
                             <a class="btn btn-secondary btn-sm" href="/room/{{ $room->id }}/edit">Edit</a>
                             <a class="btn btn-secondary btn-sm" href="/room/{{ $room->id }}/remark">Remark</a>
                             <a class="btn btn-secondary btn-sm" href="/room/{{ $room->id }}/seat">Seats</a>
                             <button class="btn btn-danger btn-sm delete">Delete</button>
-                        @endif
+                        @endcan
                     @endauth
                 </div>
                 </p>
@@ -39,9 +39,9 @@
                             <th>Department</th>
                             <th>MZU ID</th>
                             @auth
-                                @if(auth()->user()->isWarden($room->hostel->id))
+                                @can('update',$room->hostel)
                                     <th>Action</th>
-                                @endif
+                                @endcan
                             @endauth
                         </tr>
                         @foreach ($seats as $s)
@@ -69,7 +69,7 @@
                                     </td>
                                 @endif
                                 @auth
-                                    @if(auth()->user()->isWarden($room->hostel->id))
+                                    @can('update',$room->hostel)
                                         <td>
                                             <div class="dropdown">
                                                 <a class="btn btn-secondary dropdown-toggle" href="#" role="button"
@@ -93,7 +93,7 @@
                                                 </ul>
                                             </div>
                                         </td>
-                                    @endif
+                                    @endcan
                                 @endauth
                             </tr>
                         @endforeach

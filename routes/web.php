@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Room;
 use App\Models\Hostel;
 use App\Models\Seat;
+
 use App\Http\Controllers\HostelController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\SeatController;
@@ -15,44 +16,47 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\OtherController;
+use App\Http\Controllers\SearchController;
+
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 
 Route::get('/', [HostelController::class, 'index']);
+Route::get('/search', [SearchController::class, 'index'])->middleware(['auth']);
 Route::get('/h', function () {
     $hostel = Hostel::where('name', $_GET['hostel'])->first();
     return $hostel->vacant();
 });
 
-Route::get('/login', [UserController::class, 'login']);
+Route::get('/login', [UserController::class, 'login'])->name('login');
 Route::post('/login', [UserController::class, 'logincheck']);
-Route::get('/user/changePassword', [UserController::class, 'changePassword']);
+Route::get('/user/changePassword', [UserController::class, 'changePassword'])->middleware('auth');
 Route::post('/user/changePassword', [UserController::class, 'changePasswordStore']);
-Route::post('/logout', [UserController::class, 'logout']);
-Route::get('/hostel/{hostel}/occupants', [HostelController::class, 'occupants']);
+Route::post('/logout', [UserController::class, 'logout'])->middleware('auth');
+Route::get('/hostel/{hostel}/occupants', [HostelController::class, 'occupants'])->middleware('auth');
 
-Route::resource('person', PersonController::class);
-Route::resource('person.student', StudentController::class)->shallow();
-Route::resource('person.other', OtherController::class)->shallow();
+Route::resource('person', PersonController::class)->middleware('auth');
+Route::resource('person.student', StudentController::class)->shallow()->middleware('auth');
+Route::resource('person.other', OtherController::class)->shallow()->middleware('auth');
 Route::resource('hostel', HostelController::class);
-Route::resource('hostel.room', RoomController::class)->shallow();
-Route::resource('room.seat', SeatController::class)->shallow();
-Route::resource('allot_hostel', AllotHostelController::class);
-Route::resource('user', UserController::class);
+Route::resource('hostel.room', RoomController::class)->shallow()->middleware('auth');
+Route::resource('room.seat', SeatController::class)->shallow()->middleware('auth');
+Route::resource('allot_hostel', AllotHostelController::class)->middleware('auth');
+Route::resource('user', UserController::class)->middleware(['auth']);
 
-Route::get('/allot_hostel/{id}/allotSeat', [AllotSeatController::class, 'allotSeat']);
+Route::get('/allot_hostel/{id}/allotSeat', [AllotSeatController::class, 'allotSeat'])->middleware('auth');
 Route::post('/allot_hostel/{id}/allotSeat', [AllotSeatController::class, 'allotSeatStore']);
 
-Route::get('/seat/{id}/allotSeat', [SeatController::class, 'allotSeat']);
+Route::get('/seat/{id}/allotSeat', [SeatController::class, 'allotSeat'])->middleware('auth');
 Route::post('/seat/{id}/allotSeat', [SeatController::class, 'allotSeatStore']);
 
-Route::post('/room/{id}/unavailable', [RoomController::class, 'unavailable']);
-Route::get('/room/{id}/editseatavailability', [RoomController::class, 'editseatavailability']);
+Route::post('/room/{id}/unavailable', [RoomController::class, 'unavailable'])->middleware('auth');
+Route::get('/room/{id}/editseatavailability', [RoomController::class, 'editseatavailability'])->middleware('auth');
 Route::post('/room/{id}/editseatavailability', [RoomController::class, 'updateseatavailability']);
-Route::get('/room/{id}/remark', [RoomController::class, 'remark']);
+Route::get('/room/{id}/remark', [RoomController::class, 'remark'])->middleware('auth');
 Route::post('/room/{id}/remark', [RoomController::class, 'remarkStore']);
-Route::get('/seat/{id}/remark', [SeatController::class, 'remark']);
+Route::get('/seat/{id}/remark', [SeatController::class, 'remark'])->middleware('auth');
 Route::post('/seat/{id}/remark', [SeatController::class, 'remarkStore']);
 Route::delete('/room/remark/{id}', [RoomController::class, 'remarkDelete']);
 
@@ -65,7 +69,7 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::get('/ajax/get_role/{id}', 'get_role');
     Route::post('/ajax/allot_seat_store', 'allotSeatStore');
     Route::post('/ajax/seat/{id}/deallocate', 'deallocateSeat');
-});
+})->middleware('auth');
 
 
 

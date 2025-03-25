@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
@@ -11,15 +12,24 @@ use App\Models\Role_User;
 class UserController extends Controller
 {
     public function index(){
-        return view('user.index',['users'=>User::all()]);
+        if(auth()->user()->isAdmin())
+            return view('user.index',['users'=>User::all()]);
+        else
+            abort(403);
     }
 
     public function show(User $user){
-        return view('user.show',['user'=>$user]);
+        if(auth()->user()->isAdmin())
+            return view('user.show',['user'=>$user]);
+        else
+            abort(403);
     }
 
     public function create(){
-        return view('user.create');
+        if(auth()->user()->isAdmin())
+            return view('user.create');
+        else
+            abort(403);
     }
 
     public function store(){
@@ -41,11 +51,16 @@ class UserController extends Controller
     public function edit(User $user){
         // return $user->hasRole('Admin');
         // return $role->id;
-        $data=[
-            'user' => $user,
-            'roles' => Role::orderBy('level','desc')->get()
-        ];
-        return view('user.edit',$data);
+        if(auth()->user()->isAdmin()){
+            $data=[
+                'user' => $user,
+                'roles' => Role::orderBy('level','desc')->get()
+            ];
+            return view('user.edit',$data);
+        }
+        else{
+            abort(403);
+        }
     }
 
     public function update(User $user){

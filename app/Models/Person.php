@@ -9,7 +9,7 @@ class Person extends Model
     public $guarded = [];
 
     public function students(){
-        return $this->hasMany(App\Models\Student::class);
+        return $this->hasMany(Student::class);
     }
 
     public function student(){
@@ -22,5 +22,13 @@ class Person extends Model
     
     public function other(){
         return Other::where('person_id',$this->id)->first();
+    }
+
+    public function allot_hostels(){
+        return $this->hasMany(AllotHostel::class);
+    }
+
+    public function allot_hostel(){
+        return AllotHostel::where('person_id',$this->id)->first();
     }
 }

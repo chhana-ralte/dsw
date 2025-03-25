@@ -29,7 +29,7 @@
                         <a class="btn btn-secondary btn-sm" href="/hostel/{{ $hostel->id }}">back</a>
                     </div>
                     @auth
-                        @if(auth()->user()->isWarden($hostel->id))
+                        @if(auth()->user()->isWardenOf($hostel->id))
                             <div class="col-auto">
                                 <a class="btn btn-secondary btn-sm" href="/hostel/{{ $hostel->id }}/room/create">Create new
                                     room</a>
@@ -52,9 +52,9 @@
                                 <th>Vacancy</th>
                                 <th>Remarks</th>
                                 @auth
-                                    @if(auth()->user()->isWarden($hostel->id))
+                                    @can('update',$hostel)
                                         <th style=" ">Manage</th>
-                                    @endif
+                                    @endcan
                                 @endauth
                             <tr>
                             </tr>
@@ -92,7 +92,7 @@
                                     @endif
                                 </td>
                                 @auth
-                                    @if(auth()->user()->isWarden($hostel->id))
+                                    @can('update',$r->hostel)
                                         <td style="   z-index: 2 !important">
                                             <div class="dropdown" style="">
                                                 <a class="btn btn-secondary dropdown-toggle" href="#" role="button"
@@ -107,7 +107,7 @@
                                                 </ul>
                                             </div>
                                         </td>
-                                    @endif
+                                    @endcan
                                 @endauth
                                 </tr>
                             @endforeach
@@ -119,9 +119,9 @@
                                 <th>{{ $available - $filled }}</th>
                                 <th></th>
                                 @auth
-                                    @if(auth()->user()->isWarden($hostel->id))
+                                    @can('update',$hostel)
                                         <th></th>
-                                    @endif
+                                    @endcan
                                 @endauth
                             </tr>
                         </tbody>
