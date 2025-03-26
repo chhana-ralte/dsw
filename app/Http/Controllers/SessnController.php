@@ -7,12 +7,10 @@ use Illuminate\Http\Request;
 
 class SessnController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $sessns = Sessn::orderBy('start_yr')->orderBy('odd_even')->get();
+        return view('common.sessn.index',['sessns' => $sessns]);
     }
 
     /**
@@ -20,7 +18,7 @@ class SessnController extends Controller
      */
     public function create()
     {
-        //
+        return view('common.sessn.create');
     }
 
     /**
@@ -28,7 +26,29 @@ class SessnController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'start_yr' => ['required','integer','between:2000,2050'],
+            'odd_even' => 'required'
+        ]);
+
+        if(Sessn::where('start_yr',$request->start_yr)->where('odd_even',$request->odd_even)->exists()){
+            return redirect('/sessn/create')->with(['message' => ['type' => 'danger', 'text' => 'Session already exists']])->withInput();
+        }
+        else{
+            $sessn = Sessn::create([
+                'start_yr' => $request->start_yr,
+                'end_yr' => substr($request->start_yr+1,-2),
+                'odd_even' => $request->odd_even
+            ]);
+    
+            if(isset($request->current)){
+                Sessn::where('current',1)->update([ 'current' => 0]);
+                $sessn->update(['current' => 1]);
+            }
+            
+            return redirect('/sessn')->with(['message' => ['type' => 'info', 'text' => 'New session created']]);
+        }
+        
     }
 
     /**
@@ -44,7 +64,7 @@ class SessnController extends Controller
      */
     public function edit(Sessn $sessn)
     {
-        //
+        return view('common.sessn.edit',['sessn' => $sessn]);
     }
 
     /**
@@ -52,7 +72,15 @@ class SessnController extends Controller
      */
     public function update(Request $request, Sessn $sessn)
     {
-        //
+        $validated = $request->validate([
+            'start_yr' => ['required','numeric'],
+            'end_yr' => ['required','numeric'],
+            'odd_even' => 'required'
+        ]);
+
+        $sessn->update($valodated);
+
+        return redirect('/sessn')->with(['message' => ['type' => 'info', 'text' => 'Session updated']]);
     }
 
     /**
@@ -60,6 +88,7 @@ class SessnController extends Controller
      */
     public function destroy(Sessn $sessn)
     {
-        //
+        $sessn->delete();
+        return redirect('/sessn')->with(['message' => ['type' => 'info', 'text' => 'Session deleted']]);
     }
 }

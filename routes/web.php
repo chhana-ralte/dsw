@@ -17,6 +17,7 @@ use App\Http\Controllers\PersonController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\OtherController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SessnController;
 
 
 use Illuminate\Support\Facades\DB;
@@ -24,6 +25,9 @@ use Illuminate\Support\Facades\View;
 
 Route::get('/', [HostelController::class, 'index']);
 Route::get('/search', [SearchController::class, 'index'])->middleware(['auth']);
+Route::get('/message', function(){
+    return view('message');
+})->middleware(['auth']);
 Route::get('/h', function () {
     $hostel = Hostel::where('name', $_GET['hostel'])->first();
     return $hostel->vacant();
@@ -44,6 +48,7 @@ Route::resource('hostel.room', RoomController::class)->shallow()->middleware('au
 Route::resource('room.seat', SeatController::class)->shallow()->middleware('auth');
 Route::resource('allot_hostel', AllotHostelController::class)->middleware('auth');
 Route::resource('user', UserController::class)->middleware(['auth']);
+Route::resource('sessn', SessnController::class)->middleware(['auth']);
 
 Route::get('/allot_hostel/{id}/allotSeat', [AllotSeatController::class, 'allotSeat'])->middleware('auth');
 Route::post('/allot_hostel/{id}/allotSeat', [AllotSeatController::class, 'allotSeatStore']);
@@ -60,6 +65,7 @@ Route::get('/seat/{id}/remark', [SeatController::class, 'remark'])->middleware('
 Route::post('/seat/{id}/remark', [SeatController::class, 'remarkStore']);
 Route::delete('/room/remark/{id}', [RoomController::class, 'remarkDelete']);
 
+Route::get('/person/{id}/confirm_delete', [PersonController::class, 'delete'])->middleware('auth');
 
 Route::controller(App\Http\Controllers\AjaxController::class)->group(function () {
     Route::get('/ajaxroom/{id}/seat', 'getSeats');

@@ -4,8 +4,12 @@
             <x-slot name="heading">
                 Personal information
                 @auth()
-                    @if(auth()->user()->isWardenOf($allot_hostel->hostel->id))
+                    @can('update',$allot_hostel->hostel)
                         <a class="btn btn-secondary btn-sm" href="/person/{{ $allot_hostel->person->id }}/edit?back_link=/allot_hostel/{{ $allot_hostel->id }}">Edit</a>
+                        
+                    @endcan
+                    @if(auth()->user()->isAdmin())
+                        <a class="btn btn-danger btn-sm" href="/person/{{ $allot_hostel->person->id }}/confirm_delete?back_link=/allot_hostel/{{ $allot_hostel->id }}">Delete</a>
                     @endif
                 @endauth
                 <p>
