@@ -37,7 +37,7 @@ class HostelPolicy
      */
     public function update(User $user, Hostel $hostel): bool
     {
-        return $user->isWardenOf($hostel->id);
+        return $user->isWardenOf($hostel->id) || $user->isAdmin();
     }
 
     /**

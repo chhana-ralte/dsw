@@ -12,6 +12,10 @@ class Person extends Model
         return $this->hasMany(Student::class);
     }
 
+    public function person_remarks(){
+        return $this->hasMany(PersonRemark::class);
+    }
+
     public function student(){
         return Student::where('person_id',$this->id)->first();
     }
@@ -30,5 +34,9 @@ class Person extends Model
 
     public function allot_hostel(){
         return AllotHostel::where('person_id',$this->id)->first();
+    }
+
+    public function valid_allot_hostel(){
+        return AllotHostel::where('person_id',$this->id)->where('valid',1)->first();
     }
 }

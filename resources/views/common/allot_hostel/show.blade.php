@@ -8,6 +8,10 @@
                         <a class="btn btn-secondary btn-sm" href="/person/{{ $allot_hostel->person->id }}/edit?back_link=/allot_hostel/{{ $allot_hostel->id }}">Edit</a>
                         
                     @endcan
+                    @can('update',$allot_hostel->hostel)
+                        <a class="btn btn-secondary btn-sm" href="/person/{{ $allot_hostel->person->id }}/person_remark?back_link=/allot_hostel/{{ $allot_hostel->id }}">Remarks about the person</a>
+                    @endcan
+
                     @if(auth()->user()->isAdmin())
                         <a class="btn btn-danger btn-sm" href="/person/{{ $allot_hostel->person->id }}/confirm_delete?back_link=/allot_hostel/{{ $allot_hostel->id }}">Delete</a>
                     @endif
@@ -125,5 +129,32 @@
                 @endauth
             @endif
         </x-block>
+
+        @if(count($allot_hostel->person->person_remarks) > 0)
+            <x-block>
+                <x-slot name="heading">
+                    Remark(s) about student
+                </x-slot>                
+                <table class="table table-hover table-auto">
+                    <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
+                        <th>Date of incident</th>
+                        <th>Remark</th>
+                    </tr>
+                    @foreach($allot_hostel->person->person_remarks as $pr)
+                    <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
+                        <td>{{ $pr->remark_dt }}</td>
+                        <td><h4>{{ $pr->remark }}</h4>
+                        @if(count($pr->person_remark_details) > 0)
+                            @foreach($pr->person_remark_details as $prd)
+                                <hr>
+                                {{ $prd->detail }}
+                            @endforeach
+                        @endif
+                        </td>
+                    </tr>
+                    @endforeach
+                </table>
+            </x-block>
+        @endif
     </x-container>
 </x-layout>

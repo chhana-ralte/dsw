@@ -90,6 +90,11 @@ class PersonController extends Controller
             $allot_seats = \App\Models\AllotSeat::whereIn('allot_hostel_id',$allot_hostels->pluck('id'));
             $students = \App\Models\Student::where('person_id',$person->id);
             $others = \App\Models\Other::where('person_id',$person->id);
+            $person_remarks = \App\Models\PersonRemark::where('person_id',$person->id);
+            $person_remark_details = \App\Models\PersonRemarkDetail::whereIn('person_remark_id',$person_remarks->pluck('id'));
+            
+            $person_remark_details->delete();
+            $person_remarks->delete();
             $others->delete();
             $students->delete();
             $allot_seats->delete();

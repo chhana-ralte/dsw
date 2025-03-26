@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Warden extends Model
+class PersonRemarkDetail extends Model
 {
     protected $guarded = [];
 
-    public function hostel(){
-        return $this->belongsTo(Hostel::class);
+    public function person_remark(){
+        return $this->belongsTo(PersonRemark::class);
     }
 }

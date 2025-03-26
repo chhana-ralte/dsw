@@ -46,4 +46,12 @@ class Hostel extends Model
     {
         return $this->available() - $this->filled();
     }
+
+    public function wardens(){
+        return $this->hasMany(Hostel::class);
+    }
+
+    public function valid_warden(){
+        return Warden::where('hostel_id',$this->id)->where('valid',1)->first();
+    }
 }

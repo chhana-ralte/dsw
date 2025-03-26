@@ -16,6 +16,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\OtherController;
+use App\Http\Controllers\PersonRemarkController;
+use App\Http\Controllers\PersonRemarkDetailController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SessnController;
 
@@ -43,6 +45,8 @@ Route::get('/hostel/{hostel}/occupants', [HostelController::class, 'occupants'])
 Route::resource('person', PersonController::class)->middleware('auth');
 Route::resource('person.student', StudentController::class)->shallow()->middleware('auth');
 Route::resource('person.other', OtherController::class)->shallow()->middleware('auth');
+Route::resource('person.person_remark', PersonRemarkController::class)->shallow()->middleware('auth');
+Route::resource('person_remark.person_remark_detail', PersonRemarkDetailController::class)->shallow()->middleware('auth');
 Route::resource('hostel', HostelController::class);
 Route::resource('hostel.room', RoomController::class)->shallow()->middleware('auth');
 Route::resource('room.seat', SeatController::class)->shallow()->middleware('auth');
