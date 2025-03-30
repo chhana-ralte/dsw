@@ -10,6 +10,8 @@ use App\Models\Seat;
 use App\Http\Controllers\HostelController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\SeatController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\AllotmentController;
 use App\Http\Controllers\AllotHostelController;
 use App\Http\Controllers\AllotSeatController;
 use App\Http\Controllers\UserController;
@@ -20,6 +22,7 @@ use App\Http\Controllers\PersonRemarkController;
 use App\Http\Controllers\PersonRemarkDetailController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SessnController;
+use App\Http\Controllers\AdmissionController;
 
 
 use Illuminate\Support\Facades\DB;
@@ -49,8 +52,11 @@ Route::resource('person.person_remark', PersonRemarkController::class)->shallow(
 Route::resource('person_remark.person_remark_detail', PersonRemarkDetailController::class)->shallow()->middleware('auth');
 Route::resource('hostel', HostelController::class);
 Route::resource('hostel.room', RoomController::class)->shallow()->middleware('auth');
+Route::resource('hostel.admission', AdmissionController::class)->shallow()->middleware('auth');
 Route::resource('room.seat', SeatController::class)->shallow()->middleware('auth');
-Route::resource('allot_hostel', AllotHostelController::class)->middleware('auth');
+Route::resource('notification', NotificationController::class)->middleware('auth');
+Route::resource('notification.allotment', AllotmentController::class)->shallow()->middleware('auth');
+Route::resource('allotment.allot_hostel', AllotHostelController::class)->shallow()->middleware('auth');
 Route::resource('user', UserController::class)->middleware(['auth']);
 Route::resource('sessn', SessnController::class)->middleware(['auth']);
 
@@ -79,6 +85,7 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::get('/ajax/get_role/{id}', 'get_role');
     Route::post('/ajax/allot_seat_store', 'allotSeatStore');
     Route::post('/ajax/seat/{id}/deallocate', 'deallocateSeat');
+    Route::post('/ajax/manage_admission', 'manage_admission');
 })->middleware('auth');
 
 

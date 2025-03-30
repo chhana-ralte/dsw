@@ -25,13 +25,13 @@
                             <tr class="table-white">
                             <td>{{ $seat->room->roomno }}/{{ $seat->serial }}</td>
                             @if($seat->valid_allot_seats()->count() > 0)
-                                <td><a href='/allot_hostel/{{ $seat->valid_allot_seat()->allot_hostel->id }}'>{{ $seat->valid_allot_seat()->allot_hostel->person->name }}</a></td>
-                                @if($seat->valid_allot_seat()->allot_hostel->person->student())
-                                    <td>{{ $seat->valid_allot_seat()->allot_hostel->person->student()->course }}</td>
-                                    <td>{{ $seat->valid_allot_seat()->allot_hostel->person->student()->department }}</td>
-                                    <td>{{ $seat->valid_allot_seat()->allot_hostel->person->student()->mzuid }}</td>
-                                @elseif($seat->valid_allot_seat()->allot_hostel->person->other())
-                                    <td colspan=3>Not a student ({{ $seat->valid_allot_seat()->allot_hostel->person->other()->remark }})</td>
+                                <td><a href='/allot_hostel/{{ $seat->valid_allot_seat()->allot_hostel->id }}'>{{ $seat->valid_allot_seat()->allot_hostel->allotment->person->name }}</a></td>
+                                @if($seat->valid_allot_seat()->allot_hostel->allotment->person->student())
+                                    <td>{{ $seat->valid_allot_seat()->allot_hostel->allotment->person->student()->course }}</td>
+                                    <td>{{ $seat->valid_allot_seat()->allot_hostel->allotment->person->student()->department }}</td>
+                                    <td>{{ $seat->valid_allot_seat()->allot_hostel->allotment->person->student()->mzuid }}</td>
+                                @elseif($seat->valid_allot_seat()->allot_hostel->allotment->person->other())
+                                    <td colspan=3>Not a student ({{ $seat->valid_allot_seat()->allot_hostel->allotment->person->other()->remark }})</td>
                                 @endif
                             @elseif($seat->available < 1)
                                 <td colspan=4>Seat is unavailable for allotment</td>

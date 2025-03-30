@@ -58,7 +58,8 @@ class AjaxController extends Controller
 
     public function getAllotHostels($hostel_id){
         $search = $_GET['search'];
-        $data = DB::table('people')->join('allot_hostels','people.id','=','allot_hostels.person_id')
+        $data = DB::table('people')->join('allotments','people.id','=','allotments.person_id')
+            ->join('allot_hostels','allotments.id','=','allot_hostels.allotment_id')
             ->select('allot_hostels.id','people.name','people.address')
             ->where('allot_hostels.hostel_id',$hostel_id)
             ->whereLike('name','%' . $search . '%')
@@ -126,5 +127,31 @@ class AjaxController extends Controller
             ->whereIn('seats.id',$available_seat_ids)
             ->get();
         return $seats;
+    }
+
+    public function manage_admission(){
+        // return request()->undo;
+        $allot_hostel = \App\Models\AllotHostel::findOrFail(request()->allot_hostel_id);
+        if(request()->undo == '0'){
+            \App\Models\Admission::updateOrCreate([
+                'allot_hostel_id' => request()->allot_hostel_id,
+                'sessn_id' => request()->sessn_id
+            ],[
+                'allot_hostel_id' => request()->allot_hostel_id,
+                'sessn_id' => request()->sessn_id,
+                'allotment_id' => $allot_hostel->allotment->id
+            ]
+            );
+        }
+        else{
+            \App\Models\Admission::where('allot_hostel_id',$allot_hostel->id)
+                ->where('sessn_id',request()->sessn_id)
+                ->delete();
+        }
+        $data = [
+            'allot_hostel_id' => request()->allot_hostel_id,
+            'undo' => request()->undo==1?1:0
+        ];
+        return $data;
     }
 }

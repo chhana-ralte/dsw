@@ -32,11 +32,24 @@ class Person extends Model
         return $this->hasMany(AllotHostel::class);
     }
 
+    public function allotments(){
+        return $this->hasMany(Allotment::class);
+    }
+
     public function allot_hostel(){
         return AllotHostel::where('person_id',$this->id)->first();
+    }
+
+    public function allotment(){
+        return Allotment::where('person_id',$this->id)->first();
     }
 
     public function valid_allot_hostel(){
         return AllotHostel::where('person_id',$this->id)->where('valid',1)->first();
     }
+
+    public function valid_allotment(){
+        return Allotment::where('person_id',$this->id)->where('valid',1)->first();
+    }
+
 }

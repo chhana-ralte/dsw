@@ -39,6 +39,7 @@ class StudentController extends Controller
             'rollno' => $request->rollno,
             'course' => $request->course,
             'department' => $request->department,
+            'department' => $request->mzuid,
         ]);
 
         return redirect(request()->back_link)->with(['message' => ['type' => 'info', 'text' => 'Student info updated']]);
@@ -73,6 +74,7 @@ class StudentController extends Controller
             'rollno' => $request->rollno,
             'course' => $request->course,
             'department' => $request->department,
+            'department' => $request->mzuid,
         ]);
         return redirect(request()->back_link)->with(['message' => ['type' => 'info', 'text' => 'Student info updated']]);
     }

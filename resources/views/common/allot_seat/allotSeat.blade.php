@@ -2,7 +2,7 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                Room allotment for {{ $allot_hostel->person->name }} in {{ $allot_hostel->hostel->name }}
+                Room allotment for {{ $allot_hostel->allotment->person->name }} in {{ $allot_hostel->hostel->name }}
                 <p>
                     <a class="btn btn-secondary btn-sm" href="/allot_hostel/{{ $allot_hostel->id }}">back</a>
                 </p>

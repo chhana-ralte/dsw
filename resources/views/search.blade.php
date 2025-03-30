@@ -33,8 +33,12 @@
                         @foreach($persons as $p)
                             <tr>
                                 <td>
-                                    @if($p->allot_hostel())
-                                        <a href="/allot_hostel/{{ $p->allot_hostel()->id }}?back_link=/search?str={{$str}}">{{ $p->name }}</a>
+                                    @if($p->valid_allotment())
+                                        @if($p->valid_allotment()->valid_allot_hostel())
+                                            <a href="/allot_hostel/{{ $p->valid_allotment()->valid_allot_hostel()->id }}?back_link=/search?str={{$str}}">{{ $p->name }}</a>
+                                        @else
+                                            {{ $p->name }}
+                                        @endif
                                     @else
                                         {{ $p->name }}
                                     @endif
@@ -44,9 +48,9 @@
                                         dept : {{ $p->student()->department }},
                                         course : {{ $p->student()->course }},
                                     @endif
-                                    @if(count($p->allot_hostels)>0)
+                                    @if($p->valid_allotment() && count($p->valid_allotment()->allot_hostels)>0)
                                         (
-                                        @foreach($p->allot_hostels as $ah)
+                                        @foreach($p->valid_allotment()->allot_hostels as $ah)
                                             hostel : {{ $ah->hostel->name }},
                                             stay : {{ $ah->valid?'Yes':'No' }},
                                         @endforeach

@@ -86,7 +86,8 @@ class PersonController extends Controller
     public function destroy(Person $person)
     {
         if(auth()->user()->isAdmin()){
-            $allot_hostels = \App\Models\AllotHostel::where('person_id',$person->id);
+            $allotments = \App\Models\Allotment::where('person_id',$person->id);
+            $allot_hostels = \App\Models\AllotHostel::whereIn('allotment_id',$allotments->pluck('id'));
             $allot_seats = \App\Models\AllotSeat::whereIn('allot_hostel_id',$allot_hostels->pluck('id'));
             $students = \App\Models\Student::where('person_id',$person->id);
             $others = \App\Models\Other::where('person_id',$person->id);
@@ -99,6 +100,7 @@ class PersonController extends Controller
             $students->delete();
             $allot_seats->delete();
             $allot_hostels->delete();
+            $allotments->delete();
             $person->delete();
             return redirect("/message")->with(['message' => ['type' => 'info', 'text' => 'Personal is deleted']]);
         }

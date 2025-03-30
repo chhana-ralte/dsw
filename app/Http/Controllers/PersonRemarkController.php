@@ -18,7 +18,7 @@ class PersonRemarkController extends Controller
             $back_link = $request->back_link;
         }
         else{
-            $allot_hostel = $person->valid_allot_hostel();
+            $allot_hostel = $person->valid_allotment()->valid_allot_hostel();
             $back_link = '/allot_hostel/' . $allot_hostel->id;
         }
         $data = [
@@ -64,7 +64,7 @@ class PersonRemarkController extends Controller
      */
     public function edit(PersonRemark $personRemark)
     {
-        //
+        return view('common.person.remark.edit',['person_remark' => $personRemark]);
     }
 
     /**
@@ -72,14 +72,20 @@ class PersonRemarkController extends Controller
      */
     public function update(Request $request, PersonRemark $personRemark)
     {
-        //
-    }
+        $personRemark->update([
+            'person_id' => $personRemark->person->id,
+            'remark_dt' => $request->remark_dt,
+            'remark' => $request->remark,
+            'score' => $request->score
+        ]);
+        return redirect('/person/' . $personRemark->person->id . '/person_remark')->with(['message' => ['type' => 'info', 'text' => 'Remark updated']]);    }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(PersonRemark $personRemark)
     {
+        // return $personRemark->id;
         $person = $personRemark->person;
         PersonRemarkDetail::where('person_remark_id',$personRemark->id)->delete();
         $personRemark->delete();

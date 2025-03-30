@@ -36,6 +36,14 @@
                     </div>
                 </div>
 
+                
+                <div class="form-group row mb-3">
+                    <label for="mzuid" class="col col-md-3">MZU ID</label>
+                    <div class="col col-md-4">
+                        <input type="text" class="form-control" name="mzuid" value="{{ old('mzuid') }}">
+                    </div>
+                </div>
+
                 <div class="form-group row mb-3">
                     <div class="col col-md-3"></div>
                     <div class="col col-md-4">

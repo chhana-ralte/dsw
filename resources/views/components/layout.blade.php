@@ -30,7 +30,7 @@
                         <a class="nav-link" href="/hostel">Hostels</a>
                     </li>
                     @auth
-                        @if(auth()->user()->hasRole('Warden'))
+                        @if(auth()->user()->isWarden())
                             @foreach(auth()->user()->user_roles() as $role_user)
                                 @if($role_user->type == 'hostel')
                                     <li class="nav-item">
@@ -39,12 +39,12 @@
                                 @endif
                             @endforeach    
                         @endif
-                        @if (auth()->user()->teacher_id)
+                        @if(auth()->user()->isAdmin() || auth()->user()->isDsw())
                             <li class="nav-item">
-                                <a class="nav-link" href="/user/{{ auth()->user()->id }}/attmaster">Attendance</a>
+                                <a class="nav-link" href="/notification/">Notifications</a>
                             </li>
                         @endif
-                        @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('DSW'))
+                        @if(auth()->user()->isAdmin() || auth()->user()->hasRole('DSW'))
                             <li class="nav-item">
                                 <a class="nav-link" href="/user">Users</a>
                             </li>

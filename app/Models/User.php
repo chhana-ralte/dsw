@@ -63,17 +63,19 @@ class User extends Authenticatable
     }
 
     public function isAdmin(){
-        $role = Role::where('role','Admin')->orWhere('role','Super')->get();
+        $role = Role::where('role','Admin')->get();
         return Role_User::where('user_id',$this->id)->whereIn('role_id',$role->pluck('id'))->exists();
     }
 
-    public function hasRole($strrole)
+    
+    public function isDsw(){
+        $role = Role::where('role','DSW')->get();
+        return Role_User::where('user_id',$this->id)->whereIn('role_id',$role->pluck('id'))->exists();
+    }
+
+    public function hasRole($strRole)
     {
-        $str = $strrole == 'Admin'?'Admin':($strrole=='DSW'?'DSW':'Warden');
-        // return $str;
-        $role = Role::where('role',$str)->first();
-        // $role = Role::first();
-        // return $role->role;
+        $role = Role::where('role',$strRole)->first();
         return Role_User::where('user_id',$this->id)->where('role_id',$role->id)->exists();
         
     }

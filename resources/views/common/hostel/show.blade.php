@@ -56,6 +56,9 @@
         <x-block>
             <x-slot name="heading">
                 {{ $hostel->name }} Hall of Residence
+                <p>
+                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/admission?sessn={{ App\Models\Sessn::default()->id }}">Admission details</a>
+                </p>
             </x-slot>
             Summary
             <table class="table table-hover table-striped">

@@ -49,7 +49,7 @@ class PersonRemarkDetailController extends Controller
      */
     public function edit(PersonRemarkDetail $personRemarkDetail)
     {
-        //
+        return view('common.person.remark.detail.edit',['person_remark_detail' => $personRemarkDetail]);
     }
 
     /**
@@ -57,14 +57,21 @@ class PersonRemarkDetailController extends Controller
      */
     public function update(Request $request, PersonRemarkDetail $personRemarkDetail)
     {
-        //
-    }
+        $personRemarkDetail->update([
+            'person_remark_id' => $personRemarkDetail->person_remark->id,
+            'detail' => $request->detail
+        ]);
+        return redirect('/person/' . $personRemarkDetail->person_remark->person->id . '/person_remark')->with(['message' => ['type' => 'info', 'text' => 'Remark detail updated successfully']]);    }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(PersonRemarkDetail $personRemarkDetail)
     {
-        //
+        $personRemark = $personRemarkDetail->person_remark;
+        // return $personRemarkDetail;
+        $personRemarkDetail->delete();
+
+        return redirect('/person/' . $personRemark->person->id . '/person_remark')->with(['message' => ['type' => 'info', 'text' => 'Remark detail deleted successfully']]);
     }
 }
