@@ -7,5 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Notification extends Model
 {
-    use HasFactory;
+    protected $guarded = [];
+
+    public function allotments(){
+        return $this->hasMany(Allotment::class);
+    }
 }

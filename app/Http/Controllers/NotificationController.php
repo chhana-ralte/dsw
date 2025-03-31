@@ -12,7 +12,10 @@ class NotificationController extends Controller
      */
     public function index()
     {
-        return "Hello";
+        $data = [
+            'notifications' => Notification::orderBy('dt')->get()
+        ];
+        return view("common.notification.index", $data);
     }
 
     /**
@@ -20,7 +23,7 @@ class NotificationController extends Controller
      */
     public function create()
     {
-        //
+        return view('common.notification.create');
     }
 
     /**
@@ -28,7 +31,13 @@ class NotificationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $notification = Notification::create([
+            'no' => $request->no,
+            'dt' => $request->dt,
+            'content' => $request->content,
+        ]);
+
+        
     }
 
     /**

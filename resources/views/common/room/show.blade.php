@@ -49,11 +49,11 @@
                                 <td>{{ $s->serial }}</td>
                                 @if (count($s->valid_allot_seats()) > 0)
                                     @foreach ($s->valid_allot_seats() as $as)
-                                        <td>{{ $as->allot_hostel->person->name }}</td>
-                                        @if ($as->allot_hostel->person->student())
-                                            <td>{{ $as->allot_hostel->person->student()->course }}</td>
-                                            <td>{{ $as->allot_hostel->person->student()->department }}</td>
-                                            <td>{{ $as->allot_hostel->person->student()->mzuid }}</td>
+                                        <td>{{ $as->allot_hostel->allotment->person->name }}</td>
+                                        @if ($as->allot_hostel->allotment->person->student())
+                                            <td>{{ $as->allot_hostel->allotment->person->student()->course }}</td>
+                                            <td>{{ $as->allot_hostel->allotment->person->student()->department }}</td>
+                                            <td>{{ $as->allot_hostel->allotment->person->student()->mzuid }}</td>
                                         @else
                                             <td></td>
                                             <td></td>
@@ -121,12 +121,12 @@
                             @foreach ($room->invalid_allot_seats() as $as)
                                 <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
                                     <td>{{ $as->seat->serial }}</td>
-                                    <td>{{ $as->allot_hostel->person->name }}</td>
+                                    <td>{{ $as->allot_hostel->allotment->person->name }}</td>
                                     <td>{{ $as->from_dt }} - {{ $as->to_dt }}</td>
-                                    @if ($as->allot_hostel->person->student())
-                                        <td>{{ $as->allot_hostel->person->student()->course }}</td>
-                                        <td>{{ $as->allot_hostel->person->student()->department }}</td>
-                                        <td>{{ $as->allot_hostel->person->student()->mzuid }}</td>
+                                    @if ($as->allot_hostel->allotment->person->student())
+                                        <td>{{ $as->allot_hostel->allotment->person->student()->course }}</td>
+                                        <td>{{ $as->allot_hostel->allotment->person->student()->department }}</td>
+                                        <td>{{ $as->allot_hostel->allotment->person->student()->mzuid }}</td>
                                     @endif
                                 </tr>
                             @endforeach

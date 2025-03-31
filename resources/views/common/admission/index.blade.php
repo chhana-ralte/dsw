@@ -37,7 +37,7 @@
                                 <td class="name">{{ $ah->allotment->person->name }}</td>
                                 @if($ah->allotment->person->student())
                                     <td>{{ $ah->allotment->person->student()->department }}</td>
-                                @elseif($ah->person->other())
+                                @elseif($ah->allotment->person->other())
                                     <td><b>Not a student ({{ $ah->allotment->person->other()->remark }})</b></td>
                                 @else
                                     <td><b>No info</b></td>

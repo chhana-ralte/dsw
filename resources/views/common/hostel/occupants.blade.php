@@ -74,13 +74,13 @@
                         @if(count($allot_hostels)>0)
                             @foreach($allot_hostels as $ah)
                                 <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
-                                    <td><a href="/allot_hostel/{{ $ah->id }}">{{ $ah->person->name }}</a></td>
-                                    @if($ah->person->student())
-                                        <td>{{ $ah->person->student()->course }}</td>
-                                        <td>{{ $ah->person->student()->department }}</td>
-                                        <td>{{ $ah->person->student()->mzuid }}</td>
-                                    @elseif($ah->person->other())
-                                        <td colspan=3>Not a student ({{ $ah->person->other()->remark }})</td>
+                                    <td><a href="/allot_hostel/{{ $ah->id }}">{{ $ah->allotment->person->name }}</a></td>
+                                    @if($ah->allotment->person->student())
+                                        <td>{{ $ah->allotment->person->student()->course }}</td>
+                                        <td>{{ $ah->allotment->person->student()->department }}</td>
+                                        <td>{{ $ah->allotment->person->student()->mzuid }}</td>
+                                    @elseif($ah->allotment->person->other())
+                                        <td colspan=3>Not a student ({{ $ah->allotment->person->other()->remark }})</td>
                                     @endif
                                     @auth
                                         @if(auth()->user()->isWardenOf($ah->hostel->id))
