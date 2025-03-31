@@ -15,6 +15,7 @@
                             <th>Notification No.</th>
                             <th>Date</th>
                             <th>Content</td>
+                            <th>Detail</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -25,6 +26,11 @@
                                 <td><a href="/notification/{{ $notif->id }}">{{ $notif->no }}</td>
                                 <td>{{ $notif->dt }}</td>
                                 <td>{{ $notif->content }}</td>
+                                <td>
+                                    @if(count($notif->allotments) > 0)
+                                        <a href="/notification/{{ $notif->id }}/allotment" class="btn btn-primary btn-sm">Allotments</a>
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>

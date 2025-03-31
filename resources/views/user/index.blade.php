@@ -3,9 +3,12 @@
         <x-block>
             <x-slot name="heading">
                 List of users
+                <p>
+                    <a class="btn btn-primary btn-sm" href="/user/create">New user</a>
+                </p>
             </x-slot>
-            <div class="pt-2">
-                <x-button type="a" href="/user/create">New user</x-button>
+            <div style="width: 100%; overflow-x:auto">
+                
                 <div class="pt-2">
                 @if(count($users)>0)
                 
@@ -34,7 +37,7 @@
                         @endforeach
                     </table>
                     @else
-                    No user
+                        No user
                     @endif
                     <form method="post" id="form-delete">
                         @csrf

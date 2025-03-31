@@ -2,12 +2,13 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                Create Notification
+                Edit Notification
                 <p>
-                    <a href="/notification/" class="btn btn-primary btn-sm">Back</a>
+                    <a href="/notification/{{ $notification->id }}" class="btn btn-primary btn-sm">Back</a>
                 </p>
             </x-slot>
-            <form method="post" action="/notification">
+            <form method="post" action="/notification/{{ $notification->id }}">
+                @method('PUT')
                 @csrf
                 <div>
                     <div class="form-group row pt-3">
@@ -15,7 +16,7 @@
                             Notification No.
                         </div>
                         <div class="col col-md-4">
-                            <input type="text" name="no" value="{{ old('no') }}" class="form-control" required>
+                            <input type="text" name="no" value="{{ old('no',$notification->no) }}" class="form-control" required>
                         </div>
                     </div>
 
@@ -24,7 +25,7 @@
                             Date
                         </div>
                         <div class="col col-md-4">
-                            <input type="date" name="dt" class="form-control" value="{{ old('dt') }}" required>
+                            <input type="date" name="dt" class="form-control" value="{{ old('dt',$notification->dt) }}" required>
                         </div>
                     </div>
 
@@ -33,7 +34,7 @@
                             Content
                         </div>
                         <div class="col col-md-4">
-                            <textarea name="content" class="form-control">{{ old('content') }}</textarea>
+                            <textarea name="content" class="form-control">{{ old('content',$notification->content) }}</textarea>
                         </div>
                     </div>
 
@@ -42,7 +43,7 @@
                             
                         </div>
                         <div class="col col-md-4">
-                            <button type="submit" class="btn btn-primary">Create</button>
+                            <button type="submit" class="btn btn-primary">Update</button>
                         </div>
                     </div>
                 </div>

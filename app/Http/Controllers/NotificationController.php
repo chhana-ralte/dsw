@@ -36,8 +36,7 @@ class NotificationController extends Controller
             'dt' => $request->dt,
             'content' => $request->content,
         ]);
-
-        
+        return redirect('/notification')->with(['message' => ['type' => 'info', 'text' => 'Notification created']]);
     }
 
     /**
@@ -45,7 +44,10 @@ class NotificationController extends Controller
      */
     public function show(Notification $notification)
     {
-        //
+        $data = [
+            'notification' => $notification
+        ];
+        return view('common.notification.show',$data);
     }
 
     /**
@@ -53,7 +55,10 @@ class NotificationController extends Controller
      */
     public function edit(Notification $notification)
     {
-        //
+        $data = [
+            'notification' => $notification
+        ];
+        return view('common.notification.edit',$data);
     }
 
     /**
@@ -61,7 +66,12 @@ class NotificationController extends Controller
      */
     public function update(Request $request, Notification $notification)
     {
-        //
+        $notification->update([
+            'no' => $request->no,
+            'dt' => $request->dt,
+            'content' => $request->content,
+        ]);
+        return redirect('/notification/' . $notification->id)->with(['message' => ['type' => 'info', 'text' => 'Notification updated']]);
     }
 
     /**
@@ -69,6 +79,7 @@ class NotificationController extends Controller
      */
     public function destroy(Notification $notification)
     {
-        //
+        $notification->delete();
+        return redirect('/notification')->with(['message' => ['type' => 'info', 'text' => 'Notification deleted']]);
     }
 }
