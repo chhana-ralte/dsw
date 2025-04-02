@@ -8,7 +8,7 @@
   <x-container>
     <x-block>
       <div align="center" style="width: 100%; overflow-x:auto">
-        <div class="card" style="width: 400px" centered>
+        <div class="card" style="width: 350px" centered>
           <div class="card-header">
             Login form
           </div>
