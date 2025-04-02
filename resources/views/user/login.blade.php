@@ -5,13 +5,13 @@
 
   <form method='post' action='/login'>
   @csrf
-    <x-container>
-      <x-block>
-        <div align="center">
-          <div class="card" style="width: 400px" centered>
-            <div class="card-header">
-              Login form
-            </div>
+  <x-container>
+    <x-block>
+      <div align="center" style="width: 100%; overflow-x:auto">
+        <div class="card" style="width: 400px" centered>
+          <div class="card-header">
+            Login form
+          </div>
           <div class="card-body">
             <div class="form-group row">
               <div class="col-md-4">
@@ -32,10 +32,10 @@
           </div>
           <div class="card-footer">
             <div class="form-group row">
-              <div class="col-md-3">
-                <x-button type="submit">Login</x-button>
-              </div>
+            <div class="col-md-3">
+              <x-button type="submit">Login</x-button>
             </div>
+          </div>
 
           </div>
         </div>
