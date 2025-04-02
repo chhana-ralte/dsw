@@ -17,7 +17,7 @@
               <div class="col-md-4">
                 <Label>Username</label>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-8">
                 <input class="form-control" type="text" name="username" value="{{ old('username') }}" required>
               </div>
             </div>
@@ -25,7 +25,7 @@
               <div class="col-md-4">
                 <Label>Password</label>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-8">
                 <input class="form-control" type="password" name="password" required>
               </div>
             </div>
