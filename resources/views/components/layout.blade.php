@@ -29,6 +29,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/hostel">Hostels</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admissioncheck">Check admission status</a>
+                    </li>
                     @auth
                         @if(auth()->user()->isWarden())
                             @foreach(auth()->user()->user_roles() as $role_user)

@@ -15,6 +15,9 @@ class AdmissionController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function index2(Allotment $allotment){
+        return $allotment;
+    }
     public function index(Hostel $hostel)
     {
         // return $hostel;

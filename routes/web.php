@@ -23,13 +23,17 @@ use App\Http\Controllers\PersonRemarkDetailController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SessnController;
 use App\Http\Controllers\AdmissionController;
-
+use App\Http\Controllers\AdmissionCheckController;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 
 Route::get('/', [HostelController::class, 'index']);
 Route::get('/search', [SearchController::class, 'index'])->middleware(['auth']);
+Route::get('/admissioncheck', [AdmissionCheckController::class, 'check']);
+Route::post('/admissioncheck', [AdmissionCheckController::class, 'checkStore']);
+Route::get('/allotment/{id}/admission', [AdmissionCheckController::class , 'status']);
+
 Route::get('/message', function(){
     return view('message');
 })->middleware(['auth']);
@@ -42,7 +46,7 @@ Route::get('/login', [UserController::class, 'login'])->name('login');
 Route::post('/login', [UserController::class, 'logincheck']);
 Route::get('/user/changePassword', [UserController::class, 'changePassword'])->middleware('auth');
 Route::post('/user/changePassword', [UserController::class, 'changePasswordStore']);
-Route::post('/logout', [UserController::class, 'logout'])->middleware('auth');
+Route::post('/logout', [UserController::class, 'logout']);
 Route::get('/hostel/{hostel}/occupants', [HostelController::class, 'occupants'])->middleware('auth');
 
 Route::resource('person', PersonController::class)->middleware('auth');
