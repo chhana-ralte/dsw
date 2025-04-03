@@ -4,13 +4,13 @@
             <x-slot name="heading">
                 Personal information
                 @auth()
-                    @if(can('update',$allotment->hostel) || can('update',$allotment->valid_allot_hostel()->hostel))
-                        <a class="btn btn-secondary btn-sm" href="/person/{{ $allotment->person->id }}/edit?back_link=/allot_hostel/{{ $allot_hostel->id }}">Edit</a>
-                    @endid
-                    <a class="btn btn-secondary btn-sm" href="/allotment/{{ $allotment->person->id }}/person_remark?back_link=/allotment/{{ $allotment->id }}">Remarks about the person</a>
+                    @can('update',$allotment->hostel) 
+                        <a class="btn btn-secondary btn-sm" href="/person/{{ $allotment->person->id }}/edit?back_link=/allotment/{{ $allotment->id }}">Edit</a>
+                    @endcan
+                    <a class="btn btn-secondary btn-sm" href="/person/{{ $allotment->person->id }}/person_remark?back_link=/allotment/{{ $allotment->id }}">Remarks about the person</a>
 
                     @if(auth()->user()->isAdmin())
-                        <a class="btn btn-danger btn-sm" href="/person/{{ $allotment->person->id }}/confirm_delete?back_link=/allot_hostel/{{ $allot_hostel->id }}">Delete</a>
+                        <a class="btn btn-danger btn-sm" href="/person/{{ $allotment->person->id }}/confirm_delete?back_link=/allotment/{{ $allotment->id }}">Delete</a>
                     @endif
                 @endauth
                 <p>
@@ -54,8 +54,8 @@
                 <x-slot name="heading">
                     Student Information
                     @auth()
-                        @can('update',$allot_hostel->hostel)
-                            <a class="btn btn-secondary btn-sm" href="/student/{{ $allotment->person->student()->id }}/edit?back_link=/allot_hostel/{{ $allotment->id }}">Edit</a>
+                        @can('update',$allotment->hostel)
+                            <a class="btn btn-secondary btn-sm" href="/student/{{ $allotment->person->student()->id }}/edit?back_link=/allotment/{{ $allotment->id }}">Edit</a>
                         @endcan
                     @endauth
                 </x-slot>                
@@ -97,33 +97,44 @@
                             Whether a student or not??
                         </x-slot>
                         <div>
-                            <a href="/person/{{ $allotment->person->id }}/student/create?back_link=/allot_hostel/{{ $allot_hostel->id }}" class="btn btn-primary">Add student information</a>
-                            <a href="/person/{{ $allotment->person->id }}/other/create?back_link=/allot_hostel/{{ $allot_hostel->id }}" class="btn btn-primary">Not a student</a>
+                            <a href="/person/{{ $allotment->person->id }}/student/create?back_link=/allotment/{{ $allotment->id }}" class="btn btn-primary">Add student information</a>
+                            <a href="/person/{{ $allotment->person->id }}/other/create?back_link=/allotment/{{ $allotment->id }}" class="btn btn-primary">Not a student</a>
                         </div>
                     </x-block>
                 @endcan
             @endauth
         @endif
+
         <x-block>
             <x-slot name="heading">
                 Seat Allotment Information
             </x-slot>
-            @if(count($allotment->allot_hostels() > 0)
-                @foreach($allot_hostel->allot_seats as $as)
-                    {{ $as->seat->room->hostel->name }}: {{ $as->seat->room->roomno }}/{{ $as->seat->serial }} ({{ $as->valid?'Valid':'Invalid' }})<br>
+            @if(count($allotment->allot_hostels) > 0)
+                @foreach($allotment->allot_hostels as $ah)
+                    <b>{{ $ah->hostel->name }}</b> ({{ $ah->valid?'Valid':'Invalid' }})<br>
+                    @foreach($ah->allot_seats as $as)
+                        {{ $as->seat->room->roomno }}/{{ $as->seat->serial }} ({{ $as->valid?'Valid':'Invalid' }})<br>
+                    @endforeach
+                    <hr>
                 @endforeach
-                @auth
-                    @can('update',$allot_hostel->hostel)
-                        <a class="btn btn-primary" href="/allot_hostel/{{ $allot_hostel->id }}/allotSeat">Allot another seat</a>
-                    @endcan
-                @endauth
-            @else
-                @auth
-                    @can('update',$allot_hostel->hostel)
-                        <a class="btn btn-primary" href="/allot_hostel/{{ $allot_hostel->id }}/allotSeat">Allot seat</a>
-                    @endif
-                @endauth
             @endif
+
+            @auth
+                @if($allotment->valid_allot_hostel())
+                    @can('update',$allotment->valid_allot_hostel()->hostel)
+                        <a class="btn btn-primary" href="/allot_hostel/{{ $allotment->valid_allot_hostel()->id }}/allotSeat">Change room/seat</a>
+                    @endcan
+                    @if(auth()->user()->isDSW())
+                        <a class="btn btn-primary" href="/allotment/{{ $allotment->id }}/allot_hostel/create">Allot another hostel</a>
+                    @endif
+                @else
+                @if(auth()->user()->isDSW())
+                    <a class="btn btn-primary" href="/allotment/{{ $allotment->id }}/allot_hostel/create">Allot hostel</a>
+                    @endif
+                @endif
+                
+            @endauth
+            
         </x-block>
 
         @if(count($allotment->person->person_remarks) > 0)
@@ -137,17 +148,17 @@
                         <th>Remark</th>
                     </tr>
                     @foreach($allotment->person->person_remarks as $pr)
-                    <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
-                        <td>{{ $pr->remark_dt }}</td>
-                        <td><h4>{{ $pr->remark }}</h4>
-                        @if(count($pr->person_remark_details) > 0)
-                            @foreach($pr->person_remark_details as $prd)
-                                <hr>
-                                {{ $prd->detail }}
-                            @endforeach
-                        @endif
-                        </td>
-                    </tr>
+                        <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
+                            <td>{{ $pr->remark_dt }}</td>
+                            <td><h4>{{ $pr->remark }}</h4>
+                            @if(count($pr->person_remark_details) > 0)
+                                @foreach($pr->person_remark_details as $prd)
+                                    <hr>
+                                    {{ $prd->detail }}
+                                @endforeach
+                            @endif
+                            </td>
+                        </tr>
                     @endforeach
                 </table>
             </x-block>

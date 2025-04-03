@@ -34,11 +34,7 @@
                             <tr>
                                 <td>
                                     @if($p->valid_allotment())
-                                        @if($p->valid_allotment()->valid_allot_hostel())
-                                            <a href="/allot_hostel/{{ $p->valid_allotment()->valid_allot_hostel()->id }}?back_link=/search?str={{$str}}">{{ $p->name }}</a>
-                                        @else
-                                            {{ $p->name }}
-                                        @endif
+                                        <a href="/allotment/{{ $p->valid_allotment()->id }}?back_link=/search?str={{$str}}">{{ $p->name }}</a>
                                     @else
                                         {{ $p->name }}
                                     @endif

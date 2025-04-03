@@ -18,8 +18,8 @@ class PersonRemarkController extends Controller
             $back_link = $request->back_link;
         }
         else{
-            $allot_hostel = $person->valid_allotment()->valid_allot_hostel();
-            $back_link = '/allot_hostel/' . $allot_hostel->id;
+            $allotment = $person->valid_allotment();
+            $back_link = '/allotment/' . $allotment->id;
         }
         $data = [
             'person' => $person,

@@ -62,6 +62,8 @@ Route::resource('notification', NotificationController::class)->middleware('auth
 Route::resource('notification.allotment', AllotmentController::class)->shallow()->middleware('auth');
 Route::resource('allotment.allot_hostel', AllotHostelController::class)->shallow()->middleware('auth');
 Route::resource('user', UserController::class)->middleware(['auth']);
+Route::resource('allotment.admission', AdmissionController::class)->shallow()->middleware('auth');
+
 Route::resource('sessn', SessnController::class)->middleware(['auth']);
 
 Route::get('/allot_hostel/{id}/allotSeat', [AllotSeatController::class, 'allotSeat'])->middleware('auth');

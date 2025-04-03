@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Allotment;
+use App\Models\Person;
+use App\Models\Student;
+use App\Models\Other;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 
@@ -14,9 +17,10 @@ class AllotmentController extends Controller
     public function index(Notification $notification)
     {
         $data = [
-            'notification' => $notification
+            'notification' => $notification,
+            'allotments' => Allotment::where('notification_id',$notification->id)->orderBy('hostel_id')->get()
         ];
-        return view('common.allotment.create', $data);
+        return view('common.allotment.index', $data);
     }
 
     /**
@@ -35,6 +39,7 @@ class AllotmentController extends Controller
      */
     public function store(Request $request, Notification $notification)
     {
+        // return $request;
         // return $request->from_dt;
         $request->validate([
             'name' => 'required',
@@ -77,39 +82,30 @@ class AllotmentController extends Controller
             'admitted' => 0,
             'valid' => 1,
             'finished' => 0,
-            'from_dt' => 12
         ]);
 
         return redirect('/allotment/' . $allotment->id)->with(['message' => ['type' => 'info', 'text' => 'Allotment details entered successfully']]);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Allotment $allotment)
     {
-        //
+        $data = [
+            'allotment' => $allotment,
+            'back_link' => isset(request()->back_link)?request()->back_link:'/notification/' . $allotment->notification->id . '/allotment',
+        ];
+        return view('common.allotment.show',$data);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Allotment $allotment)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Allotment $allotment)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Allotment $allotment)
     {
         //

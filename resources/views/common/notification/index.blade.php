@@ -27,9 +27,9 @@
                                 <td>{{ $notif->dt }}</td>
                                 <td>{{ $notif->content }}</td>
                                 <td>
-                                    @if(count($notif->allotments) > 0)
-                                        <a href="/notification/{{ $notif->id }}/allotment" class="btn btn-primary btn-sm">Allotments</a>
-                                    @endif
+                                    
+                                    <a href="/notification/{{ $notif->id }}/allotment" class="btn btn-primary btn-sm">Allotments</a>
+                                    
                                 </td>
                             </tr>
                         @endforeach

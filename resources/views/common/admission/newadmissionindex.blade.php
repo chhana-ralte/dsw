@@ -17,36 +17,29 @@
                 <table class="table table-hover table-auto">
                     <thead>
                         <tr>
-                            <th>Seat No.</th>
+                            <th>Sl.</th>
                             <th>Name</th>
-                            <th>Department</th>
-                            <th>Status</td>
+                            <th>Course</th>
+                            <th>Department</td>
+                            <td>Action</td>
                         </tr>
                     </thead>
                     <tbody>
+                        <?php $sl=1 ?>
                         @foreach($new_allotments as $allotment)
-                            <tr class="table-white row_{{ $ah->id }}">
-                                <td><i>N.A.</i></td>
+                            <tr class="table-white row_{{ $allotment->id }}">
+                                <td>{{ $sl++ }}</td>
                                 <td class="name">{{ $allotment->person->name }}</td>
                                 @if($allotment->person->student())
+                                    <td>{{ $allotment->person->student()->course }}</td>
                                     <td>{{ $allotment->person->student()->department }}</td>
-                                @elseif($person->other())
-                                    <td><b>Not a student ({{ $allotment->person->other()->remark }})</b></td>
+                                @elseif($allotment->person->other())
+                                    <td colspan="2"><b>Not a student ({{ $allotment->person->other()->remark }})</b></td>
                                 @else
-                                    <td><b>No info</b></td>
+                                    <td colspan="2"><b>No info</b></td>
                                 @endif
                                 <td>
-                                    @if($allotment->admission($sessn->id))
-                                        <label id="label_{{ $allotment->id }}">Done</label>
-                                        @can('update',$hostel)
-                                            <button class="btn btn-primary btn-sm btn-confirm" name="admit_{{ $allotment->id }}" value="{{ $allotment->id }}">Undo</button>
-                                        @endcan
-                                    @else
-                                        <label id="label_{{ $allotment->id }}">Not done</label>
-                                        @can('update',$hostel)
-                                            <button class="btn btn-primary btn-sm btn-confirm" name="admit_{{ $allotment->id }}" value="{{ $allotment->id }}">Confirm</button>
-                                        @endcan
-                                    @endif
+                                    <a class="btn btn-primary" href="/allotment/{{ $allotment->id }}/admission/create?sessn_id={{ $sessn->id }}">Admit</a>
                                 </td>
                             </tr>
                         @endforeach

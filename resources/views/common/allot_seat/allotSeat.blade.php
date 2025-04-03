@@ -4,7 +4,7 @@
             <x-slot name="heading">
                 Room allotment for {{ $allot_hostel->allotment->person->name }} in {{ $allot_hostel->hostel->name }}
                 <p>
-                    <a class="btn btn-secondary btn-sm" href="/allot_hostel/{{ $allot_hostel->id }}">back</a>
+                    <a class="btn btn-secondary btn-sm" href="/allotment/{{ $allot_hostel->allotment->id }}">back</a>
                 </p>
             </x-slot>
             <div class="container">
@@ -109,7 +109,7 @@ $(document).ready(function(){
                 success : function(data,status){
                     //alert(data);
                     alert("Successfully allotted");
-                    location.replace("/allot_hostel/{{ $allot_hostel->id }}");
+                    location.replace("/allotment/{{ $allot_hostel->allotment->id }}");
                 },
                 error : function(){
                     alert("Error");

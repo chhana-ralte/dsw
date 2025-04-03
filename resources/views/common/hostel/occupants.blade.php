@@ -25,7 +25,7 @@
                             <tr class="table-white">
                             <td>{{ $seat->room->roomno }}/{{ $seat->serial }}</td>
                             @if($seat->valid_allot_seats()->count() > 0)
-                                <td><a href='/allot_hostel/{{ $seat->valid_allot_seat()->allot_hostel->id }}'>{{ $seat->valid_allot_seat()->allot_hostel->allotment->person->name }}</a></td>
+                                <td><a href='/allotment/{{ $seat->valid_allot_seat()->allot_hostel->allotment->id }}'>{{ $seat->valid_allot_seat()->allot_hostel->allotment->person->name }}</a></td>
                                 @if($seat->valid_allot_seat()->allot_hostel->allotment->person->student())
                                     <td>{{ $seat->valid_allot_seat()->allot_hostel->allotment->person->student()->course }}</td>
                                     <td>{{ $seat->valid_allot_seat()->allot_hostel->allotment->person->student()->department }}</td>
@@ -74,7 +74,7 @@
                         @if(count($allot_hostels)>0)
                             @foreach($allot_hostels as $ah)
                                 <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
-                                    <td><a href="/allot_hostel/{{ $ah->id }}">{{ $ah->allotment->person->name }}</a></td>
+                                    <td><a href="/allotment/{{ $ah->allotment->id }}">{{ $ah->allotment->person->name }}</a></td>
                                     @if($ah->allotment->person->student())
                                         <td>{{ $ah->allotment->person->student()->course }}</td>
                                         <td>{{ $ah->allotment->person->student()->department }}</td>
