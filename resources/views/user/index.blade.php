@@ -22,18 +22,21 @@
                         </tr>
                         <?php $sl=1 ?>
                         @foreach($users as $u)
-                        <tr>
-                            <td>{{ $sl++ }}</td>
-                            <td><a href="/user/{{$u->id}}">{{ $u->name }}</a></td>
-                            <td>{{ $u->username }}</td>
-                            <td>{{ $u->email }}</td>
-                            <td>
-                                <div class="btn-group">
-                                    <x-button type="a" href="/user/{{$u->id}}/edit">Edit</x-button>
-                                    <x-button type="delete" class="delete" value="{{$u->id}}">Delete</x-button>
-                                </div>
-                            </td>
-                        </tr>
+                            @if($u->max_role_level() < auth()->user()->max_role_level())
+                            <tr>
+                                
+                                <td>{{ $sl++ }}</td>
+                                <td><a href="/user/{{$u->id}}">{{ $u->name }}</a></td>
+                                <td>{{ $u->username }}</td>
+                                <td>{{ $u->email }}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <x-button type="a" href="/user/{{$u->id}}/edit">Edit</x-button>
+                                        <x-button type="delete" class="delete" value="{{$u->id}}">Delete</x-button>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endif
                         @endforeach
                     </table>
                     @else

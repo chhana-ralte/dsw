@@ -51,6 +51,10 @@ class User extends Authenticatable
     public function user_roles(){
         return Role_User::where('user_id',$this->id)->get();
     }
+
+    public function max_role_level(){
+        return $this->roles->max('level');
+    }
     
     public function isWardenOf($hostel_id){
         $role = Role::where('role','Warden')->first();

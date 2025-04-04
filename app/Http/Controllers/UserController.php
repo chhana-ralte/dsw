@@ -12,21 +12,29 @@ use App\Models\Role_User;
 class UserController extends Controller
 {
     public function index(){
-        if(auth()->user()->isAdmin())
+        $role = Role::where('role','Warden')->first();
+        $level = $role->level;
+        // return $level;
+        // return auth()->user()->max_role_level();
+        if(auth()->user()->max_role_level() >= $level)
             return view('user.index',['users'=>User::all()]);
         else
             abort(403);
     }
 
     public function show(User $user){
-        if(auth()->user()->isAdmin())
+        $role = Role::where('role','Warden')->first();
+        $level = $role->level;
+        if(auth()->user()->max_role_level() >= $level)
             return view('user.show',['user'=>$user]);
         else
             abort(403);
     }
 
     public function create(){
-        if(auth()->user()->isAdmin())
+        $role = Role::where('role','Warden')->first();
+        $level = $role->level;
+        if(auth()->user()->max_role_level() >= $level)
             return view('user.create');
         else
             abort(403);
@@ -51,7 +59,9 @@ class UserController extends Controller
     public function edit(User $user){
         // return $user->hasRole('Admin');
         // return $role->id;
-        if(auth()->user()->isAdmin()){
+        $role = Role::where('role','Warden')->first();
+        $level = $role->level;
+        if(auth()->user()->max_role_level() >= $level){
             $data=[
                 'user' => $user,
                 'roles' => Role::orderBy('level','desc')->get()

@@ -41,8 +41,10 @@
                     </div>
                     <div class="col-md-4">
                         @foreach($roles as $rl)
-                            <input type="checkbox" id="role_{{ $rl->id }}" name="roles[]" value="{{ $rl->id }}" {{ $user->hasRole("$rl->role")?' checked ':'' }}>
-                            <label for="role_{{ $rl->id }}">{{ $rl->role}}</label><br>
+                            @if(auth()->user()->max_role_level() > $rl->level)
+                                <input type="checkbox" id="role_{{ $rl->id }}" name="roles[]" value="{{ $rl->id }}" {{ $user->hasRole("$rl->role")?' checked ':'' }}>
+                                <label for="role_{{ $rl->id }}">{{ $rl->role}}</label><br>
+                            @endif
                         @endforeach
                     </div>
                 </div>
@@ -52,12 +54,19 @@
                         <label for="hostel">Hostel</label>
                     </div>
                     <div class="col-md-4">
-                        
-                        @foreach(\App\Models\Hostel::orderBy('name')->get() as $hostel)
-                            <input id="hostel_{{ $hostel->id }}" type="checkbox" name="hostel[]" value="{{ $hostel->id }}" {{ $user->hasWardenRole($hostel->id)?" checked ":""}}>
-                            <label for="hostel_{{ $hostel->id }}">{{ $hostel->name}}</label><br>
-                        @endforeach
-                        
+                        @if(auth()->user()->isAdmin() || auth()->user()->isDSW())
+                            @foreach(\App\Models\Hostel::orderBy('name')->get() as $hostel)
+                                <input id="hostel_{{ $hostel->id }}" type="checkbox" name="hostel[]" value="{{ $hostel->id }}" {{ $user->hasWardenRole($hostel->id)?" checked ":""}}>
+                                <label for="hostel_{{ $hostel->id }}">{{ $hostel->name}}</label><br>
+                            @endforeach
+                        @elseif(auth()->user()->isWarden())
+                            @foreach(\App\Models\Hostel::orderBy('name')->get() as $hostel)
+                                @if(auth()->user()->isWardenOf($hostel->id))
+                                    <input id="hostel_{{ $hostel->id }}" type="checkbox" name="hostel[]" value="{{ $hostel->id }}" {{ $user->hasWardenRole($hostel->id)?" checked ":""}}>
+                                    <label for="hostel_{{ $hostel->id }}">{{ $hostel->name}}</label><br>
+                                @endif
+                            @endforeach
+                        @endif
                     </div>
                 </div>                
 
@@ -94,7 +103,7 @@ $(document).ready(function(){
                 url : "/ajax/get_role/" + $(this).val(),
                 type : "get",
                 success : function(data,status){
-                    if(data.role == 'Warden'){
+                    if(data.role == 'Warden' || data.role == 'Prefect' || data.role == 'Mess Secretary'){
                         $("div.hostel").show();
                     }
                 },
