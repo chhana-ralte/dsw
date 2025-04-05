@@ -8,7 +8,7 @@
                 </p>
             </x-slot>
 
-            <form name="frm-submit" method="post" action="/allotment/{{ $allotment->id }}/admission">
+            <form name="frm_submit" method="post" action="/allotment/{{ $allotment->id }}/admission">
                 @csrf
                 <input type="hidden" name="sessn_id" value="{{ $sessn->id }}">
                 <div class="form-group row mb-3">
@@ -60,8 +60,6 @@
                         <input type="text" class="form-control" name="mzuid" value="{{ $allotment->hostel->name }}" disabled>
                     </div>
                 </div>
-                
-                
 
                 <div class="form-group row mb-3">
                     <div class="col col-md-3"></div>
@@ -89,12 +87,15 @@
                 <div class="form-group row mb-3">
                     <div class="col col-md-3"></div>
                     <div class="col col-md-4">
-                        <button type="button" class="btn btn-primary submit">Submit</button>
+                        <button type="button" class="btn btn-primary submit">Admit</button>
+                        <button type="button" class="btn btn-danger decline">Decline</button>
                         
                     </div>
                 </div>
 
-
+            </form>
+            <form method="post" name="frm_decline" action="/allotment/{{ $allotment->id }}/admission_decline">
+                @csrf
             </form>
         </x-block>
     </x-container>
@@ -155,11 +156,18 @@ $(document).ready(function(){
 
     $("button.submit").click(function(){
 
-        if($("input#admitted").is(':checked') && $("select#seat").val() != 0){
-            $("form[name='frm-submit']").submit();
+        if($("select#seat").val() != 0){
+            $("form[name='frm_submit']").submit();
         }
         else{
-            alert("Make sure the admission is done and seat is selected")
+            alert("Make sure the seat is selected")
+        }
+    });
+
+    $("button.decline").click(function(){
+        if(confirm("Are you sure the student won't do admission?")){
+            $("form[name='frm_decline']").submit();
+            alert("asdasds");
         }
     });
 });

@@ -45,6 +45,7 @@ class AdmissionController extends Controller
         }
         else{
             $new_allotments = Allotment::where('hostel_id',$hostel->id)
+                ->where('valid',1)
                 ->where('admitted',0);
             $data = [
                 'sessn' => $sessn,
@@ -82,6 +83,13 @@ class AdmissionController extends Controller
      */
     public function store(Request $request,Allotment $allotment)
     {
+        if($request->admitted){
+            return "Yes";
+        }
+        else{
+            return "No";
+        }
+        return request()->admitted;
         if(!$allotment->valid_allot_hostel()){
             $allot_hostel = AllotHostel::create([
                 'allotment_id' => $allotment->id,
@@ -107,21 +115,22 @@ class AdmissionController extends Controller
             'to_dt' => $allot_hostel->to_dt,
         ]);
 
-        Admission::updateOrCreate([
-            'allotment_id' => $allotment->id,
-            'sessn_id' => $request->sessn_id,
-            'allot_hostel_id' => $allot_hostel->id,
-        ],
-        [
-            'allotment_id' => $allotment->id,
-            'sessn_id' => $request->sessn_id,
-            'allot_hostel_id' => $allot_hostel->id,
-        ]);
+        if($request->admitted){
+            Admission::updateOrCreate([
+                'allotment_id' => $allotment->id,
+                'sessn_id' => $request->sessn_id,
+                'allot_hostel_id' => $allot_hostel->id,
+            ],
+            [
+                'allotment_id' => $allotment->id,
+                'sessn_id' => $request->sessn_id,
+                'allot_hostel_id' => $allot_hostel->id,
+            ]);
 
-        $allotment->update([
-            'admitted' => 1
-        ]);
-
+            $allotment->update([
+                'admitted' => 1
+            ]);
+        }
         return redirect('/hostel/' . $allotment->hostel->id . '/admission?sessn=1&adm_type=new')
             ->with(['message' => ['type' => 'info', 'text' => 'Admission done successfully']]);
     }
@@ -156,5 +165,14 @@ class AdmissionController extends Controller
     public function destroy(Admission $admission)
     {
         //
+    }
+
+    public function admission_decline($allotment_id){
+        $allotment = Allotment::findOrFail($allotment_id);
+        $allotment->update([
+            'valid' => 0,
+        ]);
+        return redirect('/hostel/' . $allotment->hostel->id . '/admission?sessn=1&adm_type=new')
+            ->with(['message' => ['type' => 'info', 'text' => 'Admission declined and made invalid']]);
     }
 }

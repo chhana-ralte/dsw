@@ -32,6 +32,7 @@ Route::get('/', [HostelController::class, 'index']);
 Route::get('/search', [SearchController::class, 'index'])->middleware(['auth']);
 Route::get('/admissioncheck', [AdmissionCheckController::class, 'check']);
 Route::post('/admissioncheck', [AdmissionCheckController::class, 'checkStore']);
+Route::post('/allotment/{id}/admission_decline', [AdmissionController::class , 'admission_decline']);
 Route::get('/allotment/{id}/admission', [AdmissionCheckController::class , 'status']);
 
 Route::get('/message', function(){
@@ -48,6 +49,7 @@ Route::get('/user/changePassword', [UserController::class, 'changePassword'])->m
 Route::post('/user/changePassword', [UserController::class, 'changePasswordStore']);
 Route::post('/logout', [UserController::class, 'logout']);
 Route::get('/hostel/{hostel}/occupants', [HostelController::class, 'occupants'])->middleware('auth');
+Route::post('/allotment/{allotment}/clear_allotment', [AllotmentController::class, 'clear_allotment'])->middleware('auth');
 
 Route::resource('person', PersonController::class)->middleware('auth');
 Route::resource('person.student', StudentController::class)->shallow()->middleware('auth');
@@ -110,6 +112,55 @@ function startUp()
     return $hostels;
 }
 Route::post('/generateRooms', function () {
+    $hostels = [['name' => 'Derhken']];
+    // $hostels = App\Models\Hostel::all();
+    // return $hostels;
+    $str = "";
+    foreach($hostels as $h){
+        if (request()->password == "mzudsw") {
+            if( App\Models\Hostel::where('name',$h['name'])->exists()){
+                $hostel = App\Models\Hostel::where('name',$h['name'])->first();
+            }
+            else{
+                $hostel = App\Models\Hostel::create([
+                    'name' => $h['name'],
+                    'gender' => 'Female',
+                ]);
+            }
+            if(App\Models\User::where('username',$h['name'])->exists()){
+                $user = App\Models\User::where('username',$h['name'])->first();
+            }
+            else{
+                $user = App\Models\User::create([
+                    'name' => $h['name'],
+                    'username' => $h['name'],
+                    'email' => 'derhken@mzu.edu.in',
+                    'password' => Hash::make('password')
+                ]);
+            }
+
+            $dump = DB::table($h['name'])->get();
+            foreach($dump as $r){
+                $room = \App\Models\Room::create([
+                    'hostel_id' => $hostel->id,
+                    'roomno' => $r->roomno,
+                    'type' => 'Dorm',
+                    'capacity' => $r->capacity,
+                    'available' => $r->capacity,
+                ]);
+                for($i=0; $i < $r->capacity; $i++){
+                    $seat = \App\Models\Seat::create([
+                        'room_id' => $room->id,
+                        'serial' => $i + 1,
+                        'available' => 1,
+                    ]);
+                }
+            }
+        }
+    }
+    return "Completed";
+});
+Route::post('/generateRooms2', function () {
     if (request()->password == "mzudsw") {
         App\Models\Room::truncate();
         \App\Models\RoomRemark::truncate();

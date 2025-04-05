@@ -57,6 +57,14 @@
                         @can('update',$allotment->hostel)
                             <a class="btn btn-secondary btn-sm" href="/student/{{ $allotment->person->student()->id }}/edit?back_link=/allotment/{{ $allotment->id }}">Edit</a>
                         @endcan
+                        @if(auth()->user()->isAdmin())
+                            <button form="frm_delete" class="btn btn-danger btn-sm">Delete student info</a>
+                            <form id="frm_delete" method="post" action="/student/{{ $allotment->person->student()->id }}" onsubmit="return confirm('Are you sure you want to delete student information of this person?')">
+                                @csrf
+                                @method('delete')
+                                <input type="hidden" name="back_link" value="/allotment/{{ $allotment->id }}">
+                            </form>
+                        @endif
                     @endauth
                 </x-slot>                
                 <table class="table table-hover table-auto">
@@ -81,7 +89,20 @@
         @elseif($allotment->person->other())
             <x-block>
                 <x-slot name="heading">
-                    Other information
+                    Other informations
+                    @auth()
+                        @can('update',$allotment->hostel)
+                            <a class="btn btn-secondary btn-sm" href="/other/{{ $allotment->person->other()->id }}/edit?back_link=/allotment/{{ $allotment->id }}">Edit</a>
+                        @endcan
+                        @if(auth()->user()->isAdmin())
+                            <button type="submit" class="btn btn-danger btn-sm" form="frm_delete">Delete other info</a>
+                            <form id="frm_delete" method="post" action="/other/{{ $allotment->person->other()->id }}" onsubmit="return confirm('Are you sure you want to delete other information of this person?')">
+                                @csrf
+                                @method('delete')
+                                <input type="hidden" name="back_link" value="/allotment/{{ $allotment->id }}">
+                            </form>
+                        @endif
+                    @endauth
                 </x-slot>                
                 <table class="table table-hover table-auto table-striped">
                     <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
@@ -105,6 +126,45 @@
             @endauth
         @endif
 
+
+
+        <x-block>
+            <x-slot name="heading">
+                Hostel allotment information
+                @auth()
+                    @if(auth()->user()->isAdmin())
+                        <a class="btn btn-secondary btn-sm" href="/allotment/{{ $allotment->id }}/edit?back_link=/allotment/{{ $allotment->id }}">Edit</a>
+                    @endif
+                @endauth
+            </x-slot>
+            <table class="table table-hover">
+                <tr>
+                    <td>Initial hostel allotted</td>
+                    <td>{{ $allotment->hostel->name }}</td>
+                </tr>
+                <tr>
+                    <td>Notification</td>
+                    <td>{{ $allotment->notification->no }} dated {{ $allotment->notification->dt }}</td>
+                </tr>
+                <tr>
+                    <td>Tentative allotment duration</td>
+                    <td>{{ $allotment->from_dt }} to {{ $allotment->to_dt }}</td>
+                </tr>
+                <tr>
+                    <td>Admission done?</td>
+                    <td>{{ $allotment->admitted?"Yes":"No" }}</td>
+                </tr>
+                <tr>
+                    <td>Allotment still valid?</td>
+                    <td>{{ $allotment->valid?"Yes":"No" }}</td>
+                </tr>
+                <tr>
+                    <td>Finished course and left?</td>
+                    <td>{{ $allotment->finished?"Yes":"No" }}</td>
+                </tr>
+
+            </table>
+        </x-block>
         <x-block>
             <x-slot name="heading">
                 Seat Allotment Information
@@ -124,15 +184,28 @@
                     @can('update',$allotment->valid_allot_hostel()->hostel)
                         <a class="btn btn-primary" href="/allot_hostel/{{ $allotment->valid_allot_hostel()->id }}/allotSeat">Change room/seat</a>
                     @endcan
-                    @if(auth()->user()->isDSW())
+                    @if(auth()->user()->isDsw())
                         <a class="btn btn-primary" href="/allotment/{{ $allotment->id }}/allot_hostel/create">Allot another hostel</a>
                     @endif
                 @else
-                @if(auth()->user()->isDSW())
-                    <a class="btn btn-primary" href="/allotment/{{ $allotment->id }}/allot_hostel/create">Allot hostel</a>
+                    @if(auth()->user()->isDsw())
+                        <a class="btn btn-primary" href="/allotment/{{ $allotment->id }}/allot_hostel/create">Allot hostel</a>
+                            
+                        
                     @endif
                 @endif
                 
+                @if(auth()->user()->isAdmin())
+                    <button class="btn btn-danger" form="clear_allotment">Clear allotment info</button>
+                    <form id="clear_allotment" 
+                        type="hidden" 
+                        method="post" 
+                        action="/allotment/{{ $allotment->id }}/clear_allotment"
+                        onsubmit="return confirm('Are you sure you want to clear all allotment details?')"
+                    >
+                    @csrf
+                    </form>
+                @endif
             @endauth
             
         </x-block>

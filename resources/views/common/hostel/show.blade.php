@@ -127,7 +127,22 @@
                             @endauth
                         </td>
                     </tr>
+
+                    <tr>
+                        <td>Students who are newly allotted to this hostel</td>
+                        <td>{{ $no_new_allotted }}</td>
+                        <td>
+                            @auth
+                                <a href="/hostel/{{ $hostel->id }}/admission?sessn={{ $sessn->id }}&adm_type=new" type="button"
+                                    class="btn btn-primary btn-sm">
+                                    view
+                                </a>
+                            @endauth
+                        </td>
+                    </tr>
+
                 </tbody>
+
             </table>
         </x-block>
 

@@ -2,68 +2,67 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                Edit the allotment details
+                Edit the allotment details for {{ $allotment->person->name }}
                 <p>
-                    <a href="/notification/{{ $notification-> id }}/allotment" class="btn btn-primary btn-sm">Back</a>
+                    <a href="/allotment/{{ $allotment-> id }}" class="btn btn-primary btn-sm">Back</a>
                 </p>
             </x-slot>
-            <form method="post" action="/notification/{{ $notification-> id }}/allotment">
+            <form method="post" action="/allotment/{{ $allotment-> id }}">
                 @csrf
+                @method('put')
+                <input type="hidden" name="back_link" value="{{ $back_link }}">
                 <div class="form-group row mb-3">
                     <label for="name" class="col col-md-3">Name</label>
                     <div class="col col-md-4">
-                        <input type="text" class="form-control" name="name" value="{{ old('name',$person->name) }}">
+                        <input type="text" class="form-control" name="name" value="{{ old('name',$allotment->person->name) }}" disabled>
                     </div>
                 </div>
 
                 <div class="form-group row mb-3">
-                    <label for="father" class="col col-md-3">Father/Guardian</label>
+                    <label for="name" class="col col-md-3">Allotment order</label>
                     <div class="col col-md-4">
-                        <input type="text" class="form-control" name="father" value="{{ old('father',$person->father) }}">
+                        <input type="text" class="form-control" name="no" value="{{ $allotment->notification->no }} dated {{$allotment->notification->dt}}" disabled>
                     </div>
                 </div>
 
                 <div class="form-group row mb-3">
-                    <label for="mobile" class="col col-md-3">Mobile</label>
+                    <label for="hostel" class="col col-md-3">Hostel*</label>
                     <div class="col col-md-4">
-                        <input type="text" class="form-control" name="mobile" value="{{ old('mobile',$person->mobile) }}">
-                    </div>
-                </div>
-
-                <div class="form-group row mb-3">
-                    <label for="email" class="col col-md-3">Email</label>
-                    <div class="col col-md-4">
-                        <input type="email" class="form-control" name="email" value="{{ old('email',$person->email) }}">
-                    </div>
-                </div>
-
-                <div class="form-group row mb-3">
-                    <label for="category" class="col col-md-3">Category</label>
-                    <div class="col col-md-4">
-                        <select name='category' class='form-control'>
-                            <option>Select Category</option>
-                            <option value='General' {{ $person->category=='General'?' selected ':''}}>General</option>
-                            <option value='OBC' {{ $person->category=='OBC'?' selected ':''}}>OBC</option>
-                            <option value='SC' {{ $person->category=='SC'?' selected ':''}}>SC</option>
-                            <option value='ST' {{ $person->category=='ST'?' selected ':''}}>ST</option>
-                            <option value='EWS' {{ $person->category=='EWS'?' selected ':''}}>EWS</option>
+                        <select name='hostel' class='form-control' required>
+                            <option value=0 >Select Hostel</option>
+                            @foreach(\App\Models\Hostel::orderBy('name')->get() as $h)
+                                <option value='{{ $h->id }}' {{ $h->id==$allotment->hostel_id?" selected ":""}}>{{ $h->name }} ({{ $h->gender }})</option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
 
                 <div class="form-group row mb-3">
-                    <label for="state" class="col col-md-3">State</label>
+                    <label for="from_dt" class="col col-md-3">Allotment from*</label>
                     <div class="col col-md-4">
-                        <input type="text" class="form-control" name="state" value="{{ old('state',$person->state) }}">
+                        <input type="date" class="form-control" name="from_dt" value="{{ old('from_dt',$allotment->from_dt) }}" required>
                     </div>
                 </div>
 
                 <div class="form-group row mb-3">
-                    <label for="address" class="col col-md-3">Address</label>
+                    <label for="to_dt" class="col col-md-3">To*</label>
                     <div class="col col-md-4">
-                        <textarea class="form-control" name="address">{{ old('address',$person->address) }}</textarea>
-                            
-                        
+                        <input type="date" class="form-control" name="to_dt" value="{{ old('to_dt',$allotment->to_dt) }}" required>
+                    </div>
+                </div>
+
+                <div class="form-group row mb-3">
+                    <div class="col col-md-3"></div>
+                    <div class="col col-md-4">
+                        <input type="checkbox" id="admitted" name="admitted" {{ $allotment->admitted?" checked ":""}} disabled>
+                        <label for="admitted">Whether admitted?</label>
+                        <br>
+                        <input type="checkbox" id="valid" name="valid" {{ $allotment->valid?" checked ":""}}>
+                        <label for="valid">Whether valid?</label>
+                        <br>
+                        <input type="checkbox" id="finished" name="finished" {{ $allotment->finished?" checked ":""}}>
+                        <label for="finished">Whether finished?</label>
+                        <br>
                     </div>
                 </div>
 

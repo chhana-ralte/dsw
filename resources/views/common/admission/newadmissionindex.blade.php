@@ -39,7 +39,7 @@
                                     <td colspan="2"><b>No info</b></td>
                                 @endif
                                 <td>
-                                    <a class="btn btn-primary" href="/allotment/{{ $allotment->id }}/admission/create?sessn_id={{ $sessn->id }}">Admit</a>
+                                    <a class="btn btn-primary" href="/allotment/{{ $allotment->id }}/admission/create?sessn_id={{ $sessn->id }}">Options</a>
                                 </td>
                             </tr>
                         @endforeach

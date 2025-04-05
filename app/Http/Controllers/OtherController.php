@@ -59,6 +59,7 @@ class OtherController extends Controller
             'other' => $other,
             'back_link' => request()->back_link
         ];
+        // return $data;
         return view('common.other.edit',$data);
     }
 
@@ -79,6 +80,8 @@ class OtherController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $other = Other::findOrFail($id);
+        $other->delete();
+        return redirect(request()->back_link)->with(['message' => ['type' => 'info', 'text' => 'Other info deleted']]);
     }
 }

@@ -84,6 +84,7 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
-        //
+        $student->delete();
+        return redirect(request()->back_link)->with(['message' => ['type' => 'info', 'text' => 'Student info deleted']]);
     }
 }

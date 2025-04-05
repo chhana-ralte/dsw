@@ -98,16 +98,43 @@ class AllotmentController extends Controller
 
     public function edit(Allotment $allotment)
     {
-        //
+        $data = [
+            'back_link' => request()->back_link,
+            'allotment' => $allotment,
+        ];
+        return view('common.allotment.edit',$data);
     }
 
     public function update(Request $request, Allotment $allotment)
     {
-        //
+        $allotment->update([
+            'from_dt' => $request->from_dt,
+            'to_dt' => $request->to_dt,
+            'hostel_id' => $request->hostel,
+            'valid' => $request->valid?'1':0,
+            'finished' => $request->finished?'1':0
+        ]);
+        return redirect($request->back_link)->with(['message' => ['type' => 'info', 'text' => 'Allotment updated']]);
     }
 
     public function destroy(Allotment $allotment)
     {
         //
+    }
+
+    public function clear_allotment(Allotment $allotment){
+        if(auth()->user()->isAdmin()){
+            $allot_hostels = \App\Models\AllotHostel::where('allotment_id',$allotment->id);
+            $allot_seats = \App\Models\AllotSeat::whereIn('allot_hostel_id',$allot_hostels->pluck('id'));
+            
+            $allot_seats->delete();
+            $allot_hostels->delete();
+            $allotment->update([
+                'admitted' => 0,
+                'valid' => 1,
+                'finished' => 0,
+            ]);
+            return redirect("/allotment/" . $allotment->id)->with(['message' => ['type' => 'info', 'text' => 'Allotment detail cleared']]);
+        }
     }
 }
