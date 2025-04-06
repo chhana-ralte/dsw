@@ -112,53 +112,66 @@ function startUp()
     return $hostels;
 }
 Route::post('/generateRooms', function () {
-    $hostels = [['name' => 'Derhken']];
-    // $hostels = App\Models\Hostel::all();
-    // return $hostels;
     $str = "";
-    foreach($hostels as $h){
-        if (request()->password == "mzudsw") {
-            if( App\Models\Hostel::where('name',$h['name'])->exists()){
-                $hostel = App\Models\Hostel::where('name',$h['name'])->first();
-            }
-            else{
-                $hostel = App\Models\Hostel::create([
-                    'name' => $h['name'],
-                    'gender' => 'Female',
-                ]);
-            }
-            if(App\Models\User::where('username',$h['name'])->exists()){
-                $user = App\Models\User::where('username',$h['name'])->first();
-            }
-            else{
-                $user = App\Models\User::create([
-                    'name' => $h['name'],
-                    'username' => $h['name'],
-                    'email' => 'derhken@mzu.edu.in',
-                    'password' => Hash::make('password')
-                ]);
-            }
+    if (request()->password == "mzudsw") {
+        $Hostel_name = request()->hostel;
+        $hostel_name = strtolower($Hostel_name);
 
-            $dump = DB::table($h['name'])->get();
-            foreach($dump as $r){
-                $room = \App\Models\Room::create([
-                    'hostel_id' => $hostel->id,
-                    'roomno' => $r->roomno,
-                    'type' => 'Dorm',
-                    'capacity' => $r->capacity,
-                    'available' => $r->capacity,
-                ]);
-                for($i=0; $i < $r->capacity; $i++){
-                    $seat = \App\Models\Seat::create([
-                        'room_id' => $room->id,
-                        'serial' => $i + 1,
-                        'available' => 1,
-                    ]);
-                }
+        if( App\Models\Hostel::where('name',$hostel_name)->exists()){
+            $hostel = App\Models\Hostel::where('name',$hostel_name)->first();
+            $str .= "<br>Hostel already existed";
+        }
+        else{
+            $hostel = App\Models\Hostel::create([
+                'name' => $Hostel_name,
+                'gender' => 'Female',
+            ]);
+            $str .= "<br>New Hostel created";
+        }
+        if(App\Models\User::where('username',$hostel_name)->exists()){
+            $user = App\Models\User::where('username',$hostel_name)->first();
+            $str .= "<br>User already existed";
+        }
+        else{
+            $user = App\Models\User::create([
+                'name' => $Hostel_name,
+                'username' => $hostel_name,
+                'email' => 'derhken@mzu.edu.in',
+                'password' => Hash::make('password')
+            ]);
+            $str .= "<br>New user created";
+        }
+
+        $dump = DB::table($hostel_name)->get();
+        foreach($dump as $r){
+            $room = \App\Models\Room::updateOrCreate([
+                'hostel_id' => $hostel->id,
+                'roomno' => $r->roomno,
+            ],[
+                'hostel_id' => $hostel->id,
+                'roomno' => $r->roomno,
+                'type' => $r->capacity==1?'Single':($r->capacity==2?"double":($r->capacity==3?"Triple":"Dorm")),
+                'capacity' => $r->capacity,
+                'available' => $r->capacity,
+            ]
+        );
+            $str .= "<br>New room created:" . $room->roomno;
+            for($i=0; $i < $r->capacity; $i++){
+                $seat = \App\Models\Seat::updateOrCreate([
+                    'room_id' => $room->id,
+                    'serial' => $i + 1,
+                ],[
+                    'room_id' => $room->id,
+                    'serial' => $i + 1,
+                    'available' => 1,
+                ]
+            );
+                $str .= "<br>New Seat created: " . $seat->serial;
             }
         }
     }
-    return "Completed";
+
+    return $str;
 });
 Route::post('/generateRooms2', function () {
     if (request()->password == "mzudsw") {
