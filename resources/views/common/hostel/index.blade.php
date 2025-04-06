@@ -41,6 +41,7 @@
                             @endforeach
                             <?php $vacant = $available - $filled; ?>
                             <tr>
+                            <th></th>
                                 <th>Total</th>
                                 <th></th>
                                 <th>{{ $total }}</th>
