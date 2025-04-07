@@ -14,7 +14,17 @@
                     @endif
                 @endauth
                 <p>
-                    <a class="btn btn-secondary btn-sm" href="{{ $back_link }}">Back</a>
+                    @auth
+                        @if(auth()->user()->isAdmin())
+                            <a class="btn btn-secondary btn-sm" href="/notification/{{ $allotment->notification->id }}/allotment">Back to allotments</a>
+                        @endif
+
+                        @if($allotment->valid_allot_hostel())
+                            <a class="btn btn-secondary btn-sm" href="/hostel/{{ $allotment->valid_allot_hostel()->hostel->id }}/occupants">Back to occupants</a>
+                        @else
+                            <a class="btn btn-secondary btn-sm" href="/hostel/{{ $allotment->hostel->id }}/occupants">Back to occupants</a>
+                        @endif
+                    @endauth
                 </p>
             </x-slot>
             <table class="table table-hover table-auto">
