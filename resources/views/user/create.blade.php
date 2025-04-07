@@ -7,6 +7,7 @@
             </x-slot>
             <form method="post" action="/user/" class="pt-2">
                 @csrf
+
                 <div class="form-group row pt-2">
                     <div class="col-md-3">
                         <label for="name">Name</label>
@@ -37,6 +38,10 @@
                     </div>
                 </div>
 
+
+
+
+                
                 <div class="form-group row pt-2">
                     <div class="col-md-3">
                     </div>

@@ -24,6 +24,7 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SessnController;
 use App\Http\Controllers\AdmissionController;
 use App\Http\Controllers\AdmissionCheckController;
+use App\Http\Controllers\CancelSeatController;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
@@ -63,6 +64,7 @@ Route::resource('room.seat', SeatController::class)->shallow()->middleware('auth
 Route::resource('notification', NotificationController::class)->middleware('auth');
 Route::resource('notification.allotment', AllotmentController::class)->shallow()->middleware('auth');
 Route::resource('allotment.allot_hostel', AllotHostelController::class)->shallow()->middleware('auth');
+Route::resource('allotment.cancel_seat', CancelSeatController::class)->shallow()->middleware('auth');
 Route::resource('user', UserController::class)->middleware(['auth']);
 Route::resource('allotment.admission', AdmissionController::class)->shallow()->middleware('auth');
 

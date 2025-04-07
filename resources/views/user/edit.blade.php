@@ -3,6 +3,7 @@
         <x-block>
             <x-slot name="heading">
                 User: {{ $user->name }}
+                
             </x-slot>
             <form method="post" action="/user/{{$user->id}}" class="pt-2">
                 @csrf

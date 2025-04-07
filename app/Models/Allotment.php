@@ -40,4 +40,8 @@ class Allotment extends Model
     public function admission($sessn_id){
         return Admission::where('sessn_id',$sessn_id)->where('allotment_id',$this->id)->first();
     }
+
+    public function cancel_seat(){
+        return $this->hasOne(CancelSeat::class);
+    }
 }
