@@ -8,6 +8,10 @@ class Hostel extends Model
 {
     public $guarded = [];
 
+    public static function default(){
+        return Hostel::make(['id'=>0,'name'=>'NoHostel']);
+    }
+
     public function rooms()
     {
         return $this->hasMany(Room::class);

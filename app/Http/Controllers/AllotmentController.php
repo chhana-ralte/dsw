@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Allotment;
 use App\Models\Person;
+use App\Models\Hostel;
 use App\Models\Student;
 use App\Models\Other;
 use App\Models\Notification;
@@ -89,10 +90,18 @@ class AllotmentController extends Controller
 
     public function show(Allotment $allotment)
     {
+        if($allotment->valid_allot_hostel()){
+            $current_hostel = $allotment->valid_allot_hostel()->hostel;
+        }
+        else{
+            $current_hostel = Hostel::default();
+        }
         $data = [
             'allotment' => $allotment,
+            'current_hostel' => $current_hostel,
             'back_link' => isset(request()->back_link)?request()->back_link:'/notification/' . $allotment->notification->id . '/allotment',
         ];
+        // return $data;
         return view('common.allotment.show',$data);
     }
 

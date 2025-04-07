@@ -14,14 +14,15 @@ return new class extends Migration
         Schema::create('cancel_seats', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(App\Models\Allotment::class);
-            $table->foreignIdFor(App\Models\AllotHostel::class);
-            $table->foreignIdFor(App\Models\AllotSeat::class);
-            $table->foreignIdFor(App\Models\User::class);
+            $table->foreignIdFor(App\Models\AllotHostel::class)->nullable();
+            $table->foreignIdFor(App\Models\AllotSeat::class)->nullable();
+            $table->foreignIdFor(App\Models\User::class)->nullable();
             $table->date('issue_dt')->nullable();
             $table->date('leave_dt')->nullable();
             $table->boolean('cleared')->default('1');
+            $table->boolean('finished')->default('1');
             $table->integer('outstanding')->default(0);
-            $table->text('remark');
+            $table->text('remark')->nullable();
             $table->timestamps();
         });
     }

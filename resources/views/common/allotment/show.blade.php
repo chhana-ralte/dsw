@@ -1,12 +1,16 @@
+
+
 <x-layout>
     <x-container>
         <x-block>
             <x-slot name="heading">
                 Personal information
                 @auth()
-                    @can('update',$allotment->hostel) 
+                    
+                    @can('update',$current_hostel) 
                         <a class="btn btn-secondary btn-sm" href="/person/{{ $allotment->person->id }}/edit?back_link=/allotment/{{ $allotment->id }}">Edit</a>
                     @endcan
+
                     <a class="btn btn-secondary btn-sm" href="/person/{{ $allotment->person->id }}/person_remark?back_link=/allotment/{{ $allotment->id }}">Remarks about the person</a>
 
                     @if(auth()->user()->isAdmin())
@@ -27,6 +31,11 @@
                     @endauth
                 </p>
             </x-slot>
+            @if($allotment->cancel_seat)
+                <div class="alert alert-danger">
+                    <strong align="center">The inmate is no longer in the hostel</strong>
+                </div>
+            @endif
             <table class="table table-hover table-auto">
                 <tr>
                     <th>Name</th>
@@ -64,7 +73,7 @@
                 <x-slot name="heading">
                     Student Information
                     @auth()
-                        @can('update',$allotment->hostel)
+                        @can('update',$current_hostel)
                             <a class="btn btn-secondary btn-sm" href="/student/{{ $allotment->person->student()->id }}/edit?back_link=/allotment/{{ $allotment->id }}">Edit</a>
                         @endcan
                         @if(auth()->user()->isAdmin())
@@ -101,7 +110,7 @@
                 <x-slot name="heading">
                     Other informations
                     @auth()
-                        @can('update',$allotment->hostel)
+                        @can('update',$current_hostel)
                             <a class="btn btn-secondary btn-sm" href="/other/{{ $allotment->person->other()->id }}/edit?back_link=/allotment/{{ $allotment->id }}">Edit</a>
                         @endcan
                         @if(auth()->user()->isAdmin())
@@ -122,7 +131,7 @@
             </x-block>
         @else
             @auth
-                @can('update',$allotment->hostel)
+                @can('update',$current_hostel)
                     <x-block>
                         <x-slot name="heading">
                             Whether a student or not??
@@ -175,6 +184,8 @@
 
             </table>
         </x-block>
+
+
         <x-block>
             <x-slot name="heading">
                 Seat Allotment Information
@@ -193,6 +204,7 @@
                 @if($allotment->valid_allot_hostel())
                     @can('update',$allotment->valid_allot_hostel()->hostel)
                         <a class="btn btn-primary" href="/allot_hostel/{{ $allotment->valid_allot_hostel()->id }}/allotSeat">Change room/seat</a>
+                        <a class="btn btn-danger" href="/allotment/{{ $allotment->id }}/cancelSeat/create">Cancel the seat</a>
                     @endcan
                     @if(auth()->user()->isDsw())
                         <a class="btn btn-primary" href="/allotment/{{ $allotment->id }}/allot_hostel/create">Allot another hostel</a>
@@ -219,6 +231,50 @@
             @endauth
             
         </x-block>
+
+        @if($allotment->cancel_seat)
+            <x-block>
+                <x-slot name="heading">
+                    Seat cancelled...
+                </x-slot>
+                <table class="table table-hover">
+                    <tr>
+                        <td>Last hostel from where cancelled</td>
+                        <td>{{ $allotment->cancel_seat->allot_hostel->hostel->name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Last hostel room</td>
+                        <td>{{ $allotment->cancel_seat->allot_seat->seat->room->roomno }}</td>
+                    </tr>
+                    <tr>
+                        <td>Date of actual leaving/tentative leaving date</td>
+                        <td>{{ $allotment->cancel_seat->leave_dt }}</td>
+                    </tr>
+                    <tr>
+                        <td>Date of issuance</td>
+                        <td>{{ $allotment->cancel_seat->issue_dt }}</td>
+                    </tr>
+                    <tr>
+                        <td>Whether clearance can be given?</td>
+                        <td>{{ $allotment->cancel_seat->cleared?"Yes":"No" }}</td>
+                    </tr>
+                    @if($allotment->cancel_seat->cleared == 0)
+                        <tr>
+                            <td>Amount due</td>
+                            <td>{{ $allotment->cancel_seat->outstanding }}</td>
+                        </tr>
+                    @endif
+                    <tr>
+                        <td>Whether approved by DSW?</td>
+                        <td>{{ $allotment->valid?"Not yet":"Yes" }}</td>
+                    </tr>
+                    <tr>
+                        <td>Whether course completed?</td>
+                        <td>{{ $allotment->cancel_seat->finished?"Yes":"No" }}</td>
+                    </tr>
+                </table>
+            </x-block>
+        @endif
 
         @if(count($allotment->person->person_remarks) > 0)
             <x-block>
