@@ -46,7 +46,8 @@ class AdmissionController extends Controller
         else{
             $new_allotments = Allotment::where('hostel_id',$hostel->id)
                 ->where('valid',1)
-                ->where('admitted',0);
+                ->where('admitted',0)
+                ->whereNotIn('id',AllotHostel::where('hostel_id',$hostel->id)->pluck('allotment_id'));
             $data = [
                 'sessn' => $sessn,
                 'new_allotments' => $new_allotments->get(),
@@ -83,25 +84,28 @@ class AdmissionController extends Controller
      */
     public function store(Request $request,Allotment $allotment)
     {
-        if($request->admitted){
-            return "Yes";
-        }
-        else{
-            return "No";
-        }
-        return request()->admitted;
-        if(!$allotment->valid_allot_hostel()){
-            $allot_hostel = AllotHostel::create([
-                'allotment_id' => $allotment->id,
-                'hostel_id' => $allotment->hostel->id,
-                'valid' => 1,
-                'from_dt' => $allotment->from_dt,
-                'to_dt' => $allotment->to_dt,
-            ]);
-        }
-        else{
-            $allot_hostel = $allotment->valid_allot_hostel();
-        }
+        // if($request->admitted){
+        //     return "Yes";
+        // }
+        // else{
+        //     return "No";
+        // }
+        // return request()->admitted;
+
+
+        $allot_hostel = AllotHostel::updateOrCreate([
+            'allotment_id' => $allotment->id,
+            'hostel_id' => $allotment->hostel->id,
+            'valid' => 1,
+        ],
+        [
+            'allotment_id' => $allotment->id,
+            'hostel_id' => $allotment->hostel->id,
+            'valid' => 1,
+            'from_dt' => $allotment->from_dt,
+            'to_dt' => $allotment->to_dt,
+        ]);
+
 
         $allot_seat = AllotSeat::updateOrCreate([
             'allot_hostel_id' => $allot_hostel->id,
@@ -132,7 +136,7 @@ class AdmissionController extends Controller
             ]);
         }
         return redirect('/hostel/' . $allotment->hostel->id . '/admission?sessn=1&adm_type=new')
-            ->with(['message' => ['type' => 'info', 'text' => 'Admission done successfully']]);
+            ->with(['message' => ['type' => 'info', 'text' => 'Room allotted successfully']]);
     }
 
     /**
