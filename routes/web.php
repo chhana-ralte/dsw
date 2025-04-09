@@ -29,6 +29,9 @@ use App\Http\Controllers\CancelSeatController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 
+Route::get('/test',function(){
+    return "Hehe";
+})->middleware(['auth','admin']);
 Route::get('/', [HostelController::class, 'index']);
 Route::get('/search', [SearchController::class, 'index'])->middleware(['auth']);
 Route::get('/admissioncheck', [AdmissionCheckController::class, 'check']);
