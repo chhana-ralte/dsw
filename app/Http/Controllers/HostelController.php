@@ -42,7 +42,7 @@ class HostelController extends Controller
         $no_allotted_seats = AllotSeat::where('valid',1)->whereIn('seat_id', $seats->pluck('id'))->count();
         $no_vacant_seats = $no_available_seats - $no_allotted_seats;
         $no_unallotted = AllotHostel::where('hostel_id', $hostel->id)->where('valid',1)->whereNotIn('id', $allotted_seats->pluck('allot_hostel_id'))->count();
-        $no_new_allotted = Allotment::where('valid',1)->where('admitted',0)->where('hostel_id',$hostel->id)->whereNotIn('id',$allot_hostels->pluck('id'))->count();
+        $no_new_allotted = Allotment::where('valid',1)->where('admitted',0)->where('hostel_id',$hostel->id)->whereNotIn('id',$allot_hostels->pluck('allotment_id'))->count();
         $sessn = \App\Models\Sessn::default();
         $data = [
             'hostel' => $hostel,
