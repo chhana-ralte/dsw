@@ -15,55 +15,81 @@ class RoomController extends Controller
     public function index(Hostel $hostel)
     {
         // return $hostel;
-        $rooms = Room::where('hostel_id',$hostel->id)->orderBy('roomno');
-        $seats = Seat::whereIn('room_id',$rooms->pluck('id'));
-        $allot_seats = AllotSeat::whereIn('seat_id',$seats->pluck('id'))->where('valid',1);
-        // return "Hello";
-        $allotted_seats = Seat::whereIn('id',$allot_seats->pluck('seat_id'));
-        // return "Hello";
-        $vacant_seats = $seats->whereNotIn('id',$allotted_seats->pluck('id'));
 
-        if(isset($_GET['status']) && $_GET['status'] == 'vacant'){
-            $vacant_seats = $seats->whereNotIn('id',$allotted_seats->pluck('id'));
-            $data = [
-                'hostel' => $hostel,
-                'vacant_seats' => $vacant_seats->get(),
-                'status' => 'vacant'
-            ];
-            //return $data;
-        }
-
-        else if(isset($_GET['status']) && $_GET['status'] == "non-available"){
-            $rooms = $hostel->rooms;
-            $non_rooms = Room::where('hostel_id',$hostel->id)->where('capacity',0)->orWhere('available',0);
-            $non_seats = Seat::whereIn('room_id',$rooms->pluck('id'))->where('available',0)->whereNotIn('room_id',$non_rooms->pluck('id'));
-            $data = [
-                'hostel' => $hostel,
-                'non_rooms' => $non_rooms->orderBy('roomno')->get(),
-                'non_seats' => $non_seats->orderBy('serial')->get(),
-                'status' => 'non-available'
-            ];
-            //return "Heklo";
-            //return $data;
-        }
-        else{
-            $data = [
-                'hostel' => $hostel,
-                'rooms' => $rooms->get(),
-                'status' => 'all'
-            ];
-            //return $data;
-        }
+        // $rooms = Room::where('hostel_id', $hostel->id)->orderBy('roomno');
+        $rooms = $hostel->rooms();
+        $seats = Seat::whereIn('room_id', $rooms->pluck('id'));
         
+        $allot_seats = AllotSeat::whereIn('seat_id', $seats->pluck('id'))->where('valid', 1);
+
+        if (request('status') == 'vacant') {
+            $rooms->whereHas('seats', function ($seats) use ($allot_seats) {
+                $seats->where('available',1)
+                    ->whereNotIn('id', $allot_seats->pluck('seat_id'));
+            });
+        }
+
+        if (request('status') == 'non-available') {
+            $rooms->whereHas('seats', function ($seats){
+                $seats->where('available', 0);
+            });
+        }
+        // if (request('status') == 'non-available') {
+        //     $rooms->whereHas('seats', function ($seats) use ($allot_seats) {
+        //         $seats->whereIn('id', $allot_seats->pluck('seat_id'));
+        //     });
+        // }
+        // return $rooms->get();
+        // $allotted_seats = Seat::whereIn('id', $allot_seats->pluck('seat_id'));
+
+        // $vacant_seats = $seats->whereNotIn('id', $allotted_seats->pluck('id'));
+        // if (isset($_GET['status']) && $_GET['status'] == 'vacant') {
+        //     $vacant_seats = $seats->whereNotIn('id', $allotted_seats->pluck('id'));
+        //     $data = [
+        //         'hostel' => $hostel,
+        //         'vacant_seats' => $vacant_seats->get(),
+        //         'status' => 'vacant'
+        //     ];
+        //     //return $data;
+        // } else if (isset($_GET['status']) && $_GET['status'] == "non-available") {
+        //     $rooms = $hostel->rooms;
+        //     $allotted_seats = Seat::whereIn('id', $allot_seats->pluck('seat_id'));
+        //     $non_rooms = $seats->whereIn('id', $allotted_seats->pluck('id'));
+        //     // $non_rooms = Room::where('hostel_id',$hostel->id)->where('capacity',0)->orWhere('available',0);
+        //     // $non_seats = Seat::whereIn('room_id',$rooms->pluck('id'))->where('available',0)->whereNotIn('room_id',$non_rooms->pluck('id'));
+        //     $data = [
+        //         'hostel' => $hostel,
+        //         'non_rooms' => $non_rooms->get(),
+        //         // 'non_rooms' => $non_rooms->orderBy('roomno')->get(),
+        //         'non_seats' => $allotted_seats->orderBy('serial')->get(),
+        //         'status' => 'non-available'
+        //     ];
+        //     //return "Heklo";
+        //     //return $data;
+        // } else {
+        //     $data = [
+        //         'hostel' => $hostel,
+        //         'rooms' => $rooms->get(),
+        //         'status' => 'all'
+        //     ];
+        //     //return $data;
+        // }
+
+
+        $data = [
+            'hostel' => $hostel,
+            'rooms' => $rooms->orderBy('roomno')->get()
+        ];
+
         //return $seats->get();
-        
-        return view('common.room.index',$data);
+
+        return view('common.room.index', $data);
     }
 
 
     public function create(Hostel $hostel)
     {
-        return view('common.room.create',['hostel' => $hostel]);
+        return view('common.room.create', ['hostel' => $hostel]);
     }
 
     /**
@@ -72,11 +98,11 @@ class RoomController extends Controller
     public function store(Hostel $hostel, Request $request)
     {
 
-        if(Room::where('hostel_id',$hostel->id)->where('roomno',$request->roomno)->exists()){
+        if (Room::where('hostel_id', $hostel->id)->where('roomno', $request->roomno)->exists()) {
             return redirect("/hostel/$hostel->id/room/create")->with(['message' => ['type' => 'danger', 'text' => 'Room number already exists']])->withInput();
         }
 
-        if(!is_numeric($request->capacity)){
+        if (!is_numeric($request->capacity)) {
             return redirect("/hostel/$hostel->id/room/create")->with(['message' => ['type' => 'danger', 'text' => 'Capacity should be numeric value']])->withInput();
         }
 
@@ -86,10 +112,10 @@ class RoomController extends Controller
             'hostel_id' => $hostel->id,
             'capacity' => $request->capacity,
             'available' => $request->capacity,
-            'type' => $request->capacity == 1? 'Single' : ($request->capacity == 2? 'Double' : ($request->capacity == 3? 'Triple':'Dorm'))
+            'type' => $request->capacity == 1 ? 'Single' : ($request->capacity == 2 ? 'Double' : ($request->capacity == 3 ? 'Triple' : 'Dorm'))
         ]);
 
-        if($request->remark){
+        if ($request->remark) {
             RoomRemark::create([
                 'room_id' => $room->id,
                 'remark' => $request->remark,
@@ -97,11 +123,11 @@ class RoomController extends Controller
             ]);
         }
 
-        for($i=0; $i<$room->capacity; $i++){
+        for ($i = 0; $i < $room->capacity; $i++) {
             Seat::create([
                 'room_id' => $room->id,
                 'available' => 1,
-                'serial' => $i+1
+                'serial' => $i + 1
             ]);
         }
 
@@ -110,36 +136,36 @@ class RoomController extends Controller
 
     public function show(string $id)
     {
-        $seats = Seat::where('room_id',$id)->orderBy('serial')->get();
+        $seats = Seat::where('room_id', $id)->orderBy('serial')->get();
         $data = [
             'room' => Room::findOrFail($id),
             'seats' => $seats
         ];
-        return view('common.room.show',$data);
+        return view('common.room.show', $data);
     }
 
     public function edit(string $id)
     {
 
-        $seats = Seat::where('room_id',$id)->orderBy('serial')->get();
+        $seats = Seat::where('room_id', $id)->orderBy('serial')->get();
         $data = [
             'room' => Room::findOrFail($id),
             'seats' => $seats
         ];
-        return view('common.room.edit',$data);
+        return view('common.room.edit', $data);
     }
-    
+
     public function update(Request $request, string $id)
     {
         $room = Room::findOrFail($id);
-        if(Room::where('hostel_id',$room->hostel_id)->where('id','<>',$id)->where('roomno',$request->roomno)->exists()){
+        if (Room::where('hostel_id', $room->hostel_id)->where('id', '<>', $id)->where('roomno', $request->roomno)->exists()) {
             return redirect("/room/$room->id/edit")->with(['message' => ['type' => 'info', 'text' => 'Room No. already exists']])->withInput();
-        }
-        else{
+        } 
+        else {
             $room->update([
                 'roomno' => $request->roomno,
-                'capacity' => Seat::where('room_id',$room->id)->count(),
-                'available' => Seat::where('room_id',$room->id)->sum('available')
+                'capacity' => Seat::where('room_id', $room->id)->count(),
+                'available' => Seat::where('room_id', $room->id)->sum('available')
             ]);
             return redirect("/room/$room->id")->with(['message' => ['type' => 'info', 'text' => 'Room updated']]);
         }
@@ -148,21 +174,23 @@ class RoomController extends Controller
     public function destroy(string $room_id)
     {
         $room = Room::find($room_id);
-        $seats = Seat::where('room_id',$room->id)->get();
-        \App\Models\AllotSeat::whereIn('seat_id',$seats->pluck('id'))->delete();
-        \App\Models\SeatRemark::whereIn('seat_id',$seats->pluck('id'))->delete();
-        RoomRemark::where('room_id',$room->id)->delete();
-        Seat::where('room_id',$room->id)->delete();
+        $seats = Seat::where('room_id', $room->id)->get();
+        \App\Models\AllotSeat::whereIn('seat_id', $seats->pluck('id'))->delete();
+        \App\Models\SeatRemark::whereIn('seat_id', $seats->pluck('id'))->delete();
+        RoomRemark::where('room_id', $room->id)->delete();
+        Seat::where('room_id', $room->id)->delete();
         $room->delete();
         return "Hello";
     }
 
-    public function remark($id){
+    public function remark($id)
+    {
         $room = Room::findOrFail($id);
-        return view('common.room.remark',['room' => $room]);
+        return view('common.room.remark', ['room' => $room]);
     }
 
-    public function remarkStore($id){
+    public function remarkStore($id)
+    {
         \App\Models\RoomRemark::create([
             'room_id' => $id,
             'remark_dt' => date('Y-m-d'),
@@ -171,9 +199,51 @@ class RoomController extends Controller
         return $id;
     }
 
-    public function remarkDelete($id){
+    public function remarkDelete($id)
+    {
         $room = \App\Models\RoomRemark::find($id)->room;
         \App\Models\RoomRemark::find($id)->delete();
         return redirect("/room/$room->id/remark")->with(['message' => ['type' => 'info', 'text' => 'Remark deleted']]);
+    }
+
+    public function unavailable($id){
+        //return $id;
+        $room = Room::find($id);
+        $seats = Seat::where('room_id',$room->id);
+        \App\Models\AllotSeat::whereIn('seat_id',$seats->pluck('id'))->where('valid',1)
+            ->update([
+            'valid' => 0,
+            'to_dt' => date('Y-m-d')
+        ]);
+        $seats->update([
+            'available' => 0
+        ]);
+        $room->update([
+            'available' => 0
+        ]);
+        return redirect("/room/" . $room->id . "/edit")->with(['message' => ['type' => "info", 'text' => "Room is made unavailable"]]);
+    }
+
+    public function editseatavailability($room_id){
+        //return $room_id;
+        $room = Room::find($room_id);
+        $seats = Seat::where('room_id', $room->id)->orderBy('serial')->get();
+        return view('common.room.editseatavailability',['room' => $room, 'seats' => $seats]);
+    }
+
+    public function updateseatavailability(Request $request,$room_id){
+        foreach($request->request as $key => $value){
+            $arr = explode('_',$key);
+            if($arr[0] == "available"){
+                Seat::find($arr[1])->update(['available' => $value]);
+                if($value == 0){
+                    AllotSeat::where('seat_id',$arr[1])->where('valid',1)->update(['valid' => 0, 'to_dt' => date('Y-m-d')]);
+                }
+            }
+        }
+        Room::find($room_id)->update([
+            'available' => Seat::where('room_id',$room_id)->where('available',1)->count()
+        ]);
+        return redirect("/room/" . $room_id . "/seat")->with(['message' => ['type' => "info", 'text' => "Availability updated"]]);;
     }
 }

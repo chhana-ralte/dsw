@@ -7,6 +7,12 @@
             <form method="post" action="/generateRooms">
                 @csrf
                 <div class="form-group row mb-3">
+                    <div class="col col-md-4">Enter hostel</div>
+                    <div class="col col-md-4">
+                        <input type="text" name="hostel" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group row mb-3">
                     <div class="col col-md-4">Enter password</div>
                     <div class="col col-md-4">
                         <input type="password" name="password" class="form-control">

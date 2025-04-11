@@ -132,7 +132,13 @@ class SeatController extends Controller
             'leave_dt' => date('Y-m-d'),
             'to_dt' => date('Y-m-d')
         ]);
-        //return "Partial";
+
+        AllotSeat::where('allot_hostel_id',request()->allot_hostel_id)->where('valid',1)->update([
+            'valid' => 0,
+            'leave_dt' => date('Y-m-d'),
+            'to_dt' => date('Y-m-d')
+        ]);
+        
         AllotSeat::create([
             'allot_hostel_id' => request()->allot_hostel_id,
             'seat_id' => $seat_id,

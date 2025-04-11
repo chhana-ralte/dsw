@@ -15,4 +15,5 @@ class AllotSeat extends Model
     public function seat(){
         return $this->belongsTo(Seat::class);
     }
+
 }

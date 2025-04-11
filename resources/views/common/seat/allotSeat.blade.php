@@ -8,6 +8,7 @@
                 </p>
             </x-slot>
             <div class="container">
+                @if($seat->available != 0)
                 <div class="form-group row mb-2">
                     <div class="col col-md-3">
                         <label for="search">Search</label>
@@ -16,7 +17,13 @@
                         <input class="form-control" name="search" id="search">
                     </div>
                 </div>
-
+                @else
+                <div class="form-group row mb-2">
+                    <div class="col col-md-3">
+                        <label for="search">Seat is not available. Click <a href="/seat/{{ $seat->id }}/edit">here</a> to make it available</label>
+                    </div>
+                </div>
+                @endif
 
 
                 <div class="searching" hidden>
