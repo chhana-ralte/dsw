@@ -25,21 +25,26 @@ use App\Http\Controllers\SessnController;
 use App\Http\Controllers\AdmissionController;
 use App\Http\Controllers\AdmissionCheckController;
 use App\Http\Controllers\CancelSeatController;
+use App\Http\Controllers\ConsolidateController;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 
-Route::get('/test',function(){
+Route::get('/test', function () {
     return "Hehe";
-})->middleware(['auth','admin']);
+})->middleware(['auth', 'admin']);
+
 Route::get('/', [HostelController::class, 'index']);
 Route::get('/search', [SearchController::class, 'index'])->middleware(['auth']);
+Route::get('/consolidate', [ConsolidateController::class, 'index'])->middleware(['auth', 'dsw']);
+Route::get('/consolidateDetail', [ConsolidateController::class, 'detail'])->middleware(['auth', 'dsw']);
+Route::post('/consolidate', [ConsolidateController::class, 'store'])->middleware(['auth', 'dsw']);
 Route::get('/admissioncheck', [AdmissionCheckController::class, 'check']);
 Route::post('/admissioncheck', [AdmissionCheckController::class, 'checkStore']);
-Route::post('/allotment/{id}/admission_decline', [AdmissionController::class , 'admission_decline']);
-Route::get('/allotment/{id}/admission', [AdmissionCheckController::class , 'status']);
+Route::post('/allotment/{id}/admission_decline', [AdmissionController::class, 'admission_decline']);
+Route::get('/allotment/{id}/admission', [AdmissionCheckController::class, 'status']);
 
-Route::get('/message', function(){
+Route::get('/message', function () {
     return view('message');
 })->middleware(['auth']);
 Route::get('/h', function () {
@@ -122,59 +127,57 @@ Route::post('/generateRooms', function () {
         $Hostel_name = request()->hostel;
         $hostel_name = strtolower($Hostel_name);
 
-        if( App\Models\Hostel::where('name',$hostel_name)->exists()){
-            $hostel = App\Models\Hostel::where('name',$hostel_name)->first();
+        if (App\Models\Hostel::where('name', $hostel_name)->exists()) {
+            $hostel = App\Models\Hostel::where('name', $hostel_name)->first();
             $str .= "<br>Hostel already existed";
-        }
-        else{
+        } else {
             $hostel = App\Models\Hostel::create([
                 'name' => $Hostel_name,
                 'gender' => 'Female',
             ]);
             $str .= "<br>New Hostel created";
         }
-        if(App\Models\User::where('username',$hostel_name)->exists()){
-            $user = App\Models\User::where('username',$hostel_name)->first();
+        if (App\Models\User::where('username', $hostel_name)->exists()) {
+            $user = App\Models\User::where('username', $hostel_name)->first();
             $str .= "<br>User already existed";
-        }
-        else{
+        } else {
             $user = App\Models\User::create([
                 'name' => $Hostel_name,
                 'username' => $hostel_name,
-                'email' => $hostel_name .'@mzu.edu.in',
+                'email' => $hostel_name . '@mzu.edu.in',
                 'password' => Hash::make('password')
             ]);
             $str .= "<br>New user created";
         }
 
         // $dump = DB::table($hostel_name)->get();
-        
+
         $rooms = DB::table($hostel_name)
-        ->select('Roomno', 'Capacity','Type')
-        ->where('Roomno', '<>', '')
-        ->orderBy('Roomno')
-        ->groupBy('Roomno', 'Capacity','Type')
-        ->get();
+            ->select('Roomno', 'Capacity', 'Type')
+            ->where('Roomno', '<>', '')
+            ->orderBy('Roomno')
+            ->groupBy('Roomno', 'Capacity', 'Type')
+            ->get();
 
 
-        foreach($rooms as $r){
+        foreach ($rooms as $r) {
             $room = \App\Models\Room::updateOrCreate([
                 'hostel_id' => $hostel->id,
                 'roomno' => $r->Roomno,
-            ],[
+            ], [
                 'hostel_id' => $hostel->id,
                 'roomno' => $r->Roomno,
-                'type' => $r->capacity==1?'Single':($r->capacity==2?"double":($r->capacity==3?"Triple":"Dorm")),
+                'type' => $r->capacity == 1 ? 'Single' : ($r->capacity == 2 ? "double" : ($r->capacity == 3 ? "Triple" : "Dorm")),
                 'capacity' => $r->capacity,
                 'available' => $r->capacity,
             ]);
 
             $str .= "<br>New room created:" . $room->roomno;
-            for($i=0; $i < $r->capacity; $i++){
+            for ($i = 0; $i < $r->capacity; $i++) {
                 $seat = \App\Models\Seat::updateOrCreate([
                     'room_id' => $room->id,
                     'serial' => $i + 1,
-                ],[
+                ], [
                     'room_id' => $room->id,
                     'serial' => $i + 1,
                     'available' => 1,
@@ -185,9 +188,9 @@ Route::post('/generateRooms', function () {
 
 
         $list_of_hostellers = DB::table($hostel->name)
-        ->select('*')
-        ->where('name', '<>', '')
-        ->get();
+            ->select('*')
+            ->where('name', '<>', '')
+            ->get();
 
         foreach ($list_of_hostellers as $l) {
             $person = App\Models\Person::create([
@@ -244,11 +247,6 @@ Route::post('/generateRooms', function () {
                 }
             }
         }
-
-
-
-
-
     }
 
     return $str;
@@ -263,11 +261,11 @@ Route::post('/generateRooms2', function () {
         // $hostels = App\Models\Hostel::whereIn('name',startUp())->orderBy('gender')->orderBy('name')->get();
         foreach ($hostels as $ht) {
             $rooms = DB::table('dump')
-                ->select('Roomno', 'Capacity','Type')
+                ->select('Roomno', 'Capacity', 'Type')
                 ->where('Hostel', $ht->name)
                 ->where('Roomno', '<>', '')
                 ->orderBy('Roomno')
-                ->groupBy('Roomno', 'Capacity','Type')
+                ->groupBy('Roomno', 'Capacity', 'Type')
                 ->get();
             //return $rooms;
             foreach ($rooms as $r) {
@@ -298,7 +296,7 @@ Route::post('/generateSeats', function () {
 
         // $hostels = Hostel::all();
         $rooms = Room::all();
-        
+
         foreach ($rooms as $r) {
             for ($i = 0; $i < $r->capacity; $i++) {
                 Seat::create([
@@ -390,9 +388,9 @@ Route::post('/massAllot', function () {
     }
 });
 
-Route::get('/newallot', function(){
+Route::get('/newallot', function () {
     $news = DB::table('allotment_1')->orderBy('id')->get();
-    foreach($news as $new){
+    foreach ($news as $new) {
         $str1 = "Person ids : [";
         $str2 = "Student ids : [";
         $str3 = "Allotment ids : [";
@@ -403,7 +401,7 @@ Route::get('/newallot', function(){
             'state' => $new->state,
             'address' => $new->address,
             'mobile' => $new->phone,
-            
+
         ]);
         $str1 .= $person->id . ", ";
 

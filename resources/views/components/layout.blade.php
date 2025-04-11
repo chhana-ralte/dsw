@@ -46,10 +46,11 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="/notification/">Notifications</a>
                             </li>
-                        @endif
-                        @if(auth()->user()->isAdmin() || auth()->user()->hasRole('DSW'))
                             <li class="nav-item">
                                 <a class="nav-link" href="/user">Users</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/consolidate">Consolidate</a>
                             </li>
                         @endif
                         <li class="nav-item">
