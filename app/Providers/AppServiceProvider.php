@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
         //     return $user->isWarden($hostel->id);
         // });
         Gate::policy(Hostel::class, HostelPolicy::class);
-        Gate::policy(User::class, UserPolicy::class);
+
 
         Gate::define('admin-access', function (User $user) {
             return $user->isAdmin(); // Assuming you have an 'is_admin' column in your users table
