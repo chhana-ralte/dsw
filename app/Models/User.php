@@ -36,24 +36,6 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    public function department(){
-        if($this->department_id){
-            return Department::find($this->department_id);
-        }
-        else{
-            return false;
-        }
-    }
-
-    public function teacher(){
-        if($this->teacher_id){
-            return Teacher::find($this->teacher_id);
-        }
-        else{
-            return false;
-        }
-    }
-
     protected function casts(): array
     {
         return [
@@ -66,11 +48,47 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
-    public function hasRole($strrole):bool
-    {
-        $role = Role::where('role',$strrole)->first();
+    public function user_roles(){
+        return Role_User::where('user_id',$this->id)->get();
+    }
+
+    public function max_role_level(){
+        return $this->roles->max('level');
+    }
+    
+    public function isWardenOf($hostel_id){
+        $role = Role::where('role','Warden')->first();
+        return Role_User::where('user_id',$this->id)->where('role_id',$role->id)->where('type','hostel')->where('foreign_id',$hostel_id)->exists();
+    }
+
+    public function isWarden(){
+        $role = Role::where('role','Warden')->first();
         return Role_User::where('user_id',$this->id)->where('role_id',$role->id)->exists();
-        //return User::where('role', $role->role)->get();
+    }
+
+    public function isAdmin(){
+        $role = Role::where('role','Admin')->first();
+        return Role_User::where('user_id',$this->id)->where('role_id',$role->id)->exists();
+    }
+
+    
+    public function isDsw(){
+        $role = Role::where('role','DSW')->first();
+        return Role_User::where('user_id',$this->id)->where('role_id',$role->id)->exists();
+    }
+
+    public function hasRole($strRole)
+    {
+        $role = Role::where('role',$strRole)->first();
+        return Role_User::where('user_id',$this->id)->where('role_id',$role->id)->exists();
+        
+    }
+
+    public function hasWardenRole($hostel_id){
+        // return $hostel_id;
+        $role = Role::where('role','Warden')->first();
+        // return $role;
+        return Role_User::where('user_id',$this->id)->where('role_id',$role->id)->where('type','hostel')->where('foreign_id',$hostel_id)->exists();
     }
 
     public function attmasters(){

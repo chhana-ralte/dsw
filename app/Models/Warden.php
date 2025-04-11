@@ -7,5 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Warden extends Model
 {
-    use HasFactory;
+    protected $guarded = [];
+
+    public function hostel(){
+        return $this->belongsTo(Hostel::class);
+    }
 }

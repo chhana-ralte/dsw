@@ -2,23 +2,42 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Role_User;
 
 class UserController extends Controller
 {
     public function index(){
-        return view('user.index',['users'=>User::all()]);
+        $role = Role::where('role','Warden')->first();
+        $level = $role->level;
+        // return $level;
+        // return auth()->user()->max_role_level();
+        if(auth()->user()->max_role_level() >= $level)
+            return view('user.index',['users'=>User::all()]);
+        else
+            abort(403);
     }
 
     public function show(User $user){
-        return view('user.show',['user'=>$user]);
+        $role = Role::where('role','Warden')->first();
+        $level = $role->level;
+        if(auth()->user()->max_role_level() >= $level)
+            return view('user.show',['user'=>$user]);
+        else
+            abort(403);
     }
 
     public function create(){
-        return view('user.create');
+        $role = Role::where('role','Warden')->first();
+        $level = $role->level;
+        if(auth()->user()->max_role_level() >= $level)
+            return view('user.create');
+        else
+            abort(403);
     }
 
     public function store(){
@@ -38,48 +57,63 @@ class UserController extends Controller
     }
 
     public function edit(User $user){
-        $data=[
-            'user' => $user,
-            'roles' => Role::all()
-        ];
-        return view('user.edit',$data);
+        // return $user->hasRole('Admin');
+        // return $role->id;
+        $role = Role::where('role','Warden')->first();
+        $level = $role->level;
+        if(auth()->user()->max_role_level() >= $level){
+            $data=[
+                'user' => $user,
+                'roles' => Role::orderBy('level','desc')->get()
+            ];
+            return view('user.edit',$data);
+        }
+        else{
+            abort(403);
+        }
     }
 
     public function update(User $user){
-        //dd(request()->all());
+        // dd(request()->all());
         $user->update([
             'name' => request()->name,
             'username' => request()->username,
             'email' =>request()->email
         ]);
-        $user->roles()->sync(request()->roles);
-
-        $dept_flag = 0;
-        $teacher_flag = 0;
+        Role_User::where('user_id',$user->id)->whereNotIn('role_id',request()->roles)->delete();
         foreach(request()->roles as $role_id){
-            if(Role::find($role_id)->role == "Department"){
-                $user->update([
-                    'department_id' => request()->department
-                ]);
-                $dept_flag = 1;
+            $role = Role::find($role_id);
+            if($role->role == 'Warden'){
+                Role_User::where('user_id',$user->id)->where('role_id',$role->id)->where('type','hostel')->whereNotIn('foreign_id',request()->hostel)->delete();
+                foreach(request()->hostel as $hostel_id){
+                    Role_User::updateOrCreate([
+                        'user_id' => $user->id,
+                        'role_id' => $role->id,
+                        'type' => 'hostel',
+                        'foreign_id' => $hostel_id
+                    ],
+                    [
+                        'user_id' => $user->id,
+                        'role_id' => $role->id,
+                        'type' => 'hostel',
+                        'foreign_id' => $hostel_id
+                    ]);
+                }
             }
-            if(Role::find($role_id)->role == "Teacher"){
-                $user->update([
-                    'teacher_id' => request()->teacher
+            else{ // Not warden
+                Role_User::updateOrCreate([
+                    'user_id' => $user->id,
+                    'role_id' => $role->id,
+                ],
+                [
+                    'user_id' => $user->id,
+                    'role_id' => $role->id,
                 ]);
-                $teacher_flag = 1;
             }
         }
-        if($dept_flag == 0){
-            $user->update([
-                'department_id' => 0
-            ]);
-        }
-        if($teacher_flag == 0){
-            $user->update([
-                'teacher_id' => 0
-            ]);
-        }
+        // $user->roles()->sync(request()->roles);
+
+        
         return redirect('/user')->with(['message' => ['type'=>'info', 'text'=>'User updated']]);
     }
 
@@ -90,13 +124,20 @@ class UserController extends Controller
     
     public function changePasswordStore(){
         $user = auth()->user();
-        $user->update([
-            'password' => Hash::make(request()->password)
-        ]);
-        return redirect('/user/changePassword')->with(['message' => ['type'=>'info', 'text'=>'Password changed']]);
+        if(request()->password == request()->confirm_password){
+            $user->update([
+                'password' => Hash::make(request()->password)
+            ]);
+            return redirect('/user/changePassword')->with(['message' => ['type'=>'info', 'text'=>'Password changed']]);
+        }
+        else{
+            return redirect('/user/changePassword')->with(['message' => ['type'=>'danger', 'text'=>'Passwords do not match']])->withInput();
+        }
+        
     }
 
     public function destroy(User $user){
+        Role_User::where('user_id',$user->id)->delete();
         $user->delete();
         return redirect('/user')->with(['message' => ['type'=>'info', 'text'=>'User deleted']]);
         return $user->name;
@@ -113,23 +154,23 @@ class UserController extends Controller
         ]);
         if($login){
             request()->session()->regenerate();
-            if(auth()->user()->department_id){
-                return redirect('/department/' . auth()->user()->department_id);
-            }
-            //return auth()->user()->name;
-            if(auth()->user()->name == 'Diktei'){
-                return redirect('/diktei');
-            }
+            // if(auth()->user()->department_id){
+            //     return redirect('/department/' . auth()->user()->department_id);
+            // }
+            // //return auth()->user()->name;
+            // if(auth()->user()->name == 'Diktei'){
+            //     return redirect('/diktei');
+            // }
             return redirect('/');
         }
         else{
-            return redirect('/login')->with(['message' => ['type'=>'danger','text'=>'Login Failed...']]);
+            return redirect('/login')->with(['message' => ['type'=>'danger','text'=>'Login Failed...']])->withInput();
         }
     }
 
     public function logout(){
         Auth::logout();
-        return redirect('/');
+        return redirect('/')->with(['message' => ['type'=>'info','text'=>'Successfully logged out']]);
     }
 
     

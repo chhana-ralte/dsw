@@ -7,5 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Other extends Model
 {
-    use HasFactory;
+    public $guarded = [];
+
+    public function person(){
+        return $this->belongsTo(Person::class);
+    }
+    
 }

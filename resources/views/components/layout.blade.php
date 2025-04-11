@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>MZU IT Department</title>
+    <title>MZU Hostels</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -12,11 +12,11 @@
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5.css">
     <script src="https://cdn.ckeditor.com/4.24.0-lts/standard/ckeditor.js"></script>
 </head>
-@vite(['resources/css/app.css', 'resources/js/app.js'])
+
 
 <body>
 
-    <br>
+<br>
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Dean Students' Welfare</a>
@@ -29,23 +29,33 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/hostel">Hostels</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admissioncheck">Check admission status</a>
+                    </li>
                     @auth
-                        @if (auth()->user()->department_id)
+                        @if(auth()->user()->isWarden())
+                            @foreach(auth()->user()->user_roles() as $role_user)
+                                @if($role_user->type == 'hostel')
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/hostel/{{ $role_user->foreign_id }}/">{{ $role_user->hostel()->name }}</a>
+                                    </li>
+                                @endif
+                            @endforeach    
+                        @endif
+                        @if(auth()->user()->isAdmin() || auth()->user()->isDsw())
                             <li class="nav-item">
-                                <a class="nav-link" href="/department/{{ auth()->user()->department_id }}">My Department</a>
+                                <a class="nav-link" href="/notification/">Notifications</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/user">Users</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/consolidate">Consolidate</a>
                             </li>
                         @endif
-
-                        @if (auth()->user()->teacher_id)
-                            <li class="nav-item">
-                                <a class="nav-link" href="/user/{{ auth()->user()->id }}/attmaster">Attendance</a>
-                            </li>
-                        @endif
-
                         <li class="nav-item">
-                            <a class="nav-link" href="/sessn">Sessions</a>
+                            <a class="nav-link" href="/search">Search</a>
                         </li>
-
                     @endauth
                 </ul>
                 <!--      <ul class="navbar-nav me-auto"> -->
@@ -64,7 +74,7 @@
                     </div>
                 @else
                     <a class="btn btn-outline-secondary" type="button" href="/login">Login</a>
-                    @endif
+                @endif
                 </div>
             </div>
         </nav>
@@ -76,8 +86,6 @@
             {{ $slot }}
         </div>
 
-
-
     </body>
 
-    </html>
+</html>

@@ -9,6 +9,7 @@
                     <table class="table table-hover table-striped">
                         <thead>
                             <tr>
+                                <th>Sl.</th>
                                 <th>Hostel name</th>
                                 <th>Gender</th>
                                 <th>Total seats</th>
@@ -19,10 +20,12 @@
                         </thead>
                         <tbody>
                             <?php
-                            $total = $available = $filled = 0;
+                                $sl = 1;
+                                $total = $available = $filled = 0;
                             ?>
                             @foreach ($hostels as $h)
                                 <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
+                                    <td>{{ $sl++ }}</td>
                                     <td><a href="/hostel/{{ $h->id }}">{{ $h->name }}</a></td>
                                     <td>{{ $h->gender }}</td>
                                     <td>{{ $h->capacity() }}</td>
@@ -38,6 +41,7 @@
                             @endforeach
                             <?php $vacant = $available - $filled; ?>
                             <tr>
+                            <th></th>
                                 <th>Total</th>
                                 <th></th>
                                 <th>{{ $total }}</th>

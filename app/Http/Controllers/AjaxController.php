@@ -11,9 +11,12 @@ class AjaxController extends Controller
         $seats = \App\Models\Seat::where('room_id',$room_id)->orderBy('serial')->get();
         return $seats;
     }
+    
+    public function get_role($id){
+        return \App\Models\Role::find($id);
+    }
 
     public function allotSeatStore(){
-        
         \App\Models\AllotSeat::where('seat_id',request()->seat_id)
             ->where('valid',1)
             ->update([
@@ -55,7 +58,8 @@ class AjaxController extends Controller
 
     public function getAllotHostels($hostel_id){
         $search = $_GET['search'];
-        $data = DB::table('people')->join('allot_hostels','people.id','=','allot_hostels.person_id')
+        $data = DB::table('people')->join('allotments','people.id','=','allotments.person_id')
+            ->join('allot_hostels','allotments.id','=','allot_hostels.allotment_id')
             ->select('allot_hostels.id','people.name','people.address')
             ->where('allot_hostels.hostel_id',$hostel_id)
             ->whereLike('name','%' . $search . '%')
@@ -84,7 +88,7 @@ class AjaxController extends Controller
         //return $seat_ids;
         $occupied_seat_ids = \App\Models\AllotSeat::whereIn('seat_id',$seat_ids)->where('valid',1)->pluck('seat_id');
         
-        $available_seat_ids = \App\Models\Seat::whereIn('room_id',$room_ids)->whereNotIn('id',$occupied_seat_ids)->pluck('id');
+        $available_seat_ids = \App\Models\Seat::where('available','<>',0)->whereIn('room_id',$room_ids)->whereNotIn('id',$occupied_seat_ids)->pluck('id');
         //return $available_seat_ids;
         $seats = DB::table('seats')->join('rooms','seats.room_id','rooms.id')
             ->select('seats.id','rooms.roomno','rooms.id as room_id','seats.serial')
@@ -123,5 +127,31 @@ class AjaxController extends Controller
             ->whereIn('seats.id',$available_seat_ids)
             ->get();
         return $seats;
+    }
+
+    public function manage_admission(){
+        // return request()->undo;
+        $allot_hostel = \App\Models\AllotHostel::findOrFail(request()->allot_hostel_id);
+        if(request()->undo == '0'){
+            \App\Models\Admission::updateOrCreate([
+                'allot_hostel_id' => request()->allot_hostel_id,
+                'sessn_id' => request()->sessn_id
+            ],[
+                'allot_hostel_id' => request()->allot_hostel_id,
+                'sessn_id' => request()->sessn_id,
+                'allotment_id' => $allot_hostel->allotment->id
+            ]
+            );
+        }
+        else{
+            \App\Models\Admission::where('allot_hostel_id',$allot_hostel->id)
+                ->where('sessn_id',request()->sessn_id)
+                ->delete();
+        }
+        $data = [
+            'allot_hostel_id' => request()->allot_hostel_id,
+            'undo' => request()->undo==1?1:0
+        ];
+        return $data;
     }
 }

@@ -40,12 +40,15 @@
                     <div class="col col-md-3"></div>
                     <div class="col col-md-4">
                         <button class="btn btn-primary" type="submit" id="update">Update</update>
+                        <button class="btn btn-danger" form="unavailabl" type="submit" id="unavailable">Make it unavailable</update>
+                        
                     </div>
                 </div>
             </form>
+            <form id="unavailabl" method="post" action="/room/{{ $room->id }}/unavailable">
+                @csrf
+            </form>
         </x-block>
-
-
     </x-container>
 <script>
 $(document).ready(function(){
@@ -55,6 +58,10 @@ $(document).ready(function(){
         }
     });
 
+    $("button#unavailable").click(function(){
+        $("form#unavailabl").submit();
+    });
+    
     $("a.deallocate").click(function(){
         if(confirm("Are you sure you want to deallocate this student from the existing seat?")){
             $.ajax({

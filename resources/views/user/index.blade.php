@@ -3,9 +3,12 @@
         <x-block>
             <x-slot name="heading">
                 List of users
+                <p>
+                    <a class="btn btn-primary btn-sm" href="/user/create">New user</a>
+                </p>
             </x-slot>
-            <div class="pt-2">
-                <x-button type="a" href="/user/create">New user</x-button>
+            <div style="width: 100%; overflow-x:auto">
+                
                 <div class="pt-2">
                 @if(count($users)>0)
                 
@@ -19,22 +22,25 @@
                         </tr>
                         <?php $sl=1 ?>
                         @foreach($users as $u)
-                        <tr>
-                            <td>{{ $sl++ }}</td>
-                            <td><a href="/user/{{$u->id}}">{{ $u->name }}</a></td>
-                            <td>{{ $u->username }}</td>
-                            <td>{{ $u->email }}</td>
-                            <td>
-                                <div class="btn-group">
-                                    <x-button type="a" href="/user/{{$u->id}}/edit">Edit</x-button>
-                                    <x-button type="delete" class="delete" value="{{$u->id}}">Delete</x-button>
-                                </div>
-                            </td>
-                        </tr>
+                            @if($u->max_role_level() < auth()->user()->max_role_level())
+                            <tr>
+                                
+                                <td>{{ $sl++ }}</td>
+                                <td><a href="/user/{{$u->id}}">{{ $u->name }}</a></td>
+                                <td>{{ $u->username }}</td>
+                                <td>{{ $u->email }}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <x-button type="a" href="/user/{{$u->id}}/edit">Edit</x-button>
+                                        <x-button type="delete" class="delete" value="{{$u->id}}">Delete</x-button>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endif
                         @endforeach
                     </table>
                     @else
-                    No user
+                        No user
                     @endif
                     <form method="post" id="form-delete">
                         @csrf

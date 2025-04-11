@@ -1,6 +1,11 @@
 <x-layout>
     <x-container>
-        {{-- <x-block>
+            
+    
+    
+    
+            {{--
+            <x-block>
             <x-slot name="heading">
                 Menu
             </x-slot>
@@ -42,49 +47,102 @@
                     </div>
                 </div>
             </section>
-        </x-block> --}}
+        </x-block> 
+        --}}
+
+
+
+
         <x-block>
             <x-slot name="heading">
                 {{ $hostel->name }} Hall of Residence
+                <p>
+                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/admission?sessn={{ App\Models\Sessn::default()->id }}">Admission details</a>
+                </p>
             </x-slot>
             Summary
             <table class="table table-hover table-striped">
                 <tbody>
                     <tr>
                         <td>Total number of rooms</td>
-                        <td>{{ $seats->count() }}</td>
+                        <td>{{ $no_rooms }}</td>
                         <td>
+                            @auth
                             <a href="/hostel/{{ $hostel->id }}/room" type="button" class="btn btn-primary btn-sm">
                                 view
                             </a>
+                            @endauth
                         </td>
                     </tr>
-                    <td>Total seats available for allocation</td>
-                    <td>{{ $unallotted_seats->count() }}</td>
+                    <tr>
+                        <td>Total number of seats</td>
+                        <td>{{ $no_seats }}</td>
+                        <td>
+                            
+                        </td>
+                    </tr>
+                    <td>Total seats available for allotment</td>
+                    <td>{{ $no_available_seats }}</td>
                     <td>
-                        <a href="/hostel/{{ $hostel->id }}/room?status=vacant" type="button"
-                            class="btn btn-primary btn-sm">
-                            view
-                        </a>
+                        
                     </td>
                     </tr>
-                    <td>Total number of students allotted</td>
-                    <td>{{ $allotted_seats->count() }}</td>
-                    <td>
-                        <a href="/hostel/{{ $hostel->id }}/room?status=non-available" type="button"
-                            class="btn btn-primary btn-sm">
-                            view
-                        </a>
-                    </td>
+                    <tr>
+                        <td>Total number of students allotted</td>
+                        <td>{{ $no_allotted_seats }}</td>
+                        
+                        <td>
+                        @auth
+                            <a href="/hostel/{{ $hostel->id }}/occupants" type="button"
+                                class="btn btn-primary btn-sm">
+                                view
+                            </a>
+                        @endauth
+                        </td>
+                        
                     </tr>
-                    {{-- <td>Total number of seats vacant</td>
-                    <td>{{ $seats->sum('available') - $allotted_seats->count() }}</td>
-                    </tr> --}}
-                    <td>No. of students who are not allotted seat/room</td>
-                    <td>{{ $unallotted_seats->count() }}</td>
-                    <td></td>
+                    <tr>
+                        <td>Total number of seats vacant</td>
+                        <td>{{ $no_vacant_seats }}</td>
+                        
+                        <td>
+                            @auth
+                            <a href="/hostel/{{ $hostel->id }}/room?status=vacant" type="button"
+                                class="btn btn-primary btn-sm">
+                                view
+                            </a>
+                            @endauth
+                        </td>
+                        
                     </tr>
+                    <tr>
+                        <td>No. of students who are not allotted seat/room</td>
+                        <td>{{ $no_unallotted }}</td>
+                        <td>
+                            @auth
+                            <a href="/hostel/{{ $hostel->id }}/occupants?allot_seats=0" type="button"
+                                class="btn btn-primary btn-sm">
+                                view
+                            </a>
+                            @endauth
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Students who are newly allotted to this hostel</td>
+                        <td>{{ $no_new_allotted }}</td>
+                        <td>
+                            @auth
+                                <a href="/hostel/{{ $hostel->id }}/admission?sessn={{ $sessn->id }}&adm_type=new" type="button"
+                                    class="btn btn-primary btn-sm">
+                                    view
+                                </a>
+                            @endauth
+                        </td>
+                    </tr>
+
                 </tbody>
+
             </table>
         </x-block>
 

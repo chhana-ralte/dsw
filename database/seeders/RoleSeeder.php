@@ -16,13 +16,16 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         DB::table('roles')->insert([
-            'role'=>'Admin'
+            'role' => 'Admin',
+            'level' => 5
         ]);
         DB::table('roles')->insert( [
-            'role'=>'Department'
+            'role' => 'DSW',
+            'level' => 4
         ]);
         DB::table('roles')->insert([
-            'role'=>'Teacher'
+            'role' => 'Warden',
+            'level' => 3
         ]);
     }
 }
