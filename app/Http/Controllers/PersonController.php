@@ -44,12 +44,11 @@ class PersonController extends Controller
      */
     public function edit(Person $person)
     {
-        
         $data = [
             'person' => $person,
             'back_link' => request('back_link')
         ];
-        return view('common.person.edit',$data);
+        return view('common.person.edit', $data);
     }
 
     /**
@@ -57,6 +56,10 @@ class PersonController extends Controller
      */
     public function update(Request $request, Person $person)
     {
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('photos', 'public');
+            $person->photo = "/storage/" . $path;
+        }
         $person->update([
             'name' => request()->name,
             'father' => request()->father,
@@ -70,30 +73,30 @@ class PersonController extends Controller
         return redirect(request()->back_link)->with(['message' => ['type' => 'info', 'text' => 'Personal info updated']]);
     }
 
-    public function delete($person_id){
-        if(auth()->user()->isAdmin()){
+    public function delete($person_id)
+    {
+        if (auth()->user()->isAdmin()) {
             $data = [
                 'back_link' => request()->back_link,
                 'action' => '/person/' . $person_id,
             ];
-            return view('confirm_delete',$data);
-        }
-        else{
+            return view('confirm_delete', $data);
+        } else {
             abort(403);
         }
     }
 
     public function destroy(Person $person)
     {
-        if(auth()->user()->isAdmin()){
-            $allotments = \App\Models\Allotment::where('person_id',$person->id);
-            $allot_hostels = \App\Models\AllotHostel::whereIn('allotment_id',$allotments->pluck('id'));
-            $allot_seats = \App\Models\AllotSeat::whereIn('allot_hostel_id',$allot_hostels->pluck('id'));
-            $students = \App\Models\Student::where('person_id',$person->id);
-            $others = \App\Models\Other::where('person_id',$person->id);
-            $person_remarks = \App\Models\PersonRemark::where('person_id',$person->id);
-            $person_remark_details = \App\Models\PersonRemarkDetail::whereIn('person_remark_id',$person_remarks->pluck('id'));
-            
+        if (auth()->user()->isAdmin()) {
+            $allotments = \App\Models\Allotment::where('person_id', $person->id);
+            $allot_hostels = \App\Models\AllotHostel::whereIn('allotment_id', $allotments->pluck('id'));
+            $allot_seats = \App\Models\AllotSeat::whereIn('allot_hostel_id', $allot_hostels->pluck('id'));
+            $students = \App\Models\Student::where('person_id', $person->id);
+            $others = \App\Models\Other::where('person_id', $person->id);
+            $person_remarks = \App\Models\PersonRemark::where('person_id', $person->id);
+            $person_remark_details = \App\Models\PersonRemarkDetail::whereIn('person_remark_id', $person_remarks->pluck('id'));
+
             $person_remark_details->delete();
             $person_remarks->delete();
             $others->delete();
