@@ -1,42 +1,60 @@
-
-
 <x-layout>
+
     <x-container>
         <x-block>
+
+
             <x-slot name="heading">
-                Personal information
-                @auth()
-                    
-                    @can('update',$current_hostel) 
-                        <a class="btn btn-secondary btn-sm" href="/person/{{ $allotment->person->id }}/edit?back_link=/allotment/{{ $allotment->id }}">Edit</a>
-                    @endcan
+                <div class="row ">
+                    <div class="col">
+                        Personal information
+                        @auth()
+                            @can('update', $current_hostel)
+                                <a class="btn btn-secondary btn-sm"
+                                    href="/person/{{ $allotment->person->id }}/edit?back_link=/allotment/{{ $allotment->id }}">Edit</a>
+                            @endcan
 
-                    <a class="btn btn-secondary btn-sm" href="/person/{{ $allotment->person->id }}/person_remark?back_link=/allotment/{{ $allotment->id }}">Remarks about the person</a>
+                            <a class="btn btn-secondary btn-sm"
+                                href="/person/{{ $allotment->person->id }}/person_remark?back_link=/allotment/{{ $allotment->id }}">Remarks
+                                about the person</a>
 
-                    @if(auth()->user()->isAdmin())
-                        <a class="btn btn-danger btn-sm" href="/person/{{ $allotment->person->id }}/confirm_delete?back_link=/allotment/{{ $allotment->id }}">Delete</a>
-                    @endif
-                @endauth
-                <p>
-                    @auth
-                        @if(auth()->user()->isAdmin())
-                            <a class="btn btn-secondary btn-sm" href="/notification/{{ $allotment->notification->id }}/allotment">Back to allotments</a>
-                        @endif
+                            @if (auth()->user()->isAdmin())
+                                <a class="btn btn-danger btn-sm"
+                                    href="/person/{{ $allotment->person->id }}/confirm_delete?back_link=/allotment/{{ $allotment->id }}">Delete</a>
+                            @endif
+                        @endauth
+                        <p>
+                            @auth
+                                @if (auth()->user()->isAdmin())
+                                    <a class="btn btn-secondary btn-sm"
+                                        href="/notification/{{ $allotment->notification->id }}/allotment">Back to
+                                        allotments</a>
+                                @endif
 
-                        @if($allotment->valid_allot_hostel())
-                            <a class="btn btn-secondary btn-sm" href="/hostel/{{ $allotment->valid_allot_hostel()->hostel->id }}/occupants">Back to occupants</a>
-                        @else
-                            <a class="btn btn-secondary btn-sm" href="/hostel/{{ $allotment->hostel->id }}/occupants">Back to occupants</a>
-                        @endif
-                    @endauth
-                </p>
+                                @if ($allotment->valid_allot_hostel())
+                                    <a class="btn btn-secondary btn-sm"
+                                        href="/hostel/{{ $allotment->valid_allot_hostel()->hostel->id }}/occupants">Back to
+                                        occupants</a>
+                                @else
+                                    <a class="btn btn-secondary btn-sm"
+                                        href="/hostel/{{ $allotment->hostel->id }}/occupants">Back
+                                        to occupants</a>
+                                @endif
+                            @endauth
+                        </p>
+                    </div>
+                    <div class="col-auto">
+                        <img width="200px" src="{{ $allotment->person->photo }}" alt="" srcset="">
+                    </div>
+                </div>
+
             </x-slot>
-            @if($allotment->cancel_seat)
+            @if ($allotment->cancel_seat)
                 <div class="alert alert-danger">
                     <strong align="center">The inmate is no longer in the hostel</strong>
                 </div>
             @endif
-            <table class="table table-hover table-auto">
+            <table class="table table-auto table-hover">
                 <tr>
                     <th>Name</th>
                     <td>{{ $allotment->person->name }}</td>
@@ -68,25 +86,28 @@
             </table>
         </x-block>
 
-        @if($allotment->person->student())
+        @if ($allotment->person->student())
             <x-block>
                 <x-slot name="heading">
                     Student Information
                     @auth()
-                        @can('update',$current_hostel)
-                            <a class="btn btn-secondary btn-sm" href="/student/{{ $allotment->person->student()->id }}/edit?back_link=/allotment/{{ $allotment->id }}">Edit</a>
+                        @can('update', $current_hostel)
+                            <a class="btn btn-secondary btn-sm"
+                                href="/student/{{ $allotment->person->student()->id }}/edit?back_link=/allotment/{{ $allotment->id }}">Edit</a>
                         @endcan
-                        @if(auth()->user()->isAdmin())
+                        @if (auth()->user()->isAdmin())
                             <button form="frm_delete" class="btn btn-danger btn-sm">Delete student info</a>
-                            <form id="frm_delete" method="post" action="/student/{{ $allotment->person->student()->id }}" onsubmit="return confirm('Are you sure you want to delete student information of this person?')">
-                                @csrf
-                                @method('delete')
-                                <input type="hidden" name="back_link" value="/allotment/{{ $allotment->id }}">
-                            </form>
+                                <form id="frm_delete" method="post"
+                                    action="/student/{{ $allotment->person->student()->id }}"
+                                    onsubmit="return confirm('Are you sure you want to delete student information of this person?')">
+                                    @csrf
+                                    @method('delete')
+                                    <input type="hidden" name="back_link" value="/allotment/{{ $allotment->id }}">
+                                </form>
                         @endif
                     @endauth
-                </x-slot>                
-                <table class="table table-hover table-auto">
+                </x-slot>
+                <table class="table table-auto table-hover">
                     <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
                         <td>Rollno</td>
                         <td>{{ $allotment->person->student()->rollno }}</td>
@@ -100,8 +121,8 @@
                         <td>{{ $allotment->person->student()->department }}</td>
                     </tr>
                     </tr>
-                        <td>MZU ID</td>
-                        <td>{{ $allotment->person->student()->mzuid }}</td>                    
+                    <td>MZU ID</td>
+                    <td>{{ $allotment->person->student()->mzuid }}</td>
                     </tr>
                 </table>
             </x-block>
@@ -110,20 +131,22 @@
                 <x-slot name="heading">
                     Other informations
                     @auth()
-                        @can('update',$current_hostel)
-                            <a class="btn btn-secondary btn-sm" href="/other/{{ $allotment->person->other()->id }}/edit?back_link=/allotment/{{ $allotment->id }}">Edit</a>
+                        @can('update', $current_hostel)
+                            <a class="btn btn-secondary btn-sm"
+                                href="/other/{{ $allotment->person->other()->id }}/edit?back_link=/allotment/{{ $allotment->id }}">Edit</a>
                         @endcan
-                        @if(auth()->user()->isAdmin())
+                        @if (auth()->user()->isAdmin())
                             <button type="submit" class="btn btn-danger btn-sm" form="frm_delete">Delete other info</a>
-                            <form id="frm_delete" method="post" action="/other/{{ $allotment->person->other()->id }}" onsubmit="return confirm('Are you sure you want to delete other information of this person?')">
-                                @csrf
-                                @method('delete')
-                                <input type="hidden" name="back_link" value="/allotment/{{ $allotment->id }}">
-                            </form>
+                                <form id="frm_delete" method="post" action="/other/{{ $allotment->person->other()->id }}"
+                                    onsubmit="return confirm('Are you sure you want to delete other information of this person?')">
+                                    @csrf
+                                    @method('delete')
+                                    <input type="hidden" name="back_link" value="/allotment/{{ $allotment->id }}">
+                                </form>
                         @endif
                     @endauth
-                </x-slot>                
-                <table class="table table-hover table-auto table-striped">
+                </x-slot>
+                <table class="table table-auto table-hover table-striped">
                     <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
                         <td>{{ $allotment->person->other()->remark }}</td>
                     </tr>
@@ -131,14 +154,16 @@
             </x-block>
         @else
             @auth
-                @can('update',$current_hostel)
+                @can('update', $current_hostel)
                     <x-block>
                         <x-slot name="heading">
                             Whether a student or not??
                         </x-slot>
                         <div>
-                            <a href="/person/{{ $allotment->person->id }}/student/create?back_link=/allotment/{{ $allotment->id }}" class="btn btn-primary">Add student information</a>
-                            <a href="/person/{{ $allotment->person->id }}/other/create?back_link=/allotment/{{ $allotment->id }}" class="btn btn-primary">Not a student</a>
+                            <a href="/person/{{ $allotment->person->id }}/student/create?back_link=/allotment/{{ $allotment->id }}"
+                                class="btn btn-primary">Add student information</a>
+                            <a href="/person/{{ $allotment->person->id }}/other/create?back_link=/allotment/{{ $allotment->id }}"
+                                class="btn btn-primary">Not a student</a>
                         </div>
                     </x-block>
                 @endcan
@@ -151,8 +176,9 @@
             <x-slot name="heading">
                 Hostel allotment information
                 @auth()
-                    @if(auth()->user()->isAdmin())
-                        <a class="btn btn-secondary btn-sm" href="/allotment/{{ $allotment->id }}/edit?back_link=/allotment/{{ $allotment->id }}">Edit</a>
+                    @if (auth()->user()->isAdmin())
+                        <a class="btn btn-secondary btn-sm"
+                            href="/allotment/{{ $allotment->id }}/edit?back_link=/allotment/{{ $allotment->id }}">Edit</a>
                     @endif
                 @endauth
             </x-slot>
@@ -171,15 +197,15 @@
                 </tr>
                 <tr>
                     <td>Admission done?</td>
-                    <td>{{ $allotment->admitted?"Yes":"No" }}</td>
+                    <td>{{ $allotment->admitted ? 'Yes' : 'No' }}</td>
                 </tr>
                 <tr>
                     <td>Allotment still valid?</td>
-                    <td>{{ $allotment->valid?"Yes":"No" }}</td>
+                    <td>{{ $allotment->valid ? 'Yes' : 'No' }}</td>
                 </tr>
                 <tr>
                     <td>Finished course and left?</td>
-                    <td>{{ $allotment->finished?"Yes":"No" }}</td>
+                    <td>{{ $allotment->finished ? 'Yes' : 'No' }}</td>
                 </tr>
 
             </table>
@@ -190,49 +216,49 @@
             <x-slot name="heading">
                 Seat Allotment Information
             </x-slot>
-            @if(count($allotment->allot_hostels) > 0)
-                @foreach($allotment->allot_hostels as $ah)
-                    <b>{{ $ah->hostel->name }}</b> ({{ $ah->valid?'Valid':'Invalid' }})<br>
-                    @foreach($ah->allot_seats as $as)
-                        {{ $as->seat->room->roomno }}/{{ $as->seat->serial }} ({{ $as->valid?'Valid':'Invalid' }})<br>
+            @if (count($allotment->allot_hostels) > 0)
+                @foreach ($allotment->allot_hostels as $ah)
+                    <b>{{ $ah->hostel->name }}</b> ({{ $ah->valid ? 'Valid' : 'Invalid' }})<br>
+                    @foreach ($ah->allot_seats as $as)
+                        {{ $as->seat->room->roomno }}/{{ $as->seat->serial }}
+                        ({{ $as->valid ? 'Valid' : 'Invalid' }})
+                        <br>
                     @endforeach
                     <hr>
                 @endforeach
             @endif
 
             @auth
-                @if($allotment->valid_allot_hostel())
-                    @can('update',$allotment->valid_allot_hostel()->hostel)
-                        <a class="btn btn-primary" href="/allot_hostel/{{ $allotment->valid_allot_hostel()->id }}/allotSeat">Change room/seat</a>
+                @if ($allotment->valid_allot_hostel())
+                    @can('update', $allotment->valid_allot_hostel()->hostel)
+                        <a class="btn btn-primary"
+                            href="/allot_hostel/{{ $allotment->valid_allot_hostel()->id }}/allotSeat">Change room/seat</a>
                         <a class="btn btn-danger" href="/allotment/{{ $allotment->id }}/cancelSeat/create">Cancel the seat</a>
                     @endcan
-                    @if(auth()->user()->isDsw())
-                        <a class="btn btn-primary" href="/allotment/{{ $allotment->id }}/allot_hostel/create">Allot another hostel</a>
+                    @if (auth()->user()->isDsw())
+                        <a class="btn btn-primary" href="/allotment/{{ $allotment->id }}/allot_hostel/create">Allot another
+                            hostel</a>
                     @endif
                 @else
-                    @if(auth()->user()->isDsw())
-                        <a class="btn btn-primary" href="/allotment/{{ $allotment->id }}/allot_hostel/create">Allot hostel</a>
-                            
-                        
+                    @if (auth()->user()->isDsw())
+                        <a class="btn btn-primary" href="/allotment/{{ $allotment->id }}/allot_hostel/create">Allot
+                            hostel</a>
                     @endif
                 @endif
-                
-                @if(auth()->user()->isAdmin())
+
+                @if (auth()->user()->isAdmin())
                     <button class="btn btn-danger" form="clear_allotment">Clear allotment info</button>
-                    <form id="clear_allotment" 
-                        type="hidden" 
-                        method="post" 
+                    <form id="clear_allotment" type="hidden" method="post"
                         action="/allotment/{{ $allotment->id }}/clear_allotment"
-                        onsubmit="return confirm('Are you sure you want to clear all allotment details?')"
-                    >
-                    @csrf
+                        onsubmit="return confirm('Are you sure you want to clear all allotment details?')">
+                        @csrf
                     </form>
                 @endif
             @endauth
-            
+
         </x-block>
 
-        @if($allotment->cancel_seat)
+        @if ($allotment->cancel_seat)
             <x-block>
                 <x-slot name="heading">
                     Seat cancelled...
@@ -256,9 +282,9 @@
                     </tr>
                     <tr>
                         <td>Whether clearance can be given?</td>
-                        <td>{{ $allotment->cancel_seat->cleared?"Yes":"No" }}</td>
+                        <td>{{ $allotment->cancel_seat->cleared ? 'Yes' : 'No' }}</td>
                     </tr>
-                    @if($allotment->cancel_seat->cleared == 0)
+                    @if ($allotment->cancel_seat->cleared == 0)
                         <tr>
                             <td>Amount due</td>
                             <td>{{ $allotment->cancel_seat->outstanding }}</td>
@@ -266,36 +292,37 @@
                     @endif
                     <tr>
                         <td>Whether approved by DSW?</td>
-                        <td>{{ $allotment->valid?"Not yet":"Yes" }}</td>
+                        <td>{{ $allotment->valid ? 'Not yet' : 'Yes' }}</td>
                     </tr>
                     <tr>
                         <td>Whether course completed?</td>
-                        <td>{{ $allotment->cancel_seat->finished?"Yes":"No" }}</td>
+                        <td>{{ $allotment->cancel_seat->finished ? 'Yes' : 'No' }}</td>
                     </tr>
                 </table>
             </x-block>
         @endif
 
-        @if(count($allotment->person->person_remarks) > 0)
+        @if (count($allotment->person->person_remarks) > 0)
             <x-block>
                 <x-slot name="heading">
                     Remark(s) about student
-                </x-slot>                
-                <table class="table table-hover table-auto">
+                </x-slot>
+                <table class="table table-auto table-hover">
                     <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
                         <th>Date of incident</th>
                         <th>Remark</th>
                     </tr>
-                    @foreach($allotment->person->person_remarks as $pr)
+                    @foreach ($allotment->person->person_remarks as $pr)
                         <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
                             <td>{{ $pr->remark_dt }}</td>
-                            <td><h4>{{ $pr->remark }}</h4>
-                            @if(count($pr->person_remark_details) > 0)
-                                @foreach($pr->person_remark_details as $prd)
-                                    <hr>
-                                    {{ $prd->detail }}
-                                @endforeach
-                            @endif
+                            <td>
+                                <h4>{{ $pr->remark }}</h4>
+                                @if (count($pr->person_remark_details) > 0)
+                                    @foreach ($pr->person_remark_details as $prd)
+                                        <hr>
+                                        {{ $prd->detail }}
+                                    @endforeach
+                                @endif
                             </td>
                         </tr>
                     @endforeach
