@@ -153,6 +153,11 @@ Route::post('/generateRooms', function () {
         // $dump = DB::table($hostel_name)->get();
 
         $rooms = DB::table($hostel_name)
+        ->select('roomno', 'capacity','type')
+        ->where('roomno', '<>', '')
+        ->orderBy('roomno')
+        ->groupBy('roomno', 'capacity','type')
+        ->get();
             ->select('Roomno', 'Capacity', 'Type')
             ->where('Roomno', '<>', '')
             ->orderBy('Roomno')
@@ -163,9 +168,13 @@ Route::post('/generateRooms', function () {
         foreach ($rooms as $r) {
             $room = \App\Models\Room::updateOrCreate([
                 'hostel_id' => $hostel->id,
+                'roomno' => $r->roomno,
+            ],[
                 'roomno' => $r->Roomno,
             ], [
                 'hostel_id' => $hostel->id,
+                'roomno' => $r->roomno,
+                'type' => $r->capacity==1?'Single':($r->capacity==2?"double":($r->capacity==3?"Triple":"Dorm")),
                 'roomno' => $r->Roomno,
                 'type' => $r->capacity == 1 ? 'Single' : ($r->capacity == 2 ? "double" : ($r->capacity == 3 ? "Triple" : "Dorm")),
                 'capacity' => $r->capacity,
@@ -194,39 +203,48 @@ Route::post('/generateRooms', function () {
 
         foreach ($list_of_hostellers as $l) {
             $person = App\Models\Person::create([
-                'name' => $l->Name,
-                // 'state' => $l->State,
-                // 'category' => $l->Category,
+                'name' => $l->name,
+                'state' => $l->state,
+                'category' => $l->category,
                 // 'address' => $l->State,
-                'phone' => $l->Phone,
+                'mobile' => $l->mobile,
             ]);
 
-            if ($l->Course != '' || $l->Department != '') {
+            $str .= "New person " . $person->name . " created <br>";
+
+            if ($l->course != '' || $l->department != '') {
                 $student = App\Models\Student::create([
                     'person_id' => $person->id,
-                    'course' => $l->Course,
-                    'department' => $l->Department,
-                    'mzuid' => $l->MZU_id
+                    'course' => $l->course,
+                    'department' => $l->department,
+                    'mzuid' => $l->mzuid
                 ]);
+                $str .= "New student " . $person->name . " created <br>";
             }
+
+            
 
             $allotment = App\Models\Allotment::create([
                 'person_id' => $person->id,
+                'notification_id' => 1,
                 'hostel_id' => $hostel->id,
-                'from_dt' => $l->Year . '-08-01',
+                'from_dt' => $l->year . '-08-01',
                 'to_dt' => '2025-07-31',
                 'valid' => 1
             ]);
 
+            $str .= "New allotment " . $allotment->id . " created <br>";
             $allot_hostel = App\Models\AllotHostel::create([
                 'allotment_id' => $allotment->id,
+                
                 'hostel_id' => $hostel->id,
-                'from_dt' => $l->Year . '-08-01',
+                'from_dt' => $l->year . '-08-01',
                 'to_dt' => '2025-07-31',
                 'valid' => 1
             ]);
 
-            $room = Room::where('roomno', $l->Roomno)
+            $str .= "New allot_hostel in " . $hostel->name . " created <br>";
+            $room = Room::where('roomno', $l->roomno)
                 ->where('hostel_id', $hostel->id)
                 ->first();
 
@@ -243,12 +261,12 @@ Route::post('/generateRooms', function () {
                         'to_dt' => '2025-07-31',
                         'valid' => 1
                     ]);
+                    $str .= "Allotment in seat " . $s->roomno . "/" . $s->serial . " done <br>";
                     break;
                 }
             }
         }
     }
-
     return $str;
 });
 
@@ -388,6 +406,7 @@ Route::post('/massAllot', function () {
     }
 });
 
+Route::get('/newallot2', function(){
 Route::get('/newallot', function () {
     $news = DB::table('allotment_1')->orderBy('id')->get();
     foreach ($news as $new) {
