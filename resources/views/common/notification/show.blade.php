@@ -77,6 +77,14 @@
                         {{ $notification->allotments->count('id') }}
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        Who are declined admission/allotment : 
+                    </td>
+                    <td>
+                        {{ $notification->allotments->count('id') }}
+                    </td>
+                </tr>
             </table>
         </x-block>
 
