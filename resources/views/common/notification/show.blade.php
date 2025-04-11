@@ -49,6 +49,37 @@
                 </div>
             </form>
         </x-block>
+
+        <x-block>
+            <table class="table">
+                <tr>
+                    <td>
+                        Number of total allotments : 
+                    </td>
+                    <td>
+                        {{ $notification->allotments->count('id') }} 
+                        <a class="btn btn-primary btn-sm" href="/notification/{{ $notification->id }}/allotment">View</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Who paid fee and did admission : 
+                    </td>
+                    <td>
+                        {{ $notification->allotments->count('id') }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Who are llotted rooms/seats : 
+                    </td>
+                    <td>
+                        {{ $notification->allotments->count('id') }}
+                    </td>
+                </tr>
+            </table>
+        </x-block>
+
     </x-container>
 <script>
 $(document).ready(function(){
