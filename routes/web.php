@@ -36,9 +36,9 @@ Route::get('/test', function () {
 })->middleware(['auth', 'admin']);
 Route::get('/', [HostelController::class, 'index']);
 Route::get('/search', [SearchController::class, 'index'])->middleware(['auth']);
-Route::get('/consolidate', [ConsolidateController::class, 'index'])->middleware(['auth', 'dsw']);
-Route::get('/consolidateDetail', [ConsolidateController::class, 'detail'])->middleware(['auth', 'dsw']);
-Route::post('/consolidate', [ConsolidateController::class, 'store'])->middleware(['auth', 'dsw']);
+Route::get('/consolidate', [ConsolidateController::class, 'index'])->middleware(['auth']);
+Route::get('/consolidateDetail', [ConsolidateController::class, 'detail'])->middleware(['auth']);
+Route::post('/consolidate', [ConsolidateController::class, 'store'])->middleware(['auth']);
 Route::get('/admissioncheck', [AdmissionCheckController::class, 'check']);
 Route::post('/admissioncheck', [AdmissionCheckController::class, 'checkStore']);
 Route::post('/allotment/{id}/admission_decline', [AdmissionController::class, 'admission_decline']);
