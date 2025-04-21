@@ -9,6 +9,7 @@ use App\Models\Hostel;
 use App\Models\Seat;
 
 use App\Http\Controllers\HostelController;
+use App\Http\Controllers\WardenController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\SeatController;
 use App\Http\Controllers\NotificationController;
@@ -34,7 +35,17 @@ use Illuminate\Support\Facades\View;
 Route::get('/test', function () {
     return "Hehe";
 })->middleware(['auth', 'admin']);
+
+Route::get('/message', function () {
+    return view('message');
+})->middleware(['auth']);
+Route::get('/h', function () {
+    $hostel = Hostel::where('name', $_GET['hostel'])->first();
+    return $hostel->vacant();
+});
+
 Route::get('/', [HostelController::class, 'index']);
+Route::get('/warden', [WardenController::class, 'list']);
 Route::get('/search', [SearchController::class, 'index'])->middleware(['auth']);
 Route::get('/consolidate', [ConsolidateController::class, 'index'])->middleware(['auth']);
 Route::get('/consolidateDetail', [ConsolidateController::class, 'detail'])->middleware(['auth']);
@@ -44,13 +55,7 @@ Route::post('/admissioncheck', [AdmissionCheckController::class, 'checkStore']);
 Route::post('/allotment/{id}/admission_decline', [AdmissionController::class, 'admission_decline']);
 Route::get('/allotment/{id}/admission', [AdmissionCheckController::class, 'status']);
 
-Route::get('/message', function () {
-    return view('message');
-})->middleware(['auth']);
-Route::get('/h', function () {
-    $hostel = Hostel::where('name', $_GET['hostel'])->first();
-    return $hostel->vacant();
-});
+
 
 Route::get('/login', [UserController::class, 'login'])->name('login');
 Route::post('/login', [UserController::class, 'logincheck']);
@@ -67,6 +72,7 @@ Route::resource('person.person_remark', PersonRemarkController::class)->shallow(
 Route::resource('person_remark.person_remark_detail', PersonRemarkDetailController::class)->shallow()->middleware('auth');
 Route::resource('hostel', HostelController::class);
 Route::resource('hostel.room', RoomController::class)->shallow()->middleware('auth');
+Route::resource('hostel.warden', WardenController::class)->shallow()->middleware(['auth', 'admin']);
 Route::resource('hostel.admission', AdmissionController::class)->shallow()->middleware('auth');
 Route::resource('room.seat', SeatController::class)->shallow()->middleware('auth');
 Route::resource('notification', NotificationController::class)->middleware('auth');
@@ -94,6 +100,11 @@ Route::post('/seat/{id}/remark', [SeatController::class, 'remarkStore']);
 Route::delete('/room/remark/{id}', [RoomController::class, 'remarkDelete']);
 
 Route::get('/person/{id}/confirm_delete', [PersonController::class, 'delete'])->middleware('auth');
+
+Route::controller(App\Http\Controllers\StudentRegistrationController::class)->group(function () {
+    Route::get('/studentRegistration', 'registration');
+    Route::post('/studentRegistration', 'registrationStore');
+});
 
 Route::controller(App\Http\Controllers\AjaxController::class)->group(function () {
     Route::get('/ajaxroom/{id}/seat', 'getSeats');

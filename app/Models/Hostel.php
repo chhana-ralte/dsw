@@ -8,8 +8,9 @@ class Hostel extends Model
 {
     public $guarded = [];
 
-    public static function default(){
-        return Hostel::make(['id'=>0,'name'=>'NoHostel']);
+    public static function default()
+    {
+        return Hostel::make(['id' => 0, 'name' => 'NoHostel']);
     }
 
     public function rooms()
@@ -51,11 +52,19 @@ class Hostel extends Model
         return $this->available() - $this->filled();
     }
 
-    public function wardens(){
+    public function wardens()
+    {
         return $this->hasMany(Hostel::class);
     }
 
-    public function valid_warden(){
-        return Warden::where('hostel_id',$this->id)->where('valid',1)->first();
+    public function warden()
+    {
+        $warden = Warden::where('hostel_id', $this->id)->where('valid', 1)->first();
+        return $warden;
+    }
+
+    public function valid_warden()
+    {
+        return Warden::where('hostel_id', $this->id)->where('valid', 1)->first();
     }
 }
