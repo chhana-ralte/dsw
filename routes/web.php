@@ -104,6 +104,8 @@ Route::get('/person/{id}/confirm_delete', [PersonController::class, 'delete'])->
 Route::controller(App\Http\Controllers\StudentRegistrationController::class)->group(function () {
     Route::get('/studentRegistration', 'registration');
     Route::post('/studentRegistration', 'registrationStore');
+    Route::get('/studentRegistration/create_user', 'create_user');
+    Route::post('/studentRegistration/create_user_store', 'create_user_store');
 });
 
 Route::controller(App\Http\Controllers\AjaxController::class)->group(function () {
