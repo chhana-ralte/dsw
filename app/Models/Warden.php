@@ -9,7 +9,13 @@ class Warden extends Model
 {
     protected $guarded = [];
 
-    public function hostel(){
+    public function hostel()
+    {
         return $this->belongsTo(Hostel::class);
+    }
+
+    public function person()
+    {
+        return $this->belongsTo(Person::class);
     }
 }

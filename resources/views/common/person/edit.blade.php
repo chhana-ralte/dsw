@@ -75,8 +75,6 @@
                     <label for="address" class="col col-md-3">Address</label>
                     <div class="col col-md-4">
                         <textarea class="form-control" name="address">{{ old('address', $person->address) }}</textarea>
-
-
                     </div>
                 </div>
                 <div class="mb-3 form-group row">

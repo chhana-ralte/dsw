@@ -58,6 +58,11 @@
                 {{ $hostel->name }} Hall of Residence
                 <p>
                     <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/admission?sessn={{ App\Models\Sessn::default()->id }}">Admission details</a>
+                @auth
+                    @if(auth()->user()->isDSW())
+                        <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/warden">Manage Wardens</a>
+                    @endif
+                @endauth
                 </p>
             </x-slot>
             Summary
@@ -140,7 +145,15 @@
                             @endauth
                         </td>
                     </tr>
-
+                    @if($hostel->warden())
+                        <tr>
+                            <td>Warden</td>
+                            <td>{{ $hostel->warden()->person->name }}</td>
+                            @auth
+                                <td></td>
+                            @endauth
+                        </tr>
+                    @endif
                 </tbody>
 
             </table>

@@ -12,7 +12,7 @@
             <x-slot name="heading">
                 Personal information
             </x-slot>
-            <form method="post" action="/allotment/{{ $allotment->id }}/allot_hostel">
+            <form name="frmcreate" method="post" action="/allotment/{{ $allotment->id }}/allot_hostel">
                 @csrf
                 @if($allotment->valid_allot_hostel())
                     <input type="hidden" name="current_hostel_id" value="{{ $allotment->valid_allot_hostel()->hostel_id }}">
@@ -97,11 +97,8 @@
                     <div class="col col-md-3"></div>
                     <div class="col col-md-4">
                         <button type="button" class="btn btn-primary submit">Submit</button>
-                        
                     </div>
                 </div>
-
-
             </form>
         </x-block>
     </x-container>
@@ -124,7 +121,7 @@ $(document).ready(function(){
             alert("Current hostel can not be same as currently allotted hostel");
             exit();
         }
-        $("form").submit();
+        $("form[name='frmcreate']").submit();
     });
 });
 </script>

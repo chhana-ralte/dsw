@@ -2,8 +2,6 @@
 
     <x-container>
         <x-block>
-
-
             <x-slot name="heading">
                 <div class="row ">
                     <div class="col">
@@ -49,15 +47,18 @@
                 </div>
 
             </x-slot>
+
             @if ($allotment->cancel_seat)
                 <div class="alert alert-danger">
                     <strong align="center">The inmate is no longer in the hostel</strong>
                 </div>
             @endif
-            <table class="table table-auto table-hover">
+
+            <table class="table table-auto">
                 <tr>
                     <th>Name</th>
                     <td>{{ $allotment->person->name }}</td>
+                    <td rowspan=7><img width="200px" src="{{ $allotment->person->photo }}" alt="" srcset=""></td>
                 </tr>
                 <tr>
                     <th>Father/Guardian's name</th>
@@ -107,7 +108,7 @@
                         @endif
                     @endauth
                 </x-slot>
-                <table class="table table-auto table-hover">
+                <table class="table table-auto">
                     <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
                         <td>Rollno</td>
                         <td>{{ $allotment->person->student()->rollno }}</td>
@@ -146,7 +147,7 @@
                         @endif
                     @endauth
                 </x-slot>
-                <table class="table table-auto table-hover table-striped">
+                <table class="table table-auto table-striped">
                     <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
                         <td>{{ $allotment->person->other()->remark }}</td>
                     </tr>
@@ -182,7 +183,7 @@
                     @endif
                 @endauth
             </x-slot>
-            <table class="table table-hover">
+            <table class="table">
                 <tr>
                     <td>Initial hostel allotted</td>
                     <td>{{ $allotment->hostel->name }}</td>
@@ -263,7 +264,7 @@
                 <x-slot name="heading">
                     Seat cancelled...
                 </x-slot>
-                <table class="table table-hover">
+                <table class="table">
                     <tr>
                         <td>Last hostel from where cancelled</td>
                         <td>{{ $allotment->cancel_seat->allot_hostel->hostel->name }}</td>
@@ -307,7 +308,7 @@
                 <x-slot name="heading">
                     Remark(s) about student
                 </x-slot>
-                <table class="table table-auto table-hover">
+                <table class="table table-auto">
                     <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
                         <th>Date of incident</th>
                         <th>Remark</th>
