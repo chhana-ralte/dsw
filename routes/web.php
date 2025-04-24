@@ -35,15 +35,6 @@ use Illuminate\Support\Facades\View;
 Route::get('/test', function () {
     return "Hehe";
 })->middleware(['auth', 'admin']);
-
-Route::get('/message', function () {
-    return view('message');
-})->middleware(['auth']);
-Route::get('/h', function () {
-    $hostel = Hostel::where('name', $_GET['hostel'])->first();
-    return $hostel->vacant();
-});
-
 Route::get('/', [HostelController::class, 'index']);
 Route::get('/warden', [WardenController::class, 'list']);
 Route::get('/search', [SearchController::class, 'index'])->middleware(['auth']);
