@@ -120,11 +120,7 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
 Route::get('/generateRooms', function () {
     return view('generateRooms');
 });
-function startUp()
-{
-    $hostels = ['thorang'];
-    return $hostels;
-}
+
 Route::post('/generateRooms', function () {
     $str = "";
     if (request()->password == "mzudsw") {
@@ -137,7 +133,7 @@ Route::post('/generateRooms', function () {
         } else {
             $hostel = App\Models\Hostel::create([
                 'name' => $Hostel_name,
-                'gender' => 'Female',
+                'gender' => 'Male',
             ]);
             $str .= "<br>New Hostel created";
         }
@@ -201,7 +197,8 @@ Route::post('/generateRooms', function () {
                 'name' => $l->name,
                 'state' => $l->state,
                 'category' => $l->category,
-                // 'address' => $l->State,
+                'address' => $l->address,
+                'state' => $l->state,
                 'mobile' => $l->mobile,
             ]);
 
@@ -212,7 +209,8 @@ Route::post('/generateRooms', function () {
                     'person_id' => $person->id,
                     'course' => $l->course,
                     'department' => $l->department,
-                    'mzuid' => $l->mzuid
+                    'mzuid' => $l->mzuid,
+
                 ]);
                 $str .= "New student " . $person->name . " created <br>";
             }
@@ -225,10 +223,12 @@ Route::post('/generateRooms', function () {
                 'hostel_id' => $hostel->id,
                 'from_dt' => $l->year . '-08-01',
                 'to_dt' => '2025-07-31',
-                'valid' => 1
+                'valid' => 1,
+                'qfix' => $l->qfix
             ]);
 
             $str .= "New allotment " . $allotment->id . " created <br>";
+
             $allot_hostel = App\Models\AllotHostel::create([
                 'allotment_id' => $allotment->id,
 
@@ -239,6 +239,7 @@ Route::post('/generateRooms', function () {
             ]);
 
             $str .= "New allot_hostel in " . $hostel->name . " created <br>";
+
             $room = Room::where('roomno', $l->roomno)
                 ->where('hostel_id', $hostel->id)
                 ->first();
@@ -252,7 +253,7 @@ Route::post('/generateRooms', function () {
                     App\Models\AllotSeat::create([
                         'allot_hostel_id' => $allot_hostel->id,
                         'seat_id' => $s->id,
-                        'from_dt' => '2024-08-01',
+                        'from_dt' => $l->year . '-08-01',
                         'to_dt' => '2025-07-31',
                         'valid' => 1
                     ]);
