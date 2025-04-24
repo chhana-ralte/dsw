@@ -63,7 +63,7 @@ Route::resource('person.person_remark', PersonRemarkController::class)->shallow(
 Route::resource('person_remark.person_remark_detail', PersonRemarkDetailController::class)->shallow()->middleware('auth');
 Route::resource('hostel', HostelController::class);
 Route::resource('hostel.room', RoomController::class)->shallow()->middleware('auth');
-Route::resource('hostel.warden', WardenController::class)->shallow()->middleware(['auth', 'admin']);
+Route::resource('hostel.warden', WardenController::class)->shallow()->middleware(['auth']);
 Route::resource('hostel.admission', AdmissionController::class)->shallow()->middleware('auth');
 Route::resource('room.seat', SeatController::class)->shallow()->middleware('auth');
 Route::resource('notification', NotificationController::class)->middleware('auth');

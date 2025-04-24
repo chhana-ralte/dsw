@@ -12,7 +12,7 @@
             <x-slot name="heading">
                 Please check whether the following information is correct for seat cancellation
             </x-slot>
-            <form method="post" action="/allotment/{{ $allotment->id }}/cancelSeat">
+            <form name="frmSubmit" method="post" action="/allotment/{{ $allotment->id }}/cancelSeat">
                 @csrf
 
                 <input type="hidden" name="allotment_id" value="{{ $allotment->id }}">
@@ -163,7 +163,7 @@ $(document).ready(function(){
             exit();
         }
         if(confirm("Are you sure you want to disallocate the inmate? Only DSW would be able to revert.")){   
-            $("form").submit();
+            $("form[name='frmSubmit']").submit();
         }
     });
 });
