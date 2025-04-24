@@ -34,7 +34,7 @@ use Illuminate\Support\Facades\View;
 
 Route::get('/test', function () {
     return "Hehe";
-})->middleware(['auth']);
+})->middleware(['auth', 'admin']);
 Route::get('/', [HostelController::class, 'index']);
 Route::get('/warden', [WardenController::class, 'list']);
 Route::get('/search', [SearchController::class, 'index'])->middleware(['auth']);
