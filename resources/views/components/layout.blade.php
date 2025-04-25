@@ -56,6 +56,11 @@
                                 <a class="nav-link" href="/consolidate">Consolidate</a>
                             </li>
                         @endif
+                        @if(auth()->user()->allotment())
+                            <li class="nav-item">
+                                <a class="nav-link" href="/allotment/{{ auth()->user()->allotment()->id }}">My details</a>
+                            </li>
+                        @endif
                         <li class="nav-item">
                             <a class="nav-link" href="/search">Search</a>
                         </li>

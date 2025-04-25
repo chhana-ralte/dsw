@@ -7,7 +7,7 @@
                     <div class="col">
                         Personal information
                         @auth()
-                            @can('update', $current_hostel)
+                            @can('edit',$allotment->person)
                                 <a class="btn btn-secondary btn-sm"
                                     href="/person/{{ $allotment->person->id }}/edit?back_link=/allotment/{{ $allotment->id }}">Edit</a>
                             @endcan
@@ -18,8 +18,10 @@
 
                             @if (auth()->user()->isAdmin())
                                 <a class="btn btn-danger btn-sm"
-                                    href="/person/{{ $allotment->person->id }}/confirm_delete?back_link=/allotment/{{ $allotment->id }}">Delete</a>
+                                    href="/person/{{ $allotment->person->id }}/confirm_delete?back_link=/allotment/{{ $allotment->id }}">Delete
+                                </a>
                             @endif
+
                         @endauth
                         <p>
                             @auth
@@ -40,9 +42,6 @@
                                 @endif
                             @endauth
                         </p>
-                    </div>
-                    <div class="col-auto">
-                        <img width="200px" src="{{ $allotment->person->photo }}" alt="" srcset="">
                     </div>
                 </div>
 
