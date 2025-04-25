@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 use App\Models\Allotment;
 use App\Models\Student;
 use App\Models\Person;
 use App\Models\User;
+use App\Models\Role;
+use App\Models\Role_User;
 
 class StudentRegistrationController extends Controller
 {
@@ -89,16 +92,39 @@ class StudentRegistrationController extends Controller
     {
         $validated = (object)request()->validate([
             'username' => 'required|min:6',
-            'password' => 'required|confirmed|min:6'
+            'password' => 'required|confirmed|min:6',
+            'allotment' => 'required|numeric'
         ]);
 
-        // return $validated;
+        $allotment = Allotment::findOrFail($validated->allotment);
 
         if (User::where('username', $validated->username)->exists()) {
             return redirect('/studentRegistration/create_user?allotment=' . request()->allotment)
                 ->with(['message' => ['type' => 'info', 'text' => 'Username already exists']])
                 ->withInput();
         }
-        return "returned";
+
+        $user = User::create([
+             'name' => $allotment->person->name,
+             'username' => $validated->username,
+             'password' => Hash::make($validated->password),
+             'email' => $allotment->person->email,
+        ]);
+
+        $role = Role::updateOrCreate([
+            'role' => 'Inmate',
+        ],[
+            'role' => 'Inmate',
+            'level' => '1',
+        ]);
+
+        $role_user = Role_User::create([
+            'user_id' => $user->id,
+            'role_id' => $role->id,
+            'type' => 'allotment',
+            'foreign_id' => $allotment->id,
+        ]);
+        
+        return redirect('/login')->with(['message' => ['type' => 'info', 'text' => 'Registration completed. You may login now']]);
     }
 }
