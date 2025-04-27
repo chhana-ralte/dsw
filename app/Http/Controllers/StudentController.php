@@ -58,6 +58,9 @@ class StudentController extends Controller
      */
     public function edit(Student $student)
     {
+        if(auth()->user()->cannot('edit',$student->person)){
+            abort(403);
+        }
         $data = [
             'student' => $student,
             'back_link' => request()->back_link

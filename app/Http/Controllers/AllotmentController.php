@@ -8,7 +8,9 @@ use App\Models\Hostel;
 use App\Models\Student;
 use App\Models\Other;
 use App\Models\Notification;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class AllotmentController extends Controller
 {
@@ -90,6 +92,12 @@ class AllotmentController extends Controller
 
     public function show(Allotment $allotment)
     {
+        //if(Gate::denies('view-allotment',$allotment)){
+
+        if(auth()->user()->cannot('view',$allotment)){
+            abort(403);
+        }
+    
         if($allotment->valid_allot_hostel()){
             $current_hostel = $allotment->valid_allot_hostel()->hostel;
         }
@@ -103,10 +111,14 @@ class AllotmentController extends Controller
         ];
         // return $data;
         return view('common.allotment.show',$data);
+    
     }
 
     public function edit(Allotment $allotment)
     {
+        if(auth()->user()->cannot('edit',$allotment)){
+            abort(403);
+        }
         $data = [
             'back_link' => request()->back_link,
             'allotment' => $allotment,

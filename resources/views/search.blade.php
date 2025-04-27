@@ -13,6 +13,14 @@
                         <input class="form-control" type="text" name="str" value="{{ $str }}">
                     </div>
                     <div class="col col-md-3">
+                        <select class="form-control" name="hostel">
+                            <option value="0">All hostels</option>
+                            @foreach(App\Models\Hostel::orderBy('name')->get() as $h)
+                            <option value="{{ $h->id }}" {{ $hostel==$h->id?' selected ':'' }}>{{ $h->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col col-md-3">
                         <button class="btn btn-primary" type="submit">Search</button>
                     </div>
                 </div>
@@ -34,7 +42,11 @@
                             <tr>
                                 <td>
                                     @if($p->valid_allotment())
-                                        <a href="/allotment/{{ $p->valid_allotment()->id }}?back_link=/search?str={{$str}}">{{ $p->name }}</a>
+                                        @can('view',$p->valid_allotment())
+                                            <a href="/allotment/{{ $p->valid_allotment()->id }}?back_link=/search?str={{$str}}">{{ $p->name }}</a>
+                                        @else
+                                            {{ $p->name }}
+                                        @endcan
                                     @else
                                         {{ $p->name }}
                                     @endif

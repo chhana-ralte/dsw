@@ -2,14 +2,9 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                <x-button type="a" href="/user">Back</x-button>
-                Consolidation
+                Create User
                 <p>
-                    <div class="btn-group">
-                        <a class="btn btn-primary btn-sm" href="/consolidate?type=course">Course</a>
-                        <a class="btn btn-primary btn-sm" href="/consolidate?type=department">Department</a>
-                        <a class="btn btn-primary btn-sm" href="/consolidate?type=course">Category</a>
-                    </div>
+                    <a class="btn btn-secondary btn-sm" href="/user">Back</a>
                 </p>
             </x-slot>
             <form method="post" action="/user/" class="pt-2">

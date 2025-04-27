@@ -7,8 +7,10 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
 use App\Models\User;
 use App\Models\Hostel;
+
 use App\Policies\HostelPolicy;
 use App\Policies\RoomPolicy;
+use App\Policies\AllotmentPolicy;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,6 +32,8 @@ class AppServiceProvider extends ServiceProvider
         //     return $user->isWarden($hostel->id);
         // });
         Gate::policy(Hostel::class, HostelPolicy::class);
+        Gate::policy(Allotment::class, AllotmentPolicy::class);
+        // Gate::define('view-allotment', [AllotmentPolicy::class,'view']);
 
 
         Gate::define('admin-access', function (User $user) {

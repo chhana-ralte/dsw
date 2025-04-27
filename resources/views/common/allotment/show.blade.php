@@ -91,7 +91,7 @@
                 <x-slot name="heading">
                     Student Information
                     @auth()
-                        @can('update', $current_hostel)
+                        @can('edit', $allotment->person)
                             <a class="btn btn-secondary btn-sm"
                                 href="/student/{{ $allotment->person->student()->id }}/edit?back_link=/allotment/{{ $allotment->id }}">Edit</a>
                         @endcan
@@ -154,7 +154,7 @@
             </x-block>
         @else
             @auth
-                @can('update', $current_hostel)
+                @can('edit', $allotment)
                     <x-block>
                         <x-slot name="heading">
                             Whether a student or not??
@@ -230,7 +230,7 @@
 
             @auth
                 @if ($allotment->valid_allot_hostel())
-                    @can('update', $allotment->valid_allot_hostel()->hostel)
+                    @can('edit', $allotment)
                         <a class="btn btn-primary"
                             href="/allot_hostel/{{ $allotment->valid_allot_hostel()->id }}/allotSeat">Change room/seat</a>
                         <a class="btn btn-danger" href="/allotment/{{ $allotment->id }}/cancelSeat/create">Cancel the seat</a>
@@ -257,6 +257,29 @@
             @endauth
 
         </x-block>
+
+        @can('manage',$allotment)
+            <x-block>
+                <x-slot name="heading">
+                    User information about the student
+                </x-slot>
+                @if($allotment->user())
+                    <table class="table">
+                        <tr>
+                            <td>Username</td>
+                            <td>{{ $allotment->user()->username }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <button class="btn btn-primary">Reset password</button>
+                            </td>
+                        </tr>
+                    </table>
+                @else
+                    User not available
+                @endif
+            </x-block>
+        @endcan
 
         @if ($allotment->cancel_seat)
             <x-block>

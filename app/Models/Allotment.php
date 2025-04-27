@@ -61,7 +61,7 @@ class Allotment extends Model
     {
         if (Role_User::where('type', 'allotment')->where('foreign_id', $this->id)->exists()) {
             $role_user = Role_User::where('type', 'allotment')->where('foreign_id', $this->id)->first();
-            return User::where('user_id', $role_user->user_id)->first();
+            return User::where('id', $role_user->user_id)->first();
         } else {
             return false;
         }
