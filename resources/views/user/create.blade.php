@@ -17,19 +17,47 @@
                         <label for="name">Name</label>
                     </div>
                     <div class="col-md-4">
-                        <input type="text" class="form-control" name="name"  value="{{ old('name') }}">
+                        <input type="text" class="form-control" name="name"  value="{{ old('name',$person->name) }}" readonly>
                         @error('name')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                 </div>
 
+                @if(isset($warden))
+                    <div class="form-group row pt-2">
+                        <div class="col-md-3">
+                            <label for="hostel">Warden of</label>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" name="hostel"  value="{{ old('hostel',$warden->hostel->name) }}" readonly>
+                            @error('hostel')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                @endif
+
+                @if(isset($allotment))
+                    <div class="form-group row pt-2">
+                        <div class="col-md-3">
+                            <label for="allotment">Initial resident of</label>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" name="allotment"  value="{{ old('allotment',$allotment->hostel->name) }}" disabled>
+                            @error('allotment')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                @endif
+
                 <div class="form-group row pt-2">
                     <div class="col-md-3">
                         <label for="username">Username</label>
                     </div>
                     <div class="col-md-4">
-                        <input type="text" class="form-control" name="username" value="{{ old('username') }}">
+                        <input type="text" class="form-control" name="username" value="{{ old('username') }}" required>
                         @error('username')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -45,7 +73,22 @@
                         <x-input-error class="mt-2" :messages="$errors->get('email')" />
                     </div>
                 </div>--}}
+                <div class="form-group row pt-2">
+                    <label for="password" class="col col-md-3">Password</label>
+                    <div class="col col-md-4">
+                        <input type="password" class="form-control" name="password" value="" required>
+                        @error('password')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
 
+                <div class="form-group row pt-2">
+                    <label for="password_confirmation" class="col col-md-3">Confirm password</label>
+                    <div class="col col-md-4">
+                        <input type="password" class="form-control" name="password_confirmation" value="" required>
+                    </div>
+                </div>
 
 
 

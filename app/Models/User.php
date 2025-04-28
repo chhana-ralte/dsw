@@ -93,7 +93,9 @@ class User extends Authenticatable
     public function allotment()
     {
         $role = Role::where('role', 'Inmate')->first();
-
+        if(!$role){
+            $role = Role::create(['role'=>'Inmate', 'level'=>1]);
+        }
         $role_user = Role_User::where('user_id', $this->id)
             ->where('type', 'allotment')
             ->where('role_id', $role->id)

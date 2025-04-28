@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\Role_User;
 use App\Models\Allotment;
+use App\Models\Warden;
 use App\Models\Hostel;
 use App\Models\AllotHostel;
 
@@ -53,36 +54,60 @@ class UserController extends Controller
 
     public function create()
     {
-        $role = Role::where('role', 'Warden')->first();
-        $level = $role->level;
-        if (auth()->user()->max_role_level() >= $level) {
-            if (isset(request()->type) && isset(request()->id)) {
+        if (isset(request()->type) && isset(request()->id)) {
+            if(request()->type == 'warden'){
+                $warden = Warden::findOrFail(request()->id);
+                $person = $warden->person;
                 $data = [
                     'type' => request()->type,
                     'id' => request()->id,
+                    'person' => $person,
+                    'warden' => $warden,
                 ];
-            } else {
-                $data = ['type' => '', 'id' => ''];
             }
-            return view('user.create', $data);
-        } else
-            abort(403);
+            else if(request()->type == 'allotment'){
+                $allotment = Allotment::findOrFail(request()->id);
+                $person = $allotment->person;
+                $data = [
+                    'type' => request()->type,
+                    'id' => request()->id,
+                    'person' => $person,
+                    'allotment' => $allotment,
+                ];
+            }
+            
+           
+        } else {
+            $data = ['type' => '', 'id' => ''];
+        }
+        return view('user.create', $data);
+    
+        abort(403);
     }
 
     public function store()
     {
         request()->validate([
             'name' => 'required',
-            'username' => 'required',
+            'username' => 'required|min:6',
+            'password' => 'required|min:6|confirmed'
         ]);
         if (User::where('username', request()->username)->exists()) {
-            return redirect('/user/create')->with(['message' => ['type' => 'danger', 'text' => 'Username already taken']])->withInput();
+            return redirect()->back()->with(['message' => ['type' => 'danger', 'text' => 'Username already taken']])->withInput();
         }
-        return "hell";
+        // return "hell";
+        
         $user = User::create([
             'name' => request()->name,
             'username' => request()->username,
             'password' => Hash::make('password')
+        ]);
+
+        $role_user = Role_User::create([
+            'user_id' => $user->id,
+            'role_id' => Role::where('role',request()->type)->first()->id,
+            'type' => request()->type,
+            'foreign_id' => request()->id,
         ]);
         //$user->roles()->sync(request()->roles);
         return redirect('/user')->with(['message' => ['type' => 'info', 'text' => 'User created']]);

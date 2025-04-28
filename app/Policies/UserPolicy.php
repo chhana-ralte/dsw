@@ -7,6 +7,26 @@ use Illuminate\Auth\Access\Response;
 
 class UserPolicy
 {
+    public function manage(User $user, User $model): bool
+    {
+        if($user->isAdmin()){
+            return true;
+        }
+        else if($user->isDsw() && !$model->isAdmin()){
+            return true;
+        }
+        else{
+            if($user->isWarden() && $model->allotment()){
+                if($model->allotment()->valid_allot_hostel()){
+                    $hostel = $model->allotment()->valid_allot_hostel()->hostel;
+                    if($user->isWardenOf($hostel->id)){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
     /**
      * Determine whether the user can view any models.
      */
@@ -28,7 +48,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->max_role_level() >= 3;
     }
 
     /**

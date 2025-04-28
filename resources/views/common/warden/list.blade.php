@@ -12,8 +12,8 @@
                         <th>Warden</th>
                         <th>From</th>
                         <th>To</th>
-                        @if(auth()->user()->isAdmin())
-                            <td>User</td>
+                        @if(auth() && auth()->user()->isAdmin())
+                            <th>User</th>
                         @endif
                     </tr>
 
