@@ -12,6 +12,9 @@
                         <th>Warden</th>
                         <th>From</th>
                         <th>To</th>
+                        @if(auth()->user()->isAdmin())
+                            <td>User</td>
+                        @endif
                     </tr>
 
                     @foreach($wardens as $wd)
@@ -20,6 +23,15 @@
                             <td>{{ $wd->person->name }}</td>
                             <td>{{ $wd->from_dt }}</td>
                             <td>{{ $wd->to_dt }}</td>
+                            @can('manage',$wd)
+                                <td>
+                                    @if($wd->user())
+                                        <a href="/">{{ $wd->user()->username }}</a>
+                                    @else
+                                        <a class="btn btn-primary btn-sm" href="/user/create?type=warden&id={{ $wd->id }}">Create user</a>
+                                    @endif
+                                </td>
+                            @endcan
                         </tr>
                     @endforeach
                 </table>

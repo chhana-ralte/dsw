@@ -9,12 +9,13 @@
                 @csrf
                 @method('patch')
                 <input type='hidden' name='warden' value='{{ $user->hasRole("Warden")?"true":"false" }}'>
+                
                 <div class="form-group row pt-2">
                     <div class="col-md-3">
                         <label for="name">Name</label>
                     </div>
                     <div class="col-md-4">
-                        <input type="text" class="form-control" name="name" value="{{$user->name}}" required>
+                        <input type="text" class="form-control" name="name" value="{{ old('name',$user->name) }}" required>
                     </div>
                 </div>
 
@@ -23,18 +24,18 @@
                         <label for="username">Username</label>
                     </div>
                     <div class="col-md-4">
-                        <input type="text" class="form-control" name="username" value="{{$user->username}}" required>
+                        <input type="text" class="form-control" name="username" value="{{ old('username',$user->username) }}" required>
                     </div>
                 </div>
 
-                <div class="form-group row pt-2">
+{{--                <div class="form-group row pt-2">
                     <div class="col-md-3">
                         <label for="email">Email</label>
                     </div>
                     <div class="col-md-4">
                         <input type="email" class="form-control" name="email" value="{{$user->email}}" required>
                     </div>
-                </div>
+                </div>--}}
 
                 <div class="form-group row pt-2">
                     <div class="col-md-3">

@@ -24,7 +24,7 @@
                         <input type="text" class="form-control" name="username" value="{{$user->username}}" disabled>
                     </div>
                 </div>
-
+{{--
                 <div class="form-group row pt-2">
                     <div class="col-md-3">
                         <label for="email">Email</label>
@@ -33,6 +33,7 @@
                         <input type="email" class="form-control" name="email" value="{{$user->email}}" disabled>
                     </div>
                 </div>
+                --}}
 
                 <div class="form-group row pt-2">
                     <div class="col-md-3">

@@ -9,14 +9,18 @@
             </x-slot>
             <form method="post" action="/user/" class="pt-2">
                 @csrf
+                <input type="hidden" name="type" value="{{ $type }}">
+                <input type="hidden" name="id" value="{{ $id }}">
 
                 <div class="form-group row pt-2">
                     <div class="col-md-3">
                         <label for="name">Name</label>
                     </div>
                     <div class="col-md-4">
-                        <input type="text" class="form-control" name="name" >
-                        <x-input-error class="mt-2" :messages="$errors->get('name')" />
+                        <input type="text" class="form-control" name="name"  value="{{ old('name') }}">
+                        @error('name')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -25,12 +29,14 @@
                         <label for="username">Username</label>
                     </div>
                     <div class="col-md-4">
-                        <input type="text" class="form-control" name="username" >
-                        <x-input-error class="mt-2" :messages="$errors->get('username')" />
+                        <input type="text" class="form-control" name="username" value="{{ old('username') }}">
+                        @error('username')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
-                <div class="form-group row pt-2">
+{{--                <div class="form-group row pt-2">
                     <div class="col-md-3">
                         <label for="email">Email</label>
                     </div>
@@ -38,7 +44,7 @@
                         <input type="email" class="form-control" name="email" >
                         <x-input-error class="mt-2" :messages="$errors->get('email')" />
                     </div>
-                </div>
+                </div>--}}
 
 
 

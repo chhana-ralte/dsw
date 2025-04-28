@@ -17,7 +17,6 @@
                             <th>Sl</th>
                             <th>Name</th>
                             <th>Username</th>
-                            <th>email</th>
                             <th>Edit|Delete</th>
                         </tr>
                         <?php $sl=1 ?>
@@ -28,7 +27,6 @@
                                 <td>{{ $sl++ }}</td>
                                 <td><a href="/user/{{$u->id}}">{{ $u->name }}</a></td>
                                 <td>{{ $u->username }}</td>
-                                <td>{{ $u->email }}</td>
                                 <td>
                                     <div class="btn-group">
                                         <x-button type="a" href="/user/{{$u->id}}/edit">Edit</x-button>

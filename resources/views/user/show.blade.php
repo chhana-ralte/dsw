@@ -23,14 +23,14 @@
                 </div>
             </div>
 
-            <div class="form-group row pt-2">
+{{--            <div class="form-group row pt-2">
                 <div class="col-md-3">
                     <label for="email">Email</label>
                 </div>
                 <div class="col-md-4">
                     <input type="email" class="form-control" name="email" value="{{$user->email}}" disabled>
                 </div>
-            </div>
+            </div>--}}
 
             <div class="form-group row pt-2">
                 <div class="col-md-3">
