@@ -36,13 +36,11 @@
                         <a class="nav-link" href="/warden">Wardens</a>
                     </li>
                     @auth
-                        @if(auth()->user()->isWarden())
-                            @foreach(auth()->user()->user_roles() as $role_user)
-                                @if($role_user->type == 'hostel')
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="/hostel/{{ $role_user->foreign_id }}/">{{ $role_user->hostel()->name }}</a>
-                                    </li>
-                                @endif
+                        @if(count(auth()->user()->wardens()) > 0)
+                            @foreach(auth()->user()->wardens() as $wd)
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/hostel/{{ $wd->hostel->id }}/">{{ $wd->hostel->name }}</a>
+                                </li>
                             @endforeach    
                         @endif
                         @if(auth()->user()->isAdmin() || auth()->user()->isDsw())

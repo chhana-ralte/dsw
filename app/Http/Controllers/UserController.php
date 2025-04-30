@@ -28,8 +28,9 @@ class UserController extends Controller
             $users = User::whereIn('id', $role_users->pluck('user_id'))->get();
         } else if (auth()->user()->isWarden()) {
             $role = Role::where('role', 'Warden');
-            $role_users = Role_User::where('user_id', auth()->user()->id)->where('type', 'hostel');
-            $hostels = Hostel::whereIn('id', $role_users->pluck('foreign_id'));
+            $role_users = Role_User::where('user_id', auth()->user()->id)->where('type', 'warden');
+            $wardens = Warden::where('valid',1)->whereIn('id',$role_users->pluck('foreign_id'));
+            $hostels = Hostel::whereIn('id', $wardens->pluck('hostel_id'));
 
             $valid_allot_hostels = AllotHostel::where('valid', 1)->whereIn('hostel_id', $hostels->pluck('id'));
 
@@ -100,7 +101,7 @@ class UserController extends Controller
         $user = User::create([
             'name' => request()->name,
             'username' => request()->username,
-            'password' => Hash::make('password')
+            'password' => Hash::make(request()->password),
         ]);
 
         $role_user = Role_User::create([
