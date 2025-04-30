@@ -1,5 +1,4 @@
 <x-layout>
-
     <x-container>
         <x-block>
             <x-slot name="heading">
@@ -12,10 +11,12 @@
                                     href="/person/{{ $allotment->person->id }}/edit?back_link=/allotment/{{ $allotment->id }}">Edit</a>
                             @endcan
 
-                            <a class="btn btn-secondary btn-sm"
-                                href="/person/{{ $allotment->person->id }}/person_remark?back_link=/allotment/{{ $allotment->id }}">Remarks
-                                about the person</a>
-
+                            @can('manage',$allotment)
+                                <a class="btn btn-secondary btn-sm"
+                                    href="/person/{{ $allotment->person->id }}/person_remark?back_link=/allotment/{{ $allotment->id }}">Remarks
+                                    about the person</a>
+                            @endcan
+                            
                             @if (auth()->user()->isAdmin())
                                 <a class="btn btn-danger btn-sm"
                                     href="/person/{{ $allotment->person->id }}/confirm_delete?back_link=/allotment/{{ $allotment->id }}">Delete
@@ -31,14 +32,16 @@
                                         allotments</a>
                                 @endif
 
-                                @if ($allotment->valid_allot_hostel())
-                                    <a class="btn btn-secondary btn-sm"
-                                        href="/hostel/{{ $allotment->valid_allot_hostel()->hostel->id }}/occupants">Back to
-                                        occupants</a>
-                                @else
-                                    <a class="btn btn-secondary btn-sm"
-                                        href="/hostel/{{ $allotment->hostel->id }}/occupants">Back
-                                        to occupants</a>
+                                @if (auth()->user()->max_role_level() >= 2 && $allotment->valid_allot_hostel())
+                                    @if($allotment->valid_allot_hostel())
+                                        <a class="btn btn-secondary btn-sm"
+                                            href="/hostel/{{ $allotment->valid_allot_hostel()->hostel->id }}/occupants">Back to
+                                            occupants</a>
+                                    @else
+                                        <a class="btn btn-secondary btn-sm"
+                                            href="/hostel/{{ $allotment->hostel->id }}/occupants">Back
+                                            to occupants</a>
+                                    @endif
                                 @endif
                             @endauth
                         </p>
@@ -271,7 +274,7 @@
                         </tr>
                         <tr>
                             <td colspan="2">
-                                <button class="btn btn-primary">Reset password</button>
+                                <a class="btn btn-primary" href="/user/{{ $allotment->user()->id }}/changePassword">Reset password</a>
                             </td>
                         </tr>
                     </table>

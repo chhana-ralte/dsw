@@ -62,12 +62,11 @@ class User extends Authenticatable
     public function isWardenOf($hostel_id)
     {
         $role = Role::where('role', 'Warden')->first();
-        if(Role_User::where('user_id', $this->id)->where('role_id', $role->id)->where('type', 'hostel')->where('foreign_id', $hostel_id)->exists()){
+        if (Role_User::where('user_id', $this->id)->where('role_id', $role->id)->where('type', 'hostel')->where('foreign_id', $hostel_id)->exists()) {
             return true;
-        }
-        else{
-            $warden = Warden::where('hostel_id',$hostel_id)->where('valid',1)->first();
-            return Role_User::where('user_id',$this->id)->where('role_id',$role->id)->where('type','warden')->where('foreign_id',$warden->id)->exists();
+        } else {
+            $warden = Warden::where('hostel_id', $hostel_id)->where('valid', 1)->first();
+            return Role_User::where('user_id', $this->id)->where('role_id', $role->id)->where('type', 'warden')->where('foreign_id', $warden->id)->exists();
         }
     }
 
@@ -77,10 +76,11 @@ class User extends Authenticatable
         return Role_User::where('user_id', $this->id)->where('role_id', $role->id)->exists();
     }
 
-    public function wardens(){
-        $role = Role::where('role','Warden')->first();
-        $role_users = Role_User::where('role_id',$role->id)->where('user_id',$this->id)->where('type','warden')->get();
-        $wardens = Warden::whereIn('id',$role_users->pluck('foreign_id'));
+    public function wardens()
+    {
+        $role = Role::where('role', 'Warden')->first();
+        $role_users = Role_User::where('role_id', $role->id)->where('user_id', $this->id)->where('type', 'warden')->get();
+        $wardens = Warden::whereIn('id', $role_users->pluck('foreign_id'));
         return $wardens->get();
     }
 
@@ -106,8 +106,8 @@ class User extends Authenticatable
     public function allotment()
     {
         $role = Role::where('role', 'Inmate')->first();
-        if(!$role){
-            $role = Role::create(['role'=>'Inmate', 'level'=>1]);
+        if (!$role) {
+            $role = Role::create(['role' => 'Inmate', 'level' => 1]);
         }
         $role_user = Role_User::where('user_id', $this->id)
             ->where('type', 'allotment')
@@ -133,10 +133,5 @@ class User extends Authenticatable
         $role = Role::where('role', 'Warden')->first();
         // return $role;
         return Role_User::where('user_id', $this->id)->where('role_id', $role->id)->where('type', 'hostel')->where('foreign_id', $hostel_id)->exists();
-    }
-
-    public function attmasters()
-    {
-        return $this->hasMany(Attmaster::class);
     }
 }

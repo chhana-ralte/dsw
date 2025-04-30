@@ -36,7 +36,9 @@ Route::get('/test', function () {
     return "Hehe";
 })->middleware(['admin']);
 
-Route::get('/', [HostelController::class, 'index']);
+Route::get('/', function () {
+    return view('home');
+});
 Route::get('/warden', [WardenController::class, 'list']);
 Route::get('/search', [SearchController::class, 'index'])->middleware(['auth']);
 Route::get('/consolidate', [ConsolidateController::class, 'index'])->middleware(['auth']);
@@ -51,8 +53,8 @@ Route::get('/allotment/{id}/admission', [AdmissionCheckController::class, 'statu
 
 Route::get('/login', [UserController::class, 'login'])->name('login');
 Route::post('/login', [UserController::class, 'logincheck']);
-Route::get('/user/changePassword', [UserController::class, 'changePassword'])->middleware('auth');
-Route::post('/user/changePassword', [UserController::class, 'changePasswordStore']);
+Route::get('/user/{id}/changePassword', [UserController::class, 'changePassword'])->middleware('auth');
+Route::post('/user/{id}/changePassword', [UserController::class, 'changePasswordStore']);
 Route::post('/logout', [UserController::class, 'logout']);
 Route::get('/hostel/{hostel}/occupants', [HostelController::class, 'occupants'])->middleware('auth');
 Route::post('/allotment/{allotment}/clear_allotment', [AllotmentController::class, 'clear_allotment'])->middleware('auth');

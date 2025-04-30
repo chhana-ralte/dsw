@@ -9,17 +9,15 @@ class UserPolicy
 {
     public function manage(User $user, User $model): bool
     {
-        if($user->isAdmin()){
+        if ($user->isAdmin()) {
             return true;
-        }
-        else if($user->isDsw() && !$model->isAdmin()){
+        } else if ($user->isDsw() && !$model->isAdmin()) {
             return true;
-        }
-        else{
-            if($user->isWarden() && $model->allotment()){
-                if($model->allotment()->valid_allot_hostel()){
+        } else {
+            if ($user->isWarden() && $model->allotment()) {
+                if ($model->allotment()->valid_allot_hostel()) {
                     $hostel = $model->allotment()->valid_allot_hostel()->hostel;
-                    if($user->isWardenOf($hostel->id)){
+                    if ($user->isWardenOf($hostel->id)) {
                         return true;
                     }
                 }
@@ -27,12 +25,21 @@ class UserPolicy
         }
         return false;
     }
+
+    public function changePassword(User $user, User $model): bool
+    {
+        if ($user->id == $model->id) {
+            return true;
+        } else {
+            return $this->manage($user, $model);
+        }
+    }
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -40,7 +47,7 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -56,7 +63,7 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -72,7 +79,7 @@ class UserPolicy
      */
     public function restore(User $user, User $model): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -80,6 +87,6 @@ class UserPolicy
      */
     public function forceDelete(User $user, User $model): bool
     {
-        //
+        return true;
     }
 }

@@ -18,6 +18,9 @@
                             <th>Course</th>
                             <th>Department</th>
                             <th>MZU ID</th>
+                            @if(auth()->user()->max_role_level() >= 3)
+                                <th>User?</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -36,6 +39,9 @@
                                     <td>{{ $seat->valid_allot_seat()->allot_hostel->allotment->person->student()->course }}</td>
                                     <td>{{ $seat->valid_allot_seat()->allot_hostel->allotment->person->student()->department }}</td>
                                     <td>{{ $seat->valid_allot_seat()->allot_hostel->allotment->person->student()->mzuid }}</td>
+                                    @if(auth()->user()->max_role_level() >= 3)
+                                        <td>{{ $seat->valid_allot_seat()->allot_hostel->allotment->user()?'Yes':'No' }}</td>
+                                    @endif
                                 @elseif($seat->valid_allot_seat()->allot_hostel->allotment->person->other())
                                     <td colspan=3>Not a student ({{ $seat->valid_allot_seat()->allot_hostel->allotment->person->other()->remark }})</td>
                                 @endif
@@ -44,6 +50,7 @@
                             @else
                                 <td colspan=4>Seat is vacant</td>
                             @endif
+                            
                         </tr>
                         @endforeach
                         </tbody>

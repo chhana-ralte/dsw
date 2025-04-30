@@ -12,7 +12,7 @@
                         <th>Warden</th>
                         <th>From</th>
                         <th>To</th>
-                        @if(auth() && auth()->user()->isAdmin())
+                        @if(auth()->user() && auth()->user()->isAdmin())
                             <th>User</th>
                         @endif
                     </tr>

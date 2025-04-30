@@ -25,13 +25,19 @@
             </button>
             <div class="collapse navbar-collapse" id="mynavbar">
                 <ul class="navbar-nav me-auto">
-
+                    @guest
                     <li class="nav-item">
-                        <a class="nav-link" href="/hostel">Hostels</a>
+                        <a class="nav-link" href="/studentRegistration">Student user registration</a>
                     </li>
-                    <li class="nav-item">
+                    @endguest
+                    @if(auth()->user() && auth()->user()->max_role_level() >= 2)
+                        <li class="nav-item">
+                            <a class="nav-link" href="/hostel">Hostels</a>
+                        </li>
+                    @endif
+                    {{-- <li class="nav-item">
                         <a class="nav-link" href="/admissioncheck">Check admission status</a>
-                    </li>
+                    </li> --}}
                     <li class="nav-item">
                         <a class="nav-link" href="/warden">Wardens</a>
                     </li>
@@ -59,9 +65,12 @@
                                 <a class="nav-link" href="/allotment/{{ auth()->user()->allotment()->id }}">My details</a>
                             </li>
                         @endif
-                        <li class="nav-item">
-                            <a class="nav-link" href="/search">Search</a>
-                        </li>
+
+                        @can('search')
+                            <li class="nav-item">
+                                <a class="nav-link" href="/search">Search</a>
+                            </li>
+                        @endcan
                     @endauth
                 </ul>
                 <!--      <ul class="navbar-nav me-auto"> -->
@@ -71,7 +80,7 @@
                             {{ auth()->user()->username }}
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/user/changePassword">Change password</a></li>
+                            <li><a class="dropdown-item" href="/user/{{ auth()->user()->id }}/changePassword">Change password</a></li>
                             <li><button class="dropdown-item" form="logout-form">Logout</button></li>
                             <form method="post" id="logout-form" action="/logout" type="hidden">
                                 @csrf

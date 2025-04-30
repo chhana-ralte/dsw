@@ -29,7 +29,7 @@ class UserController extends Controller
         } else if (auth()->user()->isWarden()) {
             $role = Role::where('role', 'Warden');
             $role_users = Role_User::where('user_id', auth()->user()->id)->where('type', 'warden');
-            $wardens = Warden::where('valid',1)->whereIn('id',$role_users->pluck('foreign_id'));
+            $wardens = Warden::where('valid', 1)->whereIn('id', $role_users->pluck('foreign_id'));
             $hostels = Hostel::whereIn('id', $wardens->pluck('hostel_id'));
 
             $valid_allot_hostels = AllotHostel::where('valid', 1)->whereIn('hostel_id', $hostels->pluck('id'));
@@ -56,7 +56,7 @@ class UserController extends Controller
     public function create()
     {
         if (isset(request()->type) && isset(request()->id)) {
-            if(request()->type == 'warden'){
+            if (request()->type == 'warden') {
                 $warden = Warden::findOrFail(request()->id);
                 $person = $warden->person;
                 $data = [
@@ -65,8 +65,7 @@ class UserController extends Controller
                     'person' => $person,
                     'warden' => $warden,
                 ];
-            }
-            else if(request()->type == 'allotment'){
+            } else if (request()->type == 'allotment') {
                 $allotment = Allotment::findOrFail(request()->id);
                 $person = $allotment->person;
                 $data = [
@@ -76,13 +75,11 @@ class UserController extends Controller
                     'allotment' => $allotment,
                 ];
             }
-            
-           
         } else {
             $data = ['type' => '', 'id' => ''];
         }
         return view('user.create', $data);
-    
+
         abort(403);
     }
 
@@ -97,7 +94,7 @@ class UserController extends Controller
             return redirect()->back()->with(['message' => ['type' => 'danger', 'text' => 'Username already taken']])->withInput();
         }
         // return "hell";
-        
+
         $user = User::create([
             'name' => request()->name,
             'username' => request()->username,
@@ -106,7 +103,7 @@ class UserController extends Controller
 
         $role_user = Role_User::create([
             'user_id' => $user->id,
-            'role_id' => Role::where('role',request()->type)->first()->id,
+            'role_id' => Role::where('role', request()->type)->first()->id,
             'type' => request()->type,
             'foreign_id' => request()->id,
         ]);
@@ -176,23 +173,26 @@ class UserController extends Controller
         return redirect('/user')->with(['message' => ['type' => 'info', 'text' => 'User updated']]);
     }
 
-    public function changePassword()
+    public function changePassword($user_id)
     {
-        $user = auth()->user();
-        return view('user.changePassword', ['user' => $user]);
+        $user = User::findOrFail($user_id);
+        if (auth() && auth()->user()->can('changePassword', $user)) {
+            return view('user.changePassword', ['user' => $user]);
+        } else {
+            abort(403);
+        }
     }
 
-    public function changePasswordStore()
+    public function changePasswordStore($user_id)
     {
-        $user = auth()->user();
-        if (request()->password == request()->confirm_password) {
-            $user->update([
-                'password' => Hash::make(request()->password)
-            ]);
-            return redirect('/user/changePassword')->with(['message' => ['type' => 'info', 'text' => 'Password changed']]);
-        } else {
-            return redirect('/user/changePassword')->with(['message' => ['type' => 'danger', 'text' => 'Passwords do not match']])->withInput();
-        }
+        $user = User::findOrFail($user_id);
+        request()->validate([
+            'password' => 'required|min:6|confirmed',
+        ]);
+        $user->update([
+            'password' => Hash::make(request()->password)
+        ]);
+        return redirect('/user/' . $user->id . '/changePassword')->with(['message' => ['type' => 'info', 'text' => 'Password changed']]);
     }
 
     public function destroy(User $user)

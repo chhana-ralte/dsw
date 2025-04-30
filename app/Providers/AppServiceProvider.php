@@ -11,6 +11,7 @@ use App\Models\Hostel;
 use App\Policies\HostelPolicy;
 use App\Policies\RoomPolicy;
 use App\Policies\AllotmentPolicy;
+use App\Policies\SearchPolicy;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,10 +32,12 @@ class AppServiceProvider extends ServiceProvider
         // Gate::define('update-hostel', function (User $user, Hostel $hostel) {
         //     return $user->isWarden($hostel->id);
         // });
-        Gate::policy(Hostel::class, HostelPolicy::class);
-        Gate::policy(Allotment::class, AllotmentPolicy::class);
+        // Gate::policy(Hostel::class, HostelPolicy::class);
+        // Gate::policy(Allotment::class, AllotmentPolicy::class);
         // Gate::define('view-allotment', [AllotmentPolicy::class,'view']);
 
+        // Gate::policy(SearchPolicy::class);
+        Gate::define('search', [SearchPolicy::class, 'search']);
 
         Gate::define('admin-access', function (User $user) {
             return $user->isAdmin(); // Assuming you have an 'is_admin' column in your users table

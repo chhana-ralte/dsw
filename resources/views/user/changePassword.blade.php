@@ -2,9 +2,9 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                Change password for: {{ auth()->user()->name }}
+                Change password for: {{ $user->name }}
             </x-slot>
-            <form method="post" action="/user/changePassword" class="pt-2">
+            <form method="post" action="/user/{{ $user->id }}/changePassword" class="pt-2">
                 @csrf
                 
                 <div class="form-group row pt-2">
@@ -33,7 +33,7 @@
                         <input type="email" class="form-control" name="email" value="{{$user->email}}" disabled>
                     </div>
                 </div>
-                --}}
+--}}
 
                 <div class="form-group row pt-2">
                     <div class="col-md-3">
@@ -41,6 +41,9 @@
                     </div>
                     <div class="col-md-4">
                         <input type="password" class="form-control" name="password" required>
+                        @error('password')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -49,7 +52,7 @@
                         Confirm Password
                     </div>
                     <div class="col-md-4">
-                        <input type="password" class="form-control" name="confirm_password" required>
+                        <input type="password" class="form-control" name="password_confirmation" required>
                     </div>
                 </div>
 

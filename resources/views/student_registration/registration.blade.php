@@ -2,7 +2,7 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                Registration of Student
+                Registration of Student (Enter either your MZU ID or your Roll number)
             </x-slot>
             
             <form method="post" action="/studentRegistration">

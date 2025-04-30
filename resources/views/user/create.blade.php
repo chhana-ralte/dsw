@@ -17,7 +17,7 @@
                         <label for="name">Name</label>
                     </div>
                     <div class="col-md-4">
-                        <input type="text" class="form-control" name="name"  value="{{ old('name',$person->name) }}" readonly>
+                        <input type="text" class="form-control" name="name"  value="{{ old('name',$type != ''?$person->name:'') }}">
                         @error('name')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -30,7 +30,7 @@
                             <label for="hostel">Warden of</label>
                         </div>
                         <div class="col-md-4">
-                            <input type="text" class="form-control" name="hostel"  value="{{ old('hostel',$warden->hostel->name) }}" readonly>
+                            <input type="text" class="form-control" name="hostel"  value="{{ old('hostel',$type != ''?$warden->hostel->name:'') }}" {{ $type!=''?' readonly ':'' }}>
                             @error('hostel')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror

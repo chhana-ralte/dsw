@@ -64,7 +64,7 @@
                         @elseif(auth()->user()->isWarden())
                             @foreach(\App\Models\Hostel::orderBy('name')->get() as $hostel)
                                 @if(auth()->user()->isWardenOf($hostel->id))
-                                    <input id="hostel_{{ $hostel->id }}" type="checkbox" name="hostel[]" value="{{ $hostel->id }}" {{ $user->isWardenOd($hostel->id)?" checked ":""}}>
+                                    <input id="hostel_{{ $hostel->id }}" type="checkbox" name="hostel[]" value="{{ $hostel->id }}" {{ $user->isWardenOf($hostel->id)?" checked ":""}}>
                                     <label for="hostel_{{ $hostel->id }}">{{ $hostel->name}}</label><br>
                                 @endif
                             @endforeach
