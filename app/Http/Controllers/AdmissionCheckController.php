@@ -6,66 +6,159 @@ use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\Person;
 use App\Models\Allotment;
+use App\Models\Admission;
 
 
 class AdmissionCheckController extends Controller
 {
-    public function check(){
-        if(isset(request()->allotment)){
+    public function index(Allotment $allotment)
+    {
+        // $admissions = $allotment->admissions->orderBy('session_id');
+        $admissions = Admission::where('allotment_id', $allotment->id)->orderBy('sessn_id')->get();
+        // $admissions->join('sessns', 'sessns.id', 'admissions.sessn_id')->orderBy('sessn_id'); //->orderBy('start_yr')->orderBy('odd_even');
+        // $admissions->whereIn('sessn', function ($sessn) {
+        //     $sessn->orderBy('start_yr');
+        // });
+        $data = [
+            'allotment' => $allotment,
+            'admissions' => $admissions,
+        ];
+        return view('admissioncheck.index', $data);
+    }
+
+    public function create(Allotment $allotment)
+    {
+        if (!auth()->user() && auth()->user()->can('manage', $allotment)) {
+            abort(403);
+        }
+        $data = [
+            'allotment' => $allotment,
+            'sessns' => \App\Models\Sessn::orderBy('start_yr')->orderBy('odd_even')->get(),
+        ];
+        return view('admissioncheck.create', $data);
+        return $allotment;
+    }
+
+    public function store(Allotment $allotment)
+    {
+        if (!auth()->user() && auth()->user()->can('manage', $allotment)) {
+            abort(403);
+        }
+        request()->validate([
+            'amount' => 'numeric:required',
+            'payment_dt' => 'required',
+            'sessn' => 'required',
+        ]);
+
+        if ($allotment->valid_allot_hostel()) {
+            $allot_hostel_id = $allotment->valid_allot_hostel()->id;
+        } else {
+            $allot_hostel_id = 0;
+        }
+        Admission::updateOrCreate(
+            [
+                'sessn_id' => request()->sessn,
+                'allotment_id' => $allotment->id,
+            ],
+            [
+                'sessn_id' => request()->sessn,
+                'allotment_id' => $allotment->id,
+                'payment_dt' => request()->payment_dt,
+                'amount' => request()->amount,
+                'allot_hostel_id' => $allot_hostel_id,
+            ]
+        );
+        return redirect('/allotment/' . $allotment->id . '/admission')
+            ->with(['message' => ['type' => 'info', 'text' => 'Admission detail created.']]);
+    }
+
+    public function edit(Admission $admission)
+    {
+        if (!auth()->user() && auth()->user()->can('manage', $allotment)) {
+            abort(403);
+        }
+
+        $data = [
+            'allotment' => $admission->allotment,
+            'admission' => $admission,
+            'sessns' => \App\Models\Sessn::orderBy('start_yr')->orderBy('odd_even')->get()
+        ];
+        return view('admissioncheck.edit', $data);
+    }
+
+    public function update(Admission $admission)
+    {
+        if (!auth()->user() && auth()->user()->can('manage', $allotment)) {
+            abort(403);
+        }
+        request()->validate([
+            'amount' => 'numeric:required',
+            'payment_dt' => 'required',
+            'sessn' => 'required',
+        ]);
+
+        $admission->update(
+            [
+                'sessn_id' => request()->sessn,
+                'payment_dt' => request()->payment_dt,
+                'amount' => request()->amount,
+            ]
+        );
+        return redirect('/allotment/' . $admission->allotment->id . '/admission')
+            ->with(['message' => ['type' => 'info', 'text' => 'Admission details updated.']]);
+    }
+
+    public function check()
+    {
+        if (isset(request()->allotment)) {
             $allotment = Allotment::findOrFail(request()->allotment);
-            if($allotment->person->student()){
+            if ($allotment->person->student()) {
                 $student = $allotment->person->student();
                 $data = [
                     'allotment' => $allotment,
                     'student' => $student
                 ];
-            }
-            else{
+            } else {
                 $data = [
                     'allotment' => $allotment,
                     'student' => ''
                 ];
             }
-            
-            return view('admissioncheck.check',$data);
-        }
-        else{
+            return view('admissioncheck.check', $data);
+        } else {
             return view('admissioncheck.check');
         }
     }
 
-    public function checkStore(){
-        if(request()->mzuid == ""){
+    public function checkStore()
+    {
+        if (request()->mzuid == "") {
             $mzuid = "98s7t9eut9sreujhtguisdhg";
-        }
-        else{
+        } else {
             $mzuid = request()->mzuid;
         }
-        if(request()->rollno == ""){
+        if (request()->rollno == "") {
             $rollno = "98s7t9eut9sreujhtguisdhg";
-        }
-        else{
+        } else {
             $rollno = request()->rollno;
         }
-        $students = Student::where('mzuid',$mzuid)->orWhere('rollno',$rollno);
-        if(count($students->get()) == 1){
+        $students = Student::where('mzuid', $mzuid)->orWhere('rollno', $rollno);
+        if (count($students->get()) == 1) {
             $person = $students->first()->person;
             $allotment = $person->valid_allotment();
             return redirect('/admissioncheck?allotment=' . $allotment->id . '&rand=' . uniqid());
-        }
-        else if(count($students->get()) == 0){
+        } else if (count($students->get()) == 0) {
             return redirect('/admissioncheck')
                 ->with(['message' => ['type' => 'danger', 'text' => 'Information not found']])
                 ->withInput();
-        }
-        else{
+        } else {
             // return "asdadsa";
-            $persons = Person::whereIn('id',$students->pluck('person_id'));
-            $allotments = Allotment::whereIn('person_id',$persons->pluck('id'));
+            $persons = Person::whereIn('id', $students->pluck('person_id'));
+            $allotments = Allotment::whereIn('person_id', $persons->pluck('id'));
             $data = [
                 'allotments' => $allotments->get(),
             ];
-            return view('admissioncheck.multiple',$data);
+            return view('admissioncheck.multiple', $data);
         }
     }
 }

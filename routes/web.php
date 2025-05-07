@@ -33,7 +33,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 
 Route::get('/test', function () {
-    return "Hehe";
+    return "Hello world";
 })->middleware(['admin']);
 
 Route::get('/', function () {
@@ -47,7 +47,7 @@ Route::post('/consolidate', [ConsolidateController::class, 'store'])->middleware
 Route::get('/admissioncheck', [AdmissionCheckController::class, 'check']);
 Route::post('/admissioncheck', [AdmissionCheckController::class, 'checkStore']);
 Route::post('/allotment/{id}/admission_decline', [AdmissionController::class, 'admission_decline']);
-Route::get('/allotment/{id}/admission', [AdmissionCheckController::class, 'status']);
+// Route::get('/allotment/{id}/admission', [AdmissionCheckController::class, 'index']);
 
 
 
@@ -68,13 +68,15 @@ Route::resource('hostel', HostelController::class);
 Route::resource('hostel.room', RoomController::class)->shallow()->middleware('auth');
 Route::resource('hostel.warden', WardenController::class)->shallow()->middleware(['auth', 'dsw']);
 Route::resource('hostel.admission', AdmissionController::class)->shallow()->middleware('auth');
+
 Route::resource('room.seat', SeatController::class)->shallow()->middleware('auth');
 Route::resource('notification', NotificationController::class)->middleware('auth');
 Route::resource('notification.allotment', AllotmentController::class)->shallow()->middleware('auth');
+Route::resource('allotment.admission', AdmissionCheckController::class)->shallow()->middleware('auth');
 Route::resource('allotment.allot_hostel', AllotHostelController::class)->shallow()->middleware('auth');
 Route::resource('allotment.cancelSeat', CancelSeatController::class)->shallow()->middleware('auth');
 Route::resource('user', UserController::class)->middleware(['auth']);
-Route::resource('allotment.admission', AdmissionController::class)->shallow()->middleware('auth');
+// Route::resource('allotment.admission', AdmissionController::class)->shallow()->middleware('auth');
 
 Route::resource('sessn', SessnController::class)->middleware(['auth']);
 
@@ -112,6 +114,13 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::post('/ajax/seat/{id}/deallocate', 'deallocateSeat');
     Route::post('/ajax/manage_admission', 'manage_admission');
 })->middleware('auth');
+
+
+
+
+
+
+
 
 
 

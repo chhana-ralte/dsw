@@ -54,6 +54,7 @@
                                             <button class="btn btn-primary btn-sm btn-confirm" name="admit_{{ $ah->id }}" value="{{ $ah->id }}">Confirm</button>
                                         @endcan
                                     @endif
+                                    <a class="btn btn-primary btn-sm" href="/allotment/{{ $ah->allotment->id }}/admission">detail</a>
                                 </td>
                             </tr>
                         @endforeach

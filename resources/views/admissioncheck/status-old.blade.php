@@ -29,7 +29,7 @@
                     </div>
                 </div>
             </form>
-            @if(count($allotment->admissions) > 0)
+            @if(count(admissions) > 0)
                 <table class="table">
                     <tr>
                         <th>Session</th>

@@ -31,7 +31,8 @@ class AllotmentPolicy
         }
     }
 
-    public function manage(User $user, Allotment $allotment) : bool{
+    public function manage(User $user, Allotment $allotment): bool
+    {
         if ($user->max_role_level() >= 4) { // DSW
             return true;
         } else if ($allotment->valid_allot_hostel() && $user->isWardenOf($allotment->valid_allot_hostel()->hostel->id)) { //Concerned Warden
@@ -41,4 +42,14 @@ class AllotmentPolicy
         }
     }
 
+    public function manage_self(User $user, Allotment $allotment): bool
+    {
+        if ($user->max_role_level() >= 3) {
+            return true;
+        } else if ($user->allotment() && $user->allotment()->id == $allotment->id) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

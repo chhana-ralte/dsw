@@ -52,6 +52,11 @@ class Allotment extends Model
         return Admission::where('sessn_id', $sessn_id)->where('allotment_id', $this->id)->first();
     }
 
+    public function admission_any()
+    {
+        return Admission::where('allotment_id', $this->id)->first();
+    }
+
     public function cancel_seat()
     {
         return $this->hasOne(CancelSeat::class);
@@ -65,5 +70,15 @@ class Allotment extends Model
         } else {
             return false;
         }
+    }
+
+    public function start_sessn()
+    {
+        return Sessn::where('id', $this->start_sessn_id)->first();
+    }
+
+    public function end_sessn()
+    {
+        return Sessn::where('id', $this->end_sessn_id)->first();
     }
 }

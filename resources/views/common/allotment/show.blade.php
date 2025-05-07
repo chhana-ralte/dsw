@@ -173,16 +173,14 @@
             @endauth
         @endif
 
-
-
         <x-block>
             <x-slot name="heading">
                 Hostel allotment information
                 @auth()
-                    @if (auth()->user()->isAdmin())
+                    @can('manage_self',$allotment)
                         <a class="btn btn-secondary btn-sm"
                             href="/allotment/{{ $allotment->id }}/edit?back_link=/allotment/{{ $allotment->id }}">Edit</a>
-                    @endif
+                    @endcan
                 @endauth
             </x-slot>
             <table class="table">
@@ -198,6 +196,29 @@
                     <td>Tentative allotment duration</td>
                     <td>{{ $allotment->from_dt }} to {{ $allotment->to_dt }}</td>
                 </tr>
+
+                <tr>
+                    <td>Starting session</td>
+                    <td>
+                        @if($allotment->start_sessn())
+                            {{ $allotment->start_sessn()->name() }}
+                        @else
+                            Not defined
+                        @endif
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Expected ending session</td>
+                    <td>
+                        @if($allotment->end_sessn())
+                            {{ $allotment->end_sessn()->name() }}
+                        @else
+                            Not defined
+                        @endif
+                    </td>
+                </tr>
+
                 <tr>
                     <td>Admission done?</td>
                     <td>{{ $allotment->admitted ? 'Yes' : 'No' }}</td>
@@ -213,7 +234,6 @@
 
             </table>
         </x-block>
-
 
         <x-block>
             <x-slot name="heading">

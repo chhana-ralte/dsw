@@ -21,7 +21,7 @@ class AllotmentController extends Controller
     {
         $data = [
             'notification' => $notification,
-            'allotments' => Allotment::where('notification_id',$notification->id)->orderBy('hostel_id')->get()
+            'allotments' => Allotment::where('notification_id', $notification->id)->orderBy('hostel_id')->get()
         ];
         return view('common.allotment.index', $data);
     }
@@ -46,7 +46,7 @@ class AllotmentController extends Controller
         // return $request->from_dt;
         $request->validate([
             'name' => 'required',
-            'hostel' => ['numeric','min:1']
+            'hostel' => ['numeric', 'min:1']
         ]);
 
         $person = Person::create([
@@ -59,7 +59,7 @@ class AllotmentController extends Controller
             'address' => $request->address,
         ]);
 
-        if($request->selected == 'student'){
+        if ($request->selected == 'student') {
             $student = Student::create([
                 'rollno' => $request->rollno,
                 'course' => $request->course,
@@ -69,7 +69,7 @@ class AllotmentController extends Controller
             ]);
         }
 
-        if($request->selected == 'other'){
+        if ($request->selected == 'other') {
             $other = Other::create([
                 'remark' => $request->remark,
                 'person_id' => $person->id
@@ -94,47 +94,54 @@ class AllotmentController extends Controller
     {
         //if(Gate::denies('view-allotment',$allotment)){
 
-        if(auth()->user()->cannot('view',$allotment)){
+        if (auth()->user()->cannot('view', $allotment)) {
             abort(403);
         }
-    
-        if($allotment->valid_allot_hostel()){
+
+        if ($allotment->valid_allot_hostel()) {
             $current_hostel = $allotment->valid_allot_hostel()->hostel;
-        }
-        else{
+        } else {
             $current_hostel = Hostel::default();
         }
         $data = [
             'allotment' => $allotment,
             'current_hostel' => $current_hostel,
-            'back_link' => isset(request()->back_link)?request()->back_link:'/notification/' . $allotment->notification->id . '/allotment',
+            'back_link' => isset(request()->back_link) ? request()->back_link : '/notification/' . $allotment->notification->id . '/allotment',
         ];
         // return $data;
-        return view('common.allotment.show',$data);
-    
+        return view('common.allotment.show', $data);
     }
 
     public function edit(Allotment $allotment)
     {
-        if(auth()->user()->cannot('edit',$allotment)){
+        if (auth()->user()->cannot('manage_self', $allotment)) {
             abort(403);
         }
         $data = [
             'back_link' => request()->back_link,
             'allotment' => $allotment,
         ];
-        return view('common.allotment.edit',$data);
+        return view('common.allotment.edit', $data);
     }
 
     public function update(Request $request, Allotment $allotment)
     {
-        $allotment->update([
-            'from_dt' => $request->from_dt,
-            'to_dt' => $request->to_dt,
-            'hostel_id' => $request->hostel,
-            'valid' => $request->valid?'1':0,
-            'finished' => $request->finished?'1':0
-        ]);
+        if (auth()->user() && auth()->user()->can('manage', $allotment)) {
+            $allotment->update([
+                'start_sessn_id' => $request->start_sessn,
+                'end_sessn_id' => $request->end_sessn,
+                'from_dt' => $request->from_dt,
+                'to_dt' => $request->to_dt,
+                'hostel_id' => $request->hostel,
+                'valid' => $request->valid ? '1' : 0,
+                'finished' => $request->finished ? '1' : 0
+            ]);
+        } else if (auth()->user() && auth()->user()->can('manage_self', $allotment)) {
+            $allotment->update([
+                'start_sessn_id' => $request->start_sessn,
+                'end_sessn_id' => $request->end_sessn,
+            ]);
+        }
         return redirect($request->back_link)->with(['message' => ['type' => 'info', 'text' => 'Allotment updated']]);
     }
 
@@ -143,11 +150,12 @@ class AllotmentController extends Controller
         //
     }
 
-    public function clear_allotment(Allotment $allotment){
-        if(auth()->user()->isAdmin()){
-            $allot_hostels = \App\Models\AllotHostel::where('allotment_id',$allotment->id);
-            $allot_seats = \App\Models\AllotSeat::whereIn('allot_hostel_id',$allot_hostels->pluck('id'));
-            
+    public function clear_allotment(Allotment $allotment)
+    {
+        if (auth()->user()->isAdmin()) {
+            $allot_hostels = \App\Models\AllotHostel::where('allotment_id', $allotment->id);
+            $allot_seats = \App\Models\AllotSeat::whereIn('allot_hostel_id', $allot_hostels->pluck('id'));
+
             $allot_seats->delete();
             $allot_hostels->delete();
             $allotment->update([

@@ -25,10 +25,16 @@
                     </div>
                 </div>
 
+                
+
                 <div class="form-group row mb-3">
                     <label for="hostel" class="col col-md-3">Hostel*</label>
                     <div class="col col-md-4">
-                        <select name='hostel' class='form-control' required>
+                        <select name='hostel' class='form-control' required
+                            @cannot('manage',$allotment)
+                                disabled
+                            @endcan
+                        >
                             <option value=0 >Select Hostel</option>
                             @foreach(\App\Models\Hostel::orderBy('name')->get() as $h)
                                 <option value='{{ $h->id }}' {{ $h->id==$allotment->hostel_id?" selected ":""}}>{{ $h->name }} ({{ $h->gender }})</option>
@@ -38,34 +44,87 @@
                 </div>
 
                 <div class="form-group row mb-3">
-                    <label for="from_dt" class="col col-md-3">Allotment from*</label>
+                    <label for="start_sessn" class="col col-md-3">Starting session</label>
                     <div class="col col-md-4">
-                        <input type="date" class="form-control" name="from_dt" value="{{ old('from_dt',$allotment->from_dt) }}" required>
+                        <select name='start_sessn' class='form-control' required
+                            @cannot('manage_self',$allotment)
+                                disabled
+                            @endcan
+                        >
+                            <option value=0 >Select starting session</option>
+                            @foreach(\App\Models\Sessn::orderBy('id')->get() as $ssn)
+                                <option value='{{ $ssn->id }}' {{ $ssn->id==$allotment->start_sessn_id?" selected ":""}}>{{ $ssn->name() }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
 
                 <div class="form-group row mb-3">
-                    <label for="to_dt" class="col col-md-3">To*</label>
+                    <label for="end_sessn" class="col col-md-3">Expected ending session</label>
                     <div class="col col-md-4">
-                        <input type="date" class="form-control" name="to_dt" value="{{ old('to_dt',$allotment->to_dt) }}" required>
+                        <select name='end_sessn' class='form-control' required
+                            @cannot('manage_self',$allotment)
+                                disabled
+                            @endcan
+                        >
+                            <option value=0 >Select ending session</option>
+                            @foreach(\App\Models\Sessn::orderBy('id')->get() as $ssn)
+                                <option value='{{ $ssn->id }}' {{ $ssn->id==$allotment->end_sessn_id?" selected ":""}}>{{ $ssn->name() }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
 
-                <div class="form-group row mb-3">
-                    <div class="col col-md-3"></div>
-                    <div class="col col-md-4">
-                        <input type="checkbox" id="admitted" name="admitted" {{ $allotment->admitted?" checked ":""}} disabled>
-                        <label for="admitted">Whether admitted?</label>
-                        <br>
-                        <input type="checkbox" id="valid" name="valid" {{ $allotment->valid?" checked ":""}}>
-                        <label for="valid">Whether valid?</label>
-                        <br>
-                        <input type="checkbox" id="finished" name="finished" {{ $allotment->finished?" checked ":""}}>
-                        <label for="finished">Whether finished?</label>
-                        <br>
-                    </div>
-                </div>
 
+
+                @can('manage',$allotment)
+
+                    <div class="form-group row mb-3">
+                        <label for="from_dt" class="col col-md-3">Allotment from*</label>
+                        <div class="col col-md-4">
+                            <input type="date" class="form-control" name="from_dt" value="{{ old('from_dt',$allotment->from_dt) }}"
+                            @cannot('manage',$allotment)
+                                readonly
+                            @endcan
+                            required>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-3">
+                        <label for="to_dt" class="col col-md-3">To*</label>
+                        <div class="col col-md-4">
+                            <input type="date" class="form-control" name="to_dt" value="{{ old('to_dt',$allotment->to_dt) }}" required
+                                @cannot('manage',$allotment)
+                                    readonly
+                                @endcan
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-3">
+                        <div class="col col-md-3"></div>
+                        <div class="col col-md-4">
+                            <input type="checkbox" id="admitted" name="admitted" {{ $allotment->admitted?" checked ":""}} disabled>
+                            <label for="admitted">Whether admitted?</label>
+                            <br>
+                            <input type="checkbox" id="valid" name="valid" {{ $allotment->valid?" checked ":""}}
+                                @cannot('manage',$allotment)
+                                    disabled
+                                @endcan
+                            >
+                            <label for="valid">Whether valid?</label>
+                            <br>
+                            <input type="checkbox" id="finished" name="finished" {{ $allotment->finished?" checked ":""}}
+                                @cannot('manage',$allotment)
+                                    disabled
+                                @endcan
+                            >
+                            <label for="finished">Whether finished?</label>
+                            <br>
+                        </div>
+                    </div>
+                @endcan
+                
                 <div class="form-group row mb-3">
                     <div class="col col-md-3"></div>
                     <div class="col col-md-4">
