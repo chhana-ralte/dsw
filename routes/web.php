@@ -28,6 +28,7 @@ use App\Http\Controllers\AdmissionController;
 use App\Http\Controllers\AdmissionCheckController;
 use App\Http\Controllers\CancelSeatController;
 use App\Http\Controllers\ConsolidateController;
+use App\Http\Controllers\ClearanceController;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
@@ -66,6 +67,7 @@ Route::resource('person.person_remark', PersonRemarkController::class)->shallow(
 Route::resource('person_remark.person_remark_detail', PersonRemarkDetailController::class)->shallow()->middleware('auth');
 Route::resource('hostel', HostelController::class);
 Route::resource('hostel.room', RoomController::class)->shallow()->middleware('auth');
+Route::resource('hostel.clearance', ClearanceController::class)->shallow()->middleware('auth');
 Route::resource('hostel.warden', WardenController::class)->shallow()->middleware(['auth', 'dsw']);
 Route::resource('hostel.admission', AdmissionController::class)->shallow()->middleware('auth');
 

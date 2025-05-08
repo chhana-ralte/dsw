@@ -316,7 +316,13 @@
                     </tr>
                     <tr>
                         <td>Last hostel room</td>
-                        <td>{{ $allotment->cancel_seat->allot_seat->seat->room->roomno }}</td>
+                        <td>
+                            @if($allotment->cancel_seat->allot_seat)
+                                {{ $allotment->cancel_seat->allot_seat->seat->room->roomno }}
+                            @else
+                                Not available
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <td>Date of actual leaving/tentative leaving date</td>

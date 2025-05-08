@@ -24,7 +24,11 @@ class CancelSeatController extends Controller
             if ($allotment->valid_allot_hostel()->valid_allot_seat()) {
                 $allot_seat = $allotment->valid_allot_hostel()->valid_allot_seat();
             } else {
-                $allot_seat = false;
+                if ($allotment->valid_allot_hostel()->allot_seats->count() > 0) {
+                    $allot_seat = $allotment->valid_allot_hostel()->allot_seat();
+                } else {
+                    $allot_seat = false;
+                }
             }
         } else {
             $allot_hostel = false;
@@ -34,6 +38,7 @@ class CancelSeatController extends Controller
             'allot_hostel' => $allot_hostel,
             'allot_seat' => $allot_seat,
         ];
+        // return $data;
         return view('common.cancel_seat.create', $data);
         return $allotment;
     }
