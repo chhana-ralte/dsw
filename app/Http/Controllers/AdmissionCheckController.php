@@ -108,6 +108,13 @@ class AdmissionCheckController extends Controller
             ->with(['message' => ['type' => 'info', 'text' => 'Admission details updated.']]);
     }
 
+    public function destroy(Admission $admission){
+        $allotment = $admission->allotment;
+        $admission->delete();
+        return redirect('/allotment/' . $allotment->id . '/admission')
+            ->with(['message' => ['type' => 'info', 'text' => 'Admission detail deleted.']]);
+    }
+
     public function check()
     {
         if (isset(request()->allotment)) {

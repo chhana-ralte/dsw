@@ -15,7 +15,7 @@ class IsDsw
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(!auth()->user()->isDsw() || !auth()->user()->isAdmin()){
+        if(!auth()->user() || !auth()->user()->isDsw() || !auth()->user()->isAdmin()){
             abort(403);
         }
         

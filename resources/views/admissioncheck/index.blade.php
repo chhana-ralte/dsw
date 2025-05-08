@@ -79,13 +79,35 @@
                         <td>{{ $admission->amount }}</td>
                         <td>{{ $admission->payment_dt }}</td>
                         <td>{{ $admission->remark }}</td>
-                        <td><a href="/admission/{{ $admission->id }}/edit">Edit</a></td>
+                        <td>
+                            <div class="btn-group">
+                                <a class="btn btn-secondary btn-sm" href="/admission/{{ $admission->id }}/edit">Edit</a>
+                                <button class="btn btn-danger btn-sm btn-delete" value="{{ $admission->id }}">Delete</button>
+                                
+                            </div>
+                            
+                        </td>
                     </tr>
                     @endforeach
+                    <form method="post" name="frmDelete">
+                        @csrf
+                        @method('delete')
+                    </form>
                 </table>
             @else
                 <h3>No hostel admission record available</h3>
             @endif
         </x-block>
     </x-container>
+<script>
+$(document).ready(function(){
+    $("button.btn-delete").click(function(){
+        if(confirm("Are you sure you want to delete this admission detail?")){
+            $("form[name='frmDelete']").attr('action','/admission/' + $(this).val());
+            $("form[name='frmDelete']").submit();
+        }
+        // alert($(this).val());
+    });
+});
+</script>
 </x-layout>

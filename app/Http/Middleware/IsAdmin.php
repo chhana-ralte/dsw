@@ -15,7 +15,7 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->user()->isAdmin()) {
+        if (!auth()->user() || !auth()->user()->isAdmin()) {
             abort(403);
             return redirect('/')->with('error', 'Unauthorized access.'); // Redirect to home with error message
             // Or return an error response
