@@ -18,6 +18,10 @@ class Sessn extends Model
         return Sessn::where('current',1)->first();
     }
 
+    public static function between_sessns(Sessn $start, Sessn $end){
+        return Sessn::where('id','>=',$start->id)->where('id','<=',$end->id)->orderBy('start_yr')->orderBy('odd_even')->get();
+    }
+
     public function set_default(Sessn $sessn){
         Sessn::where('current',1)->update(['current' => 0]);
         $sessn->update(['current' => 1]);

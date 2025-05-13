@@ -4,11 +4,22 @@
             <x-slot name="heading">
                 Admission status of {{ $allotment->person->name }}
                 <p>
-                    @if($allotment->valid_allot_hostel())
-                        <a class="btn btn-secondary btn-sm" href="/hostel/{{ $allotment->valid_allot_hostel()->hostel->id }}/admission">Back</a>
-                    @else
-                        <a class="btn btn-secondary btn-sm" href="/hostel/{{ $allotment->hostel->id }}/admission">Back</a>
-                    @endif
+
+                    <div class="btn-group">
+                    <a class="btn btn-secondary btn-sm" href="/hostel/{{ $allotment->valid_allot_hostel()->hostel->id }}/admission">Back</a>
+                    <button type="button" class="btn btn-secondary btn-sm dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="visually-hidden">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/allotment/{{ $allotment->id }}">Back to personal details</a></li>
+                        @if($allotment->valid_allot_hostel())
+                            <li><a class="dropdown-item" href="/hostel/{{ $allotment->valid_allot_hostel()->hostel->id }}/admission">Back to hostel admissions</a></li>
+                        @else
+                            <li><a class="dropdown-item" href="/hostel/{{ $allotment->hostel->id }}/admission">Back to hostel admissions</a></li>
+                        @endif
+                    </ul>
+                    </div>
+
                     @can('manage',$allotment)
                         <a class="btn btn-primary btn-sm" href="/allotment/{{ $allotment->id }}/admission/create">New entry</a>
                     @endcan
@@ -21,14 +32,12 @@
                         <input type="text" class="form-control" name="mzuid" value="{{ $allotment->person->student()->mzuid }}" disabled>
                     </div>
                 </div>
-
                 <div class="form-group row mb-3">
                     <label for="rollno" class="col col-md-3">Roll No.</label>
                     <div class="col col-md-4">
                         <input type="text" class="form-control" name="rollno" value="{{ $allotment->person->student()->rollno }}" disabled>
                     </div>
                 </div>
-
                 <div class="form-group row mb-3">
                     <label for="department" class="col col-md-3">Department</label>
                     <div class="col col-md-4">
@@ -62,7 +71,7 @@
                     </div>
                 </div>
             @endif
-            
+
 
             @if(count($admissions) > 0)
                 <table class="table">
@@ -83,9 +92,9 @@
                             <div class="btn-group">
                                 <a class="btn btn-secondary btn-sm" href="/admission/{{ $admission->id }}/edit">Edit</a>
                                 <button class="btn btn-danger btn-sm btn-delete" value="{{ $admission->id }}">Delete</button>
-                                
+
                             </div>
-                            
+
                         </td>
                     </tr>
                     @endforeach

@@ -113,6 +113,7 @@ class AdmissionCheckController extends Controller
         $admission->delete();
         return redirect('/allotment/' . $allotment->id . '/admission')
             ->with(['message' => ['type' => 'info', 'text' => 'Admission detail deleted.']]);
+            
     }
 
     public function check()

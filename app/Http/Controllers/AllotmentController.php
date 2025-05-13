@@ -92,8 +92,6 @@ class AllotmentController extends Controller
 
     public function show(Allotment $allotment)
     {
-        //if(Gate::denies('view-allotment',$allotment)){
-
         if (auth()->user()->cannot('view', $allotment)) {
             abort(403);
         }
