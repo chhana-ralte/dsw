@@ -32,6 +32,7 @@ class CancelSeatController extends Controller
             }
         } else {
             $allot_hostel = false;
+            $allot_seat = false;
         }
         $data = [
             'allotment' => $allotment,
@@ -45,6 +46,7 @@ class CancelSeatController extends Controller
 
     public function store(Request $request, Allotment $allotment)
     {
+
         // return auth()->user();
         $cancelSeat = CancelSeat::updateOrCreate(
             [
@@ -71,6 +73,14 @@ class CancelSeatController extends Controller
         $allot_seats->update(['valid' => 0]);
 
         $allot_hostels->update(['valid' => 0]);
+
+        if($allotment->user()){
+            $user = $allotment->user();
+            \App\Models\Role_User::where('user_id',$user->id)->delete();
+            $user->delete();
+            // return $allotment->user()->name;
+            // return "User exists";
+        }
 
         return redirect('/allotment/' . $allotment->id)
             ->with(['message' => ['type' => 'info', 'text' => 'Seat has been cancelled.']]);

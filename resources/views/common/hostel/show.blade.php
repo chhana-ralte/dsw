@@ -1,9 +1,9 @@
 <x-layout>
     <x-container>
-            
-    
-    
-    
+
+
+
+
             {{--
             <x-block>
             <x-slot name="heading">
@@ -47,7 +47,7 @@
                     </div>
                 </div>
             </section>
-        </x-block> 
+        </x-block>
         --}}
 
 
@@ -83,19 +83,19 @@
                         <td>Total number of seats</td>
                         <td>{{ $no_seats }}</td>
                         <td>
-                            
+
                         </td>
                     </tr>
                     <td>Total seats available for allotment</td>
                     <td>{{ $no_available_seats }}</td>
                     <td>
-                        
+
                     </td>
                     </tr>
                     <tr>
                         <td>Total number of students allotted</td>
                         <td>{{ $no_allotted_seats }}</td>
-                        
+
                         <td>
                         @auth
                             <a href="/hostel/{{ $hostel->id }}/occupants" type="button"
@@ -104,12 +104,12 @@
                             </a>
                         @endauth
                         </td>
-                        
+
                     </tr>
                     <tr>
                         <td>Total number of seats vacant</td>
                         <td>{{ $no_vacant_seats }}</td>
-                        
+
                         <td>
                             @auth
                             <a href="/hostel/{{ $hostel->id }}/room?status=vacant" type="button"
@@ -118,7 +118,7 @@
                             </a>
                             @endauth
                         </td>
-                        
+
                     </tr>
                     <tr>
                         <td>No. of students who are not allotted seat/room</td>
@@ -145,6 +145,20 @@
                             @endauth
                         </td>
                     </tr>
+
+                    <tr>
+                        <td>Students whose seats are cancelled</td>
+                        <td>{{ $no_seat_cancelled }}</td>
+                        <td>
+                            @auth
+                                <a href="/hostel/{{ $hostel->id }}/cancelHostel"
+                                    class="btn btn-primary btn-sm">
+                                    view
+                                </a>
+                            @endauth
+                        </td>
+                    </tr>
+
                     @if($hostel->warden())
                         <tr>
                             <td>Warden</td>
