@@ -74,9 +74,9 @@ class CancelSeatController extends Controller
 
         $allot_hostels->update(['valid' => 0]);
 
-        if($allotment->user()){
+        if ($allotment->user()) {
             $user = $allotment->user();
-            \App\Models\Role_User::where('user_id',$user->id)->delete();
+            \App\Models\Role_User::where('user_id', $user->id)->delete();
             $user->delete();
             // return $allotment->user()->name;
             // return "User exists";
@@ -86,9 +86,9 @@ class CancelSeatController extends Controller
             ->with(['message' => ['type' => 'info', 'text' => 'Seat has been cancelled.']]);
     }
 
-    public function show(string $id)
+    public function show(CancelSeat $cancel_seat)
     {
-        //
+        return view('common.cancelHostel.clearance');
     }
 
     public function edit(string $id)

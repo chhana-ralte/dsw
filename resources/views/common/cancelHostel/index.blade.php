@@ -29,8 +29,16 @@
                                     <td colspan="2"><b>Unknown</b></td>
                                 @endif
 
-                                <td>{{ $cs->leave_dt }}</td>
-                                <td>ready</td>
+                                <td>
+                                    {{ $cs->leave_dt }}
+                                </td>
+                                <td>
+                                    @if($cs->cleared)
+                                        <button class="btn btn-primary btn-sm" name="btnClearance" value="{{ $cs->id }}">Clearance</button>
+                                    @else
+                                        Not Ready
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
 
@@ -40,4 +48,12 @@
             </div>
         </x-block>
     </x-container>
+<script>
+$(document).ready(function(){
+    $("button[name='btnClearance']").click(function(){
+        // alert($(this).val());
+        window.open("/cancelSeat/" + $(this).val(), 'Clearance');
+    });
+});
+</script>
 </x-layout>
