@@ -86,9 +86,13 @@ class CancelSeatController extends Controller
             ->with(['message' => ['type' => 'info', 'text' => 'Seat has been cancelled.']]);
     }
 
-    public function show(CancelSeat $cancel_seat)
+    public function show($cancel_seat_id)
     {
-        return view('common.cancelHostel.clearance');
+        $cancel_seat = CancelSeat::find($cancel_seat_id);
+        $data = [
+            'cancel_seat' => $cancel_seat,
+        ];
+        return view('common.cancelHostel.clearance',$data);
     }
 
     public function edit(string $id)

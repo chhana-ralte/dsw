@@ -16,6 +16,9 @@
                     </div>
                     <div class="col-md-4">
                         <input type="text" class="form-control" name="name" value="{{ old('name',$user->name) }}" required>
+                        @error('name')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -25,6 +28,9 @@
                     </div>
                     <div class="col-md-4">
                         <input type="text" class="form-control" name="username" value="{{ old('username',$user->username) }}" required>
+                        @error('username')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -35,7 +41,8 @@
                     <div class="col-md-4">
                         <input type="email" class="form-control" name="email" value="{{$user->email}}" required>
                     </div>
-                </div>--}}
+                </div>
+--}}
 
                 <div class="form-group row pt-2">
                     <div class="col-md-3">

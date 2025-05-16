@@ -16,11 +16,11 @@
       </div>
       <div class="form-group">
         <label for="date">Date</label>
-        <input type="text" id="dateInput" name="date" value="March 19, 2025">
+        <input type="text" id="dateInput" name="date" value="{{ $cancel_seat->issue_dt }}">
       </div>
       <div class="form-group">
         <label for="name">Name</label>
-        <input type="text" id="nameInput" name="name" value="Denyoung Umbon">
+        <input type="text" id="nameInput" name="name" value="{{ $cancel_seat->allotment->person->name }}">
       </div>
       <div class="form-group">
         <label for="position">Position</label>
@@ -28,31 +28,31 @@
       </div>
       <div class="form-group">
         <label for="department">Department</label>
-        <input type="text" id="departmentInput" name="department" value="Biotechnology">
+        <input type="text" id="departmentInput" name="department" value="{{ $cancel_seat->allotment->person->student()->department }}">
       </div>
       <div class="form-group">
         <label for="course">Course</label>
-        <input type="text" id="courseInput" name="course" value="Research Scholar">
+        <input type="text" id="courseInput" name="course" value="{{ $cancel_seat->allotment->person->student()->course }}">
       </div>
       <div class="form-group">
         <label for="room">Room</label>
-        <input type="text" id="roomInput" name="room" value="FFD/17/2">
+        <input type="text" id="roomInput" name="room" value="{{ $cancel_seat->allot_seat->seat->room->roomno }}">
       </div>
       <div class="form-group">
         <label for="duration">Duration</label>
-        <input type="text" id="durationInput" name="duration" value="Nov. 2024-May 2025">
+        <input type="text" id="durationInput" name="duration" value="{{ $cancel_seat->allotment->from_dt }} to {{ $cancel_seat->leave_dt }}">
       </div>
       <div class="form-group">
         <label for="departure">Departure Date</label>
-        <input type="text" id="departureInput" name="departure" value="16/05/2025">
+        <input type="text" id="departureInput" name="departure" value="{{ $cancel_seat->leave_dt }}">
       </div>
       <div class="form-group">
         <label for="status">Status</label>
-        <input type="text" id="statusInput" name="status" value="Clear">
+        <input type="text" id="statusInput" name="status" value="{{ $cancel_seat->clear?'Cleared':'Not Cleared' }}">
       </div>
       <div class="form-group">
         <label for="warden">Warden Name</label>
-        <input type="text" id="wardenInput" name="warden" value="DR. KRISHNA KANT TRIPATHI">
+        <input type="text" id="wardenInput" name="warden" value="{{ $cancel_seat->allot_hostel->hostel->warden()->name }}">
       </div>
     </form>
   </div>

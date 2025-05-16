@@ -87,13 +87,13 @@ class UserController extends Controller
     {
         request()->validate([
             'name' => 'required',
-            'username' => 'required|min:6',
+            'username' => 'required|min:5',
             'password' => 'required|min:6|confirmed'
         ]);
-        if (User::where('username', request()->username)->exists()) {
-            return redirect()->back()->with(['message' => ['type' => 'danger', 'text' => 'Username already taken']])->withInput();
+
+        if(User::where('username',request()->username)->exists()){
+            return redirect()->back()->withErrors(['username' => 'Username already exists'])->withInput();
         }
-        // return "hell";
 
         $user = User::create([
             'name' => request()->name,
@@ -107,7 +107,7 @@ class UserController extends Controller
             'type' => request()->type,
             'foreign_id' => request()->id,
         ]);
-        //$user->roles()->sync(request()->roles);
+
         return redirect('/user')->with(['message' => ['type' => 'info', 'text' => 'User created']]);
     }
 
@@ -117,7 +117,7 @@ class UserController extends Controller
         // return $role->id;
         $role = Role::where('role', 'Warden')->first();
         $level = $role->level;
-        if (auth()->user()->max_role_level() >= $level) {
+        if (auth()->user()->max_role_level() >= $level || auth()->user()->isAdmin()) {
             $data = [
                 'user' => $user,
                 'roles' => Role::orderBy('level', 'desc')->get()
@@ -130,12 +130,24 @@ class UserController extends Controller
 
     public function update(User $user)
     {
-        // dd(request()->all());
+        
+        request()->validate([
+            'name' => 'required|min:6',
+            'username' => 'required|min:5',
+        ]);
+
+        if(User::where('username',request()->username)->whereNot('id',$user->id)->exists()){
+            return redirect()->back()->withErrors(['username' => 'Username already exists'])->withInput();
+        }
+        
+        dd(request()->all());
         $user->update([
             'name' => request()->name,
             'username' => request()->username,
         ]);
+
         Role_User::where('user_id', $user->id)->whereNotIn('role_id', request()->roles)->delete();
+        
         foreach (request()->roles as $role_id) {
             $role = Role::find($role_id);
             if ($role->role == 'Warden') {
