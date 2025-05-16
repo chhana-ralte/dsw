@@ -18,16 +18,17 @@
                     <td>Roll No.</td>
                     <td></td>
                 </tr>
-                @foreach($allotments as $allotment)
+                @foreach ($allotments as $allotment)
                     <tr>
-                    <td>{{ $allotment->person->name }}</td>
-                    <td>{{ $allotment->person->student()->course }}</td>
-                    <td>{{ $allotment->person->student()->department }}</td>
-                    <td>{{ $allotment->person->student()->mzuid }}</td>
-                    <td>{{ $allotment->person->student()->rollno }}</td>
-                    <td>
-                        <a class="btn btn-sm btn-primary" href="/studentRegistration?allotment={{ $allotment->id }}&rand={{ uniqid() }}">Select</a>
-                    </td>
+                        <td>{{ $allotment->person->name }}</td>
+                        <td>{{ $allotment->person->student()->course }}</td>
+                        <td>{{ $allotment->person->student()->department }}</td>
+                        <td>{{ $allotment->person->student()->mzuid }}</td>
+                        <td>{{ $allotment->person->student()->rollno }}</td>
+                        <td>
+                            <a class="btn btn-sm btn-primary"
+                                href="/studentRegistration?allotment={{ $allotment->id }}&rand={{ uniqid() }}">Select</a>
+                        </td>
                     </tr>
                 @endforeach
             </table>

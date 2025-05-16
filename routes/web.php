@@ -36,45 +36,45 @@ Route::get('/test', function () {
     return "Hehe";
 })->middleware(['admin']);
 
-Route::get('/', [HostelController::class, 'index']);
-Route::get('/warden', [WardenController::class, 'list']);
-Route::get('/search', [SearchController::class, 'index'])->middleware(['auth']);
-Route::get('/consolidate', [ConsolidateController::class, 'index'])->middleware(['auth']);
-Route::get('/consolidateDetail', [ConsolidateController::class, 'detail'])->middleware(['auth']);
-Route::post('/consolidate', [ConsolidateController::class, 'store'])->middleware(['auth']);
-Route::get('/admissioncheck', [AdmissionCheckController::class, 'check']);
-Route::post('/admissioncheck', [AdmissionCheckController::class, 'checkStore']);
-Route::post('/allotment/{id}/admission_decline', [AdmissionController::class, 'admission_decline']);
-Route::get('/allotment/{id}/admission', [AdmissionCheckController::class, 'status']);
+Route::get('/', [HostelController::class, 'index']); //done
+Route::get('/warden', [WardenController::class, 'list']); //done
+Route::get('/search', [SearchController::class, 'index'])->middleware(['auth']); //done
+Route::get('/consolidate', [ConsolidateController::class, 'index'])->middleware(['auth']); //done
+Route::get('/consolidateDetail', [ConsolidateController::class, 'detail'])->middleware(['auth']); //done
+Route::post('/consolidate', [ConsolidateController::class, 'store'])->middleware(['auth']); //
+Route::get('/admissioncheck', [AdmissionCheckController::class, 'check']); //done
+Route::post('/admissioncheck', [AdmissionCheckController::class, 'checkStore']); //
+Route::post('/allotment/{id}/admission_decline', [AdmissionController::class, 'admission_decline']); //
+Route::get('/allotment/{id}/admission', [AdmissionCheckController::class, 'status']); //done
 
 
 
-Route::get('/login', [UserController::class, 'login'])->name('login');
-Route::post('/login', [UserController::class, 'logincheck']);
-Route::get('/user/changePassword', [UserController::class, 'changePassword'])->middleware('auth');
-Route::post('/user/changePassword', [UserController::class, 'changePasswordStore']);
-Route::post('/logout', [UserController::class, 'logout']);
-Route::get('/hostel/{hostel}/occupants', [HostelController::class, 'occupants'])->middleware('auth');
+Route::get('/login', [UserController::class, 'login'])->name('login'); //
+Route::post('/login', [UserController::class, 'logincheck']); //done
+Route::get('/user/changePassword', [UserController::class, 'changePassword'])->middleware('auth'); //done
+Route::post('/user/changePassword', [UserController::class, 'changePasswordStore']); //
+Route::post('/logout', [UserController::class, 'logout']); //
+Route::get('/hostel/{hostel}/occupants', [HostelController::class, 'occupants'])->middleware('auth'); //done
 Route::post('/allotment/{allotment}/clear_allotment', [AllotmentController::class, 'clear_allotment'])->middleware('auth');
 
-Route::resource('person', PersonController::class)->middleware('auth');
+Route::resource('person', PersonController::class)->middleware('auth'); //done
 Route::resource('person.student', StudentController::class)->shallow()->middleware('auth');
 Route::resource('person.other', OtherController::class)->shallow()->middleware('auth');
-Route::resource('person.person_remark', PersonRemarkController::class)->shallow()->middleware('auth');
+Route::resource('person.person_remark', PersonRemarkController::class)->shallow()->middleware('auth'); //done
 Route::resource('person_remark.person_remark_detail', PersonRemarkDetailController::class)->shallow()->middleware('auth');
-Route::resource('hostel', HostelController::class);
-Route::resource('hostel.room', RoomController::class)->shallow()->middleware('auth');
-Route::resource('hostel.warden', WardenController::class)->shallow()->middleware(['auth', 'dsw']);
-Route::resource('hostel.admission', AdmissionController::class)->shallow()->middleware('auth');
+Route::resource('hostel', HostelController::class); //done
+Route::resource('hostel.room', RoomController::class)->shallow()->middleware('auth'); //done
+Route::resource('hostel.warden', WardenController::class)->shallow()->middleware(['auth', 'dsw']); //forbidden
+Route::resource('hostel.admission', AdmissionController::class)->shallow()->middleware('auth'); //done
 Route::resource('room.seat', SeatController::class)->shallow()->middleware('auth');
-Route::resource('notification', NotificationController::class)->middleware('auth');
-Route::resource('notification.allotment', AllotmentController::class)->shallow()->middleware('auth');
+Route::resource('notification', NotificationController::class)->middleware('auth'); //done
+Route::resource('notification.allotment', AllotmentController::class)->shallow()->middleware('auth'); //done
 Route::resource('allotment.allot_hostel', AllotHostelController::class)->shallow()->middleware('auth');
 Route::resource('allotment.cancelSeat', CancelSeatController::class)->shallow()->middleware('auth');
-Route::resource('user', UserController::class)->middleware(['auth']);
+Route::resource('user', UserController::class)->middleware(['auth']); //done
 Route::resource('allotment.admission', AdmissionController::class)->shallow()->middleware('auth');
 
-Route::resource('sessn', SessnController::class)->middleware(['auth']);
+Route::resource('sessn', SessnController::class)->middleware(['auth']); //done
 
 Route::get('/allot_hostel/{id}/allotSeat', [AllotSeatController::class, 'allotSeat'])->middleware('auth');
 Route::post('/allot_hostel/{id}/allotSeat', [AllotSeatController::class, 'allotSeatStore']);
@@ -98,7 +98,7 @@ Route::controller(App\Http\Controllers\StudentRegistrationController::class)->gr
     Route::post('/studentRegistration', 'registrationStore');
     Route::get('/studentRegistration/create_user', 'create_user');
     Route::post('/studentRegistration/create_user_store', 'create_user_store');
-});
+}); //done
 
 Route::controller(App\Http\Controllers\AjaxController::class)->group(function () {
     Route::get('/ajaxroom/{id}/seat', 'getSeats');

@@ -4,28 +4,38 @@
             <x-slot name="heading">
                 Sessions
                 <p>
-                    <a href="/sessn/create" class="btn btn-primary btn-sm">Create session</a>
+                    <a href="/sessn/create"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md text-sm">Create
+                        session</a>
                 </p>
-                <p>
-                    <button form="create" class="btn btn-primary btn-sm btn-prev">Create previous</button>
-                    <button form="create" class="btn btn-primary btn-sm btn-next">Create next</button>
+                <p class="text-sm">
+                    <button form="create"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4  rounded-md ">Create
+                        previous</button>
+                    <button form="create"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4  rounded-md ">Create
+                        next</button>
                 </p>
             </x-slot>
-            @if(count($sessns) > 0)
-                <?php $sl = 1 ?>
-                <table class="table table-hover table-auto">
-                    <tr>
-                        <th>Sl.</th>
-                        <th>Session</th>
-                        <th>Whether current session?</th>
-                    </tr>
-                    @foreach($sessns as $ssn)
-                        <tr>
-                            <td>{{ $sl++ }}</td>
-                            <td>{{ $ssn->name() }}</td>
-                            <td>{{ $ssn->current?"Yes":"No" }}</td>
+            @if (count($sessns) > 0)
+                <?php $sl = 1; ?>
+                <table class="table-auto w-full border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100 text-black">
+                            <th class="px-4 py-2 text-left">Sl.</th>
+                            <th class="px-4 py-2 text-left">Session</th>
+                            <th class="px-4 py-2 text-left">Whether current session?</th>
                         </tr>
-                    @endforeach
+                    </thead>
+                    <tbody class="text-gray-900">
+                        @foreach ($sessns as $ssn)
+                            <tr class="bg-white">
+                                <td class="border px-4 py-2">{{ $sl++ }}</td>
+                                <td class="border px-4 py-2">{{ $ssn->name() }}</td>
+                                <td class="border px-4 py-2">{{ $ssn->current ? 'Yes' : 'No' }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
                 </table>
             @endif
         </x-block>

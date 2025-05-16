@@ -11,12 +11,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5.css">
     <script src="https://cdn.ckeditor.com/4.24.0-lts/standard/ckeditor.js"></script>
+    @vite('resources/css/app.css')
 </head>
 
 
 <body>
 
-<br>
+    <br>
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Dean Students' Welfare</a>
@@ -36,14 +37,14 @@
                         <a class="nav-link" href="/warden">Wardens</a>
                     </li>
                     @auth
-                        @if(count(auth()->user()->wardens()) > 0)
-                            @foreach(auth()->user()->wardens() as $wd)
+                        @if (count(auth()->user()->wardens()) > 0)
+                            @foreach (auth()->user()->wardens() as $wd)
                                 <li class="nav-item">
                                     <a class="nav-link" href="/hostel/{{ $wd->hostel->id }}/">{{ $wd->hostel->name }}</a>
                                 </li>
-                            @endforeach    
+                            @endforeach
                         @endif
-                        @if(auth()->user()->isAdmin() || auth()->user()->isDsw())
+                        @if (auth()->user()->isAdmin() || auth()->user()->isDsw())
                             <li class="nav-item">
                                 <a class="nav-link" href="/notification/">Notifications</a>
                             </li>
@@ -54,7 +55,7 @@
                                 <a class="nav-link" href="/consolidate">Consolidate</a>
                             </li>
                         @endif
-                        @if(auth()->user()->allotment())
+                        @if (auth()->user()->allotment())
                             <li class="nav-item">
                                 <a class="nav-link" href="/allotment/{{ auth()->user()->allotment()->id }}">My details</a>
                             </li>
@@ -80,7 +81,7 @@
                     </div>
                 @else
                     <a class="btn btn-outline-secondary" type="button" href="/login">Login</a>
-                @endif
+                    @endif
                 </div>
             </div>
         </nav>
@@ -94,4 +95,4 @@
 
     </body>
 
-</html>
+    </html>

@@ -5,7 +5,8 @@
                 List of all Wardens
             </x-slot>
 
-            @if(count($wardens) > 0)
+
+            @if (count($wardens) > 0)
                 <table class="table">
                     <tr>
                         <th>Hostel</th>
@@ -14,7 +15,7 @@
                         <th>To</th>
                     </tr>
 
-                    @foreach($wardens as $wd)
+                    @foreach ($wardens as $wd)
                         <tr>
                             <td>{{ $wd->hostel->name }}</td>
                             <td>{{ $wd->person->name }}</td>

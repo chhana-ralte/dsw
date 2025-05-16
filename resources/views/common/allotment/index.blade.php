@@ -4,40 +4,44 @@
             <x-slot name="heading">
                 Allotments under Notification {{ $notification->no }} dated {{ $notification->dt }}
                 <p>
-                    <a class="btn btn-primary btn-sm" href="/notification/{{ $notification->id }}/allotment/create">Create new</a>
+                    <a href="/notification/{{ $notification->id }}/allotment/create"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md text-sm">Create
+                        new</a>
                 </p>
             </x-slot>
-            <div style="width: 100%; overflow-x:auto">
-                <table class="table table-hover table-auto">
+            <div class="w-full overflow-x-auto">
+                <table class="table-auto w-full border-collapse">
                     <thead>
-                        <tr>
-                            <th>Sl.</th>
-                            <th>Name</th>
-                            <th>Course</th>
-                            <th>Department</td>
-                            <th>Allotted Hostel</td>
-                            <th>Status</th>
+                        <tr class="bg-gray-100 text-black">
+                            <th class="px-4 py-2 text-left">Sl.</th>
+                            <th class="px-4 py-2 text-left">Name</th>
+                            <th class="px-4 py-2 text-left">Course</th>
+                            <th class="px-4 py-2 text-left">Department</th>
+                            <th class="px-4 py-2 text-left">Allotted Hostel</th>
+                            <th class="px-4 py-2 text-left">Status</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <?php $sl=1 ?>
-                        @foreach($allotments as $allot)
-                            <tr class="table-white">
-                                <td>{{ $sl++ }}</td>
-                                <td><a href="/allotment/{{ $allot->id }}">{{ $allot->person->name }}</td>
-                                @if($allot->person->student())
-                                    <td>{{ $allot->person->student()->course }}</td>
-                                    <td>{{ $allot->person->student()->department }}</td>
+                    <tbody class="text-gray-900">
+                        <?php $sl = 1; ?>
+                        @foreach ($allotments as $allot)
+                            <tr class="bg-white">
+                                <td class="border px-4 py-2">{{ $sl++ }}</td>
+                                <td class="border px-4 py-2"><a href="/allotment/{{ $allot->id }}"
+                                        class="text-blue-500 hover:underline">{{ $allot->person->name }}</a></td>
+                                @if ($allot->person->student())
+                                    <td class="border px-4 py-2">{{ $allot->person->student()->course }}</td>
+                                    <td class="border px-4 py-2">{{ $allot->person->student()->department }}</td>
                                 @elseif($allot->person->other())
-                                    <td colspan="2">{{ $allot->person->other()->remark }}</td>
+                                    <td colspan="2" class="border px-4 py-2">{{ $allot->person->other()->remark }}
+                                    </td>
                                 @else
-                                    <td colspan="2">Unknown</td>
+                                    <td colspan="2" class="border px-4 py-2">Unknown</td>
                                 @endif
-                                <td>{{ $allot->hostel->name }}</td>
-                                <td>
-                                    Admission: {{ $allot->admitted?'Yes':'No' }}, 
-                                    Valid: {{ $allot->valid?'Yes':'No' }}, 
-                                    Left: {{ $allot->finished?'Yes':'No' }}
+                                <td class="border px-4 py-2">{{ $allot->hostel->name }}</td>
+                                <td class="border px-4 py-2">
+                                    Admission: {{ $allot->admitted ? 'Yes' : 'No' }},
+                                    Valid: {{ $allot->valid ? 'Yes' : 'No' }},
+                                    Left: {{ $allot->finished ? 'Yes' : 'No' }}
                                 </td>
                             </tr>
                         @endforeach
@@ -46,13 +50,13 @@
             </div>
         </x-block>
     </x-container>
-<script>
-$(document).ready(function(){
-    $.ajaxSetup({
-        headers : {
-            'X-CSRF-TOKEN' : $("meta[name='csrf-token']").attr('content')
-        }
-    });
-});
-</script>
+    <script>
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
+                }
+            });
+        });
+    </script>
 </x-layout>

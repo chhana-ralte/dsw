@@ -29,7 +29,7 @@ class UserController extends Controller
         } else if (auth()->user()->isWarden()) {
             $role = Role::where('role', 'Warden');
             $role_users = Role_User::where('user_id', auth()->user()->id)->where('type', 'warden');
-            $wardens = Warden::where('valid',1)->whereIn('id',$role_users->pluck('foreign_id'));
+            $wardens = Warden::where('valid', 1)->whereIn('id', $role_users->pluck('foreign_id'));
             $hostels = Hostel::whereIn('id', $wardens->pluck('hostel_id'));
 
             $valid_allot_hostels = AllotHostel::where('valid', 1)->whereIn('hostel_id', $hostels->pluck('id'));
@@ -55,34 +55,23 @@ class UserController extends Controller
 
     public function create()
     {
+        $data = ['type' => '', 'id' => '', 'person' => null, 'warden' => null, 'allotment' => null]; // Initialize $person, $warden, and $allotment
+
         if (isset(request()->type) && isset(request()->id)) {
-            if(request()->type == 'warden'){
+            if (request()->type == 'warden') {
                 $warden = Warden::findOrFail(request()->id);
-                $person = $warden->person;
-                $data = [
-                    'type' => request()->type,
-                    'id' => request()->id,
-                    'person' => $person,
-                    'warden' => $warden,
-                ];
-            }
-            else if(request()->type == 'allotment'){
+                $data['person'] = $warden->person;
+                $data['warden'] = $warden;
+            } else if (request()->type == 'allotment') {
                 $allotment = Allotment::findOrFail(request()->id);
-                $person = $allotment->person;
-                $data = [
-                    'type' => request()->type,
-                    'id' => request()->id,
-                    'person' => $person,
-                    'allotment' => $allotment,
-                ];
+                $data['person'] = $allotment->person;
+                $data['allotment'] = $allotment;
             }
-            
-           
-        } else {
-            $data = ['type' => '', 'id' => ''];
+            $data['type'] = request()->type;
+            $data['id'] = request()->id;
         }
+
         return view('user.create', $data);
-    
         abort(403);
     }
 
@@ -97,7 +86,7 @@ class UserController extends Controller
             return redirect()->back()->with(['message' => ['type' => 'danger', 'text' => 'Username already taken']])->withInput();
         }
         // return "hell";
-        
+
         $user = User::create([
             'name' => request()->name,
             'username' => request()->username,
@@ -106,7 +95,7 @@ class UserController extends Controller
 
         $role_user = Role_User::create([
             'user_id' => $user->id,
-            'role_id' => Role::where('role',request()->type)->first()->id,
+            'role_id' => Role::where('role', request()->type)->first()->id,
             'type' => request()->type,
             'foreign_id' => request()->id,
         ]);
