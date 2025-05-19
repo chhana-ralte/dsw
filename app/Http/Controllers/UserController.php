@@ -91,7 +91,7 @@ class UserController extends Controller
             'password' => 'required|min:6|confirmed'
         ]);
 
-        if(User::where('username',request()->username)->exists()){
+        if (User::where('username', request()->username)->exists()) {
             return redirect()->back()->withErrors(['username' => 'Username already exists'])->withInput();
         }
 
@@ -101,12 +101,12 @@ class UserController extends Controller
             'password' => Hash::make(request()->password),
         ]);
 
-        $role_user = Role_User::create([
-            'user_id' => $user->id,
-            'role_id' => Role::where('role', request()->type)->first()->id,
-            'type' => request()->type,
-            'foreign_id' => request()->id,
-        ]);
+        // $role_user = Role_User::create([
+        //     'user_id' => $user->id,
+        //     'role_id' => Role::where('role', request()->type)->first()->id,
+        //     'type' => request()->type,
+        //     'foreign_id' => request()->id,
+        // ]);
 
         return redirect('/user')->with(['message' => ['type' => 'info', 'text' => 'User created']]);
     }
@@ -130,45 +130,82 @@ class UserController extends Controller
 
     public function update(User $user)
     {
-        
+
         request()->validate([
             'name' => 'required|min:6',
             'username' => 'required|min:5',
         ]);
 
-        if(User::where('username',request()->username)->whereNot('id',$user->id)->exists()){
+        if (User::where('username', request()->username)->whereNot('id', $user->id)->exists()) {
             return redirect()->back()->withErrors(['username' => 'Username already exists'])->withInput();
         }
-        
-        dd(request()->all());
+
+        // dd(request()->all());
         $user->update([
             'name' => request()->name,
             'username' => request()->username,
         ]);
 
-        Role_User::where('user_id', $user->id)->whereNotIn('role_id', request()->roles)->delete();
-        
+        $roles = Role::whereIn('id', request()->roles)->get();
+        $inmate_role = Role::where('role', 'Inmate')->first();
+        // return $roles;
+
+        Role_User::where('user_id', $user->id)->where('role_id', '<>', $inmate_role->id)
+            ->whereNotIn('role_id', request()->roles)
+            ->delete();
+
         foreach (request()->roles as $role_id) {
             $role = Role::find($role_id);
             if ($role->role == 'Warden') {
-                Role_User::where('user_id', $user->id)->where('role_id', $role->id)->where('type', 'hostel')->whereNotIn('foreign_id', request()->hostel)->delete();
+                $wardens = Warden::whereIn('hostel_id', request()->hostel);
+                Role_User::where('user_id', $user->id)->where('role_id', $role->id)->where('type', 'warden')->whereNotIn('foreign_id', $wardens->pluck('id'))->delete();
                 foreach (request()->hostel as $hostel_id) {
+                    $person = \App\Models\Person::updateOrCreate([
+                        'name' => $user->name,
+                    ], [
+                        'name' => $user->name,
+                    ]);
+
+                    Warden::where('hostel_id', $hostel_id)->update([
+                        'valid' => 0,
+                    ]);
+
+                    $warden = Warden::updateOrCreate([
+                        'hostel_id' => $hostel_id,
+                        'person_id' => $person->id,
+                        'valid' => 1
+                    ]);
                     Role_User::updateOrCreate(
                         [
                             'user_id' => $user->id,
                             'role_id' => $role->id,
-                            'type' => 'hostel',
-                            'foreign_id' => $hostel_id
+                            'type' => 'warden',
+                            'foreign_id' => $warden->id
                         ],
                         [
                             'user_id' => $user->id,
                             'role_id' => $role->id,
-                            'type' => 'hostel',
-                            'foreign_id' => $hostel_id
+                            'type' => 'warden',
+                            'foreign_id' => $warden->id
                         ]
                     );
                 }
-            } else { // Not warden
+            } else if ($role->level == 2) { // Prefect or mess secreatry
+                Role_User::where('user_id', $user->id)->where('role_id', $role->id)->whereIn('type', 'hostel')->whereNotIn('foreign_id', request()->hostel)->delete();
+                foreach (request()->hostel as $hostel_id) {
+                    Role_User::updateOrCreate([
+                        'user_id' => $user->id,
+                        'role_id' => $role->id,
+                        'type' => 'hostel',
+                        'foreign_id' => $hostel_id,
+                    ], [
+                        'user_id' => $user->id,
+                        'role_id' => $role->id,
+                        'type' => 'hostel',
+                        'foreign_id' => $hostel_id,
+                    ]);
+                }
+            } else { // only user
                 Role_User::updateOrCreate(
                     [
                         'user_id' => $user->id,

@@ -10,6 +10,7 @@
         <tr>
             <td colspan="2">
                 <a class="btn btn-primary" href="/user/{{ $allotment->user()->id }}/changePassword">Reset password</a>
+                <a class="btn btn-primary" href="/user/{{ $allotment->user()->id }}/edit">Edit User</a>
             </td>
         </tr>
     </table>

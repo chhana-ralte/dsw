@@ -2,8 +2,7 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                User: {{ $user->name }}
-                
+                User: {{ $user->name }}                
             </x-slot>
             <form method="post" action="/user/{{$user->id}}" class="pt-2">
                 @csrf
@@ -49,12 +48,26 @@
                         Roles
                     </div>
                     <div class="col-md-4">
-                        @foreach($roles as $rl)
-                            @if(auth()->user()->max_role_level() > $rl->level)
+                        @if(auth()->user()->isAdmin())
+                            @foreach($roles as $rl)
                                 <input type="checkbox" id="role_{{ $rl->id }}" name="roles[]" value="{{ $rl->id }}" {{ $user->hasRole("$rl->role")?' checked ':'' }}>
                                 <label for="role_{{ $rl->id }}">{{ $rl->role}}</label><br>
-                            @endif
-                        @endforeach
+                            @endforeach
+                        @elseif(auth()->user()->isDsw())
+                            @foreach($roles as $rl)
+                                @if(auth()->user()->max_role_level() > $rl->level && $rl->level >=3)
+                                    <input type="checkbox" id="role_{{ $rl->id }}" name="roles[]" value="{{ $rl->id }}" {{ $user->hasRole("$rl->role")?' checked ':'' }}>
+                                    <label for="role_{{ $rl->id }}">{{ $rl->role}}</label><br>
+                                @endif
+                            @endforeach
+                        @elseif(auth()->user()->isWarden())
+                            @foreach($roles as $rl)
+                                @if(auth()->user()->max_role_level() > $rl->level && $rl->level)
+                                    <input type="checkbox" id="role_{{ $rl->id }}" name="roles[]" value="{{ $rl->id }}" {{ $user->hasRole("$rl->role")?' checked ':'' }} {{ $user-> }}>
+                                    <label for="role_{{ $rl->id }}">{{ $rl->role}}</label><br>
+                                @endif
+                            @endforeach
+                        @endif
                     </div>
                 </div>
 
