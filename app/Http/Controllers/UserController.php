@@ -191,7 +191,16 @@ class UserController extends Controller
                     );
                 }
             } else if ($role->level == 2) { // Prefect or mess secreatry
-                Role_User::where('user_id', $user->id)->where('role_id', $role->id)->whereIn('type', 'hostel')->whereNotIn('foreign_id', request()->hostel)->delete();
+                if(!isset(request()->hostel))
+                {
+                    return redirect()->back()->withErrors(['selectHostel'=>'Please Select the Hostel']);
+                    exit();
+                }
+                Role_User::where('user_id', $user->id)
+                    ->where('role_id', $role->id)
+                    ->where('type', 'hostel')
+                    ->whereNotIn('foreign_id', request()->hostel)
+                    ->delete();
                 foreach (request()->hostel as $hostel_id) {
                     Role_User::updateOrCreate([
                         'user_id' => $user->id,

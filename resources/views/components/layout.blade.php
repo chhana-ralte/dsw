@@ -47,7 +47,16 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="/hostel/{{ $wd->hostel->id }}/">{{ $wd->hostel->name }}</a>
                                 </li>
-                            @endforeach    
+                            @endforeach
+                        @endif
+                        @if(count(auth()->user()->roles) > 0)
+                            @foreach(auth()->user()->roles as $role)
+                                @if($role->role == 'Prefect' || $role->role == 'Mess Secretary')
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#">{{$role->role}}</a>
+                                    </li>
+                                @endif
+                            @endforeach
                         @endif
                         @if(auth()->user()->isAdmin() || auth()->user()->isDsw())
                             <li class="nav-item">

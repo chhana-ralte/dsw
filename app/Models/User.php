@@ -70,6 +70,28 @@ class User extends Authenticatable
         }
     }
 
+    public function isPrefectOf($hostel_id)
+    {
+        $role = Role::where('role', 'Prefect')->first();
+        if (Role_User::where('user_id', $this->id)->where('role_id', $role->id)->where('type', 'hostel')->where('foreign_id', $hostel_id)->exists()) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public function isMessSecretaryOf($hostel_id)
+    {
+        $role = Role::where('role', 'Mess Secretary')->first();
+        if (Role_User::where('user_id', $this->id)->where('role_id', $role->id)->where('type', 'hostel')->where('foreign_id', $hostel_id)->exists()) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
     public function isWarden()
     {
         $role = Role::where('role', 'Warden')->first();

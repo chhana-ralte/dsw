@@ -2,13 +2,13 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                User: {{ $user->name }}                
+                User: {{ $user->name }}
             </x-slot>
             <form method="post" action="/user/{{$user->id}}" class="pt-2">
                 @csrf
                 @method('patch')
                 <input type='hidden' name='warden' value='{{ $user->hasRole("Warden")?"true":"false" }}'>
-                
+
                 <div class="form-group row pt-2">
                     <div class="col-md-3">
                         <label for="name">Name</label>
@@ -63,7 +63,7 @@
                         @elseif(auth()->user()->isWarden())
                             @foreach($roles as $rl)
                                 @if(auth()->user()->max_role_level() > $rl->level && $rl->level)
-                                    <input type="checkbox" id="role_{{ $rl->id }}" name="roles[]" value="{{ $rl->id }}" {{ $user->hasRole("$rl->role")?' checked ':'' }} {{ $user-> }}>
+                                    <input type="checkbox" id="role_{{ $rl->id }}" name="roles[]" value="{{ $rl->id }}" {{ $user->hasRole("$rl->role")?' checked ':'' }}>
                                     <label for="role_{{ $rl->id }}">{{ $rl->role}}</label><br>
                                 @endif
                             @endforeach
@@ -84,13 +84,16 @@
                         @elseif(auth()->user()->isWarden())
                             @foreach(\App\Models\Hostel::orderBy('name')->get() as $hostel)
                                 @if(auth()->user()->isWardenOf($hostel->id))
-                                    <input id="hostel_{{ $hostel->id }}" type="checkbox" name="hostel[]" value="{{ $hostel->id }}" {{ $user->isWardenOf($hostel->id)?" checked ":""}}>
+                                    <input id="hostel_{{ $hostel->id }}" type="checkbox" name="hostel[]" value="{{ $hostel->id }}" {{ $user->isPrefectOf($hostel->id)||$user->isMessSecretaryOf($hostel->id)?" checked ":""}}>
                                     <label for="hostel_{{ $hostel->id }}">{{ $hostel->name}}</label><br>
                                 @endif
                             @endforeach
                         @endif
+                        @error('selectHostel')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
-                </div>                
+                </div>
 
 
                 <div class="form-group row pt-2">
@@ -113,7 +116,7 @@ $(document).ready(function(){
         }
     });
 
-    if($("input[name='warden']").val()=="false"){
+    if($("input[name='warden']").val()=="false" && $("input[name='prefect']").val()=="false" && $("input[name='mess secretary']").val()=="false" && ){
         $("div.hostel").hide();
     }
 
@@ -138,7 +141,7 @@ $(document).ready(function(){
             $("div.hostel").hide();
         }
 
-        
+
         // $.ajax({
         //     url : "/role/" + $(this).attr('id') + '?checked=' + checked,
         //     type : "get",
@@ -167,7 +170,7 @@ $(document).ready(function(){
     });
     $("button.btn-delete").click(function(){
         if(confirm('Are you sure you want to delete?')){
-            
+
         }
     });
 })
