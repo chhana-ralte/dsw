@@ -30,6 +30,7 @@ use App\Http\Controllers\CancelSeatController;
 use App\Http\Controllers\CancelHostelController;
 use App\Http\Controllers\ConsolidateController;
 use App\Http\Controllers\ClearanceController;
+use App\Http\Controllers\FeedbackController;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
@@ -80,6 +81,7 @@ Route::resource('allotment.admission', AdmissionCheckController::class)->shallow
 Route::resource('allotment.allot_hostel', AllotHostelController::class)->shallow()->middleware('auth');
 Route::resource('allotment.cancelSeat', CancelSeatController::class)->shallow()->middleware('auth');
 Route::resource('user', UserController::class)->middleware(['auth']);
+Route::resource('feedback', FeedbackController::class)->middleware(['auth']);
 // Route::resource('allotment.admission', AdmissionController::class)->shallow()->middleware('auth');
 
 Route::resource('sessn', SessnController::class)->middleware(['auth']);

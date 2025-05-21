@@ -130,15 +130,14 @@ class UserController extends Controller
 
     public function update(User $user)
     {
-        if(request()->password){
+        if (request()->password) {
             request()->validate([
                 'name' => 'required|min:6',
                 'username' => 'required|min:5',
                 'password' => 'required|min:6',
             ]);
-           $password = Hash::make(request()->password);
-        }
-        else{
+            $password = Hash::make(request()->password);
+        } else {
             request()->validate([
                 'name' => 'required|min:6',
                 'username' => 'required|min:5',
@@ -150,13 +149,9 @@ class UserController extends Controller
             return redirect()->back()->withErrors(['username' => 'Username already exists'])->withInput();
         }
 
-        // dd(request()->all());
 
 
-
-
-        if(request()->roles)
-        {
+        if (request()->roles) {
             $user->update([
                 'name' => request()->name,
                 'username' => request()->username,
@@ -167,8 +162,8 @@ class UserController extends Controller
             // return $roles;
 
             Role_User::where('user_id', $user->id)->where('role_id', '<>', $inmate_role->id)
-            ->whereNotIn('role_id', request()->roles)
-            ->delete();
+                ->whereNotIn('role_id', request()->roles)
+                ->delete();
             foreach (request()->roles as $role_id) {
                 $role = Role::find($role_id);
                 if ($role->role == 'Warden') {
@@ -206,9 +201,8 @@ class UserController extends Controller
                         );
                     }
                 } else if ($role->level == 2) { // Prefect or mess secreatry
-                    if(!isset(request()->hostel))
-                    {
-                        return redirect()->back()->withErrors(['selectHostel'=>'Please Select the Hostel']);
+                    if (!isset(request()->hostel)) {
+                        return redirect()->back()->withErrors(['selectHostel' => 'Please Select the Hostel']);
                         exit();
                     }
                     Role_User::where('user_id', $user->id)
@@ -242,8 +236,7 @@ class UserController extends Controller
                     );
                 }
             }
-        }
-        else{
+        } else {
             return redirect()->back()->withErrors(['roles' => 'Select at least one role']);
         }
         // $user->roles()->sync(request()->roles);
