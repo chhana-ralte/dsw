@@ -8,25 +8,31 @@
                 </p>
             </x-slot>
             <div style="width: 100%; overflow-x:auto">
-                
+
                 <div class="pt-2">
                 @if(count($users)>0)
-                
+
                     <table class="table table-striped pt-2">
                         <tr>
                             <th>Sl</th>
                             <th>Name</th>
                             <th>Username</th>
+                            <th>Roles</th>
                             <th>Edit|Delete</th>
                         </tr>
                         <?php $sl=1 ?>
                         @foreach($users as $u)
                             @if($u->max_role_level() < auth()->user()->max_role_level())
                             <tr>
-                                
+
                                 <td>{{ $sl++ }}</td>
                                 <td><a href="/user/{{$u->id}}">{{ $u->name }}</a></td>
                                 <td>{{ $u->username }}</td>
+                                <td>
+                                    @foreach($u->roles as $rl)
+                                        {{ $rl->role }},
+                                    @endforeach
+                                </td>
                                 <td>
                                     <div class="btn-group">
                                         <x-button type="a" href="/user/{{$u->id}}/edit">Edit</x-button>

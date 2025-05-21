@@ -26,7 +26,11 @@
                             @foreach ($hostels as $h)
                                 <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
                                     <td>{{ $sl++ }}</td>
-                                    <td><a href="/hostel/{{ $h->id }}">{{ $h->name }}</a></td>
+                                    @can('view',$h)
+                                        <td><a href="/hostel/{{ $h->id }}">{{ $h->name }}</a></td>
+                                    @else
+                                        <td>{{ $h->name }}</td>
+                                    @endcan
                                     <td>{{ $h->gender }}</td>
                                     <td>{{ $h->capacity() }}</td>
                                     <td>{{ $h->available() }}</td>

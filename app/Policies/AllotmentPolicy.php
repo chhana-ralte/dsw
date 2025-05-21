@@ -14,9 +14,19 @@ class AllotmentPolicy
             return true;
         } else if ($user->allotment() && $user->allotment()->id == $allotment->id) {
             return true;
-        } else {
-            return false;
+
         }
+        else
+        {
+            if($allotment->valid_allot_hostel()){
+                return $user->can('view',$allotment->valid_allot_hostel()->hostel);
+            }
+            else{
+                return false;
+            }
+        }
+
+
     }
 
     public function edit(User $user, Allotment $allotment): bool

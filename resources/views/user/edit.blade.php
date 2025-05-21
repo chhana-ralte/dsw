@@ -33,6 +33,20 @@
                     </div>
                 </div>
 
+                <div class="form-group row pt-2">
+                    <div class="col-md-3">
+                        <label for="password">Password</label>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="password" value="">
+                        @error('password')
+                            <span class="text-danger">{{ $message }}</span>
+                        @else
+                            <span class="text-danger">Enter only if you want to reset password. Leave blank if password is to be retained.</span>
+                        @enderror
+
+                    </div>
+                </div>
 {{--                <div class="form-group row pt-2">
                     <div class="col-md-3">
                         <label for="email">Email</label>
@@ -68,6 +82,9 @@
                                 @endif
                             @endforeach
                         @endif
+                        @error('roles')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 

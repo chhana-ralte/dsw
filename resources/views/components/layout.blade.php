@@ -49,25 +49,28 @@
                                 </li>
                             @endforeach
                         @endif
-                        @if(count(auth()->user()->roles) > 0)
-                            @foreach(auth()->user()->roles as $role)
-                                @if($role->role == 'Prefect' || $role->role == 'Mess Secretary')
+                        @if(count(auth()->user()->user_roles()) > 0)
+                            @foreach(auth()->user()->user_roles() as $role_user)
+                                @if($role_user->role->level == 2)
                                     <li class="nav-item">
-                                        <a class="nav-link" href="#">{{$role->role}}</a>
+                                        <a class="nav-link" href="#">{{ App\Models\Hostel::find($role_user->foreign_id)->name }}</a>
                                     </li>
                                 @endif
                             @endforeach
+
                         @endif
-                        @if(auth()->user()->isAdmin() || auth()->user()->isDsw())
-                            <li class="nav-item">
-                                <a class="nav-link" href="/notification/">Notifications</a>
-                            </li>
+                        @if(auth()->user()->isAdmin() || auth()->user()->isDsw()|| auth()->user()->isWarden())
                             <li class="nav-item">
                                 <a class="nav-link" href="/user">Users</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/consolidate">Consolidate</a>
-                            </li>
+                            @if(auth()->user()->isAdmin() || auth()->user()->isDsw())
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/notification/">Notifications</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/consolidate">Consolidate</a>
+                                </li>
+                            @endif
                         @endif
                         @if(auth()->user()->allotment())
                             <li class="nav-item">

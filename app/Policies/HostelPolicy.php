@@ -21,44 +21,45 @@ class HostelPolicy
      */
     public function view(User $user, Hostel $hostel): bool
     {
-        
+        if($user->isAdmin() || $user->isDsw()){
+            return true;
+        }
+        else if($user->isWarden()){
+            return true;
+        }
+        else if($user->isPrefectOf($hostel->id) || $user->isMessSecretaryOf($hostel->id)){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
     public function create(User $user): bool
     {
         return $user->isAdmin();
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
     public function update(User $user, Hostel $hostel): bool
     {
-        return $user->isWardenOf($hostel->id) || $user->isAdmin();
+        return $user->isWardenOf($hostel->id) || $user->isAdmin() || $user->isDsw();
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
+    public function manage(User $user, Hostel $hostel): bool
+    {
+        return $user->isWardenOf($hostel->id) || $user->isAdmin() || $user->isDsw();
+    }
+
     public function delete(User $user, Hostel $hostel): bool
     {
-        //
+        return $user->isAdmin() || $user->isDsw();
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
     public function restore(User $user, Hostel $hostel): bool
     {
         //
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
     public function forceDelete(User $user, Hostel $hostel): bool
     {
         //

@@ -33,6 +33,9 @@ class HostelController extends Controller
 
     public function show(Hostel $hostel)
     {
+        if(!auth()->user() || !auth()->user()->can('view',$hostel)){
+            abort(403);
+        }
         $rooms = Room::where('hostel_id', $hostel->id);
         $seats = Seat::whereIn('room_id', $rooms->pluck('id'));
         $allot_hostels = AllotHostel::where('hostel_id', $hostel->id);
