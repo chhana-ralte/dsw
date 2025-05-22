@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('feedback_options', function (Blueprint $table) {
             $table->id();
-            $table->ForeignIdFor(FeedbackCriteria::class);
+            $table->ForeignIdFor(\App\Models\FeedbackCriteria::class);
             $table->integer('serial')->nullable();
             $table->string('option');
             $table->timestamps();

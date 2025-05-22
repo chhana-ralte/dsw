@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('feedback_criterias', function (Blueprint $table) {
             $table->id();
-            $table->ForeignIdFor(FeedbackMaster::class);
+            $table->ForeignIdFor(\App\Models\FeedbackMaster::class);
             $table->Integer('serial')->nullable();
             $table->Text('criteria');
             $table->string('type')->default('text');

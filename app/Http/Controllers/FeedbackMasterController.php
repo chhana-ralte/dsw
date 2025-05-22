@@ -8,18 +8,21 @@ use App\Models\FeedbackMaster;
 
 class FeedbackMasterController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $data = [
             'feedback_masters' => FeedbackMaster::all()
         ];
-        return view('feedbackMaster.index',$data);
+        return view('feedbackMaster.index', $data);
     }
 
-    public function create(){
+    public function create()
+    {
         return view('feedbackMaster.create');
     }
 
-    public function store(){
+    public function store()
+    {
         request()->validate([
             'title' => 'required',
         ]);
@@ -29,19 +32,27 @@ class FeedbackMasterController extends Controller
             'remark' => request()->remark,
             'from_dt' => request()->from_dt,
             'to_dt' => request()->to_dt,
-            'open' => request()->open?'1':'0',
+            'open' => request()->open ? '1' : '0',
         ]);
         return redirect('/feedbackMaster')->with(['message' => ['type' => 'info', 'text' => 'New feedback master created']]);
     }
-    public function edit(FeedbackMaster $feedbackMaster){
+    public function edit(FeedbackMaster $feedbackMaster)
+    {
         $data = [
             'feedbackMaster' => $feedbackMaster
         ];
-        return view('feedbackMaster.edit',$data);
+        return view('feedbackMaster.edit', $data);
     }
 
-
-    public function update(FeedbackMaster $feedbackMaster){
+    public function show(FeedbackMaster $feedbackMaster)
+    {
+        $data = [
+            'feedbackMaster' => $feedbackMaster
+        ];
+        return view('feedbackMaster.show', $data);
+    }
+    public function update(FeedbackMaster $feedbackMaster)
+    {
         request()->validate([
             'title' => 'required',
         ]);
@@ -51,13 +62,15 @@ class FeedbackMasterController extends Controller
             'remark' => request()->remark,
             'from_dt' => request()->from_dt,
             'to_dt' => request()->to_dt,
-            'open' => request()->open?'1':'0',
+            'open' => request()->open ? '1' : '0',
         ]);
 
         return redirect('/feedbackMaster/')->with(['message' => ['type' => 'info', 'text' => 'New feedback master updated']]);
     }
-    public function destroy(FeedbackMaster $feedbackMaster){
+    public function destroy(FeedbackMaster $feedbackMaster)
+    {
         // return "Hello";
-        return $feedbackMaster;
+        $feedbackMaster->delete();
+        return redirect('/feedbackMaster/')->with(['message' => ['type' => 'info', 'text' => 'Feedback master deleted']]);
     }
 }

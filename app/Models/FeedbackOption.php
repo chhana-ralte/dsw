@@ -8,3 +8,4 @@ use Illuminate\Database\Eloquent\Model;
 class FeedbackOption extends Model
 {
     protected $guarded = [];
+}

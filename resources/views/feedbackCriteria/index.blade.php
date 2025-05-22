@@ -2,31 +2,30 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                Feedback Master
+                Feedback Criteria for {{ $feedback_master->title }}
                 <p>
-                    <a class="btn btn-primary" href="/feedbackMaster/create">Create new</a>
+                    <a class="btn btn-primary" href="/feedbackMaster/{{ $feedback_master->id }}/criteria/create">Create
+                        new</a>
                 </p>
             </x-slot>
             <div>
                 <table class="table">
                     <tr>
                         <th>Sl.</th>
-                        <th>Title</th>
-                        <th>Remark</th>
-                        <th>Opened?</th>
+                        <th>Criteria</th>
+                        <th>Type</th>
                         <th>Manage</th>
                     </tr>
                     <?php $sl = 1; ?>
-                    @foreach ($feedback_masters as $fm)
+                    @foreach ($feedback_criterias as $fc)
                         <tr>
-                            <td>{{ $sl++ }}.</td>
-                            <td><a href="/feedbackMaster/{{ $fm->id }}">{{ $fm->title }}</a></td>
-                            <td>{{ $fm->remark }}</td>
-                            <td>{{ $fm->open ? 'Opened' : 'Closed' }}</td>
+                            <td>{{ $fc->serial }}.</td>
+                            <td><a href="/feedbackMaster/{{ $fc->id }}">{{ $fc->criteria }}</a></td>
+                            <td>{{ $fc->type }}</td>
                             <td>
                                 <div class="btn-group">
-                                    <a class="btn btn-secondary" href="/feedbackMaster/{{ $fm->id }}/edit">Edit</a>
-                                    <button class="btn btn-danger btn-delete" value="{{ $fm->id }}">Delete</button>
+                                    <a class="btn btn-secondary" href="/feedbackMaster/{{ $fc->id }}/edit">Edit</a>
+                                    <button class="btn btn-danger btn-delete" value="{{ $fc->id }}">Delete</button>
                                 </div>
                             </td>
                         </tr>
