@@ -51,20 +51,41 @@ class FeedbackCriteriaController extends Controller
         return redirect('/feedbackMaster/' . $feedbackMaster->id . '/criteria')->with(['message' => ['type' => 'info', 'text' => 'New feedback criteria created']]);
     }
 
-    public function show(FeedbackCriteria $feedbackCriterion){
-        // return "Hello";
-        return $feedbackCriterion;
+    public function show(FeedbackCriteria $feedbackCriterion)
+    {
+        $data = [
+            'feedback_criteria' => $feedbackCriterion,
+        ];
+        return view('feedbackCriteria.show', $data);
     }
 
-    public function edit(FeedbackCriteria $feedbackCriterion){
-        return $feedbackCriterion;
+    public function edit(FeedbackCriteria $feedbackCriterion)
+    {
+        $data = [
+            'feedback_criteria' => $feedbackCriterion,
+        ];
+        return view('feedbackCriteria.edit', $data);
     }
 
-    public function update(FeedbackCriteria $feedbackCriterion){
-        return request();
+    public function update(FeedbackCriteria $feedbackCriterion)
+    {
+        request()->validate([
+            'criteria' => 'required',
+            'type' => 'required',
+        ]);
+
+        $feedbackCriterion->update([
+            // 'feedback_master_id' => $feedbackMaster->id,
+            'serial' => request()->serial,
+            'criteria' => request()->criteria,
+            'type' => request()->type,
+        ]);
+
+        return redirect('/feedbackMaster/' . $feedbackCriterion->feedback_master->id . '/criteria')->with(['message' => ['type' => 'info', 'text' => 'Feedback criteria updated']]);
     }
 
-    public function destroy(FeedbackCriteria $feedbackCriterion){
+    public function destroy(FeedbackCriteria $feedbackCriterion)
+    {
         return $feedbackCriterion;
     }
 }

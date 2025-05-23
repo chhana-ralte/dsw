@@ -4,7 +4,8 @@
             <x-slot name="heading">
                 Feedback Criteria for {{ $feedback_master->title }}
                 <p>
-                    <a class="btn btn-primary btn-sm" href="/feedbackCriteria/{{ $feedback_master->id }}/criteria/create">Create
+                    <a class="btn btn-primary btn-sm"
+                        href="/feedbackMaster/{{ $feedback_master->id }}/criteria/create">Create
                         new</a>
                 </p>
             </x-slot>
@@ -24,8 +25,10 @@
                             <td>{{ $fc->type }}</td>
                             <td>
                                 <div class="btn-group">
-                                    <a class="btn btn-secondary" href="/feedbackCriteria/{{ $fc->id }}/edit">Edit</a>
-                                    <button class="btn btn-danger btn-delete" value="{{ $fc->id }}">Delete</button>
+                                    <a class="btn btn-secondary btn-sm"
+                                        href="/feedbackCriteria/{{ $fc->id }}/edit">Edit</a>
+                                    <button class="btn btn-danger btn-delete btn-sm"
+                                        value="{{ $fc->id }}">Delete</button>
                                 </div>
                             </td>
                         </tr>

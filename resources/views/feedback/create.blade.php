@@ -7,35 +7,46 @@
             <div>
                 <form method="post" action="/feedback">
                     @csrf
-                    <div class="mb-3 mt-3">
-                        <label for="email" class="form-label">Email:</label>
-                        <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
-                    </div>
-                    <div class="mb-3">
-                        <label for="customRange" class="form-label">Custom range</label>
-                        <input type="range" class="form-range" id="customRange" name="costomRange" min=0 max=10>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="quality" class="form-label">How do you rate the mess quality</label>
-                        <input type="range" class="form-range" id="quality" name="quality" min=0 max=10>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="variety" class="form-label">How do you rate the mess variety</label>
-                        <input type="range" class="form-range" id="variety" name="variety" min=0 max=10>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="satisfaction" class="form-label">What is your satisfaction with the current mess?</label>
-                        <input type="range" class="form-range" id="satisfaction" name="satisfaction" min=0 max=10>
-                    </div>
-
-                    <div class="form-check mb-3">
-                        <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" name="remember"> Remember me
-                        </label>
-                    </div>
+                    @foreach ($feedback_criteria as $crit)
+                        @if ($crit->type == 'Short answer')
+                            <div class="mt-3 mb-3">
+                                <label for="criteria_{{ $crit->id }}" class="form-label">{{ $crit->criteria }}</label>
+                                <input type="text" class="form-control" id="criteria_{{ $crit->id }}"
+                                    placeholder="{{ $crit->criteria }}" name="criteria_{{ $crit->id }}">
+                            </div>
+                        @elseif($crit->type == 'Rating')
+                            <div class="mb-3">
+                                <label for="criteria_{{ $crit->id }}"
+                                    class="form-label">{{ $crit->criteria }}</label>
+                                <input type="range" class="form-range" id="criteria_{{ $crit->id }}"
+                                    name="criteria_{{ $crit->id }}" min=0 max=10>
+                            </div>
+                        @else
+                            <div class="mb-3">
+                                <label for="{{ $crit->id }}" class="form-label">{{ $crit->criteria }}</label>
+                                <select class="form-control" id="{{ $crit->id }}"
+                                    name="criteria_{{ $crit->id }}">
+                                    @foreach ($crit->options as $opt)
+                                        <option value="{{ $opt->id }}">{{ $opt->option }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="criteria_{{ $crit->id }}"
+                                    class="form-label">{{ $crit->criteria }}</label>
+                                <ul>
+                                    @foreach ($crit->options as $opt)
+                                        <li><input type="radio" id="opt_{{ $opt->id }}"
+                                                name="criteria_{{ $crit->id }}" value="{{ $opt->id }}">
+                                            <label for="opt_{{ $opt->id }}"
+                                                class="form-label">{{ $opt->option }}</label>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                                </select>
+                            </div>
+                        @endif
+                    @endforeach
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
             </div>

@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class FeedbackMaster extends Model
 {
     protected $guarded = [];
+
+    public function feedback_criteria()
+    {
+        return $this->hasMany(FeedbackCriteria::class);
+    }
 }

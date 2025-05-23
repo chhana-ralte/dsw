@@ -3,45 +3,32 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Role_User;
-use App\Models\User;
-use App\Models\Allotment;
-use App\Models\Warden;
+
+use App\Models\FeedbackMaster;
+use App\Models\FeedbackCriteria;
 
 class FeedbackController extends Controller
 {
-    public function index()
+    public function index(FeedbackMaster $feedbackMaster)
     {
-        return view('feedback.index');
+        $data = [
+            'feedback_master' => $feedbackMaster,
+        ];
+        return view('feedback.index', $data);
     }
-    public function create()
+
+    public function create(FeedbackMaster $feedbackMaster)
     {
-        return view('feedback.create');
+        $data = [
+            'feedback_master' => $feedbackMaster,
+            'feedback_criteria' => FeedbackCriteria::where('feedback_master_id', $feedbackMaster->id)->orderBy('serial')->get(),
+        ];
+        return view('feedback.create', $data);
     }
 
     public function store()
     {
-        $role_users = Role_User::whereIn('type',['allotment','warden'])->get();
-        // return $role_users;
-        $str = "Start<br>";
-        foreach($role_users as $ru){
-            $user = User::find($ru->user_id);
-            if($ru->type == 'allotment'){
-                $allotment = Allotment::find($ru->foreign_id);
-                User::where('id',$ru->user_id)->update([
-                    'person_id' => $allotment->person->id,
-                ]);
-                $str .= "Updated user id: " . $user->id . " and allotment with person id :" . $allotment->person->id . " here<br>";
-            }
-            else{
-                $warden = Warden::find($ru->foreign_id);
-                User::where('id',$ru->user_id)->update([
-                    'person_id' => $warden->person->id,
-                ]);
-                $str .= "Updated user id: " . $user->id . " and warden with person id :" . $warden->person->id . " here<br>";
-            }
-        }
-        return $str;
+
         return request();
     }
 }

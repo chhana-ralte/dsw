@@ -86,8 +86,10 @@ Route::resource('allotment.cancelSeat', CancelSeatController::class)->shallow()-
 Route::resource('user', UserController::class)->middleware(['auth']);
 
 Route::resource('feedbackMaster', FeedbackMasterController::class)->middleware(['auth']);
-Route::resource('feedbackMaster.criteria', FeedbackCriteriaController::class)->shallow()->only(['index'])->middleware(['auth']);
-Route::resource('feedbackCriteria', FeedbackCriteriaController::class)->except(['index'])->middleware(['auth']);
+Route::resource('feedbackMaster.criteria', FeedbackCriteriaController::class)->shallow()->only(['index', 'create', 'store'])->middleware(['auth']);
+Route::resource('feedbackMaster.feedback', FeedbackController::class)->shallow()->only(['index', 'create', 'store'])->middleware(['auth']);
+Route::resource('feedbackCriteria', FeedbackCriteriaController::class)->except(['index', 'create', 'store'])->middleware(['auth']);
+Route::resource('feedbackCriteria.option', FeedbackOptionController::class)->shallow()->only(['index', 'create', 'store'])->middleware(['auth']);
 // Route::resource('feedbackMaster.criteria', FeedbackCriteriaController::class)->shallow()->middleware(['auth']);
 Route::resource('feedback', FeedbackController::class)->middleware(['auth']);
 // Route::resource('allotment.admission', AdmissionController::class)->shallow()->middleware('auth');
