@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('allotments', function ($table) {
+        Schema::table('allotments', function (Blueprint $table) {
             $table->BigInteger('start_sessn_id')->nullable();
             $table->BigInteger('end_sessn_id')->nullable();
         });
@@ -22,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('allotments', function ($table) {
+        Schema::table('allotments', function (Blueprint $table) {
             $table->DropColumn('start_sessn_id');
             $table->DropColumn('end_sessn_id');
         });

@@ -149,8 +149,6 @@ class UserController extends Controller
             return redirect()->back()->withErrors(['username' => 'Username already exists'])->withInput();
         }
 
-
-
         if (request()->roles) {
             $user->update([
                 'name' => request()->name,
