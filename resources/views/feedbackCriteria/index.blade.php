@@ -4,7 +4,7 @@
             <x-slot name="heading">
                 Feedback Criteria for {{ $feedback_master->title }}
                 <p>
-                    <a class="btn btn-primary" href="/feedbackMaster/{{ $feedback_master->id }}/criteria/create">Create
+                    <a class="btn btn-primary btn-sm" href="/feedbackCriteria/{{ $feedback_master->id }}/criteria/create">Create
                         new</a>
                 </p>
             </x-slot>
@@ -20,11 +20,11 @@
                     @foreach ($feedback_criterias as $fc)
                         <tr>
                             <td>{{ $fc->serial }}.</td>
-                            <td><a href="/feedbackMaster/{{ $fc->id }}">{{ $fc->criteria }}</a></td>
+                            <td><a href="/feedbackCriteria/{{ $fc->id }}">{{ $fc->criteria }}</a></td>
                             <td>{{ $fc->type }}</td>
                             <td>
                                 <div class="btn-group">
-                                    <a class="btn btn-secondary" href="/feedbackMaster/{{ $fc->id }}/edit">Edit</a>
+                                    <a class="btn btn-secondary" href="/feedbackCriteria/{{ $fc->id }}/edit">Edit</a>
                                     <button class="btn btn-danger btn-delete" value="{{ $fc->id }}">Delete</button>
                                 </div>
                             </td>
@@ -47,7 +47,7 @@
             });
             $("button.btn-delete").click(function() {
                 if (confirm('Are you sure you want to delete?')) {
-                    $("form#delete-form").attr('action', '/feedbackMaster/' + $(this).val());
+                    $("form#delete-form").attr('action', '/feedbackCriteria/' + $(this).val());
                     $("form#delete-form").submit();
                 }
             });

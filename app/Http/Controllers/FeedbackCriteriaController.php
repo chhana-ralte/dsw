@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Models\FeedbackMaster;
 use App\Models\FeedbackCriteria;
-use App\Notifications\Feedback;
+use App\Models\Feedback;
 
 class FeedbackCriteriaController extends Controller
 {
@@ -49,5 +49,22 @@ class FeedbackCriteriaController extends Controller
         }
 
         return redirect('/feedbackMaster/' . $feedbackMaster->id . '/criteria')->with(['message' => ['type' => 'info', 'text' => 'New feedback criteria created']]);
+    }
+
+    public function show(FeedbackCriteria $feedbackCriterion){
+        // return "Hello";
+        return $feedbackCriterion;
+    }
+
+    public function edit(FeedbackCriteria $feedbackCriterion){
+        return $feedbackCriterion;
+    }
+
+    public function update(FeedbackCriteria $feedbackCriterion){
+        return request();
+    }
+
+    public function destroy(FeedbackCriteria $feedbackCriterion){
+        return $feedbackCriterion;
     }
 }
