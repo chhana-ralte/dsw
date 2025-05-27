@@ -54,7 +54,7 @@ Route::get('/admissioncheck', [AdmissionCheckController::class, 'check']);
 Route::post('/admissioncheck', [AdmissionCheckController::class, 'checkStore']);
 Route::post('/allotment/{id}/admission_decline', [AdmissionController::class, 'admission_decline']);
 // Route::get('/allotment/{id}/admission', [AdmissionCheckController::class, 'index']);
-
+Route::get('/feedbackMaster/{id}/report', [FeedbackController::class, 'report'])->middleware(['auth']);
 
 
 Route::get('/login', [UserController::class, 'login'])->name('login');

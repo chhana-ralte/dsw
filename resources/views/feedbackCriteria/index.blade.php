@@ -4,6 +4,7 @@
             <x-slot name="heading">
                 Feedback Criteria for {{ $feedback_master->title }}
                 <p>
+                    <a class="btn btn-secondary btn-sm" href="/feedbackMaster/{{ $feedback_master->id }}">Back</a>
                     <a class="btn btn-primary btn-sm"
                         href="/feedbackMaster/{{ $feedback_master->id }}/criteria/create">Create
                         new</a>

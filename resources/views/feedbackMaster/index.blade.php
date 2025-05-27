@@ -4,7 +4,7 @@
             <x-slot name="heading">
                 Feedback Master
                 <p>
-                    <a class="btn btn-primary" href="/feedbackMaster/create">Create new</a>
+                    <a class="btn btn-primary btn-sm" href="/feedbackMaster/create">Create new</a>
                 </p>
             </x-slot>
             <div>

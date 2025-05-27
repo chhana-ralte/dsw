@@ -5,7 +5,7 @@
                 Feedback
             </x-slot>
             <div>
-                <form method="post" action="/feedback">
+                <form method="post" action="/feedbackMaster/{{ $feedback_master->id }}/feedback">
                     @csrf
                     @foreach ($feedback_criteria as $crit)
                         @if ($crit->type == 'Short answer')

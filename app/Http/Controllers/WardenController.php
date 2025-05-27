@@ -25,6 +25,7 @@ class WardenController extends Controller
         ];
         return view('common.warden.list', $data);
     }
+
     public function index(Hostel $hostel)
     {
         $data = [
@@ -46,7 +47,6 @@ class WardenController extends Controller
 
     public function store(Request $request, Hostel $hostel)
     {
-
         $validated = (object)$request->validate([
             'name' => 'required',
             'mobile' => 'required|numeric',
