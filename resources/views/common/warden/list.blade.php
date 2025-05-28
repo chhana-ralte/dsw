@@ -10,7 +10,9 @@
                     <tr>
                         <th>Hostel</th>
                         <th>Warden</th>
-                        <th>Contact</th>
+                        @auth
+                            <th>Contact</th>
+                        @endauth
                         @if (auth()->user() && auth()->user()->max_role_level() >= 2)
                             <th>From</th>
                             <th>To</th>
@@ -24,19 +26,21 @@
                         <tr>
                             <td>{{ $wd->hostel->name }}</td>
                             <td>{{ $wd->person->name }}</td>
-                            <td>
-                                @if ($wd->person->mobile)
-                                    Mobile: <a href="tel:{{ $wd->person->mobile }}">{{ $wd->person->mobile }}</a>
-                                @else
-                                    Not provided
-                                @endif
-                                @if ($wd->person->email)
-                                    <br>
-                                    email: <a href="mailto:{{ $wd->person->email }}">{{ $wd->person->email }}</a>
-                                @else
-                                    Not provided
-                                @endif
-                            </td>
+                            @auth
+                                <td>
+                                    @if ($wd->person->mobile)
+                                        Mobile: <a href="tel:{{ $wd->person->mobile }}">{{ $wd->person->mobile }}</a>
+                                    @else
+                                        Not provided
+                                    @endif
+                                    @if ($wd->person->email)
+                                        <br>
+                                        email: <a href="mailto:{{ $wd->person->email }}">{{ $wd->person->email }}</a>
+                                    @else
+                                        Not provided
+                                    @endif
+                                </td>
+                            @endauth
                             @if (auth()->user() && auth()->user()->max_role_level() >= 2)
                                 <td>{{ $wd->from_dt }}</td>
                                 <td>{{ $wd->to_dt }}</td>
