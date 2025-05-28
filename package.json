@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "@tailwindcss/vite": "^4.0.14",
+        "chart.js": "^4.4.9",
         "tailwindcss": "^4.0.14"
     }
 }
