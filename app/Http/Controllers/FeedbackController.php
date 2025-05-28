@@ -32,13 +32,14 @@ class FeedbackController extends Controller
 
     public function store(FeedbackMaster $feedbackMaster, Request $request)
     {
+        $feedback = Feedback::create([
+            'feedback_master_id' => $feedbackMaster->id,
+            'feedback_dt' => date('Y-m-d H:i:s'),
+            'done' => 0,
+        ]);
         foreach ($request->request as $key => $val) {
             $arr = explode("_", $key);
-            $feedback = Feedback::create([
-                'feedback_master_id' => $feedbackMaster->id,
-                'feedback_dt' => date('Y-m-d'),
-                'done' => 0,
-            ]);
+
             if ($arr[0] == 'criteria') {
                 $criteria = FeedbackCriteria::find($arr[1]);
                 if ($criteria->type == 'Rating' || $criteria->type == 'Multiple choice') {
@@ -74,16 +75,9 @@ class FeedbackController extends Controller
         ], [
             'feedback_master_id' => $feedbackMaster->id,
             'user_id' => auth()->user()->id,
-            'feedback_dt' => date('Y-m-d'),
+            'feedback_dt' => date('Y-m-d H:i:s'),
             'done' => 1,
         ]);
         return redirect("/feedbackMaster/" . $feedbackMaster->id . "/feedback")->with(['message' => ['type' => 'info', 'text' => 'Feedback completed']]);
-    }
-
-    public function report($feedback_master_id)
-    {
-        $feedback_master = FeedbackMaster::findOrFail($feedback_master_id);
-        return $feedback_master;
-        return $feedback_master;
     }
 }
