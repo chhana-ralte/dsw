@@ -73,4 +73,14 @@ class FeedbackMasterController extends Controller
         $feedbackMaster->delete();
         return redirect('/feedbackMaster/')->with(['message' => ['type' => 'info', 'text' => 'Feedback master deleted']]);
     }
+
+    public function report($feedback_master_id)
+    {
+        // return $feedbackMaster;
+        $feedback_master = FeedbackMaster::findOrFail($feedback_master_id);
+        return $feedback_master->report();
+        // $feedback_master = FeedbackMaster::with(['feedback_criteria', 'feedback_criteria.feedback_details', 'feedback_criteria.feedback_details.feedback_string'])->findOrFail($feedback_master_id);
+        return $feedback_master;
+        return $feedback_master;
+    }
 }
