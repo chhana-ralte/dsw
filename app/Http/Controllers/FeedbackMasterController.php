@@ -78,7 +78,12 @@ class FeedbackMasterController extends Controller
     {
         // return $feedbackMaster;
         $feedback_master = FeedbackMaster::findOrFail($feedback_master_id);
-        return $feedback_master->report();
+        $data = [
+            'report' => $feedback_master->report(),
+            'feedback_master' => $feedback_master,
+            'feedback_criteria' => \App\Models\FeedbackCriteria::where('feedback_master_id',$feedback_master->id)->orderBy('serial')->get(),
+        ];
+        return view('feedbackMaster.report',$data);
         // $feedback_master = FeedbackMaster::with(['feedback_criteria', 'feedback_criteria.feedback_details', 'feedback_criteria.feedback_details.feedback_string'])->findOrFail($feedback_master_id);
         return $feedback_master;
         return $feedback_master;

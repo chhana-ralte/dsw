@@ -22,20 +22,22 @@
                                     name="criteria_{{ $crit->id }}" min=0 max=10>
                             </div>
                         @else
+                        {{--
                             <div class="mb-3">
                                 <label for="{{ $crit->id }}" class="form-label">{{ $crit->criteria }}</label>
                                 <select class="form-control" id="{{ $crit->id }}"
                                     name="criteria_{{ $crit->id }}">
-                                    @foreach ($crit->options as $opt)
+                                    @foreach ($crit->feedback_options as $opt)
                                         <option value="{{ $opt->id }}">{{ $opt->option }}</option>
                                     @endforeach
                                 </select>
                             </div>
+                        --}}
                             <div class="mb-3">
                                 <label for="criteria_{{ $crit->id }}"
                                     class="form-label">{{ $crit->criteria }}</label>
                                 <ul>
-                                    @foreach ($crit->options as $opt)
+                                    @foreach ($crit->feedback_options as $opt)
                                         <li><input type="radio" id="opt_{{ $opt->id }}"
                                                 name="criteria_{{ $crit->id }}" value="{{ $opt->id }}">
                                             <label for="opt_{{ $opt->id }}"

@@ -22,7 +22,7 @@
                 @if ($feedback_criteria->type == 'Multiple choice')
                     <table class="table">
                         <?php $sl = 1; ?>
-                        @foreach ($feedback_criteria->options as $fo)
+                        @foreach ($feedback_criteria->feedback_options as $fo)
                             <tr>
                                 <td>{{ $fo->serial }}</td>
                                 <td><a href="/feedbackOption/{{ $fo->id }}">{{ $fo->option }}</a></td>
