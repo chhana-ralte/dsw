@@ -34,10 +34,12 @@ use App\Http\Controllers\FeedbackMasterController;
 use App\Http\Controllers\FeedbackCriteriaController;
 use App\Http\Controllers\FeedbackOptionController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\ApplicationController;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
-Route::get('/testing',function(){
+
+Route::get('/testing', function () {
     return "Hello World";
 });
 
@@ -68,6 +70,9 @@ Route::post('/user/{id}/changePassword', [UserController::class, 'changePassword
 Route::post('/logout', [UserController::class, 'logout']);
 Route::get('/hostel/{hostel}/occupants', [HostelController::class, 'occupants'])->middleware('auth');
 Route::post('/allotment/{allotment}/clear_allotment', [AllotmentController::class, 'clear_allotment'])->middleware('auth');
+
+Route::resource('application', ApplicationController::class);
+
 
 Route::resource('person', PersonController::class)->middleware('auth');
 Route::resource('person.student', StudentController::class)->shallow()->middleware('auth');
@@ -133,7 +138,7 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::post('/ajax/allot_seat_store', 'allotSeatStore');
     Route::post('/ajax/seat/{id}/deallocate', 'deallocateSeat');
     Route::post('/ajax/manage_admission', 'manage_admission');
-    Route::get('/ajax/feedback_criteria/{id}/report_chart','report_chart');
+    Route::get('/ajax/feedback_criteria/{id}/report_chart', 'report_chart');
 })->middleware('auth');
 
 
