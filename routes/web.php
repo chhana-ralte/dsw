@@ -37,9 +37,13 @@ use App\Http\Controllers\FeedbackController;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
+Route::get('/testing',function(){
+    return "Hello World";
+});
 
 Route::get('/test', function () {
-    return "Hello world";
+    // return "Hello world";
+    return view('test.chart');
 })->middleware(['dsw']);
 
 Route::get('/', function () {
@@ -129,6 +133,7 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::post('/ajax/allot_seat_store', 'allotSeatStore');
     Route::post('/ajax/seat/{id}/deallocate', 'deallocateSeat');
     Route::post('/ajax/manage_admission', 'manage_admission');
+    Route::get('/ajax/feedback_criteria/{id}/report_chart','report_chart');
 })->middleware('auth');
 
 

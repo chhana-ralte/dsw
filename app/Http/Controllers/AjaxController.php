@@ -160,4 +160,30 @@ class AjaxController extends Controller
         ];
         return $data;
     }
+
+    public function report_chart($feedback_criteria_id){
+        $feedback_criteria = \App\Models\FeedbackCriteria::findOrFail($feedback_criteria_id);
+        if($feedback_criteria->type == 'Rating'){
+            $labels = [1,2,3,4,5,6,7,8,9,10];
+            $data = [];
+            foreach($labels as $label){
+                array_push($data,\App\Models\FeedbackDetail::where('feedback_criteria_id',$feedback_criteria->id)->where('value',$label)->count());
+            }
+        }
+        else if($feedback_criteria->type == 'Multiple choice'){
+            $options = \App\Models\FeedbackOption::where('feedback_criteria_id',$feedback_criteria->id)->get();
+            $labels = [];
+            $data = [];
+            foreach($options as $opt){
+                array_push($labels,$opt->option);
+                array_push($data, \App\Models\FeedbackDetail::where('feedback_criteria_id',$feedback_criteria->id)->where('value',$opt->id)->count());
+            }
+        }
+        $data = [
+            'labels' => $labels,
+            'data' => $data,
+        ];
+        return $data;
+        // return "this:" . $feedback_criteria_id;
+    }
 }

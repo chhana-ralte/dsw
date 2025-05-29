@@ -17,5 +17,4 @@ class FeedbackOption extends Model
 
         return FeedbackDetail::where('feedback_criteria_id',$this->feedback_criteria->id)->where('value',$this->id)->count();
     }
-
 }
