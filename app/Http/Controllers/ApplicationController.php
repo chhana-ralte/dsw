@@ -18,8 +18,12 @@ class ApplicationController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|min:6',
+        ]);
         // Logic to store the application data
         // For example, Application::create($request->all());
+        return $request;
         return redirect()->route('application.index')->with('success', 'Application created successfully.');
     }
 

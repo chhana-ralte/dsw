@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('applications', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(App\Models\Person::class);
+            $table->dateTime('dt')->default(date('Y-m-d H:i:s'));
+            $table->string('status')->default('Applied');
+            $table->boolean('valid')->default(1);
             $table->timestamps();
         });
     }
