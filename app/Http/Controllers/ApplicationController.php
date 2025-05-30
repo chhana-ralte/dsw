@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\Person;
+use App\Models\Student;
+use App\Models\Application;
+
 class ApplicationController extends Controller
 {
     public function index()
@@ -20,11 +24,38 @@ class ApplicationController extends Controller
     {
         $request->validate([
             'name' => 'required|min:6',
+            'father' => 'required|min:6',
+            'mobile' => 'required|numeric',
+            'email' => 'required|email',
+            'address' => 'required|min:6',
+            'state' => 'required|min:6',
+            'department' => 'required|min:2',
+            'course' => 'required|min:2',
+            'mzuid' => 'required|min:6',
         ]);
-        // Logic to store the application data
-        // For example, Application::create($request->all());
-        return $request;
-        return redirect()->route('application.index')->with('success', 'Application created successfully.');
+
+        $person = Person::create([
+            'name' => $request->name,
+            'father' => $request->father,
+            'mobile' => $request->mobile,
+            'email' => $request->email,
+            'address' => $request->address,
+            'state' => $request->state,
+        ]);
+        $student = Student::create([
+            'person_id' => $person->id,
+            'department' => $request->department,
+            'course' => $request->course,
+            'mzuid' => $request->mzuid,
+        ]);
+        $application = Application::create([
+            'person_id' => $person->id,
+            'dt' => now(),
+            'status' => 'Applied',
+            'valid' => true,
+        ]);
+
+        return redirect('/application')->with(['message' => ['type' => 'info', 'text' => 'Application created successfully.']]);
     }
 
     public function show($id)
