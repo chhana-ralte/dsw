@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('roomcapacity')->nullable();
             $table->boolean('same')->default(true);
             $table->string('type')->default('Next Semester');
+            $table->datetime('dt')->default(date('Y-m-d H:i:s'));
             $table->timestamps();
         });
     }

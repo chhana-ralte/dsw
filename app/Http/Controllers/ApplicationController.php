@@ -25,6 +25,7 @@ class ApplicationController extends Controller
         $request->validate([
             'name' => 'required|min:6',
             'father' => 'required|min:6',
+            'gender' => 'required',
             'mobile' => 'required|numeric',
             'email' => 'required|email',
             'address' => 'required|min:6',
@@ -37,6 +38,7 @@ class ApplicationController extends Controller
         $person = Person::create([
             'name' => $request->name,
             'father' => $request->father,
+            'gender' => $request->gender,
             'mobile' => $request->mobile,
             'email' => $request->email,
             'address' => $request->address,
