@@ -32,6 +32,18 @@
                 </div>
 
                 <div class="mb-3 form-group row">
+                    <label for="gender" class="col col-md-3">Gender</label>
+                    <div class="col col-md-4">
+                        <select name='gender' class='form-control'>
+                            <option>Select Gender</option>
+                            <option value='Male' {{ old('gender') == 'Male' ? ' selected ' : '' }}>Male</option>
+                            <option value='Female' {{ old('gender') == 'Female' ? ' selected ' : '' }}>Female</option>
+                            <option value='Other' {{ old('gender') == 'Other' ? ' selected ' : '' }}>Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3 form-group row">
                     <label for="mobile" class="col col-md-3">Mobile</label>
                     <div class="col col-md-4">
                         <input type="text" class="form-control" name="mobile" value="{{ old('mobile') }}" required>
@@ -113,7 +125,8 @@
                 <div class="mb-3 form-group row">
                     <label for="course" class="col col-md-3">Course</label>
                     <div class="col col-md-4">
-                        <input type="text" class="form-control" name="course" value="{{ old('course') }}" required>
+                        <input type="text" class="form-control" name="course" value="{{ old('course') }}"
+                            required>
                         @error('course')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror

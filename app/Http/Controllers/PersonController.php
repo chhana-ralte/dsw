@@ -63,6 +63,7 @@ class PersonController extends Controller
         $person->update([
             'name' => request()->name,
             'father' => request()->father,
+            'gender' => request()->gender,
             'mobile' => request()->mobile,
             'email' => request()->email,
             'category' => request()->category,

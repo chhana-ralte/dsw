@@ -1,8 +1,15 @@
 <x-layout>
     <x-container>
+        @if ($allotment->valid_allot_hostel())
+            <x-block>
+                @include('common.allotment.partials.requirement')
+            </x-block>
+        @endif
+
         <x-block>
             @include('common.allotment.partials.personal')
         </x-block>
+
 
         @if ($allotment->person->student())
             <x-block>
@@ -31,7 +38,7 @@
 
         </x-block>
 
-        @can('manage',$allotment)
+        @can('manage', $allotment)
             <x-block>
                 @include('common.allotment.partials.user')
             </x-block>
@@ -49,7 +56,7 @@
             </x-block>
         @endif
 
-        @if($allotment->start_sessn())
+        @if ($allotment->start_sessn())
             <x-block>
                 @include('common.allotment.partials.admission')
             </x-block>
