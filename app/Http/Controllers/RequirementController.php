@@ -11,7 +11,7 @@ class RequirementController extends Controller
 
     public function index(Allotment $allotment)
     {
-        if($allotment->valid_allot_hostel() && $allotment->valid_allot_hostel()->valid_allot_seat()){
+        if ($allotment->valid_allot_hostel() && $allotment->valid_allot_hostel()->valid_allot_seat()) {
             $data = [
                 'allotment' => $allotment,
                 'allot_hostel' => $allotment->valid_allot_hostel(),
@@ -19,9 +19,8 @@ class RequirementController extends Controller
                 'requirements' => Requirement::where('allot_hostel_id', $allotment->valid_allot_hostel()->id)->get(),
             ];
             return view('requirement.index', $data);
-        }
-        else{
-            abort(403);
+        } else {
+            return redirect()->back()->with(['message' => ['type' => 'danger', 'text' => 'You should have valid allotment for hostel and seat to request for requirement']]);
         }
     }
 
@@ -30,7 +29,7 @@ class RequirementController extends Controller
      */
     public function create(Allotment $allotment)
     {
-        if($allotment->valid_allot_hostel() && $allotment->valid_allot_hostel()->valid_allot_seat()){
+        if ($allotment->valid_allot_hostel() && $allotment->valid_allot_hostel()->valid_allot_seat()) {
             $data = [
                 'allotment' => $allotment,
                 'allot_hostel' => $allotment->valid_allot_hostel(),
@@ -38,8 +37,7 @@ class RequirementController extends Controller
                 'requirements' => Requirement::where('allot_hostel_id', $allotment->valid_allot_hostel()->id)->get(),
             ];
             return view('requirement.create', $data);
-        }
-        else{
+        } else {
             abort(403);
         }
     }
@@ -49,29 +47,30 @@ class RequirementController extends Controller
      */
     public function store(Request $request, Allotment $allotment)
     {
-        if($allotment->valid_allot_hostel() && $allotment->valid_allot_hostel()->valid_allot_seat()){
+        if ($allotment->valid_allot_hostel() && $allotment->valid_allot_hostel()->valid_allot_seat()) {
             $request->validate([
                 'hostel' => 'required'
             ]);
 
-            $requirement = Requirement::updateOrCreate([
-                'person_id' => $allotment->person->id,
-                'for_sessn_id' => \App\Models\Sessn::current()->next()->id,
-            ],
-            [
-                'person_id' => $allotment->person->id,
-                'allot_hostel_id' => $allotment->valid_allot_hostel()->id,
-                'hostel_id' => $request->hostel,
-                'roomcapacity' => $request->roomcapacity,
-                'type' => 'Next Session',
-                'for_sessn_id' => \App\Models\Sessn::current()->next()->id,
-                'dt' => now(),
-                'user_id' => auth()->user()->id,
-            ]);
+            $requirement = Requirement::updateOrCreate(
+                [
+                    'person_id' => $allotment->person->id,
+                    'for_sessn_id' => \App\Models\Sessn::current()->next()->id,
+                ],
+                [
+                    'person_id' => $allotment->person->id,
+                    'allot_hostel_id' => $allotment->valid_allot_hostel()->id,
+                    'hostel_id' => $request->hostel,
+                    'roomcapacity' => $request->roomcapacity,
+                    'type' => 'Next Session',
+                    'for_sessn_id' => \App\Models\Sessn::current()->next()->id,
+                    'dt' => now(),
+                    'user_id' => auth()->user()->id,
+                ]
+            );
 
             return redirect("/allotment/" . $allotment->id . "/requirement")->with(['message' => ['type' => 'info', 'text' => 'Requirement submitted']]);
-        }
-        else{
+        } else {
             abort(403);
         }
     }
