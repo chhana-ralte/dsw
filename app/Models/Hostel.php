@@ -73,7 +73,7 @@ class Hostel extends Model
         return AllotHostel::where('hostel_id', $this->id)->where('valid', 1)->get();
     }
 
-    public function current_occupants()
+    public function current_occupants() // All occupants, empty rooms are not shown
     {
         // DB::table('allot_hostels')->join('allot_seats', 'allot_hostels.id', '=', 'allot_seats.allot_hostel_id')
         //     ->join('seats', 'allot_seats.seat_id', '=', 'seats.id')
@@ -82,6 +82,7 @@ class Hostel extends Model
         //     ->where('allot_seats.valid', 1)
         //     ->select('allot_hostels.*', 'allot_seats.*', 'seats.*', 'rooms.*')
         //     ->get();
+
         $occupants = DB::select('SELECT R.id as room_id,r.roomno, r.type as roomtype, S.id as seat_id, S.serial, P.name, P.father, P.mobile, P.email, P.state, P.address, P.photo, P.gender, ST.id as student_id, ST.course, ST.department, ST.mzuid, ST.rollno, AH.id as allot_hostel_id, A.id as allotment_id, AST.id as allot_seat_id
             FROM (people P LEFT JOIN students ST ON P.id=ST.person_id) JOIN allotments A on P.id=A.person_id
             JOIN allot_hostels AH ON AH.allotment_id=A.id AND AH.valid = 1
@@ -90,7 +91,23 @@ class Hostel extends Model
             WHERE H.id = :id
             ORDER BY R.roomno,S.serial;', ['id' => $this->id]);
         return Occupant::hydrate($occupants);
-        // return ['occupants' => $occupants];
-        // return view('test.casttest', ['occupants' => Occupant::hydrate($occupants)]);
+    }
+
+    public function room_occupants(){ // all rooms and their occupants. Empty rooms also will be shown
+        $occupants = DB::select('SELECT R.id as room_id,r.roomno, r.type as roomtype, S.id as seat_id, S.serial, S.available, P.id as person_id, P.name, P.father, P.mobile, P.email, P.state, P.address, P.photo, P.gender, ST.id as student_id, ST.course, ST.department, ST.mzuid, ST.rollno, AH.id as allot_hostel_id, A.id as allotment_id, AST.id as allot_seat_id
+            FROM (rooms R JOIN hostels H ON H.id=R.hostel_id) JOIN seats S ON R.id=S.room_id
+            LEFT JOIN (allot_seats AST JOIN allot_hostels AH ON AH.id=AST.allot_hostel_id AND AH.valid = 1 JOIN allotments A ON A.id=AH.allotment_id JOIN (people P LEFT JOIN students ST ON P.id=ST.person_id) ON P.id=A.person_id) ON AST.seat_id = S.id AND AST.valid = 1
+            WHERE H.id = :hostel_id
+            ORDER BY R.roomno,S.serial;',['hostel_id' => $this->id]);
+        return Occupant::hydrate($occupants);
+    }
+
+    public function unallotted(){
+        $occupants = DB::select('SELECT P.id as person_id, P.name, P.father, P.mobile, P.email, P.state, P.address, P.photo, P.gender, ST.id as student_id, ST.course, ST.department, ST.mzuid, ST.rollno, AH.id as allot_hostel_id, A.id as allotment_id
+            FROM (people P left JOIN students ST ON P.id=ST.person_id) JOIN allotments A ON P.id=A.person_id
+            JOIN (allot_hostels AH JOIN hostels H ON H.id=AH.hostel_id) ON A.id = AH.allotment_id AND AH.valid = 1
+            WHERE AH.id NOT IN (SELECT allot_hostel_id FROM allot_seats WHERE valid = 1)
+            AND H.id = :hostel_id ORDER BY P.name;',['hostel_id' => $this->id]);
+        return Occupant::hydrate($occupants);
     }
 }

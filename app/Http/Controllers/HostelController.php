@@ -33,7 +33,8 @@ class HostelController extends Controller
 
     public function show(Hostel $hostel)
     {
-        return view('test.casttest', ['occupants' => $hostel->current_occupants()]);
+        // return view('test.casttest', ['occupants' => $hostel->current_occupants()]);
+
         if (!auth()->user() || !auth()->user()->can('view', $hostel)) {
             abort(403);
         }
@@ -92,6 +93,22 @@ class HostelController extends Controller
 
     public function occupants(Hostel $hostel)
     {
+        // return $hostel->room_occupants();
+        if (isset($_GET['allot_seats']) && $_GET['allot_seats'] == 0) {
+            $data = [
+                'hostel' => $hostel,
+                'occupants' => $hostel->unallotted(),
+                'seats' => false
+            ];
+        } else {
+            $data = [
+                'hostel' => $hostel,
+                'seats' => true,
+                'occupants' => $hostel->room_occupants(),
+            ];
+            return view('common.hostel.occupants2', $data);
+        }
+
         $rooms = $hostel->rooms();
 
         $seats = Seat::whereIn('room_id', $rooms->pluck('id'));

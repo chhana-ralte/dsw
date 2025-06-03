@@ -13,6 +13,10 @@ class Occupant extends Model
         return $this->belongsTo(Person::class);
     }
 
+    public function student(){
+        return $this->belongsTo(Student::class);
+    }
+
     public function hostel()
     {
         return $this->belongsTo(Hostel::class);
