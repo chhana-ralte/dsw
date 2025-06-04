@@ -20,13 +20,22 @@
                     <label for="name" class="col col-md-3">Name*</label>
                     <div class="col col-md-4">
                         <input type="text" class="form-control" name="name" value="{{ old('name') }}" required>
+                        @error('name')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
+                    @error('name')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="mb-3 form-group row">
                     <label for="father" class="col col-md-3">Father/Guardian</label>
                     <div class="col col-md-4">
                         <input type="text" class="form-control" name="father" value="{{ old('father') }}">
+                        @error('father')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -39,6 +48,9 @@
                             <option value='Female'>Female</option>
                             <option value='Other'>Other</option>
                         </select>
+                        @error('gender')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -46,6 +58,9 @@
                     <label for="mobile" class="col col-md-3">Mobile</label>
                     <div class="col col-md-4">
                         <input type="text" class="form-control" name="mobile" value="{{ old('mobile') }}">
+                        @error('mobile')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -53,6 +68,9 @@
                     <label for="email" class="col col-md-3">Email</label>
                     <div class="col col-md-4">
                         <input type="email" class="form-control" name="email" value="{{ old('email') }}">
+                        @error('email')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -67,6 +85,9 @@
                             <option value='ST'>ST</option>
                             <option value='EWS'>EWS</option>
                         </select>
+                        @error('category')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -74,6 +95,9 @@
                     <label for="state" class="col col-md-3">State</label>
                     <div class="col col-md-4">
                         <input type="text" class="form-control" name="state" value="{{ old('state') }}">
+                        @error('state')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -81,6 +105,9 @@
                     <label for="address" class="col col-md-3">Address</label>
                     <div class="col col-md-4">
                         <textarea class="form-control" name="address">{{ old('address') }}</textarea>
+                        @error('address')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -99,6 +126,9 @@
                         <label for="rollno" class="col col-md-3">Rollno</label>
                         <div class="col col-md-4">
                             <input type="text" class="form-control" name="rollno" value="{{ old('rollno') }}">
+                            @error('rollno')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
 
@@ -106,6 +136,9 @@
                         <label for="course" class="col col-md-3">Course</label>
                         <div class="col col-md-4">
                             <input type="text" class="form-control" name="course" value="{{ old('course') }}">
+                            @error('course')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
 
@@ -114,6 +147,9 @@
                         <div class="col col-md-4">
                             <input type="text" class="form-control" name="department"
                                 value="{{ old('department') }}">
+                            @error('department')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
 
@@ -122,6 +158,9 @@
                         <label for="mzuid" class="col col-md-3">MZU ID</label>
                         <div class="col col-md-4">
                             <input type="text" class="form-control" name="mzuid" value="{{ old('mzuid') }}">
+                            @error('mzuid')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -135,6 +174,9 @@
                         <label for="remark" class="col col-md-3">Remark*</label>
                         <div class="col col-md-4">
                             <textarea class="form-control" name="remark">{{ old('remark') }}</textarea>
+                            @error('remark')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -151,6 +193,9 @@
                                 </option>
                             @endforeach
                         </select>
+                        @error('hostel')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -159,6 +204,9 @@
                     <div class="col col-md-4">
                         <input type="date" class="form-control" name="from_dt" value="{{ old('from_dt') }}"
                             required>
+                        @error('from_dt')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -167,6 +215,9 @@
                     <div class="col col-md-4">
                         <input type="date" class="form-control" name="to_dt" value="{{ old('to_dt') }}"
                             required>
+                        @error('to_dt')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
