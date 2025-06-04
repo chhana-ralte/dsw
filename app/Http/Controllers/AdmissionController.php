@@ -63,7 +63,7 @@ class AdmissionController extends Controller
      */
     public function create(Allotment $allotment)
     {
-
+        // return "Hehe";
         if (isset($_GET['sessn_id'])) {
             $sessn = Sessn::findOrFail($_GET['sessn_id']);
         } else {

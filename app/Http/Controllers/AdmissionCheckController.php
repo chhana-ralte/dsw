@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\Person;
 use App\Models\Allotment;
+use App\Models\AllotHostel;
+use App\Models\AllotSeat;
 use App\Models\Admission;
+use App\Models\Sessn;
 
 
 class AdmissionCheckController extends Controller
@@ -28,14 +31,36 @@ class AdmissionCheckController extends Controller
 
     public function create(Allotment $allotment)
     {
+        // return "asdsadasd";
         if (!auth()->user() && auth()->user()->can('manage', $allotment)) {
             abort(403);
         }
-        $data = [
+
+        if(count($allotment->allot_hostels)>0){
+            $data = [
             'allotment' => $allotment,
             'sessns' => \App\Models\Sessn::orderBy('start_yr')->orderBy('odd_even')->get(),
-        ];
-        return view('admissioncheck.create', $data);
+            ];
+            // return view('common.admission.create',$data);
+            return view('admissioncheck.create', $data);
+        }
+        else{ // new admission
+            if (isset($_GET['sessn_id'])) {
+                $sessn = Sessn::findOrFail($_GET['sessn_id']);
+            } else {
+                $sessn = Sessn::default();
+            }
+            $data = [
+                'admissions' => Admission::where('allotment_id', $allotment->id)->get(),
+                'allotment' => $allotment,
+                'sessn' => $sessn
+            ];
+            return view('common.admission.create', $data);
+        }
+
+
+
+
         return $allotment;
     }
 
@@ -44,30 +69,90 @@ class AdmissionCheckController extends Controller
         if (!auth()->user() && auth()->user()->can('manage', $allotment)) {
             abort(403);
         }
-        request()->validate([
-            'amount' => 'numeric:required',
-            'payment_dt' => 'required',
-            'sessn' => 'required',
-        ]);
 
-        if ($allotment->valid_allot_hostel()) {
-            $allot_hostel_id = $allotment->valid_allot_hostel()->id;
-        } else {
-            $allot_hostel_id = 0;
+        if(request()->type && request()->type == 'new'){
+            // return "Hello";
+
+
+            $allot_hostel = AllotHostel::updateOrCreate(
+                [
+                    'allotment_id' => $allotment->id,
+                    'hostel_id' => $allotment->hostel->id,
+                    'valid' => 1,
+                ],
+                [
+                    'allotment_id' => $allotment->id,
+                    'hostel_id' => $allotment->hostel->id,
+                    'valid' => 1,
+                    'from_dt' => $allotment->from_dt,
+                    'to_dt' => $allotment->to_dt,
+                ]
+            );
+
+
+            $allot_seat = AllotSeat::updateOrCreate(
+                [
+                    'allot_hostel_id' => $allot_hostel->id,
+                    'seat_id' => request()->seat,
+                ],
+                [
+                    'allot_hostel_id' => $allot_hostel->id,
+                    'seat_id' => request()->seat,
+                    'valid' => 1,
+                    'from_dt' => $allot_hostel->from_dt,
+                    'to_dt' => $allot_hostel->to_dt,
+                ]
+            );
+
+            if (request()->admitted) {
+                Admission::updateOrCreate(
+                    [
+                        'allotment_id' => $allotment->id,
+                        'sessn_id' => request()->sessn_id,
+                        'allot_hostel_id' => $allot_hostel->id,
+                    ],
+                    [
+                        'allotment_id' => $allotment->id,
+                        'sessn_id' => request()->sessn_id,
+                        'allot_hostel_id' => $allot_hostel->id,
+                    ]
+                );
+
+                $allotment->update([
+                    'admitted' => 1
+                ]);
+            }
         }
-        Admission::updateOrCreate(
-            [
-                'sessn_id' => request()->sessn,
-                'allotment_id' => $allotment->id,
-            ],
-            [
-                'sessn_id' => request()->sessn,
-                'allotment_id' => $allotment->id,
-                'payment_dt' => request()->payment_dt,
-                'amount' => request()->amount,
-                'allot_hostel_id' => $allot_hostel_id,
-            ]
-        );
+
+        else{
+
+
+
+            request()->validate([
+                'amount' => 'numeric:required',
+                'payment_dt' => 'required',
+                'sessn' => 'required',
+            ]);
+
+            if ($allotment->valid_allot_hostel()) {
+                $allot_hostel_id = $allotment->valid_allot_hostel()->id;
+            } else {
+                $allot_hostel_id = 0;
+            }
+            Admission::updateOrCreate(
+                [
+                    'sessn_id' => request()->sessn,
+                    'allotment_id' => $allotment->id,
+                ],
+                [
+                    'sessn_id' => request()->sessn,
+                    'allotment_id' => $allotment->id,
+                    'payment_dt' => request()->payment_dt,
+                    'amount' => request()->amount,
+                    'allot_hostel_id' => $allot_hostel_id,
+                ]
+            );
+        }
         return redirect('/allotment/' . $allotment->id . '/admission')
             ->with(['message' => ['type' => 'info', 'text' => 'Admission detail created.']]);
     }
@@ -113,7 +198,7 @@ class AdmissionCheckController extends Controller
         $admission->delete();
         return redirect('/allotment/' . $allotment->id . '/admission')
             ->with(['message' => ['type' => 'info', 'text' => 'Admission detail deleted.']]);
-            
+
     }
 
     public function check()

@@ -99,7 +99,11 @@ class AllotmentController extends Controller
 
         if ($allotment->valid_allot_hostel()) {
             $current_hostel = $allotment->valid_allot_hostel()->hostel;
-        } else {
+        }
+        else if($allotment->hostel){
+            $current_hostel = $allotment->hostel;
+        }
+        else {
             $current_hostel = Hostel::default();
         }
         $data = [

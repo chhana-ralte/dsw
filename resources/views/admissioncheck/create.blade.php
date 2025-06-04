@@ -4,7 +4,7 @@
             <x-slot name="heading">
                 Admission status update for {{ $allotment->person->name }}
             </x-slot>
-        
+
             <form method="post" action="/allotment/{{ $allotment->id }}/admission">
                 @csrf
                 <div class="form-group row mb-3">
@@ -45,6 +45,7 @@
                 <div class="form-group row mb-3">
                     <div class="col col-md-3"></div>
                     <div class="col col-md-4">
+                        <a class="btn btn-secondary" href="/allotment/{{ $allotment->id }}/admission">Back</a>
                         <button class="btn btn-primary btn-create" type="submit">Update</update>
                     </div>
                 </div>
@@ -64,7 +65,7 @@
                     @endforeach
                 </table>
             @else
-                <h3>No hostel admission record available</h3>
+                <h3>No previous hostel admission record available</h3>
             @endif
         </x-block>
     </x-container>
