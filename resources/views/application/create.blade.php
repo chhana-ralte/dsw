@@ -8,7 +8,7 @@
                 </p>
             </x-slot>
 
-            <form name="frm_submit" method="post" action="/application/">
+            <form name="frm_submit" method="post" action="/application/" enctype="multipart/form-data">
                 @csrf
 
                 <div class="mb-3 form-group row">

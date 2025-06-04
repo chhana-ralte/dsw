@@ -53,6 +53,7 @@ Route::get('/test', function () {
 Route::get('/', function () {
     return view('home');
 });
+
 Route::get('/warden', [WardenController::class, 'list']);
 Route::get('/search', [SearchController::class, 'index'])->middleware(['auth']);
 Route::get('/consolidate', [ConsolidateController::class, 'index'])->middleware(['dsw']);
@@ -142,6 +143,8 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::post('/ajax/seat/{id}/deallocate', 'deallocateSeat');
     Route::post('/ajax/manage_admission', 'manage_admission');
     Route::get('/ajax/feedback_criteria/{id}/report_chart', 'report_chart');
+    Route::post('/ajax/application/{id}/decline', 'declineApplication');
+    Route::post('/ajax/application/{id}/accept', 'acceptApplication');
 })->middleware('auth');
 
 
