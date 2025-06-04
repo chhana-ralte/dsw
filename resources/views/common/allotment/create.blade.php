@@ -12,7 +12,7 @@
             <x-slot name="heading">
                 Personal information
             </x-slot>
-            <form method="post" action="/notification/{{ $notification->id }}/allotment">
+            <form method="post" name="frm-submit" action="/notification/{{ $notification->id }}/allotment">
                 <input type='hidden' name='selected'>
                 @csrf
                 {{-- Personal Information --}}
@@ -280,7 +280,7 @@
                     alert("Fill up the required field under other info");
                     exit();
                 }
-                $("form").submit();
+                $("form[name='frm-submit']").submit();
             });
         });
     </script>

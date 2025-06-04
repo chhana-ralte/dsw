@@ -57,7 +57,7 @@
                 <div class="form-group row mb-3">
                     <label for="remark" class="col col-md-3">Remark</label>
                     <div class="col col-md-4">
-                        <input type="text" class="form-control" name="remark" value="{{ $allotment->person->student()->remark }}" disabled>
+                        <input type="text" class="form-control" name="remark" value="{{ $allotment->person->other()->remark }}" disabled>
                     </div>
                 </div>
 
