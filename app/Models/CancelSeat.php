@@ -9,19 +9,28 @@ class CancelSeat extends Model
 {
     protected $guarded = [];
 
-    public function allotment(){
+    public function allotment()
+    {
         return $this->belongsTo(Allotment::class);
     }
 
-    public function allot_hostel(){
+    public function allot_hostel()
+    {
         return $this->belongsTo(AllotHostel::class);
     }
 
-    public function allot_seat(){
+    public function allot_seat()
+    {
         return $this->belongsTo(AllotSeat::class);
     }
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
+    }
+
+    public function clearance()
+    {
+        return $this->hasOne(Clearance::class);
     }
 }

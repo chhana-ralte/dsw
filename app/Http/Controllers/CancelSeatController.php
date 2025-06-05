@@ -81,6 +81,11 @@ class CancelSeatController extends Controller
             // return $allotment->user()->name;
             // return "User exists";
         }
+        $allotment->update([
+            // 'valid' => 0,
+            'finished' => $request->completed ? '1' : '0',
+        ]);
+        $allotment->save();
 
         return redirect('/allotment/' . $allotment->id)
             ->with(['message' => ['type' => 'info', 'text' => 'Seat has been cancelled.']]);
@@ -92,7 +97,7 @@ class CancelSeatController extends Controller
         $data = [
             'cancel_seat' => $cancel_seat,
         ];
-        return view('common.cancelHostel.clearance',$data);
+        return view('common.cancelHostel.clearance', $data);
     }
 
     public function edit(string $id)
@@ -107,6 +112,22 @@ class CancelSeatController extends Controller
 
     public function destroy(string $id)
     {
-        //
+        $allotment_id = CancelSeat::find($id)->allotment_id;
+        $cancel_seat = CancelSeat::find($id);
+        AllotHostel::where('id', $cancel_seat->allot_hostel_id)->update(['valid' => 1]);
+        AllotSeat::where('id', $cancel_seat->allot_seat_id)->update(['valid' => 1]);
+        Allotment::where('id', $cancel_seat->allotment_id)->update(['valid' => 1, 'finished' => 0]);
+        $cancel_seat->delete();
+        return redirect('/allotment/' . $allotment_id)
+            ->with(['message' => ['type' => 'info', 'text' => 'Seat cancellation undone.']]);
+    }
+
+    public function clearance($id)
+    {
+        $cancel_seat = CancelSeat::findOrFail($id);
+        $data = [
+            'cancel_seat' => $cancel_seat,
+        ];
+        return view('common.cancel_seat.clearance', $data);
     }
 }

@@ -66,6 +66,7 @@ Route::post('/allotment/{id}/admission_decline', [AdmissionController::class, 'a
 Route::get('/feedbackMaster/{id}/report', [FeedbackMasterController::class, 'report'])->middleware(['auth']);
 
 
+
 Route::get('/login', [UserController::class, 'login'])->name('login');
 Route::post('/login', [UserController::class, 'logincheck']);
 Route::get('/user/{id}/changePassword', [UserController::class, 'changePassword'])->middleware('auth');
@@ -84,7 +85,7 @@ Route::resource('person.person_remark', PersonRemarkController::class)->shallow(
 Route::resource('person_remark.person_remark_detail', PersonRemarkDetailController::class)->shallow()->middleware('auth');
 Route::resource('hostel', HostelController::class);
 Route::resource('hostel.room', RoomController::class)->shallow()->middleware('auth');
-Route::resource('hostel.clearance', ClearanceController::class)->shallow()->middleware('auth');
+Route::resource('cancelSeat.clearance', ClearanceController::class)->shallow()->middleware('auth');
 Route::resource('hostel.cancelHostel', CancelHostelController::class)->shallow()->middleware('auth');
 Route::resource('hostel.warden', WardenController::class)->shallow()->middleware(['auth', 'dsw']);
 Route::resource('hostel.admission', AdmissionController::class)->shallow()->middleware('auth');
