@@ -63,4 +63,16 @@ class Person extends Model
     {
         return Allotment::where('person_id', $this->id)->where('valid', 1)->first();
     }
+
+    public function requirements()
+    {
+        return $this->hasMany(Requirement::class);
+    }
+
+    public function requirement($sessn_id)
+    {
+        return Requirement::where('person_id', $this->id)
+            ->where('for_sessn_id', $sessn_id)
+            ->first();
+    }
 }

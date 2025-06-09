@@ -21,6 +21,9 @@
                     <div class="col col-md-4">
                         <input type="text" class="form-control" name="name"
                             value="{{ old('name', $person->name) }}">
+                        @error('name')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -29,6 +32,24 @@
                     <div class="col col-md-4">
                         <input type="text" class="form-control" name="father"
                             value="{{ old('father', $person->father) }}">
+                        @error('father')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="mb-3 form-group row">
+                    <label for="gender" class="col col-md-3">Gender</label>
+                    <div class="col col-md-4">
+                        <select name='gender' class='form-control'>
+                            <option>Select Gender</option>
+                            <option value='Male' {{ $person->gender == 'Male' ? ' selected ' : '' }}>Male</option>
+                            <option value='Female' {{ $person->gender == 'Female' ? ' selected ' : '' }}>Female</option>
+                            <option value='Other' {{ $person->gender == 'Other' ? ' selected ' : '' }}>Other</option>
+                        </select>
+                        @error('gender')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -37,6 +58,9 @@
                     <div class="col col-md-4">
                         <input type="text" class="form-control" name="mobile"
                             value="{{ old('mobile', $person->mobile) }}">
+                        @error('mobile')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -45,6 +69,9 @@
                     <div class="col col-md-4">
                         <input type="email" class="form-control" name="email"
                             value="{{ old('email', $person->email) }}">
+                        @error('email')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -60,6 +87,9 @@
                             <option value='ST' {{ $person->category == 'ST' ? ' selected ' : '' }}>ST</option>
                             <option value='EWS' {{ $person->category == 'EWS' ? ' selected ' : '' }}>EWS</option>
                         </select>
+                        @error('category')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -68,6 +98,9 @@
                     <div class="col col-md-4">
                         <input type="text" class="form-control" name="state"
                             value="{{ old('state', $person->state) }}">
+                        @error('state')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -75,8 +108,12 @@
                     <label for="address" class="col col-md-3">Address</label>
                     <div class="col col-md-4">
                         <textarea class="form-control" name="address">{{ old('address', $person->address) }}</textarea>
+                        @error('address')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
+
                 <div class="mb-3 form-group row">
                     <label for="photo" class="col col-md-3">Photo</label>
                     <div class="col col-md-4">
@@ -86,9 +123,10 @@
                 <div class="mb-3 form-group row">
                     <div class="col col-md-3"></div>
                     <div class="col col-md-4">
-                        <img width="200px" src="{{ $person->photo }}" alt="" srcset="">
+                        <img width="200px" src="{{ $person->photo }}" alt="Not Available" srcset="">
                     </div>
                 </div>
+
                 <div class="mb-3 form-group row">
                     <div class="col col-md-3"></div>
                     <div class="col col-md-4">

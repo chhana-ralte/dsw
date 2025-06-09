@@ -105,15 +105,16 @@ class StudentRegistrationController extends Controller
         }
 
         $user = User::create([
-             'name' => $allotment->person->name,
-             'username' => $validated->username,
-             'password' => Hash::make($validated->password),
-             'email' => $allotment->person->email,
+            'name' => $allotment->person->name,
+            'username' => $validated->username,
+            'password' => Hash::make($validated->password),
+            'email' => $allotment->person->email,
+            'person_id' => $allotment->person->id,
         ]);
 
         $role = Role::updateOrCreate([
             'role' => 'Inmate',
-        ],[
+        ], [
             'role' => 'Inmate',
             'level' => '1',
         ]);
@@ -124,7 +125,7 @@ class StudentRegistrationController extends Controller
             'type' => 'allotment',
             'foreign_id' => $allotment->id,
         ]);
-        
+
         return redirect('/login')->with(['message' => ['type' => 'info', 'text' => 'Registration completed. You may login now']]);
     }
 }

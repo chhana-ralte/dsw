@@ -47,14 +47,12 @@
                             @else
                                 <td colspan=3>Not a student</td>
                             @endif
-                            
                         </tr>
                         @endforeach
                         </tbody>
                 </table>
             </div>
         </x-block>
-
     </x-container>
 <script>
 $(document).ready(function(){

@@ -33,7 +33,9 @@ class HostelController extends Controller
 
     public function show(Hostel $hostel)
     {
-        if(!auth()->user() || !auth()->user()->can('view',$hostel)){
+        // return view('test.casttest', ['occupants' => $hostel->current_occupants()]);
+
+        if (!auth()->user() || !auth()->user()->can('view', $hostel)) {
             abort(403);
         }
         $rooms = Room::where('hostel_id', $hostel->id);
@@ -46,7 +48,7 @@ class HostelController extends Controller
         $no_vacant_seats = $no_available_seats - $no_allotted_seats;
         $no_unallotted = AllotHostel::where('hostel_id', $hostel->id)->where('valid', 1)->whereNotIn('id', $allotted_seats->pluck('allot_hostel_id'))->count();
         $no_new_allotted = Allotment::where('valid', 1)->where('admitted', 0)->where('hostel_id', $hostel->id)->whereNotIn('id', $allot_hostels->pluck('allotment_id'))->count();
-        $no_seat_cancelled = CancelSeat::whereIn('allot_hostel_id',$allot_hostels->pluck('id'))->count();
+        $no_seat_cancelled = CancelSeat::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->count();
         $sessn = \App\Models\Sessn::default();
         $data = [
             'hostel' => $hostel,
@@ -91,6 +93,22 @@ class HostelController extends Controller
 
     public function occupants(Hostel $hostel)
     {
+        // return $hostel->room_occupants();
+        if (isset($_GET['allot_seats']) && $_GET['allot_seats'] == 0) {
+            $data = [
+                'hostel' => $hostel,
+                'occupants' => $hostel->unallotted(),
+                'seats' => false
+            ];
+        } else {
+            $data = [
+                'hostel' => $hostel,
+                'seats' => true,
+                'occupants' => $hostel->room_occupants(),
+            ];
+            return view('common.hostel.occupants2', $data);
+        }
+
         $rooms = $hostel->rooms();
 
         $seats = Seat::whereIn('room_id', $rooms->pluck('id'));

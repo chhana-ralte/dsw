@@ -21,7 +21,7 @@ class AllotmentController extends Controller
     {
         $data = [
             'notification' => $notification,
-            'allotments' => Allotment::where('notification_id', $notification->id)->orderBy('hostel_id')->get()
+            'allotments' => Allotment::where('notification_id', $notification->id)->orderBy('hostel_id')->paginate()
         ];
         return view('common.allotment.index', $data);
     }
@@ -52,6 +52,7 @@ class AllotmentController extends Controller
         $person = Person::create([
             'name' => $request->name,
             'father' => $request->father,
+            'gender' => $request->gender,
             'mobile' => $request->mobile,
             'email' => $request->email,
             'category' => $request->category,
@@ -98,7 +99,11 @@ class AllotmentController extends Controller
 
         if ($allotment->valid_allot_hostel()) {
             $current_hostel = $allotment->valid_allot_hostel()->hostel;
-        } else {
+        }
+        else if($allotment->hostel){
+            $current_hostel = $allotment->hostel;
+        }
+        else {
             $current_hostel = Hostel::default();
         }
         $data = [

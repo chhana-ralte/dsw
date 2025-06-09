@@ -10,6 +10,7 @@
 
             <form name="frm_submit" method="post" action="/allotment/{{ $allotment->id }}/admission">
                 @csrf
+                <input type="hidden" name="type" value="new">
                 <input type="hidden" name="sessn_id" value="{{ $sessn->id }}">
                 <div class="form-group row mb-3">
                     <label for="name" class="col col-md-3">Name*</label>
@@ -39,7 +40,7 @@
                             <input type="text" class="form-control" name="department" value="{{ $allotment->person->student()->department }}" disabled>
                         </div>
                     </div>
-                    
+
                     <div class="form-group row mb-3">
                         <label for="mzuid" class="col col-md-3">MZU ID</label>
                         <div class="col col-md-4">
@@ -89,7 +90,6 @@
                     <div class="col col-md-4">
                         <button type="button" class="btn btn-primary submit">Admit</button>
                         <button type="button" class="btn btn-danger decline">Decline</button>
-                        
                     </div>
                 </div>
 

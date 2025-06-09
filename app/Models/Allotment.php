@@ -81,4 +81,8 @@ class Allotment extends Model
     {
         return Sessn::where('id', $this->end_sessn_id)->first();
     }
+
+    public function requirements(){
+        return $this->hasMany(Requirement::class);
+    }
 }

@@ -3,12 +3,12 @@
         <div class="col">
             Personal information
             @auth()
-                @can('edit',$allotment->person)
+                @can('edit', $allotment->person)
                     <a class="btn btn-secondary btn-sm"
                         href="/person/{{ $allotment->person->id }}/edit?back_link=/allotment/{{ $allotment->id }}">Edit</a>
                 @endcan
 
-                @can('manage',$allotment)
+                @can('manage', $allotment)
                     <a class="btn btn-secondary btn-sm"
                         href="/person/{{ $allotment->person->id }}/person_remark?back_link=/allotment/{{ $allotment->id }}">Remarks
                         about the person</a>
@@ -19,7 +19,6 @@
                         href="/person/{{ $allotment->person->id }}/confirm_delete?back_link=/allotment/{{ $allotment->id }}">Delete
                     </a>
                 @endif
-
             @endauth
             <p>
                 @auth
@@ -30,13 +29,12 @@
                     @endif
 
                     @if (auth()->user()->max_role_level() >= 2 && $allotment->valid_allot_hostel())
-                        @if($allotment->valid_allot_hostel())
+                        @if ($allotment->valid_allot_hostel())
                             <a class="btn btn-secondary btn-sm"
                                 href="/hostel/{{ $allotment->valid_allot_hostel()->hostel->id }}/occupants">Back to
                                 occupants</a>
                         @else
-                            <a class="btn btn-secondary btn-sm"
-                                href="/hostel/{{ $allotment->hostel->id }}/occupants">Back
+                            <a class="btn btn-secondary btn-sm" href="/hostel/{{ $allotment->hostel->id }}/occupants">Back
                                 to occupants</a>
                         @endif
                     @endif

@@ -33,4 +33,13 @@ class Room extends Model
     public function invalid_allot_seats(){
         return AllotSeat::whereIn('seat_id',$this->seats->pluck('id'))->where('valid',0)->get();
     }
+
+    public function occupants(){
+        $occupants = DB::select('SELECT R.id as room_id,r.roomno, r.type as roomtype, S.id as seat_id, S.serial, S.available, P.name, P.father, P.mobile, P.email, P.state, P.address, P.photo, P.gender, ST.id as student_id, ST.course, ST.department, ST.mzuid, ST.rollno, AH.id as allot_hostel_id, A.id as allotment_id, AST.id as allot_seat_id
+            FROM (rooms R JOIN hostels H ON H.id=R.hostel_id) JOIN seats S ON R.id=S.room_id
+            LEFT JOIN (allot_seats AST JOIN allot_hostels AH ON AH.id=AST.allot_hostel_id AND AH.valid = 1 JOIN allotments A ON A.id=AH.allotment_id JOIN (people P LEFT JOIN students ST ON P.id=ST.person_id) ON P.id=A.person_id) ON AST.seat_id = S.id AND AST.valid = 1
+            WHERE R.id = :room_id
+            ORDER BY S.serial;',['room_id' => $this->id]);
+        return Occupant::hydrate($occupants);
+    }
 }

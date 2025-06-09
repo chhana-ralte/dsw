@@ -23,7 +23,8 @@ class User extends Authenticatable
         'email',
         'password',
         'department_id',
-        'teacher_id'
+        'teacher_id',
+        'person_id',
     ];
 
     /**
@@ -75,8 +76,7 @@ class User extends Authenticatable
         $role = Role::where('role', 'Prefect')->first();
         if (Role_User::where('user_id', $this->id)->where('role_id', $role->id)->where('type', 'hostel')->where('foreign_id', $hostel_id)->exists()) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
@@ -86,8 +86,7 @@ class User extends Authenticatable
         $role = Role::where('role', 'Mess Secretary')->first();
         if (Role_User::where('user_id', $this->id)->where('role_id', $role->id)->where('type', 'hostel')->where('foreign_id', $hostel_id)->exists()) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
