@@ -45,10 +45,8 @@ Route::get('/testing', function () {
     return "Hello World";
 });
 
-Route::get('/test', function () {
-    // return "Hello world";
-    return view('test.chart');
-})->middleware(['dsw']);
+Route::get('/test', [App\Http\Controllers\PdfController::class, 'download']);
+
 
 Route::get('/', function () {
     return view('home');
@@ -64,6 +62,9 @@ Route::post('/admissioncheck', [AdmissionCheckController::class, 'checkStore']);
 Route::post('/allotment/{id}/admission_decline', [AdmissionController::class, 'admission_decline']);
 // Route::get('/allotment/{id}/admission', [AdmissionCheckController::class, 'index']);
 Route::get('/feedbackMaster/{id}/report', [FeedbackMasterController::class, 'report'])->middleware(['auth']);
+Route::get('/clearance/search', [ClearanceController::class, 'search']);
+Route::get('/clearance/{id}/view', [ClearanceController::class, 'show']);
+Route::get('/clearance/{id}/download', [ClearanceController::class, 'download']);
 
 
 
@@ -85,7 +86,7 @@ Route::resource('person.person_remark', PersonRemarkController::class)->shallow(
 Route::resource('person_remark.person_remark_detail', PersonRemarkDetailController::class)->shallow()->middleware('auth');
 Route::resource('hostel', HostelController::class);
 Route::resource('hostel.room', RoomController::class)->shallow()->middleware('auth');
-Route::resource('cancelSeat.clearance', ClearanceController::class)->shallow()->middleware('auth');
+Route::resource('cancelSeat.clearance', ClearanceController::class)->shallow()->middleware('auth')->except(['show']);
 Route::resource('hostel.cancelHostel', CancelHostelController::class)->shallow()->middleware('auth');
 Route::resource('hostel.warden', WardenController::class)->shallow()->middleware(['auth', 'dsw']);
 Route::resource('hostel.admission', AdmissionController::class)->shallow()->middleware('auth');

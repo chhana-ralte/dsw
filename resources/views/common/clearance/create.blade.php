@@ -80,10 +80,10 @@
                 </div>
 
                 <div class="mb-3 form-group row">
-                    <label for="leave_dt" class="col col-md-3">Date of leaving</label>
+                    <label for="leave_dt" class="col col-md-3">Expected/Actual date of leaving</label>
                     <div class="col col-md-4">
-                        <input type="date" class="form-control" name="leave_dt" value="{{ old('leave_dt') }}"
-                            required>
+                        <input type="date" class="form-control" name="leave_dt"
+                            value="{{ old('leave_dt', $cancel_seat->leave_dt) }}" required>
                         @error('leave_dt')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -93,8 +93,8 @@
                 <div class="mb-3 form-group row">
                     <label for="issue_dt" class="col col-md-3">Data of issuance</label>
                     <div class="col col-md-4">
-                        <input type="date" class="form-control" name="issue_dt" value="{{ old('issue_dt') }}"
-                            required>
+                        <input type="date" class="form-control" name="issue_dt"
+                            value="{{ old('issue_dt', date('Y-m-d')) }}" required>
                         @error('issue_dt')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror

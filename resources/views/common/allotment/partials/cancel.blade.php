@@ -49,7 +49,8 @@
 <div class="form-group">
     <div class="col-md-12">
         @if ($allotment->cancel_seat->clearance)
-            <a href="/clearance/{{ $allotment->cancel_seat->clearance->id }}" class="btn btn-primary">View clearance</a>
+            <a href="/clearance/{{ $allotment->cancel_seat->clearance->id }}?allotment_id={{ $allotment->id }}"
+                class="btn btn-primary">View clearance</a>
         @elseif($allotment->cancel_seat->cleared)
             <a href="/cancelSeat/{{ $allotment->cancel_seat->id }}/clearance/create/" class="btn btn-primary">Issue
                 clearance</a>

@@ -16,7 +16,7 @@
 
 <body>
 
-<br>
+    <br>
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Dean Students' Welfare</a>
@@ -25,12 +25,15 @@
             </button>
             <div class="collapse navbar-collapse" id="mynavbar">
                 <ul class="navbar-nav me-auto">
-                    @guest
                     <li class="nav-item">
-                        <a class="nav-link" href="/studentRegistration">Student user registration</a>
+                        <a class="nav-link" href="/clearance/search">Clearance</a>
                     </li>
+                    @guest
+                        <li class="nav-item">
+                            <a class="nav-link" href="/studentRegistration">Student user registration</a>
+                        </li>
                     @endguest
-                    @if(auth()->user() && auth()->user()->max_role_level() >= 2)
+                    @if (auth()->user() && auth()->user()->max_role_level() >= 2)
                         <li class="nav-item">
                             <a class="nav-link" href="/hostel">Hostels</a>
                         </li>
@@ -42,28 +45,29 @@
                         <a class="nav-link" href="/warden">Wardens</a>
                     </li>
                     @auth
-                        @if(count(auth()->user()->wardens()) > 0)
-                            @foreach(auth()->user()->wardens() as $wd)
+                        @if (count(auth()->user()->wardens()) > 0)
+                            @foreach (auth()->user()->wardens() as $wd)
                                 <li class="nav-item">
                                     <a class="nav-link" href="/hostel/{{ $wd->hostel->id }}/">{{ $wd->hostel->name }}</a>
                                 </li>
                             @endforeach
                         @endif
-                        @if(count(auth()->user()->user_roles()) > 0)
-                            @foreach(auth()->user()->user_roles() as $role_user)
-                                @if($role_user->role->level == 2)
+                        @if (count(auth()->user()->user_roles()) > 0)
+                            @foreach (auth()->user()->user_roles() as $role_user)
+                                @if ($role_user->role->level == 2)
                                     <li class="nav-item">
-                                        <a class="nav-link" href="#">{{ App\Models\Hostel::find($role_user->foreign_id)->name }}</a>
+                                        <a class="nav-link"
+                                            href="#">{{ App\Models\Hostel::find($role_user->foreign_id)->name }}</a>
                                     </li>
                                 @endif
                             @endforeach
 
                         @endif
-                        @if(auth()->user()->isAdmin() || auth()->user()->isDsw()|| auth()->user()->isWarden())
+                        @if (auth()->user()->isAdmin() || auth()->user()->isDsw() || auth()->user()->isWarden())
                             <li class="nav-item">
                                 <a class="nav-link" href="/user">Users</a>
                             </li>
-                            @if(auth()->user()->isAdmin() || auth()->user()->isDsw())
+                            @if (auth()->user()->isAdmin() || auth()->user()->isDsw())
                                 <li class="nav-item">
                                     <a class="nav-link" href="/notification/">Notifications</a>
                                 </li>
@@ -72,7 +76,7 @@
                                 </li>
                             @endif
                         @endif
-                        @if(auth()->user()->allotment())
+                        @if (auth()->user()->allotment())
                             <li class="nav-item">
                                 <a class="nav-link" href="/allotment/{{ auth()->user()->allotment()->id }}">My details</a>
                             </li>
@@ -92,7 +96,8 @@
                             {{ auth()->user()->username }}
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/user/{{ auth()->user()->id }}/changePassword">Change password</a></li>
+                            <li><a class="dropdown-item" href="/user/{{ auth()->user()->id }}/changePassword">Change
+                                    password</a></li>
                             <li><button class="dropdown-item" form="logout-form">Logout</button></li>
                             <form method="post" id="logout-form" action="/logout" type="hidden">
                                 @csrf
@@ -101,7 +106,7 @@
                     </div>
                 @else
                     <a class="btn btn-outline-secondary" type="button" href="/login">Login</a>
-                @endif
+                    @endif
                 </div>
             </div>
         </nav>
@@ -115,4 +120,4 @@
 
     </body>
 
-</html>
+    </html>
