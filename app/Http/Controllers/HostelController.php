@@ -11,6 +11,7 @@ use App\Models\AllotSeat;
 use App\Models\AllotHostel;
 use App\Models\Allotment;
 use App\Models\CancelSeat;
+use App\Models\Requirement;
 
 
 class HostelController extends Controller
@@ -49,6 +50,7 @@ class HostelController extends Controller
         $no_unallotted = AllotHostel::where('hostel_id', $hostel->id)->where('valid', 1)->whereNotIn('id', $allotted_seats->pluck('allot_hostel_id'))->count();
         $no_new_allotted = Allotment::where('valid', 1)->where('admitted', 0)->where('hostel_id', $hostel->id)->whereNotIn('id', $allot_hostels->pluck('allotment_id'))->count();
         $no_seat_cancelled = CancelSeat::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->count();
+        $no_requirement = Requirement::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->count();
         $sessn = \App\Models\Sessn::default();
         $data = [
             'hostel' => $hostel,
@@ -60,6 +62,7 @@ class HostelController extends Controller
             'no_unallotted' => $no_unallotted,
             'no_new_allotted' => $no_new_allotted,
             'no_seat_cancelled' => $no_seat_cancelled,
+            'no_requirement' => $no_requirement,
             'sessn' => $sessn,
         ];
 
@@ -137,5 +140,17 @@ class HostelController extends Controller
         }
         //return $data;
         return view('common.hostel.occupants', $data);
+    }
+
+    public function requirement(Hostel $hostel)
+    {
+        $occupants = $hostel->current_occupants();
+        // return $occupants;
+        $data = [
+            'occupants' => $occupants,
+            'hostel' => $hostel,
+        ];
+        // return $data;
+        return view('common.hostel.requirement', $data);
     }
 }

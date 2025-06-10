@@ -13,7 +13,8 @@ class Occupant extends Model
         return $this->belongsTo(Person::class);
     }
 
-    public function student(){
+    public function student()
+    {
         return $this->belongsTo(Student::class);
     }
 
@@ -55,5 +56,10 @@ class Occupant extends Model
     public function sessn()
     {
         return $this->belongsTo(Sessn::class);
+    }
+
+    public function requirement()
+    {
+        return Requirement::where('allot_hostel_id', $this->allot_hostel_id)->first();
     }
 }

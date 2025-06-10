@@ -12,15 +12,23 @@ class ApplicationController extends Controller
 {
     public function index()
     {
+        // return Application::first();
+        if (!auth()->user() || auth()->user()->cannot('viewlist', Application::first())) {
+            return redirect('/message')->with(['message' => ['type' => 'warning', 'text' => 'You do not have permission to view applications.']]);
+        }
+        if (isset($_GET['status'])) {
+            $status = $_GET['status'];
+        } else {
+            $status = 'Applied';
+        }
+        $applications = Application::where('status', $status)->where('valid', 1)->orderBy('dt')->paginate();
+
         $data = [
-            'applications' => Application::orderBy('dt', 'desc')->get(),
+            'applications' => $applications,
+            'status' => $status,
         ];
-        // return $data;
-        // if (auth()->user() && auth()->user()->can('viewAny', Application::class)) {
+
         return view('application.index', $data);
-        // }
-        // If the user cannot view any applications, redirect to the index page with a message
-        return redirect()->route('application.index')->with(['message' => ['type' => 'warning', 'text' => 'You do not have permission to view applications.']]);
     }
 
 
@@ -80,7 +88,7 @@ class ApplicationController extends Controller
         ]);
         $application->save();
 
-        return redirect('/application')->with(['message' => ['type' => 'info', 'text' => 'Application created successfully.']]);
+        return redirect('/message')->with(['message' => ['type' => 'info', 'text' => 'Application created successfully. Your application ID is: ' . $application->id]]);
     }
 
     public function show($id)
@@ -100,17 +108,26 @@ class ApplicationController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Logic to update the application data
-        // For example, $application = Application::findOrFail($id);
+        $application = Application::findOrFail($id);
+        if ($request->has('status')) {
+            $application->update(['status' => $request->status]);
+            $application->save();
+            return redirect('/application/' . $application->id)->with('success', 'Application updated successfully.');
+        } else {
+            return "Nothing";
+        }
         // $application->update($request->all());
         return redirect()->route('application.index')->with('success', 'Application updated successfully.');
     }
 
     public function destroy($id)
     {
-        // Logic to delete a specific application
-        // For example, $application = Application::findOrFail($id);
-        // $application->delete();
-        return redirect()->route('application.index')->with('success', 'Application deleted successfully.');
+        if (auth()->user() && auth()->user()->can('delete', Application::findOrFail($id))) {
+            $application = Application::findOrFail($id);
+            $application->delete();
+            return redirect()->route('application.index')->with('success', 'Application deleted successfully.');
+        } else {
+            abort(403);
+        }
     }
 }

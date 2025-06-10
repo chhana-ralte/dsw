@@ -2,7 +2,17 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                Applications: Personal information
+                Applications
+                <div class="btn-group">
+                    <a href="/application/" class="btn btn-primary">Applied</a>
+                    <a href="/application?status=Declined" class="btn btn-danger">Declined</a>
+                    <a href="/application?status=Pending" class="btn btn-warning">Pending</a>
+                    <a href="/application?status=Approved" class="btn btn-success">Approved</a>
+            </x-slot>
+        </x-block>
+        <x-block>
+            <x-slot name="heading">
+                Personal information
             </x-slot>
             <div style="width: 100%; overflow-x:auto">
                 <table class="table table-auto">
@@ -88,12 +98,19 @@
         </x-block>
         <x-block>
             <x-slot name="heading">
-                Decision
+                Decision:
             </x-slot>
             <div>
-                <button class="btn btn-danger btn-decline" value="{{ $application->id }}">Decline</button>
-                <button class="btn btn-success btn-accept" value="{{ $application->id }}">Accept</button>
+                <button class="btn btn-danger btn-status" value="Declined">Decline</button>
+                <button class="btn btn-success btn-status" value="Approved">Approve</button>
+                <button class="btn btn-warning btn-status" value="Pending">Pending</button>
             </div>
+            <form type="hidden" action="/application/{{ $application->id }}" method="post" name="frm_submit">
+                @csrf
+                @method('PUT')
+                <input type="hidden" name="application_id" value="{{ $application->id }}">
+                <input type="hidden" name="status" value="">
+            </form>
         </x-block>
     </x-container>
     <script>
@@ -104,23 +121,29 @@
                     'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
                 }
             });
-            $("button.btn-decline").click(function() {
-                if (confirm("Are you sure you want to decline this application?")) {
+            $("button.btn-status").click(function() {
+                if (confirm("Are you sure to submit?")) {
+                    $("input[name='status']").val($(this).val());
+                    $("form[name='frm_submit']").submit();
+                }
+            });
+            $("button.btn-approve").click(function() {
+                if (confirm("Are you sure you want to approve this application?")) {
                     $.ajax({
                         type: "post",
-                        url: "/ajax/application/" + $(this).val() + "/decline",
+                        url: "/ajax/application/" + $(this).val() + "/accept",
                         success: function(data, status) {
-                            alert("Application declined successfully.");
+                            alert("Application accepted successfully.");
                             location.reload();
                         },
                         error: function(xhr, status, error) {
-                            alert("Error declining application: " + xhr.responseText);
+                            alert("Error accepting application: " + xhr.responseText);
                         }
                     });
                 }
             });
-            $("button.btn-accept").click(function() {
-                if (confirm("Are you sure you want to accept this application?")) {
+            $("button.btn-approve").click(function() {
+                if (confirm("Are you sure you want to approve this application?")) {
                     $.ajax({
                         type: "post",
                         url: "/ajax/application/" + $(this).val() + "/accept",

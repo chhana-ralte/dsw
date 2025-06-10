@@ -37,6 +37,7 @@ use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ApplicationManageController;
 use App\Http\Controllers\RequirementController;
+use App\Http\Controllers\MessageController;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
@@ -52,6 +53,7 @@ Route::get('/', function () {
     return view('home');
 });
 
+Route::get('/message', [MessageController::class, 'index']);
 Route::get('/warden', [WardenController::class, 'list']);
 Route::get('/search', [SearchController::class, 'index'])->middleware(['auth']);
 Route::get('/consolidate', [ConsolidateController::class, 'index'])->middleware(['dsw']);
@@ -74,6 +76,7 @@ Route::get('/user/{id}/changePassword', [UserController::class, 'changePassword'
 Route::post('/user/{id}/changePassword', [UserController::class, 'changePasswordStore']);
 Route::post('/logout', [UserController::class, 'logout']);
 Route::get('/hostel/{hostel}/occupants', [HostelController::class, 'occupants'])->middleware('auth');
+Route::get('/hostel/{hostel}/requirement', [HostelController::class, 'requirement'])->middleware('auth');
 Route::post('/allotment/{allotment}/clear_allotment', [AllotmentController::class, 'clear_allotment'])->middleware('auth');
 
 Route::resource('application', ApplicationController::class);

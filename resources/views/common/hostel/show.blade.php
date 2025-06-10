@@ -4,7 +4,7 @@
 
 
 
-            {{--
+        {{--
             <x-block>
             <x-slot name="heading">
                 Menu
@@ -57,12 +57,14 @@
             <x-slot name="heading">
                 {{ $hostel->name }} Hall of Residence
                 <p>
-                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/admission?sessn={{ App\Models\Sessn::default()->id }}">Admission details</a>
-                @auth
-                    @if(auth()->user()->isDSW())
-                        <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/warden">Manage Wardens</a>
-                    @endif
-                @endauth
+                    <a class="btn btn-primary btn-sm"
+                        href="/hostel/{{ $hostel->id }}/admission?sessn={{ App\Models\Sessn::default()->id }}">Admission
+                        details</a>
+                    @auth
+                        @if (auth()->user()->isDSW())
+                            <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/warden">Manage Wardens</a>
+                        @endif
+                    @endauth
                 </p>
             </x-slot>
             Summary
@@ -73,9 +75,9 @@
                         <td>{{ $no_rooms }}</td>
                         <td>
                             @auth
-                            <a href="/hostel/{{ $hostel->id }}/room" type="button" class="btn btn-primary btn-sm">
-                                view
-                            </a>
+                                <a href="/hostel/{{ $hostel->id }}/room" type="button" class="btn btn-primary btn-sm">
+                                    view
+                                </a>
                             @endauth
                         </td>
                     </tr>
@@ -97,12 +99,12 @@
                         <td>{{ $no_allotted_seats }}</td>
 
                         <td>
-                        @auth
-                            <a href="/hostel/{{ $hostel->id }}/occupants" type="button"
-                                class="btn btn-primary btn-sm">
-                                view
-                            </a>
-                        @endauth
+                            @auth
+                                <a href="/hostel/{{ $hostel->id }}/occupants" type="button"
+                                    class="btn btn-primary btn-sm">
+                                    view
+                                </a>
+                            @endauth
                         </td>
 
                     </tr>
@@ -112,10 +114,10 @@
 
                         <td>
                             @auth
-                            <a href="/hostel/{{ $hostel->id }}/room?status=vacant" type="button"
-                                class="btn btn-primary btn-sm">
-                                view
-                            </a>
+                                <a href="/hostel/{{ $hostel->id }}/room?status=vacant" type="button"
+                                    class="btn btn-primary btn-sm">
+                                    view
+                                </a>
                             @endauth
                         </td>
 
@@ -125,10 +127,10 @@
                         <td>{{ $no_unallotted }}</td>
                         <td>
                             @auth
-                            <a href="/hostel/{{ $hostel->id }}/occupants?allot_seats=0" type="button"
-                                class="btn btn-primary btn-sm">
-                                view
-                            </a>
+                                <a href="/hostel/{{ $hostel->id }}/occupants?allot_seats=0" type="button"
+                                    class="btn btn-primary btn-sm">
+                                    view
+                                </a>
                             @endauth
                         </td>
                     </tr>
@@ -138,8 +140,8 @@
                         <td>{{ $no_new_allotted }}</td>
                         <td>
                             @auth
-                                <a href="/hostel/{{ $hostel->id }}/admission?sessn={{ $sessn->id }}&adm_type=new" type="button"
-                                    class="btn btn-primary btn-sm">
+                                <a href="/hostel/{{ $hostel->id }}/admission?sessn={{ $sessn->id }}&adm_type=new"
+                                    type="button" class="btn btn-primary btn-sm">
                                     view
                                 </a>
                             @endauth
@@ -151,15 +153,26 @@
                         <td>{{ $no_seat_cancelled }}</td>
                         <td>
                             @auth
-                                <a href="/hostel/{{ $hostel->id }}/cancelHostel"
-                                    class="btn btn-primary btn-sm">
+                                <a href="/hostel/{{ $hostel->id }}/cancelHostel" class="btn btn-primary btn-sm">
                                     view
                                 </a>
                             @endauth
                         </td>
                     </tr>
 
-                    @if($hostel->warden())
+                    <tr>
+                        <td>Students whose submitted requirement for next semester</td>
+                        <td>{{ $no_requirement }}</td>
+                        <td>
+                            @auth
+                                <a href="/hostel/{{ $hostel->id }}/requirement" class="btn btn-primary btn-sm">
+                                    view
+                                </a>
+                            @endauth
+                        </td>
+                    </tr>
+
+                    @if ($hostel->warden())
                         <tr>
                             <td>Warden</td>
                             <td>{{ $hostel->warden()->person->name }}</td>
