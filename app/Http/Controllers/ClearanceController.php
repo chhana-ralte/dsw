@@ -63,7 +63,7 @@ class ClearanceController extends Controller
             ]
         );
 
-        return redirect('/clearance/' . $clearance->id . '?allotment_id=' . $clearance->allotment_id)->with(['message' => ['type' => 'info', 'text' => 'Clearance created successfully!']]);
+        return redirect('/clearance/' . $clearance->id . '/view?allotment_id=' . $clearance->allotment_id)->with(['message' => ['type' => 'info', 'text' => 'Clearance created successfully!']]);
     }
 
     public function show($clearance_id)

@@ -9,7 +9,7 @@
                 </p>
             </x-slot>
 
-            <form name="frm_submit" method="post" action="/cancelSeat/{{ $cancel_seat->id }}/clearance">
+            <form name="frm_submit" method="post" action="/cancelSeat/{{ $cancel_seat->id }}/clearance" onsubmit="return confirm('Are you sure?')">
                 @csrf
 
                 <div class="mb-3 form-group row">
@@ -117,7 +117,7 @@
                     <div class="mb-3 form-group row">
                         <div class="col col-md-3"></div>
                         <div class="col col-md-4">
-                            <button type="button" class="btn btn-primary submit">Submit</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </div>
             </form>
@@ -157,18 +157,6 @@
                 }
             });
 
-            $("button.submit").click(function() {
-                if (confirm("Are you sure you want to submit?")) {
-                    $("form[name='frm_submit']").submit();
-                }
-            });
-
-            $("button.decline").click(function() {
-                if (confirm("Are you sure the student won't do admission?")) {
-                    $("form[name='frm_decline']").submit();
-                    alert("asdasds");
-                }
-            });
         });
     </script>
 </x-layout>

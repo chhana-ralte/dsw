@@ -8,6 +8,7 @@ use App\Models\Allotment;
 use App\Models\AllotHostel;
 use App\Models\AllotSeat;
 use App\Models\CancelSeat;
+use App\Models\Clearance;
 
 
 class CancelSeatController extends Controller
@@ -117,6 +118,7 @@ class CancelSeatController extends Controller
         AllotHostel::where('id', $cancel_seat->allot_hostel_id)->update(['valid' => 1]);
         AllotSeat::where('id', $cancel_seat->allot_seat_id)->update(['valid' => 1]);
         Allotment::where('id', $cancel_seat->allotment_id)->update(['valid' => 1, 'finished' => 0]);
+        Clearance::where('cancel_seat_id',$id)->delete();
         $cancel_seat->delete();
         return redirect('/allotment/' . $allotment_id)
             ->with(['message' => ['type' => 'info', 'text' => 'Seat cancellation undone.']]);
