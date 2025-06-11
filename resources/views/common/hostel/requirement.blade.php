@@ -27,7 +27,13 @@
                                 @else
                                 <tr class="table-white">
                             @endif
-                            <td>{{ $occ->roomno }}/{{ $occ->serial }}</td>
+                            <td>
+                                @if($occ->roomno)
+                                    {{ $occ->roomno }}/{{ $occ->serial }}
+                                @else
+                                    No seat allotted
+                                @endif
+                            </td>
 
                             <td>
                                 @can('view', $occ->allotment)
@@ -37,7 +43,7 @@
                                 @endcan
                                 @if ($occ->student_id)
                                     ({{ $occ->department }}: {{ $occ->course }})
-                                @elseif($occ->person->other())
+                                @elseif($occ->person && $occ->person->other())
                                     Not a student ({{ $occ->person->other()->remark }})
                                 @else
                                     ( No Info about the person )

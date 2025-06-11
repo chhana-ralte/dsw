@@ -25,6 +25,7 @@ class CancelSeatController extends Controller
             if ($allotment->valid_allot_hostel()->valid_allot_seat()) {
                 $allot_seat = $allotment->valid_allot_hostel()->valid_allot_seat();
             } else {
+
                 if ($allotment->valid_allot_hostel()->allot_seats->count() > 0) {
                     $allot_seat = $allotment->valid_allot_hostel()->allot_seat();
                 } else {
@@ -34,6 +35,10 @@ class CancelSeatController extends Controller
         } else {
             $allot_hostel = false;
             $allot_seat = false;
+        }
+        if (!$allot_hostel || !$allot_seat) {
+            return redirect('/allotment/' . $allotment->id)
+                ->with(['message' => ['type' => 'warning', 'text' => 'To cancel seat, inmate must be allotted room/seat first.']]);
         }
         $data = [
             'allotment' => $allotment,
@@ -118,7 +123,7 @@ class CancelSeatController extends Controller
         AllotHostel::where('id', $cancel_seat->allot_hostel_id)->update(['valid' => 1]);
         AllotSeat::where('id', $cancel_seat->allot_seat_id)->update(['valid' => 1]);
         Allotment::where('id', $cancel_seat->allotment_id)->update(['valid' => 1, 'finished' => 0]);
-        Clearance::where('cancel_seat_id',$id)->delete();
+        Clearance::where('cancel_seat_id', $id)->delete();
         $cancel_seat->delete();
         return redirect('/allotment/' . $allotment_id)
             ->with(['message' => ['type' => 'info', 'text' => 'Seat cancellation undone.']]);
