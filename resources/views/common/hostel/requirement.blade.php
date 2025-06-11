@@ -14,9 +14,8 @@
                     <thead>
                         <tr>
                             <th>Seat No.</th>
-                            <th>Name</th>
-                            <th>Course</th>
-                            <th>Department</th>
+                            <th>Student</th>
+                            <th>Current</th>
                             <th>Requirement</th>
 
                         </tr>
@@ -36,17 +35,22 @@
                                 @else
                                     {{ $occ->name }}
                                 @endcan
+                                @if ($occ->student_id)
+                                    ({{ $occ->department }}: {{ $occ->course }})
+                                @elseif($occ->person->other())
+                                    Not a student ({{ $occ->person->other()->remark }})
+                                @else
+                                    ( No Info about the person )
+                                @endif
                             </td>
-                            @if ($occ->student_id)
-                                <td>{{ $occ->course }}</td>
-                                <td>{{ $occ->department }}</td>
-                            @elseif($occ->person->other())
-                                <td colspan=3>Not a student ({{ $occ->person->other()->remark }})</td>
-                            @endif
+                            <td>
+                                Hostel: {{ $occ->allot_hostel->hostel->name }}<br>
+                                Type: {{ $occ->allot_seat_id ? $occ->allot_seat->seat->room->type():'Undefined' }}
+                            </td>
                             @if ($occ->requirement())
                                 <td>
-                                    Hostel:{{ $occ->requirement()->hostel->name }}<br>
-                                    Type:{{ $occ->requirement()->roomtype() }}<br>
+                                    Hostel: {{ $occ->requirement()->hostel->name }}<br>
+                                    Type: {{ $occ->requirement()->roomtype() }}
                                 </td>
                             @else
                                 <td><span class="text-warning">No requirement submitted</span></td>
