@@ -91,6 +91,8 @@ class PersonController extends Controller
     {
         if (auth()->user()->isAdmin()) {
             $allotments = \App\Models\Allotment::where('person_id', $person->id);
+            $user_roles = \App\Models\Role_User::where('type','allotment')->whereIn('foreign_id',$allotments->pluck('id'));
+            $users = \App\Models\User::whereIn('id',$user_roles->pluck('id'));
             $allot_hostels = \App\Models\AllotHostel::whereIn('allotment_id', $allotments->pluck('id'));
             $allot_seats = \App\Models\AllotSeat::whereIn('allot_hostel_id', $allot_hostels->pluck('id'));
             $students = \App\Models\Student::where('person_id', $person->id);
@@ -105,6 +107,8 @@ class PersonController extends Controller
             $allot_seats->delete();
             $allot_hostels->delete();
             $allotments->delete();
+            $user_roles->delete();
+            $users->delete();
             $person->delete();
             return redirect("/message")->with(['message' => ['type' => 'info', 'text' => 'Personal is deleted']]);
         }

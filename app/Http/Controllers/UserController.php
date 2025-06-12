@@ -181,8 +181,12 @@ class UserController extends Controller
                         $warden = Warden::updateOrCreate([
                             'hostel_id' => $hostel_id,
                             'person_id' => $person->id,
+                        ],[
+                            'hostel_id' => $hostel_id,
+                            'person_id' => $person->id,
                             'valid' => 1
                         ]);
+
                         Role_User::updateOrCreate(
                             [
                                 'user_id' => $user->id,

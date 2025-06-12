@@ -89,6 +89,7 @@ class AdmissionCheckController extends Controller
                 ]
             );
 
+            AllotSeat::where('seat_id',request()->seat)->where('valid',1)->update(['valid' => 0]);
 
             $allot_seat = AllotSeat::updateOrCreate(
                 [
@@ -125,9 +126,6 @@ class AdmissionCheckController extends Controller
         }
 
         else{
-
-
-
             request()->validate([
                 'amount' => 'numeric:required',
                 'payment_dt' => 'required',

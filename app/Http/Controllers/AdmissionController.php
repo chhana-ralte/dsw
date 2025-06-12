@@ -78,9 +78,6 @@ class AdmissionController extends Controller
         // return $allotment;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request, Allotment $allotment)
     {
         // if($request->admitted){
@@ -91,7 +88,7 @@ class AdmissionController extends Controller
         // }
         // return request()->admitted;
 
-
+        return "HUHU";
         $allot_hostel = AllotHostel::updateOrCreate(
             [
                 'allotment_id' => $allotment->id,
@@ -107,6 +104,7 @@ class AdmissionController extends Controller
             ]
         );
 
+        AllotSeat::where('seat_id',$request->seat)->where('valid',1)->update(['valid' => 0]);
 
         $allot_seat = AllotSeat::updateOrCreate(
             [
