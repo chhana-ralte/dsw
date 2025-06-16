@@ -108,7 +108,7 @@ class StudentRegistrationController extends Controller
             'name' => $allotment->person->name,
             'username' => $validated->username,
             'password' => Hash::make($validated->password),
-            'email' => $allotment->person->email,
+            // 'email' => $allotment->person->email,
             'person_id' => $allotment->person->id,
         ]);
 
