@@ -8,9 +8,10 @@
             <ol>
                 <li>Clear all hostel admissions fees (Finance Department) </li>
                 <li>Get the receipt and print it</li>
-                <li>Clear all hostel dues - Mess and other dues and get is approved by Prefect/ Mess Secretary</li>
+                <li>Clear all hostel dues - Mess and other dues.</li>
+                <li>Fill the form and get it approved by Prefect/ Mess Secretary</li>
                 <li>Approach Warden to issue 'Clearance Certificate'</li>
-                <li>Once issued, Warden may print, or you can get your own copy by searching feom below form.</li>
+                <li>Once issued, Warden may print, or you can get your own copy by searching from below form.</li>
             </ol>
             <form method="get" action="">
                 <div class="form-group bt-4">
