@@ -19,18 +19,18 @@ class RoomController extends Controller
         // $rooms = Room::where('hostel_id', $hostel->id)->orderBy('roomno');
         $rooms = $hostel->rooms();
         $seats = Seat::whereIn('room_id', $rooms->pluck('id'));
-        
+
         $allot_seats = AllotSeat::whereIn('seat_id', $seats->pluck('id'))->where('valid', 1);
 
         if (request('status') == 'vacant') {
             $rooms->whereHas('seats', function ($seats) use ($allot_seats) {
-                $seats->where('available',1)
+                $seats->where('available', 1)
                     ->whereNotIn('id', $allot_seats->pluck('seat_id'));
             });
         }
 
         if (request('status') == 'non-available') {
-            $rooms->whereHas('seats', function ($seats){
+            $rooms->whereHas('seats', function ($seats) {
                 $seats->where('available', 0);
             });
         }
@@ -89,7 +89,11 @@ class RoomController extends Controller
 
     public function create(Hostel $hostel)
     {
-        return view('common.room.create', ['hostel' => $hostel]);
+        if (auth()->user() && auth()->user()->can('manage', $hostel)) {
+            return view('common.room.create', ['hostel' => $hostel]);
+        } else {
+            abort(403);
+        }
     }
 
     /**
@@ -146,13 +150,17 @@ class RoomController extends Controller
 
     public function edit(string $id)
     {
-
-        $seats = Seat::where('room_id', $id)->orderBy('serial')->get();
-        $data = [
-            'room' => Room::findOrFail($id),
-            'seats' => $seats
-        ];
-        return view('common.room.edit', $data);
+        $room = Room::findOrFail($id);
+        if (auth()->user() && auth()->user()->can('manage', $room->hostel)) {
+            $seats = Seat::where('room_id', $id)->orderBy('serial')->get();
+            $data = [
+                'room' => $room,
+                'seats' => $seats
+            ];
+            return view('common.room.edit', $data);
+        } else {
+            abort(403);
+        }
     }
 
     public function update(Request $request, string $id)
@@ -160,8 +168,7 @@ class RoomController extends Controller
         $room = Room::findOrFail($id);
         if (Room::where('hostel_id', $room->hostel_id)->where('id', '<>', $id)->where('roomno', $request->roomno)->exists()) {
             return redirect("/room/$room->id/edit")->with(['message' => ['type' => 'info', 'text' => 'Room No. already exists']])->withInput();
-        } 
-        else {
+        } else {
             $room->update([
                 'roomno' => $request->roomno,
                 'capacity' => Seat::where('room_id', $room->id)->count(),
@@ -206,15 +213,16 @@ class RoomController extends Controller
         return redirect("/room/$room->id/remark")->with(['message' => ['type' => 'info', 'text' => 'Remark deleted']]);
     }
 
-    public function unavailable($id){
+    public function unavailable($id)
+    {
         //return $id;
         $room = Room::find($id);
-        $seats = Seat::where('room_id',$room->id);
-        \App\Models\AllotSeat::whereIn('seat_id',$seats->pluck('id'))->where('valid',1)
+        $seats = Seat::where('room_id', $room->id);
+        \App\Models\AllotSeat::whereIn('seat_id', $seats->pluck('id'))->where('valid', 1)
             ->update([
-            'valid' => 0,
-            'to_dt' => date('Y-m-d')
-        ]);
+                'valid' => 0,
+                'to_dt' => date('Y-m-d')
+            ]);
         $seats->update([
             'available' => 0
         ]);
@@ -224,25 +232,27 @@ class RoomController extends Controller
         return redirect("/room/" . $room->id . "/edit")->with(['message' => ['type' => "info", 'text' => "Room is made unavailable"]]);
     }
 
-    public function editseatavailability($room_id){
+    public function editseatavailability($room_id)
+    {
         //return $room_id;
         $room = Room::find($room_id);
         $seats = Seat::where('room_id', $room->id)->orderBy('serial')->get();
-        return view('common.room.editseatavailability',['room' => $room, 'seats' => $seats]);
+        return view('common.room.editseatavailability', ['room' => $room, 'seats' => $seats]);
     }
 
-    public function updateseatavailability(Request $request,$room_id){
-        foreach($request->request as $key => $value){
-            $arr = explode('_',$key);
-            if($arr[0] == "available"){
+    public function updateseatavailability(Request $request, $room_id)
+    {
+        foreach ($request->request as $key => $value) {
+            $arr = explode('_', $key);
+            if ($arr[0] == "available") {
                 Seat::find($arr[1])->update(['available' => $value]);
-                if($value == 0){
-                    AllotSeat::where('seat_id',$arr[1])->where('valid',1)->update(['valid' => 0, 'to_dt' => date('Y-m-d')]);
+                if ($value == 0) {
+                    AllotSeat::where('seat_id', $arr[1])->where('valid', 1)->update(['valid' => 0, 'to_dt' => date('Y-m-d')]);
                 }
             }
         }
         Room::find($room_id)->update([
-            'available' => Seat::where('room_id',$room_id)->where('available',1)->count()
+            'available' => Seat::where('room_id', $room_id)->where('available', 1)->count()
         ]);
         return redirect("/room/" . $room_id . "/seat")->with(['message' => ['type' => "info", 'text' => "Availability updated"]]);;
     }
