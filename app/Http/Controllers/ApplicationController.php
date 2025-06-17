@@ -39,6 +39,8 @@ class ApplicationController extends Controller
 
     public function store(Request $request)
     {
+        return $request->has('AMC')?'Yes':'No';
+        return $request;
         // if ($request->hasFile('photo')) {
         //     $path = $request->file('photo')->store('photos', 'public');
         //     return "/storage/" . $path;

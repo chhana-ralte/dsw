@@ -19,8 +19,13 @@
             >
                 @csrf
 
-                <div class="form-floating mb-3">
-                    <input
+                <div class="mb-3 form-group row">
+                    <label
+                        for="name"
+                        class="col col-md-3"
+                    >Name</label>
+                    <div class="col col-md-4">
+                        <input
                             type="text"
                             class="form-control"
                             name="name"
@@ -30,13 +35,15 @@
                         @error('name')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
-                    <label for="name">Name</label>
+                    </div>
                 </div>
 
-
-                <div class="mb-3 form-floating">
-
-
+                <div class="mb-3 form-group row">
+                    <label
+                        for="father"
+                        class="col col-md-3"
+                    >Father/Guardian</label>
+                    <div class="col col-md-4">
                         <input
                             type="text"
                             class="form-control"
@@ -44,19 +51,18 @@
                             value="{{ old('father') }}"
                             required
                         >
-                        <label
-                        for="father"
-                        class="col col-md-3"
-                    >Father/Guardian</label>
                         @error('father')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
-
+                    </div>
                 </div>
 
-                <div class="mb-3 form-floating">
-
-
+                <div class="mb-3 form-group row">
+                    <label
+                        for="dob"
+                        class="col col-md-3"
+                    >Date of Birth</label>
+                    <div class="col col-md-4">
                         <input
                             type="date"
                             class="form-control"
@@ -64,18 +70,18 @@
                             value="{{ old('dob') }}"
                             required
                         >
-                        <label
-                        for="dob"
-                        class="col col-md-3"
-                    >Date of Birth</label>
                         @error('dob')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
-
+                    </div>
                 </div>
 
-                <div class="mb-3 form-floating">
-
+                <div class="mb-3 form-group row">
+                    <label
+                        for="gender"
+                        class="col col-md-3"
+                    >Gender</label>
+                    <div class="col col-md-4">
                         <select
                             name='gender'
                             class='form-control'
@@ -106,16 +112,15 @@
                                 }}
                             >Other</option>
                         </select>
-                        <label
-                        for="gender"
-                        class="col col-md-3"
-                    >Gender</label>
-
+                    </div>
                 </div>
 
-                <div class="mb-3 form-floating">
-
-
+                <div class="mb-3 form-group row">
+                    <label
+                        for="mobile"
+                        class="col col-md-3"
+                    >Mobile</label>
+                    <div class="col col-md-4">
                         <input
                             type="text"
                             class="form-control"
@@ -126,16 +131,15 @@
                         @error('mobile')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
-                        <label
-                        for="mobile"
-                        class="col col-md-3"
-                    >Mobile</label>
-
+                    </div>
                 </div>
 
-                <div class="mb-3 form-floating">
-
-
+                <div class="mb-3 form-group row">
+                    <label
+                        for="email"
+                        class="col col-md-3"
+                    >Email</label>
+                    <div class="col col-md-4">
                         <input
                             type="email"
                             class="form-control"
@@ -146,15 +150,15 @@
                         @error('email')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
-                    <label
-                        for="email"
-                        class="col col-md-3"
-                    >Email</label>
+                    </div>
                 </div>
 
-                <div class="mb-3 form-floating">
-
-
+                <div class="mb-3 form-group row">
+                    <label
+                        for="category"
+                        class="col col-md-3"
+                    >Category</label>
+                    <div class="col col-md-4">
                         <select
                             name='category'
                             class='form-control'
@@ -214,15 +218,15 @@
                         @error('category')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
-                    <label
-                        for="category"
-                        class="col col-md-3"
-                    >Category</label>
+                    </div>
                 </div>
 
-                <div class="mb-3 form-floating">
-
-
+                <div class="mb-3 form-group row">
+                    <label
+                        for="state"
+                        class="col col-md-3"
+                    >State</label>
+                    <div class="col col-md-4">
                         <input
                             class="form-control"
                             list="statelist"
@@ -235,16 +239,16 @@
                             <option value="{{ $value }}">
                                 @endforeach
                         </datalist>
-                    <label
-                        for="state"
-                        class="col col-md-3"
-                    >State</label>
+                    </div>
                 </div>
 
 
-                <div class="mb-3 form-floating">
-
-
+                <div class="mb-3 form-group row">
+                    <label
+                        for="address"
+                        class="col col-md-3"
+                    >Address</label>
+                    <div class="col col-md-4">
                         <textarea
                             class="form-control"
                             name="address"
@@ -253,14 +257,15 @@
                         @error('address')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
-                    <label
-                        for="address"
-                        class="col col-md-3"
-                    >Address</label>
+                    </div>
                 </div>
 
-                <div class="mb-3 form-floating">
-
+                <div class="mb-3 form-group row">
+                    <label
+                        for="AMC"
+                        class="col col-md-3"
+                    >Whether in Aizawl Municipal Area?</label>
+                    <div class="col col-md-4">
                         <input
                             type="checkbox"
                             name="AMC"
@@ -270,13 +275,10 @@
                         @error('AMC')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
-                    <label
-                        for="AMC"
-                        class="col col-md-3"
-                    >Whether in Aizawl Municipal Area?</label>
+                    </div>
                 </div>
 
-                <div class="mb-3 form-floating">
+                <div class="mb-3 form-group row">
                     <label
                         for="photo"
                         class="col col-md-3"
@@ -293,7 +295,7 @@
                     </div>
                 </div>
 
-                <div class="mb-3 form-floating">
+                <div class="mb-3 form-group row">
                     <label
                         for="rollno"
                         class="col col-md-3"
@@ -312,7 +314,7 @@
                     </div>
                 </div>
 
-                <div class="mb-3 form-floating">
+                <div class="mb-3 form-group row">
                     <label
                         for="course"
                         class="col col-md-3"
@@ -331,7 +333,7 @@
                     </div>
                 </div>
 
-                <div class="mb-3 form-floating">
+                <div class="mb-3 form-group row">
                     <label
                         for="department"
                         class="col col-md-3"
@@ -350,7 +352,7 @@
                     </div>
                 </div>
 
-                <div class="mb-3 form-floating">
+                <div class="mb-3 form-group row">
                     <label
                         for="semester"
                         class="col col-md-3"
@@ -373,7 +375,7 @@
                     </div>
                 </div>
 
-                <div class="mb-3 form-floating">
+                <div class="mb-3 form-group row">
                     <label
                         for="mzuid"
                         class="col col-md-3"
@@ -394,7 +396,7 @@
 
 
 
-                <div class="mb-3 form-floating">
+                <div class="mb-3 form-group row">
                     <div class="col col-md-3"></div>
                     <div class="col col-md-4">
                         <button

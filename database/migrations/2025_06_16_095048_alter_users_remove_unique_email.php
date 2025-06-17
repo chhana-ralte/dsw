@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             //$table->string('email')->unique(false)->nullable()->change();
             // $table->string('email')->unique()->nullable()->change();
-            $table->removeUnique('users_email_unique');
+            $table->dropUnique('users_email_unique');
         });
     }
 
