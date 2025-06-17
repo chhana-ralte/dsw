@@ -87,7 +87,7 @@ class Hostel extends Model
             FROM (people P LEFT JOIN students ST ON P.id=ST.person_id) JOIN allotments A on P.id=A.person_id
             JOIN allot_hostels AH ON AH.allotment_id=A.id AND AH.valid = 1
             JOIN hostels H ON H.id = AH.hostel_id
-            LEFT JOIN (allot_seats AST JOIN (seats S JOIN rooms R on R.id=S.room_id) ON S.id=AST.seat_id) ON AST.allot_hostel_id = AH.id
+            LEFT JOIN (allot_seats AST JOIN (seats S JOIN rooms R on R.id=S.room_id) ON S.id=AST.seat_id) ON AST.allot_hostel_id = AH.id AND AST.valid = 1
             WHERE H.id = :id
             ORDER BY R.roomno,S.serial;', ['id' => $this->id]);
         return Occupant::hydrate($occupants);
