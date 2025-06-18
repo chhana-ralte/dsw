@@ -39,27 +39,31 @@ class ApplicationController extends Controller
 
     public function store(Request $request)
     {
-        return $request->has('AMC')?'Yes':'No';
-        return $request;
+        // return $request->has('AMC')?'Yes':'No';
+        // return $request;
         // if ($request->hasFile('photo')) {
         //     $path = $request->file('photo')->store('photos', 'public');
         //     return "/storage/" . $path;
         // } else {
         //     return "Photo is not present";
         // }
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|min:6',
             'father' => 'required|min:6',
+            'dob' => 'required|date',
             'gender' => 'required',
             'mobile' => 'required|numeric',
             'email' => 'required|email',
+            'category' => 'required',
+            'state' => 'required|min:3',
             'address' => 'required|min:6',
-            'state' => 'required|min:6',
-            'department' => 'required|min:2',
             'course' => 'required|min:2',
+            'department' => 'required|min:2',
+            'semester' => 'required|numeric',
             'mzuid' => 'required|min:6',
+            'percent' => 'required|numeric|min:30|max:100'
         ]);
-
+        return $validated;
         $person = Person::create([
             'name' => $request->name,
             'father' => $request->father,

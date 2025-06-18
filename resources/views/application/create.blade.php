@@ -16,47 +16,56 @@
                 method="post"
                 action="/application/"
                 enctype="multipart/form-data"
+                onsubmit="return confirm('Are you sure you want to submit?')"
             >
                 @csrf
 
-                <div class="form-floating mb-3">
-                    <input
+                <div class="mb-3 form-group row">
+                    <label
+                        for="name"
+                        class="col col-md-3"
+                    >Name*</label>
+                    <div class="col col-md-4">
+                        <input
                             type="text"
                             class="form-control"
                             name="name"
                             value="{{ old('name') }}"
+                            placeholder="Your name"
                             required
                         >
                         @error('name')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
-                    <label for="name">Name</label>
+                    </div>
                 </div>
 
-
-                <div class="mb-3 form-floating">
-
-
+                <div class="mb-3 form-group row">
+                    <label
+                        for="father"
+                        class="col col-md-3"
+                    >Father/Guardian*</label>
+                    <div class="col col-md-4">
                         <input
                             type="text"
                             class="form-control"
                             name="father"
                             value="{{ old('father') }}"
+                            placeholder="Father/Guardian's name"
                             required
                         >
-                        <label
-                        for="father"
-                        class="col col-md-3"
-                    >Father/Guardian</label>
                         @error('father')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
-
+                    </div>
                 </div>
 
-                <div class="mb-3 form-floating">
-
-
+                <div class="mb-3 form-group row">
+                    <label
+                        for="dob"
+                        class="col col-md-3"
+                    >Date of Birth*</label>
+                    <div class="col col-md-4">
                         <input
                             type="date"
                             class="form-control"
@@ -64,23 +73,24 @@
                             value="{{ old('dob') }}"
                             required
                         >
-                        <label
-                        for="dob"
-                        class="col col-md-3"
-                    >Date of Birth</label>
                         @error('dob')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
-
+                    </div>
                 </div>
 
-                <div class="mb-3 form-floating">
-
+                <div class="mb-3 form-group row">
+                    <label
+                        for="gender"
+                        class="col col-md-3"
+                    >Gender*</label>
+                    <div class="col col-md-4">
                         <select
                             name='gender'
                             class='form-control'
+                            required
                         >
-                            <option>Select Gender</option>
+                            <option disabled selected>Select Gender</option>
                             <option
                                 value='Male'
                                 {{
@@ -106,61 +116,65 @@
                                 }}
                             >Other</option>
                         </select>
-                        <label
-                        for="gender"
-                        class="col col-md-3"
-                    >Gender</label>
-
+                         @error('gender')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
                 </div>
 
-                <div class="mb-3 form-floating">
-
-
+                <div class="mb-3 form-group row">
+                    <label
+                        for="mobile"
+                        class="col col-md-3"
+                    >Mobile*</label>
+                    <div class="col col-md-4">
                         <input
                             type="text"
                             class="form-control"
                             name="mobile"
                             value="{{ old('mobile') }}"
+                            placeholder="10 digit mobile number"
                             required
                         >
                         @error('mobile')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
-                        <label
-                        for="mobile"
-                        class="col col-md-3"
-                    >Mobile</label>
-
+                    </div>
                 </div>
 
-                <div class="mb-3 form-floating">
-
-
+                <div class="mb-3 form-group row">
+                    <label
+                        for="email"
+                        class="col col-md-3"
+                    >Email*</label>
+                    <div class="col col-md-4">
                         <input
                             type="email"
                             class="form-control"
                             name="email"
                             value="{{ old('email') }}"
+                            placeholder="Your email"
                             required
                         >
                         @error('email')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
-                    <label
-                        for="email"
-                        class="col col-md-3"
-                    >Email</label>
+                    </div>
                 </div>
 
-                <div class="mb-3 form-floating">
-
-
+                <div class="mb-3 form-group row">
+                    <label
+                        for="category"
+                        class="col col-md-3"
+                    >Category*</label>
+                    <div class="col col-md-4">
                         <select
                             name='category'
                             class='form-control'
+                            placeholder="Category"
                             required
                         >
-                            <option>Select Category</option>
+                            <option disabled selected>Select Category</option>
                             <option
                                 value='General'
                                 {{
@@ -214,78 +228,82 @@
                         @error('category')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
-                    <label
-                        for="category"
-                        class="col col-md-3"
-                    >Category</label>
+                    </div>
                 </div>
 
-                <div class="mb-3 form-floating">
-
-
+                <div class="mb-3 form-group row">
+                    <label
+                        for="state"
+                        class="col col-md-3"
+                    >State*</label>
+                    <div class="col col-md-4">
                         <input
                             class="form-control"
                             list="statelist"
                             id="state"
                             name="state"
-                            placeholder="State"
+                            value="{{ old('state') }}"
+                            placeholder="Select your home State"
+                            required
                         >
                         <datalist id="statelist">
                             @foreach(App\Models\State::list() as $key => $value)
-                            <option value="{{ $value }}">
-                                @endforeach
+                                <option value="{{ $value }}">
+                            @endforeach
                         </datalist>
-                    <label
-                        for="state"
-                        class="col col-md-3"
-                    >State</label>
+                    </div>
                 </div>
 
 
-                <div class="mb-3 form-floating">
-
-
+                <div class="mb-3 form-group row">
+                    <label
+                        for="address"
+                        class="col col-md-3"
+                    >Address*</label>
+                    <div class="col col-md-4">
                         <textarea
                             class="form-control"
                             name="address"
+                            placeholder="Your permanent address"
                             required
                         >{{ old('address') }}</textarea>
                         @error('address')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
-                    <label
-                        for="address"
-                        class="col col-md-3"
-                    >Address</label>
+                    </div>
                 </div>
 
-                <div class="mb-3 form-floating">
-
-                        <input
-                            type="checkbox"
-                            name="AMC"
-                            id="AMC"
-                            value="{{ old('email') }}"
-                        ><label for="AMC">(Check if yes)</label>
-                        @error('AMC')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
+                <div class="mb-3 form-group row">
                     <label
                         for="AMC"
                         class="col col-md-3"
                     >Whether in Aizawl Municipal Area?</label>
+                    <div class="col col-md-4">
+                        <input
+                            type="checkbox"
+                            name="AMC"
+                            id="AMC"
+                            value="1"
+                            {{ old('AMC')?' checked ':''}}
+                        ><label for="AMC">(Check if yes)</label>
+                        @error('AMC')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
                 </div>
 
-                <div class="mb-3 form-floating">
+                <div class="mb-3 form-group row">
                     <label
                         for="photo"
                         class="col col-md-3"
-                    >Photo</label>
+                    >Passport size photo/ Selfie</label>
                     <div class="col col-md-4">
                         <input
                             type="file"
                             class="form-control"
                             name="photo"
+                            value="{{ old('photo') }}"
+                            placeholder="Passport size/selfie"
                         >
                         @error('photo')
                         <span class="text-danger">{{ $message }}</span>
@@ -293,7 +311,7 @@
                     </div>
                 </div>
 
-                <div class="mb-3 form-floating">
+                <div class="mb-3 form-group row">
                     <label
                         for="rollno"
                         class="col col-md-3"
@@ -304,7 +322,7 @@
                             class="form-control"
                             name="rollno"
                             value="{{ old('rollno') }}"
-                            required
+                            placeholder="Roll number (if assigned)"
                         >
                         @error('rollno')
                         <span class="text-danger">{{ $message }}</span>
@@ -312,17 +330,18 @@
                     </div>
                 </div>
 
-                <div class="mb-3 form-floating">
+                <div class="mb-3 form-group row">
                     <label
                         for="course"
                         class="col col-md-3"
-                    >Course</label>
+                    >Course/Programme</label>
                     <div class="col col-md-4">
                         <input
                             type="text"
                             class="form-control"
                             name="course"
                             value="{{ old('course') }}"
+                            placeholder="Course of study (e.g., M.A(History), M.Sc(Physics), B.Tech(IT) etc)"
                             required
                         >
                         @error('course')
@@ -331,17 +350,18 @@
                     </div>
                 </div>
 
-                <div class="mb-3 form-floating">
+                <div class="mb-3 form-group row">
                     <label
                         for="department"
                         class="col col-md-3"
-                    >Department</label>
+                    >Department/Centre</label>
                     <div class="col col-md-4">
                         <input
                             type="text"
                             class="form-control"
                             name="department"
                             value="{{ old('department') }}"
+                            placeholder="Department (e.g., Psychology, Sociology, Zoology etc)"
                             required
                         >
                         @error('department')
@@ -350,7 +370,7 @@
                     </div>
                 </div>
 
-                <div class="mb-3 form-floating">
+                <div class="mb-3 form-group row">
                     <label
                         for="semester"
                         class="col col-md-3"
@@ -361,11 +381,10 @@
                             name="semester"
                             required
                         >
-                        <option>Select Semester</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
+                        <option disabled selected>Select Semester</option>
+                        @for($i=1;$i<=10;$i++)
+                            <option value="{{ $i }}" {{old('semester')==$i?' selected ':''}}>{{ $i }}</option>
+                        @endfor
                     </select>
                         @error('semester')
                         <span class="text-danger">{{ $message }}</span>
@@ -373,7 +392,7 @@
                     </div>
                 </div>
 
-                <div class="mb-3 form-floating">
+                <div class="mb-3 form-group row">
                     <label
                         for="mzuid"
                         class="col col-md-3"
@@ -384,6 +403,7 @@
                             class="form-control"
                             name="mzuid"
                             value="{{ old('mzuid') }}"
+                            placeholder="e.g., MZU250001234"
                         >
                         @error('mzuid')
                         <span class="text-danger">{{ $message }}</span>
@@ -391,14 +411,32 @@
                     </div>
                 </div>
 
+                <div class="mb-3 form-group row">
+                    <label
+                        for="percent"
+                        class="col col-md-3"
+                    >Last exam percent obtained</label>
+                    <div class="col col-md-4">
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="percent"
+                            value="{{ old('percent') }}"
+                            placeholder="e.g., 74.5"
+                        >
+                        @error('percent')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
 
 
 
-                <div class="mb-3 form-floating">
+                <div class="mb-3 form-group row">
                     <div class="col col-md-3"></div>
                     <div class="col col-md-4">
                         <button
-                            type="button"
+                            type="submit"
                             class="btn btn-primary submit"
                         >Submit</button>
                     </div>
@@ -440,11 +478,17 @@
                 }
             });
 
-            $("button.submit").click(function() {
-                if (confirm("Are you sure you want to submit?")) {
-                    $("form[name='frm_submit']").submit();
+            $("form[name='frm_submit']").onsubmit(function(){
+                if(confirm("Are you sure")){
+                    alert("hehe");
                 }
             });
+
+            // $("button.submit").click(function() {
+            //     if (confirm("Are you sure you want to submit?")) {
+            //         $("form[name='frm_submit']").submit();
+            //     }
+            // });
 
             $("button.decline").click(function() {
                 if (confirm("Are you sure the student won't do admission?")) {
