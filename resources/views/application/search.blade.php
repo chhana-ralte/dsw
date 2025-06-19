@@ -1,0 +1,119 @@
+<x-layout>
+    <x-container>
+
+        <x-block>
+            <x-slot name="heading">
+                Application search
+                <p>
+                    <a href="/application" class="btn btn-secondary btn-sm">Back</a>
+                </p>
+            </x-slot>
+
+            <form
+                name="frm_search"
+                method="post"
+                action="/application/search"
+            >
+                @csrf
+                <div class="mb-3 form-group row">
+                    <label
+                        for="dob"
+                        class="col col-md-4"
+                    >Date of Birth*</label>
+                    <div class="col col-md-4">
+                        <input
+                            type="date"
+                            class="form-control"
+                            name="dob"
+                            value="{{ old('dob',isset($application)?$application->dob:$dob) }}"
+                            required
+                        >
+                        @error('dob')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="mb-3 form-group row">
+                    <label
+                        for="mzuid"
+                        class="col col-md-4"
+                    >MZU ID/Application number*</label>
+                    <div class="col col-md-4">
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="mzuid"
+                            value="{{ old('mzuid',isset($application)?$application->mzuid:$mzuid) }}"
+                            placeholder="e.g., MZU250001234"
+                            required
+                        >
+                        @error('mzuid')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+                <div class="mb-3 form-group row">
+                    <div class="col col-md-4"></div>
+                    <div class="col col-md-4">
+                        <button
+                            type="submit"
+                            class="btn btn-primary submit"
+                        >Search</button>
+                    </div>
+                </div>
+            </form>
+        </x-block>
+        @if(isset($application))
+            <x-block>
+                <x-slot name="heading">
+                    Application details
+                </x-slot>
+                <div class="mb-3 form-group row">
+                    <label
+                        for="name"
+                        class="col col-md-4"
+                    >Name*</label>
+                    <div class="col col-md-4">
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="name"
+                            value="{{ $application->name }}"
+                            placeholder="Your name"
+                            required
+                        >
+                        @error('name')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+                <div class="mb-3 form-group row">
+                    <div class="col col-md-4"></div>
+                    <div class="col col-md-4">
+                        <a href="/application/{{ $application->id }}/"
+
+                            class="btn btn-primary"
+                        >View application details</a>
+                    </div>
+                </div>
+            </x-block>
+        @elseif($mzuid != '')
+            <span class="text-danger">No application found.</span>
+        @endif
+    </x-container>
+    <script>
+        $(document).ready(function() {
+
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
+                }
+            });
+
+        });
+
+
+    </script>
+</x-layout>

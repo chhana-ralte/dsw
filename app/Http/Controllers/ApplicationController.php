@@ -48,50 +48,43 @@ class ApplicationController extends Controller
         //     return "Photo is not present";
         // }
         $validated = $request->validate([
+            'person_id' => '0',
             'name' => 'required|min:6',
             'father' => 'required|min:6',
             'dob' => 'required|date',
+            'married' => 'required|numeric',
             'gender' => 'required',
             'mobile' => 'required|numeric',
             'email' => 'required|email',
             'category' => 'required',
+            'PWD' => 'required|numeric',
             'state' => 'required|min:3',
             'address' => 'required|min:6',
+            'AMC' => 'required|numeric',
+            'emergency' => 'required|numeric|min:6',
+            'rollno' => '',
             'course' => 'required|min:2',
             'department' => 'required|min:2',
             'semester' => 'required|numeric',
             'mzuid' => 'required|min:6',
             'percent' => 'required|numeric|min:30|max:100'
         ]);
-        return $validated;
-        $person = Person::create([
-            'name' => $request->name,
-            'father' => $request->father,
-            'gender' => $request->gender,
-            'mobile' => $request->mobile,
-            'email' => $request->email,
-            'address' => $request->address,
-            'state' => $request->state,
-        ]);
+        // return $validated;
+        $validated['person_id'] = 0;
+        $validated['dt'] = now();
+
+        if (Application::where('mzuid', $validated['mzuid'])->where('dob', $validated['dob'])->exists()) {
+            return redirect()->back()->with(['message' => ['type' => 'warning', 'text' => 'Application already exists.'], 'exists' => '1'])->withInput();
+            exit();
+        }
+        $application = Application::create($validated);
 
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('photos', 'public');
-            $person->photo = "/storage/" . $path;
+            $application->photo = "/storage/" . $path;
         }
-        $person->save();
-        $student = Student::create([
-            'person_id' => $person->id,
-            'department' => $request->department,
-            'course' => $request->course,
-            'mzuid' => $request->mzuid,
-        ]);
-        $student->save();
-        $application = Application::create([
-            'person_id' => $person->id,
-            'dt' => now(),
-            'status' => 'Applied',
-            'valid' => true,
-        ]);
+
+
         $application->save();
 
         return redirect('/message')->with(['message' => ['type' => 'info', 'text' => 'Application created successfully. Your application ID is: ' . $application->id]]);
@@ -135,5 +128,31 @@ class ApplicationController extends Controller
         } else {
             abort(403);
         }
+    }
+
+    public function search()
+    {
+        $data = [
+            'dob' => '',
+            'mzuid' => '',
+        ];
+        return view('application.search', $data);
+    }
+
+    public function searchStore(Request $request)
+    {
+        $application = Application::where('mzuid', $request->mzuid)->where('dob', $request->dob)->first();
+        if ($application) {
+            $data = [
+                'application' => $application,
+
+            ];
+        } else {
+            $data = [
+                'dob' => request()->dob,
+                'mzuid' => request()->mzuid,
+            ];
+        }
+        return view('application.search', $data);
     }
 }

@@ -1,5 +1,10 @@
 <x-layout>
     <x-container>
+        @if(Session::has('exists'))
+            <x-block>
+                <span class="text-danger">There is already an application matching your detail, click <a href="/application/search">here</a> to search and manage your application.</span>
+            </x-block>
+        @endif
         <x-block>
             <x-slot name="heading">
                 Application form
@@ -9,6 +14,7 @@
                         class="btn btn-secondary btn-sm"
                     >Back</a>
                 </p>
+
             </x-slot>
 
             <form
@@ -23,7 +29,7 @@
                 <div class="mb-3 form-group row">
                     <label
                         for="name"
-                        class="col col-md-3"
+                        class="col col-md-4"
                     >Name*</label>
                     <div class="col col-md-4">
                         <input
@@ -43,7 +49,7 @@
                 <div class="mb-3 form-group row">
                     <label
                         for="father"
-                        class="col col-md-3"
+                        class="col col-md-4"
                     >Father/Guardian*</label>
                     <div class="col col-md-4">
                         <input
@@ -63,7 +69,7 @@
                 <div class="mb-3 form-group row">
                     <label
                         for="dob"
-                        class="col col-md-3"
+                        class="col col-md-4"
                     >Date of Birth*</label>
                     <div class="col col-md-4">
                         <input
@@ -81,8 +87,35 @@
 
                 <div class="mb-3 form-group row">
                     <label
+                        for="married"
+                        class="col col-md-4"
+                    >Whether single/married?</label>
+                    <div class="col col-md-4">
+                        <input
+                            type="radio"
+                            name="married"
+                            id="married-no"
+                            value="0"
+                            {{ old('married')?' checked ':''}}
+                        ><label for="married-no">Single/Divorced</label>
+                        <input
+                            type="radio"
+                            name="married"
+                            id="married-yes"
+                            value="1"
+                            {{ old('married')?' checked ':''}}
+                        ><label for="married-yes">Married</label>
+                        @error('married')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+
+
+                <div class="mb-3 form-group row">
+                    <label
                         for="gender"
-                        class="col col-md-3"
+                        class="col col-md-4"
                     >Gender*</label>
                     <div class="col col-md-4">
                         <select
@@ -125,7 +158,7 @@
                 <div class="mb-3 form-group row">
                     <label
                         for="mobile"
-                        class="col col-md-3"
+                        class="col col-md-4"
                     >Mobile*</label>
                     <div class="col col-md-4">
                         <input
@@ -145,7 +178,7 @@
                 <div class="mb-3 form-group row">
                     <label
                         for="email"
-                        class="col col-md-3"
+                        class="col col-md-4"
                     >Email*</label>
                     <div class="col col-md-4">
                         <input
@@ -165,7 +198,7 @@
                 <div class="mb-3 form-group row">
                     <label
                         for="category"
-                        class="col col-md-3"
+                        class="col col-md-4"
                     >Category*</label>
                     <div class="col col-md-4">
                         <select
@@ -231,10 +264,38 @@
                     </div>
                 </div>
 
+
+                <div class="mb-3 form-group row">
+                    <label
+                        for="PWD"
+                        class="col col-md-4"
+                    >Whether Person with disability (PWD)?</label>
+                    <div class="col col-md-4">
+                        <input
+                            type="radio"
+                            name="PWD"
+                            id="PWD-yes"
+                            value="1"
+                            {{ old('PWD')?' checked ':''}}
+                        ><label for="PWD-yes">Yes</label>
+                        <input
+                            type="radio"
+                            name="PWD"
+                            id="PWD-no"
+                            value="0"
+                            {{ old('PWD')?' checked ':''}}
+                        ><label for="PWD-no">No</label>
+                        @error('PWD')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+
+
                 <div class="mb-3 form-group row">
                     <label
                         for="state"
-                        class="col col-md-3"
+                        class="col col-md-4"
                     >State*</label>
                     <div class="col col-md-4">
                         <input
@@ -258,7 +319,7 @@
                 <div class="mb-3 form-group row">
                     <label
                         for="address"
-                        class="col col-md-3"
+                        class="col col-md-4"
                     >Address*</label>
                     <div class="col col-md-4">
                         <textarea
@@ -273,19 +334,27 @@
                     </div>
                 </div>
 
+
                 <div class="mb-3 form-group row">
                     <label
                         for="AMC"
-                        class="col col-md-3"
+                        class="col col-md-4"
                     >Whether in Aizawl Municipal Area?</label>
                     <div class="col col-md-4">
                         <input
-                            type="checkbox"
+                            type="radio"
                             name="AMC"
-                            id="AMC"
+                            id="AMC-yes"
                             value="1"
                             {{ old('AMC')?' checked ':''}}
-                        ><label for="AMC">(Check if yes)</label>
+                        ><label for="AMC-yes">Yes</label>
+                        <input
+                            type="radio"
+                            name="AMC"
+                            id="AMC-no"
+                            value="0"
+                            {{ old('AMC')?' checked ':''}}
+                        ><label for="AMC-no">No</label>
                         @error('AMC')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -294,8 +363,29 @@
 
                 <div class="mb-3 form-group row">
                     <label
+                        for="emergency"
+                        class="col col-md-4"
+                    >Emergency Contact number*</label>
+                    <div class="col col-md-4">
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="emergency"
+                            value="{{ old('emergency') }}"
+                            placeholder="Emergency number of/or parents contact"
+                            required
+                        >
+                        @error('emergency')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+
+
+                <div class="mb-3 form-group row">
+                    <label
                         for="photo"
-                        class="col col-md-3"
+                        class="col col-md-4"
                     >Passport size photo/ Selfie</label>
                     <div class="col col-md-4">
                         <input
@@ -314,7 +404,7 @@
                 <div class="mb-3 form-group row">
                     <label
                         for="rollno"
-                        class="col col-md-3"
+                        class="col col-md-4"
                     >Rollno</label>
                     <div class="col col-md-4">
                         <input
@@ -333,8 +423,8 @@
                 <div class="mb-3 form-group row">
                     <label
                         for="course"
-                        class="col col-md-3"
-                    >Course/Programme</label>
+                        class="col col-md-4"
+                    >Course/Programme*</label>
                     <div class="col col-md-4">
                         <input
                             type="text"
@@ -352,8 +442,8 @@
 
                 <div class="mb-3 form-group row">
                     <label
-                        for="department"
-                        class="col col-md-3"
+                        for="department*"
+                        class="col col-md-4"
                     >Department/Centre</label>
                     <div class="col col-md-4">
                         <input
@@ -373,8 +463,8 @@
                 <div class="mb-3 form-group row">
                     <label
                         for="semester"
-                        class="col col-md-3"
-                    >Semester</label>
+                        class="col col-md-4"
+                    >Semester*</label>
                     <div class="col col-md-4">
                         <Select
                             class="form-control"
@@ -395,8 +485,8 @@
                 <div class="mb-3 form-group row">
                     <label
                         for="mzuid"
-                        class="col col-md-3"
-                    >MZU ID</label>
+                        class="col col-md-4"
+                    >MZU ID/Application number*</label>
                     <div class="col col-md-4">
                         <input
                             type="text"
@@ -404,6 +494,7 @@
                             name="mzuid"
                             value="{{ old('mzuid') }}"
                             placeholder="e.g., MZU250001234"
+                            required
                         >
                         @error('mzuid')
                         <span class="text-danger">{{ $message }}</span>
@@ -414,8 +505,8 @@
                 <div class="mb-3 form-group row">
                     <label
                         for="percent"
-                        class="col col-md-3"
-                    >Last exam percent obtained</label>
+                        class="col col-md-4"
+                    >Last exam percent obtained*</label>
                     <div class="col col-md-4">
                         <input
                             type="text"
@@ -423,6 +514,7 @@
                             name="percent"
                             value="{{ old('percent') }}"
                             placeholder="e.g., 74.5"
+                            required
                         >
                         @error('percent')
                         <span class="text-danger">{{ $message }}</span>
@@ -433,7 +525,7 @@
 
 
                 <div class="mb-3 form-group row">
-                    <div class="col col-md-3"></div>
+                    <div class="col col-md-4"></div>
                     <div class="col col-md-4">
                         <button
                             type="submit"
