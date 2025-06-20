@@ -102,12 +102,50 @@ class ApplicationController extends Controller
     {
         // Logic to edit a specific application
         // For example, $application = Application::findOrFail($id);
-        return view('application.edit', compact('id'));
+        $application = Application::findOrFail($id);
+        if ($application->mzuid == $_GET['mzuid']) {
+            return view('application.edit', ['application' => $application]);
+        } else {
+            abort(403);
+        }
     }
 
     public function update(Request $request, $id)
     {
+
+        // return $request;
         $application = Application::findOrFail($id);
+        $validated = $request->validate([
+            'name' => 'required|min:6',
+            'father' => 'required|min:6',
+            'dob' => 'required|date',
+            'married' => 'required|numeric',
+            'gender' => 'required',
+            'mobile' => 'required|numeric',
+            'email' => 'required|email',
+            'category' => 'required',
+            'PWD' => 'required|numeric',
+            'state' => 'required|min:3',
+            'address' => 'required|min:6',
+            'AMC' => 'required|numeric',
+            'emergency' => 'required|numeric|min:6',
+            'rollno' => '',
+            'course' => 'required|min:2',
+            'department' => 'required|min:2',
+            'semester' => 'required|numeric',
+            'mzuid' => 'required|min:6',
+            'percent' => 'required|numeric|min:30|max:100'
+        ]);
+
+        $application->update($validated);
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('photos', 'public');
+            $application->photo = "/storage/" . $path;
+        }
+        $application->save();
+
+        return redirect('/application/' . $application->id . "?mzuid=" . $application->mzuid)->with('success', 'Application updated successfully.');
+
         if ($request->has('status')) {
             $application->update(['status' => $request->status]);
             $application->save();

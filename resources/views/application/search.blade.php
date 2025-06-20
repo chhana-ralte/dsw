@@ -91,7 +91,7 @@
                 <div class="mb-3 form-group row">
                     <div class="col col-md-4"></div>
                     <div class="col col-md-4">
-                        <a href="/application/{{ $application->id }}/"
+                        <a href="/application/{{ $application->id }}?mzuid={{ $application->mzuid }}"
 
                             class="btn btn-primary"
                         >View application details</a>

@@ -2,12 +2,10 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                Applications
-                <div class="btn-group">
-                    <a href="/application/" class="btn btn-primary">Applied</a>
-                    <a href="/application?status=Declined" class="btn btn-danger">Declined</a>
-                    <a href="/application?status=Pending" class="btn btn-warning">Pending</a>
-                    <a href="/application?status=Approved" class="btn btn-success">Approved</a>
+                Applications details
+                <p>
+                    <a href="/application/{{ $application->id }}/edit?mzuid={{ $application->mzuid }}" class="btn btn-secondary btn-sm">Edit</a>
+                </p>
             </x-slot>
         </x-block>
         <x-block>
@@ -18,33 +16,33 @@
                 <table class="table table-auto">
                     <tr>
                         <th>Name</th>
-                        <td>{{ $application->person->name }}</td>
-                        <td rowspan=7><img width="200px" src="{{ $application->person->photo }}" alt=""
+                        <td>{{ $application->name }}</td>
+                        <td rowspan=7><img width="200px" src="{{ $application->photo }}" alt=""
                                 srcset=""></td>
                     </tr>
                     <tr>
                         <th>Father/Guardian's name</th>
-                        <td>{{ $application->person->father }}</td>
+                        <td>{{ $application->father }}</td>
                     </tr>
                     <tr>
                         <th>Mobile</th>
-                        <td>{{ $application->person->mobile }}</td>
+                        <td>{{ $application->mobile }}</td>
                     </tr>
                     <tr>
                         <th>Email</th>
-                        <td>{{ $application->person->email }}</td>
+                        <td>{{ $application->email }}</td>
                     </tr>
                     <tr>
                         <th>Category</th>
-                        <td>{{ $application->person->category }}</td>
+                        <td>{{ $application->category }}</td>
                     </tr>
                     <tr>
                         <th>State/UT</th>
-                        <td>{{ $application->person->state }}</td>
+                        <td>{{ $application->state }}</td>
                     </tr>
                     <tr>
                         <th>Address</th>
-                        <td>{{ $application->person->address }}</td>
+                        <td>{{ $application->address }}</td>
                     </tr>
                 </table>
             </div>
@@ -56,19 +54,19 @@
             <table class="table table-auto">
                 <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
                     <td>Rollno</td>
-                    <td>{{ $application->person->student()->rollno }}</td>
+                    <td>{{ $application->rollno }}</td>
                 </tr>
                 <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
                     <td>Course name</td>
-                    <td>{{ $application->person->student()->course }}</td>
+                    <td>{{ $application->course }}</td>
                 </tr>
                 <tr>
                     <td>Department</td>
-                    <td>{{ $application->person->student()->department }}</td>
+                    <td>{{ $application->department }}</td>
                 </tr>
                 </tr>
                 <td>MZU ID</td>
-                <td>{{ $application->person->student()->mzuid }}</td>
+                <td>{{ $application->mzuid }}</td>
                 </tr>
             </table>
         </x-block>

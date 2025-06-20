@@ -1,31 +1,26 @@
 <x-layout>
     <x-container>
-        @if(Session::has('exists'))
-            <x-block>
-                <span class="text-danger">There is already an application matching your detail, click <a href="/application/search">here</a> to search and manage your application.</span>
-            </x-block>
-        @endif
         <x-block>
             <x-slot name="heading">
-                Application form
+                Editing application form
                 <p>
                     <a
                         href="/application"
                         class="btn btn-secondary btn-sm"
                     >Back</a>
                 </p>
-
             </x-slot>
 
             <form
                 class="col-md-7"
                 name="frm_submit"
                 method="post"
-                action="/application/"
+                action="/application/{{ $application->id }}"
                 enctype="multipart/form-data"
                 onsubmit="return confirm('Are you sure you want to submit?')"
             >
                 @csrf
+                @method('PUT')
 
                 <div class="mb-3 form-group row">
                     <label
@@ -37,7 +32,7 @@
                             type="text"
                             class="form-control"
                             name="name"
-                            value="{{ old('name') }}"
+                            value="{{ old('name',isset($application)?$application->name:$name) }}"
                             placeholder="Your name"
                             required
                         >
@@ -57,7 +52,7 @@
                             type="text"
                             class="form-control"
                             name="father"
-                            value="{{ old('father') }}"
+                            value="{{ old('father',isset($application)?$application->father:$father) }}"
                             placeholder="Father/Guardian's name"
                             required
                         >
@@ -77,7 +72,7 @@
                             type="date"
                             class="form-control"
                             name="dob"
-                            value="{{ old('dob') }}"
+                            value="{{ old('dob',isset($application)?$application->dob:$dob) }}"
                             required
                         >
                         @error('dob')
@@ -97,14 +92,14 @@
                             name="married"
                             id="married-no"
                             value="0"
-                            {{ old('married')?' checked ':''}}
-                        ><label for="married-no">Single/Divorced</label>
+                            {{ old('married')==0?' checked ':(isset($application)?$application->married:$married) }}
+                        ><label for="married-no">Single/Divorced*</label>
                         <input
                             type="radio"
                             name="married"
                             id="married-yes"
                             value="1"
-                            {{ old('married')?' checked ':''}}
+                            {{ old('married')==1?' checked ':(isset($application)?$application->married:$married) }}
                         ><label for="married-yes">Married</label>
                         @error('married')
                         <span class="text-danger">{{ $message }}</span>
@@ -130,7 +125,7 @@
                                 {{
                                 old('gender')=='Male'
                                 ? ' selected '
-                                : ''
+                                : ($application->gender=='Male'?' selected ':'')
                                 }}
                             >Male</option>
                             <option
@@ -138,7 +133,7 @@
                                 {{
                                 old('gender')=='Female'
                                 ? ' selected '
-                                : ''
+                                : ($application->gender=='Female'?' selected ':'')
                                 }}
                             >Female</option>
                             <option
@@ -146,7 +141,7 @@
                                 {{
                                 old('gender')=='Other'
                                 ? ' selected '
-                                : ''
+                                : ($application->gender=='Other'?' selected ':'')
                                 }}
                             >Other</option>
                         </select>
@@ -166,7 +161,7 @@
                             type="text"
                             class="form-control"
                             name="mobile"
-                            value="{{ old('mobile') }}"
+                            value="{{ old('mobile',$application->mobile) }}"
                             placeholder="10 digit mobile number"
                             required
                         >
@@ -186,7 +181,7 @@
                             type="email"
                             class="form-control"
                             name="email"
-                            value="{{ old('email') }}"
+                            value="{{ old('email',$application->email) }}"
                             placeholder="Your email"
                             required
                         >
@@ -214,7 +209,7 @@
                                 {{
                                 old('category')=='General'
                                 ? ' selected '
-                                : ''
+                                : ($application->category=='General'?' selected ':'')
                                 }}
                             >General
                             <option
@@ -222,7 +217,7 @@
                                 {{
                                 old('category')=='OBC'
                                 ? ' selected '
-                                : ''
+                                : ($application->category=='OBC'?' selected ':'')
                                 }}
                             >OBC</option>
                             <option
@@ -230,7 +225,7 @@
                                 {{
                                 old('category')=='OBC(NCL)'
                                 ? ' selected '
-                                : ''
+                                : ($application->category=='OBC(NCL)'?' selected ':'')
                                 }}
                             >OBC(NCL)
                             </option>
@@ -239,7 +234,7 @@
                                 {{
                                 old('category')=='SC'
                                 ? ' selected '
-                                : ''
+                                : ($application->category=='SC'?' selected ':'')
                                 }}
                             >SC</option>
                             <option
@@ -247,7 +242,7 @@
                                 {{
                                 old('category')=='ST'
                                 ? ' selected '
-                                : ''
+                                : ($application->category=='ST'?' selected ':'')
                                 }}
                             >ST</option>
                             <option
@@ -255,7 +250,7 @@
                                 {{
                                 old('category')=='EWS'
                                 ? ' selected '
-                                : ''
+                                : ($application->category=='EWS'?' selected ':'')
                                 }}
                             >EWS</option>
                         </select>
@@ -277,14 +272,14 @@
                             name="PWD"
                             id="PWD-yes"
                             value="1"
-                            {{ old('PWD')?' checked ':''}}
+                            {{ old('PWD')?' checked ':($application->PWD? 'checked ':'')}}
                         ><label for="PWD-yes">Yes</label>
                         <input
                             type="radio"
                             name="PWD"
                             id="PWD-no"
                             value="0"
-                            {{ old('PWD')?' checked ':''}}
+                            {{ old('PWD')?' checked ':($application->PWD==0? 'checked ':'')}}
                         ><label for="PWD-no">No</label>
                         @error('PWD')
                         <span class="text-danger">{{ $message }}</span>
@@ -304,7 +299,7 @@
                             list="statelist"
                             id="state"
                             name="state"
-                            value="{{ old('state') }}"
+                            value="{{ old('state',$application->state) }}"
                             placeholder="Select your home State"
                             required
                         >
@@ -328,7 +323,7 @@
                             name="address"
                             placeholder="Your permanent address"
                             required
-                        >{{ old('address') }}</textarea>
+                        >{{ old('address',$application->address) }}</textarea>
                         @error('address')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -347,14 +342,14 @@
                             name="AMC"
                             id="AMC-yes"
                             value="1"
-                            {{ old('AMC')?' checked ':''}}
+                            {{ old('AMC')?' checked ':($application->AMC? 'checked ':'')}}
                         ><label for="AMC-yes">Yes</label>
                         <input
                             type="radio"
                             name="AMC"
                             id="AMC-no"
                             value="0"
-                            {{ old('AMC')?' checked ':''}}
+                            {{ old('AMC')?' checked ':($application->AMC==0? 'checked ':'')}}
                         ><label for="AMC-no">No</label>
                         @error('AMC')
                         <span class="text-danger">{{ $message }}</span>
@@ -372,7 +367,7 @@
                             type="text"
                             class="form-control"
                             name="emergency"
-                            value="{{ old('emergency') }}"
+                            value="{{ old('emergency',$application->emergency) }}"
                             placeholder="Emergency number of/or parents contact"
                             required
                         >
@@ -403,6 +398,13 @@
                 </div>
 
                 <div class="mb-3 form-group row">
+                    <div class="col col-md-5"></div>
+                    <div class="col col-md-7">
+                        <img width="200px" src="{{ $application->photo }}" alt="Not Available" srcset="">
+                    </div>
+                </div>
+
+                <div class="mb-3 form-group row">
                     <label
                         for="rollno"
                         class="col-md-5"
@@ -412,7 +414,7 @@
                             type="text"
                             class="form-control"
                             name="rollno"
-                            value="{{ old('rollno') }}"
+                            value="{{ old('rollno',$application->rollno) }}"
                             placeholder="Roll number (if assigned)"
                         >
                         @error('rollno')
@@ -431,7 +433,7 @@
                             type="text"
                             class="form-control"
                             name="course"
-                            value="{{ old('course') }}"
+                            value="{{ old('course',$application->course) }}"
                             placeholder="Course of study (e.g., M.A(History), M.Sc(Physics), B.Tech(IT) etc)"
                             required
                         >
@@ -451,7 +453,7 @@
                             type="text"
                             class="form-control"
                             name="department"
-                            value="{{ old('department') }}"
+                            value="{{ old('department',$application->department) }}"
                             placeholder="Department (e.g., Psychology, Sociology, Zoology etc)"
                             required
                         >
@@ -474,7 +476,7 @@
                         >
                         <option disabled selected>Select Semester</option>
                         @for($i=1;$i<=10;$i++)
-                            <option value="{{ $i }}" {{old('semester')==$i?' selected ':''}}>{{ $i }}</option>
+                            <option value="{{ $i }}" {{old('semester',$application->semester)==$i?' selected ':''}}>{{ $i }}</option>
                         @endfor
                     </select>
                         @error('semester')
@@ -493,7 +495,7 @@
                             type="text"
                             class="form-control"
                             name="mzuid"
-                            value="{{ old('mzuid') }}"
+                            value="{{ old('mzuid',$application->mzuid) }}"
                             placeholder="e.g., MZU250001234"
                             required
                         >
@@ -513,7 +515,7 @@
                             type="text"
                             class="form-control"
                             name="percent"
-                            value="{{ old('percent') }}"
+                            value="{{ old('percent',$application->percent) }}"
                             placeholder="e.g., 74.5"
                             required
                         >
