@@ -191,4 +191,26 @@ class AjaxController extends Controller
     {
         return $id;
     }
+
+    public function getCourses(){
+        // return "Hello";
+        if(request()->has('department')){
+            // return request()->department;
+            $department = \App\Models\Department::where('id',$_GET['department'])->first();
+            $courses = \App\Models\Course::where('department_id',$department->id)->get();
+            return $courses;
+        }
+        return "Error";
+    }
+
+    public function getMaxSem(){
+        // return "Hello";
+        if(request()->has('course')){
+            // return request()->department;
+            $course = \App\Models\Course::where('id',$_GET['course'])->first();
+            // return $course->max_semester;
+            return ['max_sem' => $course->max_semester];
+        }
+        return "Error";
+    }
 }

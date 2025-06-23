@@ -51,8 +51,8 @@ class ApplicationController extends Controller
         // return $request->photo;
         $validated = $request->validate([
             'person_id' => '0',
-            'name' => 'required|min:6',
-            'father' => 'required|min:6',
+            'name' => 'required|min:4',
+            'father' => 'required|min:4',
             'dob' => 'required|date',
             'married' => 'required|numeric',
             'gender' => 'required',
@@ -61,18 +61,20 @@ class ApplicationController extends Controller
             'category' => 'required',
             'PWD' => 'required|numeric',
             'state' => 'required|min:3',
-            'address' => 'required|min:6',
+            'address' => 'required|min:4',
             'AMC' => 'required|numeric',
             'emergency' => 'required|numeric|min:6',
             'rollno' => '',
-            'course' => 'required|min:2',
-            'department' => 'required|min:2',
+            'course' => 'required|numeric',
+            'department' => 'required|numeric',
             'semester' => 'required|numeric',
             'mzuid' => 'required|min:6',
             'percent' => 'required|numeric|min:30|max:100'
         ]);
         // return $validated;
         $validated['person_id'] = 0;
+        $validated['department'] = \App\Models\Department::find($request->department)->name;
+        $validated['course'] = \App\Models\Course::find($request->course)->name;
         $validated['dt'] = now();
         $validated['reason'] = $request->reason;
 
@@ -124,8 +126,8 @@ class ApplicationController extends Controller
         // return $request;
         $application = Application::findOrFail($id);
         $validated = $request->validate([
-            'name' => 'required|min:6',
-            'father' => 'required|min:6',
+            'name' => 'required|min:4',
+            'father' => 'required|min:4',
             'dob' => 'required|date',
             'married' => 'required|numeric',
             'gender' => 'required',
@@ -134,7 +136,7 @@ class ApplicationController extends Controller
             'category' => 'required',
             'PWD' => 'required|numeric',
             'state' => 'required|min:3',
-            'address' => 'required|min:6',
+            'address' => 'required|min:4',
             'AMC' => 'required|numeric',
             'emergency' => 'required|numeric|min:6',
             'rollno' => '',

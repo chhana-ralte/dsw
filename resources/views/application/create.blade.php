@@ -430,27 +430,7 @@
                         @enderror
                     </div>
                 </div>
-
-                <div class="mb-3 form-group row">
-                    <label
-                        for="course"
-                        class="col-md-5"
-                    >Course/Programme*</label>
-                    <div class="col-md-7">
-                        <input
-                            type="text"
-                            class="form-control"
-                            name="course"
-                            value="{{ old('course') }}"
-                            placeholder="Course of study (e.g., M.A(History), M.Sc(Physics), B.Tech(IT) etc)"
-                            required
-                        >
-                        @error('course')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-
+{{--
                 <div class="mb-3 form-group row">
                     <label
                         for="department*"
@@ -470,6 +450,66 @@
                         @enderror
                     </div>
                 </div>
+--}}
+                <div class="mb-3 form-group row">
+                    <label
+                        for="department*"
+                        class="col-md-5"
+                    >Department/Centre*</label>
+                    <div class="col-md-7">
+                        <select
+                            class="form-control"
+                            name="department"
+                            required
+                        >
+                            <option disabled selected>Select Department/Centre</option>
+                            @foreach (App\Models\Department::all() as $dept)
+                                <option value="{{ $dept->id }}" {{ old('department')==$dept->name?' selected ':''}}>{{ $dept->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('department')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+{{--
+                <div class="mb-3 form-group row">
+                    <label
+                        for="course"
+                        class="col-md-5"
+                    >Course/Programme*</label>
+                    <div class="col-md-7">
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="course"
+                            value="{{ old('course') }}"
+                            placeholder="Course of study (e.g., M.A(History), M.Sc(Physics), B.Tech(IT) etc)"
+                            required
+                        >
+                        @error('course')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+--}}
+                <div class="mb-3 form-group row">
+                    <label
+                        for="course"
+                        class="col-md-5"
+                    >Course/Programme*</label>
+                    <div class="col-md-7">
+                        <select
+                            class="form-control"
+                            name="course"
+                            required
+                        >
+                        </select>
+                        @error('course')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
 
                 <div class="mb-3 form-group row">
                     <label
@@ -482,10 +522,6 @@
                             name="semester"
                             required
                         >
-                        <option disabled selected>Select Semester</option>
-                        @for($i=1;$i<=10;$i++)
-                            <option value="{{ $i }}" {{old('semester')==$i?' selected ':''}}>{{ $i }}</option>
-                        @endfor
                     </select>
                         @error('semester')
                         <span class="text-danger">{{ $message }}</span>
@@ -576,33 +612,38 @@
                 }
             });
 
-            $("input#available").click(function() {
-                if ($(this).prop('checked')) {
-                    $.ajax({
-                        type: "get",
-                        url: "/",
-                        success: function(data, status) {
-                            var s = "<option value='0'>Select Seat</option>";
+            $("select[name='department']").change(function(){
+                $.ajax({
+                    type : 'get',
+                    url : "/ajax/getCourses?department=" + $(this).val(),
+                    success : function(data,status){
+                        var s = "<option disabled selected>Select Course</option>";
                             for (i = 0; i < data.length; i++) {
-                                s += "<option value='" + data[i].id + "'>Seat: " + data[i]
-                                    .serial + " of " + data[i].roomno + "</option>";
+                                s += "<option value='" + data[i].id + "'>" + data[i].name + "</option>";
                             }
-                            $("select[id='seat']").html(s);
-                            //alert(data[0].roomno);
-                        },
-                        error: function() {
-                            alert("Error");
-                        }
-                    });
-                } else {
-                    load_seats();
-                }
+                            $("select[name='course']").html(s);
+                    },
+                    error : function(){
+                        alert("Error");
+                    },
+                });
             });
 
-            $("form[name='frm_submit']").onsubmit(function(){
-                if(confirm("Are you sure")){
-                    alert("hehe");
-                }
+            $("select[name='course']").change(function(){
+                $.ajax({
+                    type : 'get',
+                    url : "/ajax/getMaxSem?course=" + $(this).val(),
+                    success : function(data,status){
+                        var s = "<option disabled selected>Select Semester</option>";
+                            for (i = 1; i <= data.max_sem; i++) {
+                                s += "<option value='" + i + "'>" + i + "</option>";
+                            }
+                            $("select[name='semester']").html(s);
+                    },
+                    error : function(){
+                        alert("Error");
+                    },
+                });
             });
 
             // $("button.submit").click(function() {
