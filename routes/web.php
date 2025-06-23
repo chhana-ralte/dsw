@@ -81,6 +81,8 @@ Route::post('/user/{id}/changePassword', [UserController::class, 'changePassword
 Route::post('/logout', [UserController::class, 'logout']);
 Route::get('/hostel/{hostel}/occupants', [HostelController::class, 'occupants'])->middleware('auth');
 Route::get('/hostel/{hostel}/requirement', [HostelController::class, 'requirement'])->middleware('auth');
+Route::get('/hostel/{hostel}/requirement_list', [HostelController::class, 'requirementList'])->middleware('auth');
+Route::post('/hostel/{hostel}/requirement_list', [HostelController::class, 'requirementListUpdate'])->middleware('auth');
 Route::post('/allotment/{allotment}/clear_allotment', [AllotmentController::class, 'clear_allotment'])->middleware('auth');
 
 Route::resource('application', ApplicationController::class);

@@ -153,4 +153,43 @@ class HostelController extends Controller
         // return $data;
         return view('common.hostel.requirement', $data);
     }
+
+    public function requirementList(Hostel $hostel)
+    {
+        // return $hostel;
+        $allot_hostels = AllotHostel::where('hostel_id', $hostel->id)->where('valid', 1);
+        if (isset($_GET['status'])) {
+            $status = $_GET['status'];
+        } else {
+            $status = 'Applied';
+        }
+        if ($status == 'Applied') {
+            $requirements = Requirement::whereIn('hostel_id', $allot_hostels->pluck('hostel_id'))->where('new_hostel_id', '0')->get();
+        } else {
+            $requirements = Requirement::whereIn('hostel_id', $allot_hostels->pluck('hostel_id'))->where('new_hostel_id', '<>', '0')->get();
+        }
+        $data = [
+            'hostel' => $hostel,
+            'requirements' => $requirements,
+        ];
+        return view('common.hostel.requirementList', $data);
+        return $data;
+    }
+
+    public function requirementListUpdate(Hostel $hostel)
+    {
+        if (request()->has('requirement_id')) {
+            $requirement_ids = request()->get('requirement_id');
+            foreach ($requirement_ids as $id) {
+                $requirement = Requirement::find($id);
+                $requirement->update([
+                    'new_hostel_id' => request()->get('new_hostel_id')[$id],
+                    'new_roomcapacity' => request()->get('new_roomcapacity')[$id],
+                ]);
+            }
+        } else {
+            return "Nothing";
+        }
+        return request()->all();
+    }
 }

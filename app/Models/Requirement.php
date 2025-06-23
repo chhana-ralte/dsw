@@ -32,9 +32,17 @@ class Requirement extends Model
     {
         return $this->belongsTo(Hostel::class);
     }
+    public function new_hostel()
+    {
+        return $this->belongsTo(Hostel::class, 'new_hostel_id');
+    }
 
-    public function roomtype()
+    public function roomType()
     {
         return $this->roomcapacity == 1 ? 'Single' : ($this->roomcapacity == 2 ? 'Double' : ($this->roomcapacity == '3' ? 'Triple' : 'Dormitory'));
+    }
+    public function new_roomType()
+    {
+        return $this->new_roomcapacity == 1 ? 'Single' : ($this->new_roomcapacity == 2 ? 'Double' : ($this->new_roomcapacity == '3' ? 'Triple' : 'Dormitory'));
     }
 }

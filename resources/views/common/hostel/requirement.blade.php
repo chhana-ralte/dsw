@@ -8,6 +8,11 @@
                     <a class="btn btn-secondary btn-sm" href="/hostel/{{ $hostel->id }}">Back to
                         {{ $hostel->name }}</a>
                 </p>
+                @if(auth()->user() && auth()->user()->max_role_level() >= 3)
+                    <p>
+                        <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/requirement_list">View list</a>
+                    </p>
+                @endif
             </x-slot>
             <div style="width: 100%; overflow-x:auto">
                 <table class="table table-auto">

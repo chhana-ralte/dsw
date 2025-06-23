@@ -73,7 +73,7 @@
                     <label
                         for="name"
                         class="col col-md-4"
-                    >Name*</label>
+                    >Name</label>
                     <div class="col col-md-4">
                         <input
                             type="text"
@@ -81,13 +81,29 @@
                             name="name"
                             value="{{ $application->name }}"
                             placeholder="Your name"
-                            required
+                            readonly
                         >
-                        @error('name')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
                     </div>
                 </div>
+
+
+                <div class="mb-3 form-group row">
+                    <label
+                        for="name"
+                        class="col col-md-4"
+                    >Status</label>
+                    <div class="col col-md-4">
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="status"
+                            value="{{ $application->status }}"
+                            placeholder="Your name"
+                            readonly
+                        >
+                    </div>
+                </div>
+
                 <div class="mb-3 form-group row">
                     <div class="col col-md-4"></div>
                     <div class="col col-md-4">

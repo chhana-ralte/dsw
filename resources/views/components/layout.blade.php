@@ -61,7 +61,6 @@
                                     </li>
                                 @endif
                             @endforeach
-
                         @endif
                         @if (auth()->user()->isAdmin() || auth()->user()->isDsw() || auth()->user()->isWarden())
                             <li class="nav-item">
