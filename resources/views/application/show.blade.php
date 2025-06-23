@@ -4,6 +4,9 @@
             <x-slot name="heading">
                 Applications details
                 <p>
+                    @can('manage', $application)
+                        <a href="/application/list" class="btn btn-secondary btn-sm">Back</a>
+                    @endcan
                     <a href="/application/{{ $application->id }}/edit?mzuid={{ $application->mzuid }}" class="btn btn-secondary btn-sm">Edit</a>
                 </p>
             </x-slot>
@@ -118,9 +121,14 @@
                     <td>{{ $application->status }}</td>
                 </tr>
                 </tr>
-                <td>Whether valid?</td>
-                <td>{{ $application->valid ? 'Yes' : 'No' }}</td>
+                    <td>Whether valid?</td>
+                    <td>{{ $application->valid ? 'Yes' : 'No' }}</td>
                 </tr>
+                </tr>
+                    <td>Reason for hostel requirement</td>
+                    <td>{!! nl2br($application->reason) !!}</td>
+                </tr>
+
             </table>
         </x-block>
         @can('manage',$application)

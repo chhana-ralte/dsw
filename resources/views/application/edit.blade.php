@@ -525,7 +525,22 @@
                     </div>
                 </div>
 
-
+                <div class="mb-3 form-group row">
+                    <label
+                        for="reason"
+                        class="col-md-5"
+                    >Reason</label>
+                    <div class="col-md-7">
+                        <textarea
+                            class="form-control"
+                            name="reason"
+                            placeholder="Reason for hostel requirement"
+                        >{{ old('reason',$application->reason) }}</textarea>
+                        @error('reason')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
 
                 <div class="mb-3 form-group row">
                     <div class="col-md-5"></div>

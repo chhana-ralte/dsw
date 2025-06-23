@@ -20,6 +20,11 @@
                         Approved
                         <span class="badge bg-secondary">{{ App\Models\Application::approved()->count() }}</span>
                     </a>
+                </div>
+                <p>
+                    <a href="/application/" class="btn btn-secondary btn-sm">Back</a>
+                </p>
+
             </x-slot>
         </x-block>
         <x-block>
@@ -36,7 +41,7 @@
                             <th>Department</th>
                             <th>MZU ID</th>
                             <th>Status</th>
-                            @if (auth()->user() && auth()->user()->max_role_level() >= 3)
+                            @can('manages', App\Models\Application::class)
                                 <th>Action</th>
                             @endif
                         </tr>
@@ -45,7 +50,7 @@
                         @foreach ($applications as $application)
                             <tr>
                                 <td>{{ $application->id }}</td>
-                                <td><a href="/application/{{ $application->id }}">{{ $application->name }}</a>
+                                <td><a href="/application/{{ $application->id }}?mzuid={{ $application->mzuid }}">{{ $application->name }}</a>
                                 </td>
 
                                 <td>{{ $application->course }}</td>
@@ -54,8 +59,12 @@
 
                                 <td>{{ $application->status }}</td>
                                 @can('manage', $application)
-                                    <td><a href="/application/{{ $application->id }}/edit"
-                                            class="btn btn-primary btn-sm">Edit</a></td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="/application/{{ $application->id }}/edit?mzuid={{ $application->mzuid }}" class="btn btn-primary btn-sm">Edit</a>
+                                            <button value="{{ $application->id }}" class="btn btn-danger btn-sm btn-delete">Delete</button>
+                                        </div>
+                                    </td>
                                 @endcan
                             </tr>
                         @endforeach
@@ -75,8 +84,23 @@
                     'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
                 }
             });
-
-
+            $("button.btn-delete").click(function() {
+                if (confirm("Are you sure you want to delete this application?")) {
+                    $.ajax({
+                        type: "post",
+                        url: "/ajax/application/" + $(this).attr("value") + "/delete",
+                        success: function(data, status) {
+                            if (data == "Success") {
+                                alert("Application deleted successfully");
+                                location.replace("/application/list");
+                            }
+                        },
+                        error: function() {
+                            alert("Error");
+                        }
+                    });
+                }
+            });
         });
     </script>
 </x-layout>

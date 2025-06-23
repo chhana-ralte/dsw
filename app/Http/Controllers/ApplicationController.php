@@ -12,6 +12,7 @@ class ApplicationController extends Controller
 {
     public function index()
     {
+        return view('application.index');
         // return Application::first();
         if (!auth()->user() || auth()->user()->cannot('viewlist', Application::first())) {
             return redirect('/message')->with(['message' => ['type' => 'warning', 'text' => 'You do not have permission to view applications.']]);
@@ -47,6 +48,7 @@ class ApplicationController extends Controller
         // } else {
         //     return "Photo is not present";
         // }
+        // return $request->photo;
         $validated = $request->validate([
             'person_id' => '0',
             'name' => 'required|min:6',
@@ -72,11 +74,13 @@ class ApplicationController extends Controller
         // return $validated;
         $validated['person_id'] = 0;
         $validated['dt'] = now();
+        $validated['reason'] = $request->reason;
 
         if (Application::where('mzuid', $validated['mzuid'])->where('dob', $validated['dob'])->exists()) {
             return redirect()->back()->with(['message' => ['type' => 'warning', 'text' => 'Application already exists.'], 'exists' => '1'])->withInput();
             exit();
         }
+
         $application = Application::create($validated);
 
         if ($request->hasFile('photo')) {
@@ -140,40 +144,41 @@ class ApplicationController extends Controller
             'mzuid' => 'required|min:6',
             'percent' => 'required|numeric|min:30|max:100'
         ]);
-
+        $validated['reason'] = $request->reason;
         $application->update($validated);
+
+
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('photos', 'public');
             $application->photo = "/storage/" . $path;
         }
         $application->save();
 
-        return redirect('/application/' . $application->id . "?mzuid=" . $application->mzuid)->with(['message'=>['type'=>'info', 'message'=>'Application updated successfully']]);
+        return redirect('/application/' . $application->id . "?mzuid=" . $application->mzuid)->with(['message' => ['type' => 'info', 'text' => 'Application updated successfully']]);
     }
 
-    public function statusUpdate(Request $request,$id){
+    public function statusUpdate(Request $request, $id)
+    {
         $application = Application::findOrFail($id);
         // return $request;
         if ($request->has('status')) {
-            if($request->status == 'approve'){
+            if ($request->status == 'approve') {
                 $application->update(['status' => 'Approved']);
-            }
-            else if($request->status == 'decline'){
+            } else if ($request->status == 'decline') {
                 $application->update(['status' => 'Declined']);
-            }
-            else if($request->status == 'pending'){
+            } else if ($request->status == 'pending') {
                 $application->update(['status' => 'Pending']);
             }
 
             $application->save();
             return redirect('/application/' . $application->id . "?mzuid=" . $application->mzuid)
-                ->with(['message'=>['type'=>'info', 'text'=>'Application updated successfully']]);
+                ->with(['message' => ['type' => 'info', 'text' => 'Application updated successfully']]);
         } else {
             return redirect('/application/' . $application->id . "?mzuid=" . $application->mzuid)
-                ->with(['message'=>['type'=>'warning', 'text'=>'Unknown status!!']]);
+                ->with(['message' => ['type' => 'warning', 'text' => 'Unknown status!!']]);
         }
         // $application->update($request->all());
-        return redirect('/application/' . $application->id . "?mzuid=" . $application->mzuid)->with(['message'=>['type'=>'info', 'text'=>'Application updated successfully']]);
+        return redirect('/application/' . $application->id . "?mzuid=" . $application->mzuid)->with(['message' => ['type' => 'info', 'text' => 'Application updated successfully']]);
     }
 
     public function destroy($id)
@@ -213,18 +218,18 @@ class ApplicationController extends Controller
         return view('application.search', $data);
     }
 
-    public function list(){
-        if(isset($_GET['status'])){
+    public function list()
+    {
+        if (isset($_GET['status'])) {
             $status = $_GET['status'];
-        }
-        else{
+        } else {
             $status = 'Applied';
         }
-        $applications = Application::where('status',$status)->orderBy('id');
+        $applications = Application::where('status', $status)->orderBy('id');
         $data = [
             'status' => $status,
             'applications' => $applications->paginate(),
         ];
-        return view('application.list',$data);
+        return view('application.list', $data);
     }
 }

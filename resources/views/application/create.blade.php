@@ -17,6 +17,16 @@
 
             </x-slot>
 
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <form
                 class="col-md-7"
                 name="frm_submit"
@@ -97,14 +107,14 @@
                             name="married"
                             id="married-no"
                             value="0"
-                            {{ old('married')?' checked ':''}}
+                            {{ old('married')==0?' checked ':''}}
                         ><label for="married-no">Single/Divorced</label>
                         <input
                             type="radio"
                             name="married"
                             id="married-yes"
                             value="1"
-                            {{ old('married')?' checked ':''}}
+                            {{ old('married')==1?' checked ':''}}
                         ><label for="married-yes">Married</label>
                         @error('married')
                         <span class="text-danger">{{ $message }}</span>
@@ -277,14 +287,14 @@
                             name="PWD"
                             id="PWD-yes"
                             value="1"
-                            {{ old('PWD')?' checked ':''}}
+                            {{ old('PWD')==1?' checked ':''}}
                         ><label for="PWD-yes">Yes</label>
                         <input
                             type="radio"
                             name="PWD"
                             id="PWD-no"
                             value="0"
-                            {{ old('PWD')?' checked ':''}}
+                            {{ old('PWD')==0?' checked ':''}}
                         ><label for="PWD-no">No</label>
                         @error('PWD')
                         <span class="text-danger">{{ $message }}</span>
@@ -347,14 +357,14 @@
                             name="AMC"
                             id="AMC-yes"
                             value="1"
-                            {{ old('AMC')?' checked ':''}}
+                            {{ old('AMC')==1?' checked ':''}}
                         ><label for="AMC-yes">Yes</label>
                         <input
                             type="radio"
                             name="AMC"
                             id="AMC-no"
                             value="0"
-                            {{ old('AMC')?' checked ':''}}
+                            {{ old('AMC')==0?' checked ':''}}
                         ><label for="AMC-no">No</label>
                         @error('AMC')
                         <span class="text-danger">{{ $message }}</span>
@@ -445,7 +455,7 @@
                     <label
                         for="department*"
                         class="col-md-5"
-                    >Department/Centre</label>
+                    >Department/Centre*</label>
                     <div class="col-md-7">
                         <input
                             type="text"
@@ -465,7 +475,7 @@
                     <label
                         for="semester"
                         class="col-md-5"
-                    >Semester*</label>
+                    >Semester* (Next session i.e., 2025-26)</label>
                     <div class="col-md-7">
                         <Select
                             class="form-control"
@@ -522,6 +532,24 @@
                         @enderror
                     </div>
                 </div>
+
+                <div class="mb-3 form-group row">
+                    <label
+                        for="reason"
+                        class="col-md-5"
+                    >Reason</label>
+                    <div class="col-md-7">
+                        <textarea
+                            class="form-control"
+                            name="reason"
+                            placeholder="Reason for hostel requirement"
+                        >{{ old('reason') }}</textarea>
+                        @error('reason')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+
 
 
 

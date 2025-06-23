@@ -12,26 +12,28 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('applications', function (Blueprint $table) {
-            $table->string('name');
-            $table->string('father');
-            $table->date('dob');
+            $table->string('name')->nullable();
+            $table->string('father')->nullable();
+            $table->date('dob')->nullable();
             $table->boolean('married')->default(0);
-            $table->string('gender');
-            $table->string('mobile');
-            $table->string('email');
-            $table->string('category');
+            $table->string('gender')->default('Male');
+            $table->string('mobile')->nullable();
+            $table->string('email')->nullable();
+            $table->string('category')->nullable();
             $table->boolean('PWD')->default(0);
-            $table->string('state');
-            $table->string('address');
+            $table->string('state')->nullable();
+            $table->string('address')->nullable();
             $table->boolean('AMC')->default(0);
             $table->string('emergency')->nullable();
             $table->string('photo')->nullable();
             $table->string('rollno')->nullable();
-            $table->string('course');
-            $table->string('department');
-            $table->integer('semester');
+            $table->string('course')->nullable();
+            $table->string('department')->nullable();
+            $table->integer('semester')->nullable();
             $table->string('mzuid')->nullable();
-            $table->string('percent')->nullable;
+            $table->string('percent')->nullable();
+            $table->text('reason')->nullable();
+            $table->text('remark')->nullable();
         });
     }
 
@@ -44,23 +46,25 @@ return new class extends Migration
             $table->dropColumn('name');
             $table->dropColumn('father');
             $table->dropColumn('dob');
-            $table->dropColumn('married')->default(0);
+            $table->dropColumn('married');
             $table->dropColumn('gender');
             $table->dropColumn('mobile');
             $table->dropColumn('email');
             $table->dropColumn('category');
-            $table->dropColumn('PWD')->default(0);
+            $table->dropColumn('PWD');
             $table->dropColumn('state');
             $table->dropColumn('address');
-            $table->dropColumn('AMC')->default(0);
-            $table->dropColumn('emergency')->nullable();
-            $table->dropColumn('photo')->nullable();
-            $table->dropColumn('rollno')->nullable();
+            $table->dropColumn('AMC');
+            $table->dropColumn('emergency');
+            $table->dropColumn('photo');
+            $table->dropColumn('rollno');
             $table->dropColumn('course');
             $table->dropColumn('department');
             $table->dropColumn('semester');
-            $table->dropColumn('mzuid')->nullable();
-            $table->dropColumn('percent')->nullable;
+            $table->dropColumn('mzuid');
+            $table->dropColumn('percent');
+            $table->dropColumn('reason');
+            $table->dropColumn('remark');
         });
     }
 };

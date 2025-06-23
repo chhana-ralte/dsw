@@ -31,6 +31,11 @@ class ApplicationPolicy
         return $user->max_role_level() >= 3;
     }
 
+    public function manages(User $user): bool
+    {
+        return $user->max_role_level() >= 3;
+    }
+
     public function delete(User $user, Application $application): bool
     {
         return $user->isDsw() || $user->isAdmin();
