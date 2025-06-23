@@ -95,7 +95,11 @@ class ApplicationController extends Controller
         // Logic to show a specific application
         // For example, $application = Application::findOrFail($id);
         $application = Application::findOrFail($id);
-        return view('application.show', ['application' => $application]);
+        if ($application->mzuid == $_GET['mzuid']) {
+            return view('application.show', ['application' => $application]);
+        } else {
+            abort(403);
+        }
     }
 
     public function edit($id)
@@ -144,17 +148,32 @@ class ApplicationController extends Controller
         }
         $application->save();
 
-        return redirect('/application/' . $application->id . "?mzuid=" . $application->mzuid)->with('success', 'Application updated successfully.');
+        return redirect('/application/' . $application->id . "?mzuid=" . $application->mzuid)->with(['message'=>['type'=>'info', 'message'=>'Application updated successfully']]);
+    }
 
+    public function statusUpdate(Request $request,$id){
+        $application = Application::findOrFail($id);
+        // return $request;
         if ($request->has('status')) {
-            $application->update(['status' => $request->status]);
+            if($request->status == 'approve'){
+                $application->update(['status' => 'Approved']);
+            }
+            else if($request->status == 'decline'){
+                $application->update(['status' => 'Declined']);
+            }
+            else if($request->status == 'pending'){
+                $application->update(['status' => 'Pending']);
+            }
+
             $application->save();
-            return redirect('/application/' . $application->id)->with('success', 'Application updated successfully.');
+            return redirect('/application/' . $application->id . "?mzuid=" . $application->mzuid)
+                ->with(['message'=>['type'=>'info', 'text'=>'Application updated successfully']]);
         } else {
-            return "Nothing";
+            return redirect('/application/' . $application->id . "?mzuid=" . $application->mzuid)
+                ->with(['message'=>['type'=>'warning', 'text'=>'Unknown status!!']]);
         }
         // $application->update($request->all());
-        return redirect()->route('application.index')->with('success', 'Application updated successfully.');
+        return redirect('/application/' . $application->id . "?mzuid=" . $application->mzuid)->with(['message'=>['type'=>'info', 'text'=>'Application updated successfully']]);
     }
 
     public function destroy($id)
@@ -192,5 +211,20 @@ class ApplicationController extends Controller
             ];
         }
         return view('application.search', $data);
+    }
+
+    public function list(){
+        if(isset($_GET['status'])){
+            $status = $_GET['status'];
+        }
+        else{
+            $status = 'Applied';
+        }
+        $applications = Application::where('status',$status)->orderBy('id');
+        $data = [
+            'status' => $status,
+            'applications' => $applications->paginate(),
+        ];
+        return view('application.list',$data);
     }
 }

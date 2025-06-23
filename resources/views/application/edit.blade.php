@@ -5,7 +5,7 @@
                 Editing application form
                 <p>
                     <a
-                        href="/application"
+                        href="/application/{{ $application->id }}?mzuid={{ $application->mzuid }}"
                         class="btn btn-secondary btn-sm"
                     >Back</a>
                 </p>
@@ -92,14 +92,14 @@
                             name="married"
                             id="married-no"
                             value="0"
-                            {{ old('married')==0?' checked ':(isset($application)?$application->married:$married) }}
+                            {{ old('married')==0?' checked ':($application->married==0?' checked ':'') }}
                         ><label for="married-no">Single/Divorced*</label>
                         <input
                             type="radio"
                             name="married"
                             id="married-yes"
                             value="1"
-                            {{ old('married')==1?' checked ':(isset($application)?$application->married:$married) }}
+                            {{ old('married')==1?' checked ':($application->married?' checked ':'') }}
                         ><label for="married-yes">Married</label>
                         @error('married')
                         <span class="text-danger">{{ $message }}</span>

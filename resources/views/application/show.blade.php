@@ -24,6 +24,19 @@
                         <th>Father/Guardian's name</th>
                         <td>{{ $application->father }}</td>
                     </tr>
+
+                    <tr>
+                        <th>Date of birth</th>
+                        <td>{{ date_format(date_create($application->dob),'d-m-Y') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Marital status</th>
+                        <td>{{ $application->married?'Married':'Single/Divorced' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Gender</th>
+                        <td>{{ $application->gender }}</td>
+                    </tr>
                     <tr>
                         <th>Mobile</th>
                         <td>{{ $application->mobile }}</td>
@@ -37,12 +50,20 @@
                         <td>{{ $application->category }}</td>
                     </tr>
                     <tr>
+                        <th>Person with disability?</th>
+                        <td>{{ $application->PWD?'Yes':'No' }}</td>
+                    </tr>
+                    <tr>
                         <th>State/UT</th>
                         <td>{{ $application->state }}</td>
                     </tr>
                     <tr>
                         <th>Address</th>
-                        <td>{{ $application->address }}</td>
+                        <td>{!! nl2br($application->address) !!}</td>
+                    </tr>
+                    <tr>
+                        <th>Whether in Aizawl Municipality Area?</th>
+                        <td>{{ $application->AMC?'Yes':'No' }}</td>
                     </tr>
                 </table>
             </div>
@@ -54,7 +75,7 @@
             <table class="table table-auto">
                 <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
                     <td>Rollno</td>
-                    <td>{{ $application->rollno }}</td>
+                    <td>{{ $application->rollno==''?'Not set':$application->rollno }}</td>
                 </tr>
                 <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
                     <td>Course name</td>
@@ -64,9 +85,17 @@
                     <td>Department</td>
                     <td>{{ $application->department }}</td>
                 </tr>
+                <tr>
+                    <td>Semester</td>
+                    <td>{{ $application->semester }}</td>
                 </tr>
-                <td>MZU ID</td>
-                <td>{{ $application->mzuid }}</td>
+                </tr>
+                    <td>MZU ID</td>
+                    <td>{{ $application->mzuid }}</td>
+                </tr>
+                <tr>
+                    <td>Last percentage</td>
+                    <td>{{ $application->percent }}</td>
                 </tr>
             </table>
         </x-block>
@@ -94,22 +123,24 @@
                 </tr>
             </table>
         </x-block>
-        <x-block>
-            <x-slot name="heading">
-                Decision:
-            </x-slot>
-            <div>
-                <button class="btn btn-danger btn-status" value="Declined">Decline</button>
-                <button class="btn btn-success btn-status" value="Approved">Approve</button>
-                <button class="btn btn-warning btn-status" value="Pending">Pending</button>
-            </div>
-            <form type="hidden" action="/application/{{ $application->id }}" method="post" name="frm_submit">
-                @csrf
-                @method('PUT')
-                <input type="hidden" name="application_id" value="{{ $application->id }}">
-                <input type="hidden" name="status" value="">
-            </form>
-        </x-block>
+        @can('manage',$application)
+            <x-block>
+                <x-slot name="heading">
+                    Decision:
+                </x-slot>
+                <div>
+                    <button class="btn btn-danger btn-status" value="decline">Decline</button>
+                    <button class="btn btn-success btn-status" value="approve">Approve</button>
+                    <button class="btn btn-warning btn-status" value="pending">Pending</button>
+                </div>
+                <form type="hidden" action="/application/{{ $application->id }}/statusUpdate" method="post" name="frm_submit">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="application_id" value="{{ $application->id }}">
+                    <input type="hidden" name="status" value="">
+                </form>
+            </x-block>
+        @endcan
     </x-container>
     <script>
         $(document).ready(function() {
@@ -120,7 +151,7 @@
                 }
             });
             $("button.btn-status").click(function() {
-                if (confirm("Are you sure to submit?")) {
+                if (confirm("Are you sure to " + $(this).val() + " this application?")) {
                     $("input[name='status']").val($(this).val());
                     $("form[name='frm_submit']").submit();
                 }

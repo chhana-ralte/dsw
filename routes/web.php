@@ -69,6 +69,8 @@ Route::get('/clearance/{id}/view', [ClearanceController::class, 'show']);
 Route::get('/clearance/{id}/download', [ClearanceController::class, 'download']);
 Route::get('/application/search', [ApplicationController::class, 'search']);
 Route::post('/application/search', [ApplicationController::class, 'searchStore']);
+Route::put('/application/{id}/statusUpdate', [ApplicationController::class, 'statusUpdate']);
+Route::get('/application/list', [ApplicationController::class, 'list']);
 
 
 

@@ -23,7 +23,7 @@ class ApplicationPolicy
     public function viewlist(User $user, Application $application): bool
     {
         // return false;
-        return auth()->user() && $user->max_role_level() >= 2;
+        return $user->max_role_level() >= 2;
     }
 
     public function manage(User $user, Application $application): bool
