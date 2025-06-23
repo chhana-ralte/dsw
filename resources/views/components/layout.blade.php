@@ -72,6 +72,9 @@
                                     <a class="nav-link" href="/notification/">Notifications</a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link" href="/application/">Applications</a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link" href="/consolidate">Consolidate</a>
                                 </li>
                             @endif
