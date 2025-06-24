@@ -190,6 +190,7 @@ class HostelController extends Controller
         } else {
             return "Nothing";
         }
-        return request()->all();
+        return redirect('/hostel/' . $hostel->id . '/requirement_list')
+            ->with(['message' => ['type'=>'info', 'text' => 'Requirements updated']]);
     }
 }

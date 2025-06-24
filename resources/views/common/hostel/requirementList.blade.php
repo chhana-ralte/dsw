@@ -62,9 +62,9 @@
                                         Hostel: {{ $req->hostel->name }}<br>
                                         Type: {{ $req->roomtype() }}
                                     </td>
-                                    @if ($req->new_hostel_id)
+                                    @if ($req->new_hostel_id != 0)
                                         <td>
-                                            Hostel: {{ $req->new_hostel()->name }}<br>
+                                            Hostel: {{ $req->new_hostel->name }}<br>
                                             Type: {{ $req->new_roomtype() }}
                                         </td>
                                     @else
