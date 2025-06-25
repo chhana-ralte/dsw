@@ -8,11 +8,12 @@
                     <a class="btn btn-secondary btn-sm" href="/hostel/{{ $hostel->id }}">Back to
                         {{ $hostel->name }}</a>
                 </p>
-                @if(auth()->user() && auth()->user()->max_role_level() >= 3)
+                @can('manages',App\Models\Requirement::class)
                     <p>
-                        <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/requirement_list">View list</a>
+                        <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/requirement_list">Manage/Approve</a>
+                        <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/requirement_notify">Notify</a>
                     </p>
-                @endif
+                @endcan
             </x-slot>
             <div style="width: 100%; overflow-x:auto">
                 <table class="table table-auto">

@@ -165,11 +165,9 @@ class HostelController extends Controller
         }
         if ($status == 'Applied') {
             $requirements = Requirement::applied($hostel->id);
-        } else if($status == 'Resolved'){
+        } else if ($status == 'Resolved') {
             $requirements = Requirement::resolved($hostel->id);
-
-        }
-        else{
+        } else {
             $requirements = Requirement::notified($hostel->id);
         }
         $data = [
@@ -182,7 +180,7 @@ class HostelController extends Controller
 
     public function requirementListUpdate(Hostel $hostel)
     {
-        if(request()->status == 'Applied' && request()->action == 'resolve'){
+        if (request()->status == 'Applied' && request()->action == 'resolve') {
             if (request()->has('requirement_id')) {
                 $requirement_ids = request()->get('requirement_id');
                 foreach ($requirement_ids as $id) {
@@ -193,69 +191,104 @@ class HostelController extends Controller
                     ]);
                 }
                 return redirect('/hostel/' . $hostel->id . '/requirement_list?status=' . request()->status)
-                    ->with(['message' => ['type'=>'info', 'text' => 'Requirements updated']]);
+                    ->with(['message' => ['type' => 'info', 'text' => 'Requirements updated']]);
             } else {
                 return redirect('/hostel/' . $hostel->id . '/requirement_list?status=' . request()->status)
-                    ->with(['message' => ['type'=>'info', 'text' => 'Select the students']]);;
+                    ->with(['message' => ['type' => 'info', 'text' => 'Select the students']]);;
             }
-
-        }
-        else if(request()->status == 'Resolved' && request()->action == 'undo resolve'){
+        } else if (request()->status == 'Resolved' && request()->action == 'undo resolve') {
             if (request()->has('requirement_id')) {
                 $requirement_ids = request()->get('requirement_id');
-                Requirement::whereIn('id',$requirement_ids)->update([
+                Requirement::whereIn('id', $requirement_ids)->update([
                     'new_hostel_id' => 0,
                     'new_roomcapacity' => 0,
                     'notified' => 0,
                 ]);
                 return redirect('/hostel/' . $hostel->id . '/requirement_list?status=' . request()->status)
-                    ->with(['message' => ['type'=>'info', 'text' => 'Requirements updated']]);
+                    ->with(['message' => ['type' => 'info', 'text' => 'Requirements updated']]);
             } else {
                 return redirect('/hostel/' . $hostel->id . '/requirement_list?status=' . request()->status)
-                    ->with(['message' => ['type'=>'info', 'text' => 'Select the students']]);;
+                    ->with(['message' => ['type' => 'info', 'text' => 'Select the students']]);;
             }
         }
-        else if(request()->status == 'Resolved' && request()->action == 'notify'){
-            if (request()->has('requirement_id')) {
-                $requirement_ids = request()->get('requirement_id');
-                Requirement::whereIn('id',$requirement_ids)->where('new_hostel_id','<>','0')->where('new_roomcapacity','<>','0')->update([
-                    'notified' => 1,
-                ]);
-                return redirect('/hostel/' . $hostel->id . '/requirement_list?status=' . request()->status)
-                    ->with(['message' => ['type'=>'info', 'text' => 'Requirements updated']]);
-            } else {
-                return redirect('/hostel/' . $hostel->id . '/requirement_list?status=' . request()->status)
-                    ->with(['message' => ['type'=>'info', 'text' => 'Select the students']]);;
-            }
-        }
+    }
 
-        else if(request()->status == 'Notified' && request()->action == 'undo notify'){
+    public function requirementNotify(Hostel $hostel)
+    {
+        // return $hostel;
+        if (isset($_GET['status'])) {
+            $status = $_GET['status'];
+        } else {
+            $status = 'Resolved';
+        }
+        if ($status == 'Resolved') {
+            $requirements = Requirement::where('hostel_id', $hostel->id)->where('new_hostel_id', '<>', '0')->where('new_roomcapacity', '<>', '0')->get();
+        } else if ($status == 'Notified') {
+            $requirements = Requirement::where('hostel_id', $hostel->id)->where('new_hostel_id', '<>', '0')->where('new_roomcapacity', '<>', '0')->where('notified', 1)->get();
+        }
+        $data = [
+            'status' => $status,
+            'hostel' => $hostel,
+            'requirements' => $requirements,
+        ];
+        return view('common.hostel.requirementNotify', $data);
+    }
+
+    public function requirementNotifyUpdate(Hostel $hostel)
+    {
+        if (request()->status == 'Resolved' && request()->action == 'undo resolve') {
             if (request()->has('requirement_id')) {
                 $requirement_ids = request()->get('requirement_id');
-                Requirement::whereIn('id',$requirement_ids)->update([
+                Requirement::whereIn('id', $requirement_ids)->update([
+                    'notified' => 0,
+                    'new_hostel_id' => 0,
+                    'new_roomcapacity' => 0,
+                ]);
+                return redirect('/hostel/' . $hostel->id . '/requirement_notify?status=' . request()->status)
+                    ->with(['message' => ['type' => 'info', 'text' => 'Requirements updated']]);
+            } else {
+                return redirect('/hostel/' . $hostel->id . '/requirement_notify?status=' . request()->status)
+                    ->with(['message' => ['type' => 'info', 'text' => 'Select the students']]);;
+            }
+        } else if (request()->status == 'Notified' && request()->action == 'undo notify') {
+            if (request()->has('requirement_id')) {
+                $requirement_ids = request()->get('requirement_id');
+                Requirement::whereIn('id', $requirement_ids)->update([
                     'notified' => 0,
                 ]);
-                return redirect('/hostel/' . $hostel->id . '/requirement_list?status=' . request()->status)
-                    ->with(['message' => ['type'=>'info', 'text' => 'Requirements updated']]);
+                return redirect('/hostel/' . $hostel->id . '/requirement_notify?status=' . request()->status)
+                    ->with(['message' => ['type' => 'info', 'text' => 'Requirements updated']]);
             } else {
-                return redirect('/hostel/' . $hostel->id . '/requirement_list?status=' . request()->status)
-                    ->with(['message' => ['type'=>'info', 'text' => 'Select the students']]);;
+                return redirect('/hostel/' . $hostel->id . '/requirement_notify?status=' . request()->status)
+                    ->with(['message' => ['type' => 'info', 'text' => 'Select the students']]);;
             }
-        }
-        else if(request()->status == 'Notified' && request()->action == 'allot'){
-            if (request()->has('requirement_id')) {
+        } else if (request()->status == 'Resolved' && request()->action == 'notify') {
+            if (request()->has('requirement_id') && request()->file <> '' && request()->dt <> '' && request()->subject <> '') {
                 $requirement_ids = request()->get('requirement_id');
-                $requirements = Requirement::whereIn('id',$requirement_ids)->get();
-                foreach($requirements as $req){
-
+                $requirements = Requirement::whereIn('id', $requirement_ids)->get();
+                $notification = \App\Models\Notification::updateOrCreate([
+                    'no' => request()->file,
+                    'dt' => request()->dt,
+                ], [
+                    'no' => request()->file,
+                    'dt' => request()->dt,
+                    'content' => request()->subject,
+                ]);
+                foreach ($requirements as $req) {
+                    $semAllot = \App\Models\SemAllot::create([
+                        'notification_id' => $notification->id,
+                        'requirement_id' => $req->id,
+                        'allotment_id' => $req->allot_hostel->allotment->id,
+                        'valid' => 1,
+                    ]);
+                    $req->update(['notified' => 1]);
+                    $req->save();
                 }
-
-
-                return redirect('/hostel/' . $hostel->id . '/requirement_list?status=' . request()->status)
-                    ->with(['message' => ['type'=>'info', 'text' => 'Requirements updated']]);
+                return redirect('/hostel/' . $hostel->id . '/requirement_notify?status=' . request()->status)
+                    ->with(['message' => ['type' => 'info', 'text' => 'Requirements updated']]);
             } else {
-                return redirect('/hostel/' . $hostel->id . '/requirement_list?status=' . request()->status)
-                    ->with(['message' => ['type'=>'info', 'text' => 'Select the students']]);;
+                return redirect('/hostel/' . $hostel->id . '/requirement_notify?status=' . request()->status)
+                    ->with(['message' => ['type' => 'info', 'text' => 'Select the students']]);;
             }
         }
     }

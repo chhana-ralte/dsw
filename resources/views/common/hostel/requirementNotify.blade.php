@@ -10,19 +10,20 @@
                 </p>
 
                 <p>
-                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/requirement_list?status=Applied">
-                        Applied
-                        <span class="badge bg-secondary">{{ App\Models\Requirement::applied($hostel->id)->count() }}</span>
-                    </a>
-                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/requirement_list?status=Resolved">
+
+                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/requirement_notify?status=Resolved">
                         Resolved
                         <span class="badge bg-secondary">{{ App\Models\Requirement::resolved($hostel->id)->count() }}</span>
+                    </a>
+                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/requirement_notify?status=Notified">
+                        Notified
+                        <span class="badge bg-secondary">{{ App\Models\Requirement::notified($hostel->id)->count() }}</span>
                     </a>
                 </p>
 
             </x-slot>
             <div style="width: 100%; overflow-x:auto">
-                <form name="frm-submit" method="post" action="/hostel/{{ $hostel->id }}/requirement_list">
+                <form name="frm-submit" method="post" action="/hostel/{{ $hostel->id }}/requirement_notify">
                     @csrf
                     <input type="hidden" name="status" value="{{ $status }}">
                     <input type="hidden" name="action">
@@ -41,7 +42,6 @@
                         <tbody>
                             @foreach ($requirements as $req)
                                 <tr>
-
                                     <td>
                                         <input type="checkbox" name="requirement_id[]" value="{{ $req->id }}">
                                     </td>
@@ -100,10 +100,11 @@
                         <footer>
                             <tr>
                                 <td colspan="6">
-                                    @if($status == 'Applied')
-                                        <button class="btn btn-primary" type="button" value="resolve">Resolve selected students</button>
-                                    @elseif($status == 'Resolved')
+                                    @if($status == 'Resolved')
                                         <button class="btn btn-warning" type="button" value="undo resolve">Undo selected resolved</button>
+                                        <button class="btn btn-primary" type="button" value="notify">Add selected to notify list</button>
+                                    @elseif($status == 'Notified')
+                                        <button class="btn btn-warning" type="button" value="undo notify">Undo selected notified</button>
                                     @endif
                                 </td>
                             </tr>
@@ -131,7 +132,7 @@
                         <div id="file-info" class="mb-3 form-group">
                             <div class="col-md-5"></div>
                             <div class="col md-7">
-                                <button class="btn btn-primary" type="button" value="allot">Make allotment</button>
+                                <button class="btn btn-primary" type="button" value="notify">Notify</button>
                             </div>
                         </div>
                     </div>
@@ -148,7 +149,7 @@
             });
             $("div#file-info").hide();
             $("button.btn").click(function(){
-                if($(this).val() == "generate"){
+                if($(this).val() == "notify"){
                     $("div#file-info").show();
                 }
                 else if($(this).val() == "allot"){

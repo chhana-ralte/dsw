@@ -46,18 +46,31 @@ class Requirement extends Model
         return $this->new_roomcapacity == 1 ? 'Single' : ($this->new_roomcapacity == 2 ? 'Double' : ($this->new_roomcapacity == '3' ? 'Triple' : 'Dormitory'));
     }
 
-    public static function applied($hostel_id){
-        $allot_hostels = AllotHostel::where('hostel_id',$hostel_id)->where('valid',1);
-        return Requirement::whereIn('allot_hostel_id',$allot_hostels->pluck('id'))->where('new_hostel_id','0')->get();
+    public static function applied($hostel_id)
+    {
+        $allot_hostels = AllotHostel::where('hostel_id', $hostel_id)->where('valid', 1);
+        return Requirement::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->where('new_hostel_id', '0')->get();
     }
 
-    public static function resolved($hostel_id){
-        $allot_hostels = AllotHostel::where('hostel_id',$hostel_id)->where('valid',1);
-        return Requirement::whereIn('allot_hostel_id',$allot_hostels->pluck('id'))->where('new_hostel_id','<>','0')->where('notified','0')->get();
+    public static function resolved($hostel_id)
+    {
+        $allot_hostels = AllotHostel::where('hostel_id', $hostel_id)->where('valid', 1);
+        return Requirement::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->where('new_hostel_id', '<>', '0')->where('notified', '0')->get();
     }
 
-    public static function notified($hostel_id){
-        $allot_hostels = AllotHostel::where('hostel_id',$hostel_id)->where('valid',1);
-        return Requirement::whereIn('allot_hostel_id',$allot_hostels->pluck('id'))->where('new_hostel_id','<>','0')->where('notified','1')->get();
+    public static function notified($hostel_id)
+    {
+        $allot_hostels = AllotHostel::where('hostel_id', $hostel_id)->where('valid', 1);
+        return Requirement::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->where('new_hostel_id', '<>', '0')->where('notified', '1')->get();
+    }
+
+    public function sem_allot()
+    {
+        return SemAllot::where('requirement_id', $this->id)->where('valid', 1)->first();
+    }
+
+    public function valid_semAllot()
+    {
+        return SemAllot::where('requirement_id', $this->id)->get();
     }
 }
