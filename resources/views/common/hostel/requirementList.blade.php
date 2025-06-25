@@ -10,14 +10,27 @@
                 </p>
 
                 <p>
-                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/requirement_list?status=Applied">Applied</a>
-                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/requirement_list?status=Resolved">Resolved</a>
+                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/requirement_list?status=Applied">
+                        Applied
+                        <span class="badge bg-secondary">{{ App\Models\Requirement::applied($hostel->id)->count() }}</span>
+                    </a>
+                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/requirement_list?status=Resolved">
+                        Resolved
+                        <span class="badge bg-secondary">{{ App\Models\Requirement::resolved($hostel->id)->count() }}</span>
+                    </a>
+                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/requirement_list?status=Notified">
+                        Notified
+                        <span class="badge bg-secondary">{{ App\Models\Requirement::notified($hostel->id)->count() }}</span>
+                    </a>
                 </p>
 
             </x-slot>
             <div style="width: 100%; overflow-x:auto">
-                <form method="post" action="/hostel/{{ $hostel->id }}/requirement_list">
+                <form name="frm-submit" method="post" action="/hostel/{{ $hostel->id }}/requirement_list">
                     @csrf
+                    <input type="hidden" name="status" value="{{ $status }}">
+                    <input type="hidden" name="action">
+
                     <table class="table table-auto">
                         <thead>
                             <tr>
@@ -89,16 +102,76 @@
                             @endforeach
                         </tbody>
                         <footer>
+
+
                             <tr>
                                 <td colspan="6">
-                                    <button class="btn btn-primary" type="submit">Update for selected hostellers</button>
+                                    @if($status == 'Applied')
+                                        <button class="btn btn-primary" type="button" value="resolve">Resolve selected students</button>
+                                    @elseif($status == 'Resolved')
+                                        <button class="btn btn-warning" type="button" value="undo resolve">Undo selected resolved</button>
+                                        <button class="btn btn-primary" type="button" value="notify">Add selected to notify list</button>
+                                    @elseif($status == 'Notified')
+                                        <button class="btn btn-warning" type="button" value="undo notify">Undo selected notified</button>
+                                        <button class="btn btn-primary" type="button" value="generate">Generate list for printing</button>
+                                    @endif
                                 </td>
                             </tr>
                         </footer>
                     </table>
+                    <div id="file-info">
+                        <div class="form-group mb-3">
+                            <label class="col-md-5">Enter file number</label>
+                            <div class="col md-7">
+                                <input type="text" class="form-control" name="file">
+                            </div>
+                        </div>
+                        <div id="file-info" class="form-group mb-3">
+                            <label class="col-md-5">Enter file date</label>
+                            <div class="col md-7">
+                                <input type="date" class="form-control" name="dt">
+                            </div>
+                        </div>
+                        <div id="file-info" class="form-group mb-3">
+                            <label class="col-md-5">Enter subject</label>
+                            <div class="col md-7">
+                                <input type="text" class="form-control" name="subject">
+                            </div>
+                        </div>
+                        <div id="file-info" class="form-group mb-3">
+                            <div class="col-md-5"></div>
+                            <div class="col md-7">
+                                <button class="btn btn-primary" type="button" value="allot">Make allotment</button>
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
         </x-block>
-
     </x-container>
+    <script>
+        $(document).ready(function(){
+            $.ajaxSetup({
+               headers : {
+                'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
+               }
+            });
+            $("div#file-info").hide();
+            $("button.btn").click(function(){
+                if($(this).val() == "generate"){
+                    $("div#file-info").show();
+                }
+                else if($(this).val() == "allot"){
+                    if(confirm("Once list is generated, it can not be undone. Are you sure you want to continue?")){
+                        $("input[name='action']").val($(this).val());
+                        $("form[name='frm-submit']").submit();
+                    }
+                }
+                else{
+                    $("input[name='action']").val($(this).val());
+                    $("form[name='frm-submit']").submit();
+                }
+            });
+        });
+    </script>
 </x-layout>

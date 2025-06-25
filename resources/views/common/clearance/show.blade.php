@@ -12,7 +12,7 @@
             <div class="controls">
                 {{-- <button onclick="window.print()" class="print-btn">Print Certificate</button>
                     <button onclick="window.print()" class="print-btn">Print Certificate</button>
-                    <input type="button" value="Print Div" onclick="printDiv()">                    
+                    <input type="button" value="Print Div" onclick="printDiv()">
                     --}}
                 <button onclick="printDiv()" class="btn btn-primary">Print Certificate</button>
                 <a href="/clearance/{{ $clearance->id }}/download" class="btn btn-primary">Download</a>
@@ -22,13 +22,6 @@
             <div class="certificate" id="certificate">
                 @include('common.clearance.clearance')
             </div>
-
-
-
-
-
-
-
 
             <script>
                 function printDiv() {
@@ -40,8 +33,6 @@
                     printWindow.print();
                 }
             </script>
-
-
 
             </body>
 
