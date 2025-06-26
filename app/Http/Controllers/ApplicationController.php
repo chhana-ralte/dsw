@@ -78,11 +78,18 @@ class ApplicationController extends Controller
         $validated['dt'] = now();
         $validated['reason'] = $request->reason;
 
+
+
         if (Application::where('mzuid', $validated['mzuid'])->where('dob', $validated['dob'])->exists()) {
             return redirect()->back()->with(['message' => ['type' => 'warning', 'text' => 'Application already exists.'], 'exists' => '1'])->withInput();
             exit();
         }
 
+        if($request->ready == 0){
+            return redirect()->back()->withInput()->with(['ready' => 1]);
+            exit();
+        }
+        // return $validated;
         $application = Application::create($validated);
 
         if ($request->hasFile('photo')) {
@@ -90,10 +97,9 @@ class ApplicationController extends Controller
             $application->photo = "/storage/" . $path;
         }
 
-
         $application->save();
 
-        return redirect('/message')->with(['message' => ['type' => 'info', 'text' => 'Application created successfully. Your application ID is: ' . $application->id]]);
+        return redirect('/application')->with(['message' => ['type' => 'info', 'text' => 'Application created successfully. Your application ID is: ' . $application->id]]);
     }
 
     public function show($id)
@@ -148,6 +154,7 @@ class ApplicationController extends Controller
         ]);
         $validated['reason'] = $request->reason;
         $application->update($validated);
+
 
 
         if ($request->hasFile('photo')) {

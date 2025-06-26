@@ -33,10 +33,14 @@
                 method="post"
                 action="/application/"
                 enctype="multipart/form-data"
-                onsubmit="return confirm('Are you sure you want to submit?')"
             >
                 @csrf
-
+                <input type="hidden" name="ready" value="{{ Session::has('ready')?"1":"0" }}">
+                @if(Session::has('ready'))
+                    <input type="hidden" name="department" value="{{ old('department') }}">
+                    <input type="hidden" name="course" value="{{ old('course') }}">
+                    <input type="hidden" name="semester" value="{{ old('semester') }}">
+                @endif
                 <div class="mb-3 form-group row">
                     <label
                         for="name"
@@ -586,23 +590,46 @@
                     </div>
                 </div>
 
+                <div class="mb-3 form-group row">
+                    <label class="col-md-5">Evaluate</label>
+                    <div class="col-md-7">
+                        <input type="text" name="first" value="{{ rand(5,20) }}" readonly size=1> +
+                        <input type="text" name="second" value="{{ rand(5,20) }}" readonly size=1> + 3 =
+                        <input type="text" name="result" size=2>
+                    </div>
+                </div>
 
+                <div class="mb-3 form-group row">
+                    <div class="col-md-5"></div>
+                    <div class="col-md-7">
+                        <input type="checkbox" name="terms" id="terms">
+                        <label for="terms">Select if you agree the above terms</label>
+                    </div>
+                </div>
 
 
                 <div class="mb-3 form-group row">
                     <div class="col-md-5"></div>
                     <div class="col-md-7">
                         <button
-                            type="submit"
+                            type="button"
                             class="btn btn-primary submit"
                         >Submit</button>
                     </div>
                 </div>
+
+
+
             </form>
         </x-block>
     </x-container>
     <script>
         $(document).ready(function() {
+            if($("input[name='ready']").val() == 1){
+
+                $("form[name='frm_submit']").submit();
+            }
+
             $("div.student").hide();
             $("div.other").hide();
 
@@ -610,6 +637,24 @@
                 headers: {
                     'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
                 }
+            });
+
+
+            $("button.submit").click(function(){
+                let first = parseInt($("input[name='first']").val());
+                let second = parseInt($("input[name='second']").val());
+                let result = first + second + 3;
+                if(result != parseInt($("input[name='result']").val())){
+                    alert("Fill the evaluation box correctly.");
+                    $("input[name='result']").focus();
+                    exit();
+                }
+                if(!$("input[name='terms']").prop('checked')){
+                    alert("Make sure you agreed to the terms and conditions.");
+                    $("input[name='terms']").focus();
+                    exit();
+                }
+                $("form[name='frm_submit']").submit();
             });
 
             $("select[name='department']").change(function(){
@@ -646,18 +691,13 @@
                 });
             });
 
+
+
             // $("button.submit").click(function() {
             //     if (confirm("Are you sure you want to submit?")) {
             //         $("form[name='frm_submit']").submit();
             //     }
             // });
-
-            $("button.decline").click(function() {
-                if (confirm("Are you sure the student won't do admission?")) {
-                    $("form[name='frm_decline']").submit();
-                    alert("asdasds");
-                }
-            });
         });
 
 
