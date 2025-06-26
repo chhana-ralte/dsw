@@ -15,7 +15,7 @@
                 <li>Preference shall be given on merit basis, performance and distance.</li>
                 <li>Seats will be given as per availability.</li>
                 <li>Be ready with your basic personal information and student information to fill up the form.</li>
-                <li>One the form is filled up, you may be allowed to access your application with MZU ID and your date of birth.</li>
+                <li>Once the form is filled up, you may be allowed to access and edit your application with your MZU ID and your date of birth.</li>
                 <li>Your MZU ID is your application ID in the CUET/Samarth portal.</li>
                 <li>Click <a href="/application/create">here</a> to apply for hostel admission.</li>
                 <li>Click <a href="/application/search">here</a> to view and access your application.</li>
