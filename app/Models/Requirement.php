@@ -66,11 +66,11 @@ class Requirement extends Model
 
     public function sem_allot()
     {
-        return SemAllot::where('requirement_id', $this->id)->where('valid', 1)->first();
+        return SemAllot::where('requirement_id', $this->id)->first();
     }
 
-    public function valid_semAllot()
+    public function valid_sem_allot()
     {
-        return SemAllot::where('requirement_id', $this->id)->get();
+        return SemAllot::where('requirement_id', $this->id)->where('valid', 1)->get();
     }
 }

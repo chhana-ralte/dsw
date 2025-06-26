@@ -594,8 +594,18 @@
                     <label class="col-md-5">Evaluate</label>
                     <div class="col-md-7">
                         <input type="text" name="first" value="{{ rand(5,20) }}" readonly size=1> +
-                        <input type="text" name="second" value="{{ rand(5,20) }}" readonly size=1> + 3 =
+                        <input type="text" name="second" value="{{ rand(5,20) }}" readonly size=1> + 1 =
                         <input type="text" name="result" size=2>
+                    </div>
+                </div>
+
+
+                <div class="mb-3 form-group row">
+                    <label class="col-md-5"></label>
+                    <div class="col-md-7">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#termsConditions">
+                        Terms and conditions
+                </button>
                     </div>
                 </div>
 
@@ -603,7 +613,7 @@
                     <div class="col-md-5"></div>
                     <div class="col-md-7">
                         <input type="checkbox" name="terms" id="terms">
-                        <label for="terms">Select if you agree the above terms</label>
+                        <label for="terms">I read and agree all the terms and conditions.</label>
                     </div>
                 </div>
 
@@ -622,6 +632,34 @@
 
             </form>
         </x-block>
+
+        <div class="modal fade" id="termsConditions" tabindex="-1" aria-labelledby="termsConditionsLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="termsConditionsLabel">Terms and conditions</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Terms and conditions:
+                    <ol>
+                        <li>I shall always abide by the rules and regulations of the Mizoram University Hostel Manual.</li>
+                        <li>I shall obey the authorities to take care of the hostels.</li>
+                        <li>I shall not cook inside hostel room, and I shall avail whatever mess provided to me.</li>
+                        <li>In the case of defaulting against the rules and regulations, I shall accept whatever action taken against me by the authority.</li>
+                        <li>I shall not involve in any kind of ragging, fignting and violence.</li>
+                        <li>I shall not damage the property in the hostel and I shall pay any fine imposed on me as a result.</li>
+                        <li>I shall sign online undertaking regarding ragging if my application is granted.</li>
+                    </ol>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    {{-- <button type="button" class="btn btn-primary">Save changes</button> --}}
+                </div>
+                </div>
+            </div>
+        </div>
+
     </x-container>
     <script>
         $(document).ready(function() {
@@ -643,7 +681,7 @@
             $("button.submit").click(function(){
                 let first = parseInt($("input[name='first']").val());
                 let second = parseInt($("input[name='second']").val());
-                let result = first + second + 3;
+                let result = first + second + 1;
                 if(result != parseInt($("input[name='result']").val())){
                     alert("Fill the evaluation box correctly.");
                     $("input[name='result']").focus();

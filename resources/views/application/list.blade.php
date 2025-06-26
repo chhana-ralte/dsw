@@ -68,6 +68,10 @@
                                 @endcan
                             </tr>
                         @endforeach
+                        <form name="frm-delete" method="post">
+                            @csrf
+                            @method('delete')
+                        </form>
                     </tbody>
                 </table>
                 <div class="d-flex justify-content-center">
@@ -86,19 +90,8 @@
             });
             $("button.btn-delete").click(function() {
                 if (confirm("Are you sure you want to delete this application?")) {
-                    $.ajax({
-                        type: "post",
-                        url: "/ajax/application/" + $(this).attr("value") + "/delete",
-                        success: function(data, status) {
-                            if (data == "Success") {
-                                alert("Application deleted successfully");
-                                location.replace("/application/list");
-                            }
-                        },
-                        error: function() {
-                            alert("Error");
-                        }
-                    });
+                    $("form[name='frm-delete']").attr('action','/application/' + $(this).val());
+                    $("form[name='frm-delete']").submit();
                 }
             });
         });

@@ -40,7 +40,7 @@
 
                     <div class="form-group row pt-3">
                         <div class="col col-md-4">
-                            
+
                         </div>
                         <div class="col col-md-4">
                             <a href="/notification/{{ $notification->id }}/edit" class="btn btn-secondary">Edit</a>
@@ -49,45 +49,95 @@
                 </div>
             </form>
         </x-block>
+        @if(count($notification->allotments) > 0)
+            <x-block>
+                <x-slot name="heading">
+                    New hostel allotments
+                </x-slot>
+                <div style="width:100%, x-overflow:auto">
+                    <table class="table">
+                        <tr>
+                            <td>
+                                Number of total allotments :
+                            </td>
+                            <td>
+                                {{ $notification->allotments->count('id') }}
+                                <a class="btn btn-primary btn-sm" href="/notification/{{ $notification->id }}/allotment">View</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Who paid fee and did admission :
+                            </td>
+                            <td>
+                                {{ $notification->allotments->count('id') }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Who are llotted rooms/seats :
+                            </td>
+                            <td>
+                                {{ $notification->allotments->count('id') }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Who are declined admission/allotment :
+                            </td>
+                            <td>
+                                {{ $notification->allotments->count('id') }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </x-block>
+        @endif
 
-        <x-block>
-            <table class="table">
-                <tr>
-                    <td>
-                        Number of total allotments : 
-                    </td>
-                    <td>
-                        {{ $notification->allotments->count('id') }} 
-                        <a class="btn btn-primary btn-sm" href="/notification/{{ $notification->id }}/allotment">View</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Who paid fee and did admission : 
-                    </td>
-                    <td>
-                        {{ $notification->allotments->count('id') }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Who are llotted rooms/seats : 
-                    </td>
-                    <td>
-                        {{ $notification->allotments->count('id') }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Who are declined admission/allotment : 
-                    </td>
-                    <td>
-                        {{ $notification->allotments->count('id') }}
-                    </td>
-                </tr>
-            </table>
-        </x-block>
-
+        @if(count($notification->sem_allots) > 0)
+            <x-block>
+                <x-slot name="heading">
+                    Existing students continuing hostel allotments
+                </x-slot>
+                <div style="width:100%, x-overflow:auto">
+                    <table class="table">
+                        <tr>
+                            <td>
+                                Number of total allotments :
+                            </td>
+                            <td>
+                                {{ $notification->sem_allots->count('id') }}
+                                <a class="btn btn-primary btn-sm" href="/notification/{{ $notification->id }}/sem_allot">View</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Who paid fee and did admission :
+                            </td>
+                            <td>
+                                {{ $notification->sem_allots->count('id') }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Who are llotted rooms/seats :
+                            </td>
+                            <td>
+                                {{ $notification->sem_allots->count('id') }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Who are declined admission/allotment :
+                            </td>
+                            <td>
+                                {{ $notification->sem_allots->count('id') }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </x-block>
+        @endif
     </x-container>
 <script>
 $(document).ready(function(){

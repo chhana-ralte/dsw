@@ -12,4 +12,8 @@ class Notification extends Model
     public function allotments(){
         return $this->hasMany(Allotment::class);
     }
+
+    public function sem_allots(){
+        return $this->hasMany(SemAllot::class);
+    }
 }

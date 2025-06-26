@@ -78,13 +78,13 @@
                                         </td>
                                     @else
                                         <td>
-                                            <select class="form-control" name="new_hostel_id[{{ $req->id }}]">
+                                            <select name="new_hostel_id[{{ $req->id }}]">
                                                 <option value="0">Select Hostel</option>
                                                 @foreach(App\Models\Hostel::where('gender', $req->hostel->gender)->get() as $hostel)
                                                     <option value="{{ $hostel->id }}" {{ $req->hostel->name == $hostel->name ? 'selected' : ''}}>{{ $hostel->name }}</option>
                                                 @endforeach
                                             </select>
-                                            <select class="form-control" name="new_roomcapacity[{{ $req->id }}]">
+                                            <select name="new_roomcapacity[{{ $req->id }}]">
                                                 <option value="0">Select Room Capacity</option>
                                                 <option value="1" {{ $req->roomType() == 'Single' ? 'selected' : ''}}>Single</option>
                                                 <option value="2" {{ $req->roomType() == 'Double' ? 'selected' : ''}}>Double</option>

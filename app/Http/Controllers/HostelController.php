@@ -236,6 +236,7 @@ class HostelController extends Controller
 
     public function requirementNotifyUpdate(Hostel $hostel)
     {
+        // return request()->all();
         if (request()->status == 'Resolved' && request()->action == 'undo resolve') {
             if (request()->has('requirement_id')) {
                 $requirement_ids = request()->get('requirement_id');
@@ -279,8 +280,28 @@ class HostelController extends Controller
                         'notification_id' => $notification->id,
                         'requirement_id' => $req->id,
                         'allotment_id' => $req->allot_hostel->allotment->id,
+                        'sessn_id' => $req->for_sessn_id,
                         'valid' => 1,
                     ]);
+                    if($req->allot_hostel->hostel->id != $req->new_hostel_id){
+                        $allotment = $req->allotment;
+                        $req->allot_hostel->update([
+                            'valid' => 0,
+                            'to_dt' => date(),
+                            'leave_dt' => date(),
+                        ]);
+                        $allot_hostel = AllotHostel::create([
+                            'allotment_id' => $req->allotment->id,
+                            'hostel_id' => $req->new_hostel_id,
+                            'from_dt' => date(),
+                            'to_dt' => $req->allotment->to_dt,
+                            'valid' => 1,
+                        ]);
+                    }
+
+                    if(DB::select("SELECT ")->exists()){
+
+                    }
                     $req->update(['notified' => 1]);
                     $req->save();
                 }

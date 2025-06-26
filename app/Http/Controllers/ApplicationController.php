@@ -155,8 +155,6 @@ class ApplicationController extends Controller
         $validated['reason'] = $request->reason;
         $application->update($validated);
 
-
-
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('photos', 'public');
             $application->photo = "/storage/" . $path;
@@ -195,7 +193,7 @@ class ApplicationController extends Controller
         if (auth()->user() && auth()->user()->can('delete', Application::findOrFail($id))) {
             $application = Application::findOrFail($id);
             $application->delete();
-            return redirect()->route('application.index')->with('success', 'Application deleted successfully.');
+            return redirect('/application/list')->with(['message' => ['type' => 'info', 'text' => 'Application deleted successfully']]);
         } else {
             abort(403);
         }
@@ -212,6 +210,7 @@ class ApplicationController extends Controller
 
     public function searchStore(Request $request)
     {
+
         $application = Application::where('mzuid', $request->mzuid)->where('dob', $request->dob)->first();
         if ($application) {
             $data = [

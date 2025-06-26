@@ -37,6 +37,9 @@
                                 <th>Current</th>
                                 <th>Requirement</th>
                                 <th>Updated</th>
+                                @if($status == 'Notified')
+                                    <th>Notification</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -71,29 +74,33 @@
                                         Hostel: {{ $req->hostel->name }}<br>
                                         Type: {{ $req->roomtype() }}
                                     </td>
+                                    <td>
                                     @if ($req->new_hostel_id != 0)
-                                        <td>
-                                            Hostel: {{ $req->new_hostel->name }}<br>
-                                            Type: {{ $req->new_roomtype() }}
-                                        </td>
+
+                                        Hostel: {{ $req->new_hostel->name }}<br>
+                                        Type: {{ $req->new_roomtype() }}
+
                                     @else
+                                        <select class="form-control" name="new_hostel_id[{{ $req->id }}]">
+                                            <option value="0">Select Hostel</option>
+                                            @foreach(App\Models\Hostel::where('gender', $req->hostel->gender)->get() as $hostel)
+                                                <option value="{{ $hostel->id }}" {{ $req->hostel->name == $hostel->name ? 'selected' : ''}}>{{ $hostel->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <select class="form-control" name="new_roomcapacity[{{ $req->id }}]">
+                                            <option value="0">Select Room Capacity</option>
+                                            <option value="1" {{ $req->roomType() == 'Single' ? 'selected' : ''}}>Single</option>
+                                            <option value="2" {{ $req->roomType() == 'Double' ? 'selected' : ''}}>Double</option>
+                                            <option value="3" {{ $req->roomType() == 'Triple' ? 'selected' : ''}}>Triple</option>
+                                            <option value="4" {{ $req->roomType() == 'Dormitory' ? 'selected' : ''}}>Dormitory</option>
+                                        </select>
+                                    @endif
+                                    </td>
+                                    @if($status == 'Notified')
                                         <td>
-                                            <select class="form-control" name="new_hostel_id[{{ $req->id }}]">
-                                                <option value="0">Select Hostel</option>
-                                                @foreach(App\Models\Hostel::where('gender', $req->hostel->gender)->get() as $hostel)
-                                                    <option value="{{ $hostel->id }}" {{ $req->hostel->name == $hostel->name ? 'selected' : ''}}>{{ $hostel->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            <select class="form-control" name="new_roomcapacity[{{ $req->id }}]">
-                                                <option value="0">Select Room Capacity</option>
-                                                <option value="1" {{ $req->roomType() == 'Single' ? 'selected' : ''}}>Single</option>
-                                                <option value="2" {{ $req->roomType() == 'Double' ? 'selected' : ''}}>Double</option>
-                                                <option value="3" {{ $req->roomType() == 'Triple' ? 'selected' : ''}}>Triple</option>
-                                                <option value="4" {{ $req->roomType() == 'Dormitory' ? 'selected' : ''}}>Dormitory</option>
-                                            </select>
+                                            <a href="/notification/{{ $req->sem_allot()->notification->id }}">{{ $req->sem_allot()->notification->no }}</a>
                                         </td>
                                     @endif
-
                                 </tr>
                             @endforeach
                         </tbody>
@@ -102,7 +109,7 @@
                                 <td colspan="6">
                                     @if($status == 'Resolved')
                                         <button class="btn btn-warning" type="button" value="undo resolve">Undo selected resolved</button>
-                                        <button class="btn btn-primary" type="button" value="notify">Add selected to notify list</button>
+                                        <button class="btn btn-primary" type="button" value="show-file">Add selected to notify list</button>
                                     @elseif($status == 'Notified')
                                         <button class="btn btn-warning" type="button" value="undo notify">Undo selected notified</button>
                                     @endif
@@ -147,12 +154,14 @@
                 'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
                }
             });
+
             $("div#file-info").hide();
+
             $("button.btn").click(function(){
-                if($(this).val() == "notify"){
+                if($(this).val() == "show-file"){
                     $("div#file-info").show();
                 }
-                else if($(this).val() == "allot"){
+                else if($(this).val() == "notify"){
                     if($("input[name='file']").val() == "" || $("input[name='dt']").val() == "" || $("input[name='subject']").val() == ""){
                         alert("Please enter file number, date and subject.");
                         return false;
