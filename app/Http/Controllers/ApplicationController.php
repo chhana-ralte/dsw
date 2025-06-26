@@ -85,7 +85,7 @@ class ApplicationController extends Controller
             exit();
         }
 
-        if($request->ready == 0){
+        if ($request->ready == 0) {
             return redirect()->back()->withInput()->with(['ready' => 1]);
             exit();
         }
@@ -99,7 +99,7 @@ class ApplicationController extends Controller
 
         $application->save();
 
-        return redirect('/application')->with(['message' => ['type' => 'info', 'text' => 'Application created successfully. Your application ID is: ' . $application->id]]);
+        return redirect('/application')->with(['message' => ['type' => 'info', 'text' => 'Application created successfully. Your MZU ID is: ' . $application->mzuid . ' and your date of birth is ' . $application->dob]]);
     }
 
     public function show($id)
