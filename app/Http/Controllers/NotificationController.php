@@ -47,7 +47,7 @@ class NotificationController extends Controller
         $data = [
             'notification' => $notification
         ];
-        return view('common.notification.show',$data);
+        return view('common.notification.show', $data);
     }
 
     /**
@@ -58,7 +58,7 @@ class NotificationController extends Controller
         $data = [
             'notification' => $notification
         ];
-        return view('common.notification.edit',$data);
+        return view('common.notification.edit', $data);
     }
 
     /**
@@ -81,5 +81,22 @@ class NotificationController extends Controller
     {
         $notification->delete();
         return redirect('/notification')->with(['message' => ['type' => 'info', 'text' => 'Notification deleted']]);
+    }
+
+    public function printable($id)
+    {
+        $notification = Notification::findOrFail($id);
+
+
+        $allotments = $notification->allotments;
+
+
+        $sem_allots = $notification->sem_allots;
+        $data = [
+            'notification' => $notification,
+            'allotments' => $allotments,
+            'sem_allots' => $sem_allots,
+        ];
+        return view('common.notification.printable', $data);
     }
 }

@@ -264,7 +264,7 @@ class HostelController extends Controller
                     ->with(['message' => ['type' => 'info', 'text' => 'Select the students']]);;
             }
         } else if (request()->status == 'Resolved' && request()->action == 'notify') {
-            if (request()->has('requirement_id') && request()->file <> '' && request()->dt <> '' && request()->subject <> '') {
+            if (request()->has('requirement_id') && request()->file != '' && request()->dt != '' && request()->subject != '') {
                 $requirement_ids = request()->get('requirement_id');
                 $requirements = Requirement::whereIn('id', $requirement_ids)->get();
                 $notification = \App\Models\Notification::updateOrCreate([
@@ -275,6 +275,7 @@ class HostelController extends Controller
                     'dt' => request()->dt,
                     'content' => request()->subject,
                 ]);
+
                 foreach ($requirements as $req) {
                     $semAllot = \App\Models\SemAllot::create([
                         'notification_id' => $notification->id,
@@ -283,25 +284,25 @@ class HostelController extends Controller
                         'sessn_id' => $req->for_sessn_id,
                         'valid' => 1,
                     ]);
-                    if($req->allot_hostel->hostel->id != $req->new_hostel_id){
+
+                    if ($req->allot_hostel->hostel->id != $req->new_hostel_id) {
                         $allotment = $req->allotment;
-                        $req->allot_hostel->update([
+
+                        AllotHostel::where('id', $req->allot_hostel_id)->update([
                             'valid' => 0,
-                            'to_dt' => date(),
-                            'leave_dt' => date(),
+                            'to_dt' => date('Y-m-d'),
+                            'leave_dt' => date('Y-m-d'),
                         ]);
+
                         $allot_hostel = AllotHostel::create([
                             'allotment_id' => $req->allotment->id,
                             'hostel_id' => $req->new_hostel_id,
-                            'from_dt' => date(),
+                            'from_dt' => date('Y-m-d'),
                             'to_dt' => $req->allotment->to_dt,
                             'valid' => 1,
                         ]);
                     }
 
-                    if(DB::select("SELECT ")->exists()){
-
-                    }
                     $req->update(['notified' => 1]);
                     $req->save();
                 }

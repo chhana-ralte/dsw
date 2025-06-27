@@ -4,7 +4,8 @@
             <x-slot name="heading">
                 Continuing allotments under Notification {{ $notification->no }} dated {{ $notification->dt }}
                 <p>
-                    <a class="btn btn-secondary btn-sm" href="/notification/{{ $notification->id }}">back</a>
+                    <a class="btn btn-secondary btn-sm" href="/notification/{{ $notification->id }}">Back</a>
+                    <button class="btn btn-secondary btn-sm" id="printable" value="{{ $notification->id }}">Printable</button>
                 </p>
             </x-slot>
             <div style="width: 100%; overflow-x:auto">
@@ -56,6 +57,9 @@
                     'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
                 }
             });
+        });
+        $("button#printable").click(function(){
+            window.open("/notification/" + $(this).val() + "/printable");
         });
     </script>
 </x-layout>

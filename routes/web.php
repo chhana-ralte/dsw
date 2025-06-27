@@ -87,7 +87,7 @@ Route::post('/hostel/{hostel}/requirement_list', [HostelController::class, 'requ
 Route::get('/hostel/{hostel}/requirement_notify', [HostelController::class, 'requirementNotify'])->middleware('auth');
 Route::post('/hostel/{hostel}/requirement_notify', [HostelController::class, 'requirementNotifyUpdate'])->middleware('auth');
 Route::post('/allotment/{allotment}/clear_allotment', [AllotmentController::class, 'clear_allotment'])->middleware('auth');
-
+Route::get('/notification/{id}/printable', [NotificationController::class, 'printable'])->middleware('auth');
 Route::resource('application', ApplicationController::class);
 
 
