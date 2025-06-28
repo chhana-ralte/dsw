@@ -10,26 +10,31 @@
                 @endif
                 <p>
                     <select class="form-control" name="hostel">
+                        <option value="0">All</option>
                         @foreach($hostels as $h)
-                            <option value="{{ $h->id }}" {{ $h->id == ($hostel?($hostel->id:0)):0 }}>{{ $h->name }}</option>
+                            <option value="{{ $h->id }}" {{ $h->id == ($hostel?$hostel->id:0)?' selected ':'' }}>{{ $h->name }}</option>
                         @endforeach
                     </select>
                 </p>
 
                 <p>
-                    <a class="btn btn-primary btn-sm" href="/requirement/list?status=Applied">
+                    <a class="btn btn-primary btn-sm" href="/requirement/list?{{ $hostel?'hostel_id='. $hostel->id .'&':''}}status=Applied">
                         Applied
-                        <span class="badge bg-secondary">{{ App\Models\Requirement::applied($hostel->id)->count() }}</span>
+                        <span class="badge bg-secondary">{{ App\Models\Requirement::applied($hostel?$hostel->id:0)->count() }}</span>
                     </a>
-                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/requirement_list?status=Resolved">
+                    <a class="btn btn-primary btn-sm" href="/requirement/list?{{ $hostel?'hostel_id='. $hostel->id .'&':''}}status=Resolved">
                         Resolved
-                        <span class="badge bg-secondary">{{ App\Models\Requirement::resolved($hostel->id)->count() }}</span>
+                        <span class="badge bg-secondary">{{ App\Models\Requirement::resolved($hostel?$hostel->id:0)->count() }}</span>
+                    </a>
+                    <a class="btn btn-primary btn-sm" href="/requirement/list?{{ $hostel?'hostel_id='. $hostel->id .'&':''}}status=Notified">
+                        Notified
+                        <span class="badge bg-secondary">{{ App\Models\Requirement::notified($hostel?$hostel->id:0)->count() }}</span>
                     </a>
                 </p>
 
             </x-slot>
             <div style="width: 100%; overflow-x:auto">
-                <form name="frm-submit" method="post" action="/hostel/{{ $hostel->id }}/requirement_list">
+                <form name="frm-submit" method="post" action="/requirement/list">
                     @csrf
                     <input type="hidden" name="status" value="{{ $status }}">
                     <input type="hidden" name="action">
@@ -37,24 +42,28 @@
                     <table class="table table-auto">
                         <thead>
                             <tr>
-                                <th>Select</th>
+                                <th><input type="checkbox" id="all"></th>
+                                <th>Sl</th>
+
                                 <th>Name</th>
                                 <th>Student info</th>
                                 <th>Current</th>
                                 <th>Requirement</th>
-                                <th>Updated</th>
+                                <th>To Update</th>
                             </tr>
                         </thead>
                         <tbody>
+                            <?php $sl = ($requirements->currentPage() - 1) * $requirements->perPage() + 1; ?>
                             @foreach ($requirements as $req)
                                 <tr>
 
                                     <td>
                                         <input type="checkbox" name="requirement_id[]" value="{{ $req->id }}">
                                     </td>
+                                    <td>{{ $sl++ }}</td>
                                     <td>
                                         @can('view', $req->allot_hostel->allotment)
-                                            {{ $req->person->name }}
+                                            <a href="/allotment/{{ $req->allot_hostel->allotment->id }}">{{ $req->person->name }}</a>
                                         @else
                                             {{ $req->person->name }}
                                         @endcan
@@ -111,6 +120,9 @@
                                         <button class="btn btn-primary" type="button" value="resolve">Resolve selected students</button>
                                     @elseif($status == 'Resolved')
                                         <button class="btn btn-warning" type="button" value="undo resolve">Undo selected resolved</button>
+                                        <button class="btn btn-primary" type="button" value="notify">Notify</button>
+                                    @elseif($status == 'Notified')
+                                        <button class="btn btn-warning" type="button" value="undo resolve">Undo selected resolved</button>
                                     @endif
                                 </td>
                             </tr>
@@ -142,6 +154,10 @@
                             </div>
                         </div>
                     </div>
+                    <div class="float-end">
+                        {{ $requirements->links() }}
+                    </div>
+
                 </form>
             </div>
         </x-block>
@@ -153,7 +169,9 @@
                 'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
                }
             });
+
             $("div#file-info").hide();
+
             $("button.btn").click(function(){
                 if($(this).val() == "generate"){
                     $("div#file-info").show();
@@ -172,6 +190,17 @@
                     $("input[name='action']").val($(this).val());
                     $("form[name='frm-submit']").submit();
                 }
+            });
+
+            $("input#all").click(function(){
+                $("input[name='requirement_id[]']").each(function(){
+                    $(this).prop('checked',$("input#all").prop("checked"));
+                });
+            });
+
+            $("select[name='hostel']").change(function(){
+                location.replace('/requirement/list?hostel_id=' + $(this).val() + '&status=' + $("input[name='status']").val());
+                exit();
             });
         });
     </script>

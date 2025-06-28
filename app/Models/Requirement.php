@@ -46,15 +46,25 @@ class Requirement extends Model
         return $this->new_roomcapacity == 1 ? 'Single' : ($this->new_roomcapacity == 2 ? 'Double' : ($this->new_roomcapacity == '3' ? 'Triple' : 'Dormitory'));
     }
 
-    public static function applied($hostel_id)
+    public static function applied($hostel_id = 0)
     {
-        $allot_hostels = AllotHostel::where('hostel_id', $hostel_id)->where('valid', 1);
-        return Requirement::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->where('new_hostel_id', '0')->get();
+        if($hostel_id == 0){
+            return Requirement::where('new_hostel_id', '0');
+        }
+        else{
+            $allot_hostels = AllotHostel::where('hostel_id', $hostel_id)->where('valid', 1);
+            return Requirement::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->where('new_hostel_id', '0');
+        }
     }
 
     public static function resolved($hostel_id)
     {
-        $allot_hostels = AllotHostel::where('hostel_id', $hostel_id)->where('valid', 1);
+        if($hostel_id == 0){
+            $allot_hostels = AllotHostel::where('valid', 1);
+        }
+        else{
+            $allot_hostels = AllotHostel::where('hostel_id', $hostel_id)->where('valid', 1);
+        }
         return Requirement::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->where('new_hostel_id', '<>', '0')->where('notified', '0')->get();
     }
 
