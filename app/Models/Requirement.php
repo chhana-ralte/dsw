@@ -48,30 +48,30 @@ class Requirement extends Model
 
     public static function applied($hostel_id = 0)
     {
-        if($hostel_id == 0){
+        if ($hostel_id == 0) {
             return Requirement::where('new_hostel_id', '0');
-        }
-        else{
+        } else {
             $allot_hostels = AllotHostel::where('hostel_id', $hostel_id)->where('valid', 1);
             return Requirement::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->where('new_hostel_id', '0');
         }
     }
 
-    public static function resolved($hostel_id)
+    public static function resolved($hostel_id = 0)
     {
-        if($hostel_id == 0){
-            $allot_hostels = AllotHostel::where('valid', 1);
+        if ($hostel_id == 0) {
+            return Requirement::where('new_hostel_id', '<>', '0')->where('notified', '0');
+        } else {
+            return Requirement::where('new_hostel_id', $hostel_id)->where('notified', '0');
         }
-        else{
-            $allot_hostels = AllotHostel::where('hostel_id', $hostel_id)->where('valid', 1);
-        }
-        return Requirement::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->where('new_hostel_id', '<>', '0')->where('notified', '0')->get();
     }
 
-    public static function notified($hostel_id)
+    public static function notified($hostel_id = 0)
     {
-        $allot_hostels = AllotHostel::where('hostel_id', $hostel_id)->where('valid', 1);
-        return Requirement::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->where('new_hostel_id', '<>', '0')->where('notified', '1')->get();
+        if ($hostel_id == 0) {
+            return Requirement::where('new_hostel_id', '<>', '0')->where('notified', '1');
+        } else {
+            return Requirement::where('new_hostel_id', $hostel_id)->where('notified', '1');
+        }
     }
 
     public function sem_allot()

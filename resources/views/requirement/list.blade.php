@@ -9,12 +9,17 @@
                     Requirement details
                 @endif
                 <p>
-                    <select class="form-control" name="hostel">
-                        <option value="0">All</option>
-                        @foreach($hostels as $h)
-                            <option value="{{ $h->id }}" {{ $h->id == ($hostel?$hostel->id:0)?' selected ':'' }}>{{ $h->name }}</option>
-                        @endforeach
-                    </select>
+                <div class="form-group row">
+                    <label for="hostel" class="col-md-4">Select hostel:</label>
+                    <div class="col-md-8">
+                        <select class="form-control" name="hostel">
+                            <option value="0">All</option>
+                            @foreach($hostels as $h)
+                                <option value="{{ $h->id }}" {{ $h->id == ($hostel?$hostel->id:0)?' selected ':'' }}>{{ $h->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
                 </p>
 
                 <p>
@@ -38,7 +43,7 @@
                     @csrf
                     <input type="hidden" name="status" value="{{ $status }}">
                     <input type="hidden" name="action">
-
+                    <input type="hidden" name="hostel_id" value="{{ $hostel?$hostel->id:0 }}">
                     <table class="table table-auto">
                         <thead>
                             <tr>
@@ -117,12 +122,12 @@
                             <tr>
                                 <td colspan="6">
                                     @if($status == 'Applied')
-                                        <button class="btn btn-primary" type="button" value="resolve">Resolve selected students</button>
+                                        <button class="btn btn-primary btn-action" type="button" value="resolve">Resolve selected students</button>
                                     @elseif($status == 'Resolved')
-                                        <button class="btn btn-warning" type="button" value="undo resolve">Undo selected resolved</button>
-                                        <button class="btn btn-primary" type="button" value="notify">Notify</button>
+                                        <button class="btn btn-warning btn-action" type="button" value="undo resolve">Undo selected resolved</button>
+                                        <button class="btn btn-primary btn-action" type="button" value="notify">Notify</button>
                                     @elseif($status == 'Notified')
-                                        <button class="btn btn-warning" type="button" value="undo resolve">Undo selected resolved</button>
+                                        <button class="btn btn-warning btn-action" type="button" value="undo notify">Undo selected notified</button>
                                     @endif
                                 </td>
                             </tr>
@@ -150,7 +155,7 @@
                         <div id="file-info" class="mb-3 form-group">
                             <div class="col-md-5"></div>
                             <div class="col md-7">
-                                <button class="btn btn-primary" type="button" value="allot">Make allotment</button>
+                                <button class="btn btn-primary btn-action" type="button" value="allot">Make allotment</button>
                             </div>
                         </div>
                     </div>
@@ -172,8 +177,19 @@
 
             $("div#file-info").hide();
 
-            $("button.btn").click(function(){
-                if($(this).val() == "generate"){
+            $("button.btn-action").click(function(){
+                var nos=0;
+                $("input[name='requirement_id[]']").each(function(){
+                    if($(this).prop('checked')){
+                        nos++;
+                    }
+                });
+
+                if(nos == 0){
+                    alert("Please select the students.");
+                    return false;
+                }
+                if($(this).val() == "notify"){
                     $("div#file-info").show();
                 }
                 else if($(this).val() == "allot"){
