@@ -24,9 +24,6 @@ class RequirementController extends Controller
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(Allotment $allotment)
     {
         if ($allotment->valid_allot_hostel() && $allotment->valid_allot_hostel()->valid_allot_seat()) {
@@ -42,9 +39,6 @@ class RequirementController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request, Allotment $allotment)
     {
         if ($allotment->valid_allot_hostel() && $allotment->valid_allot_hostel()->valid_allot_seat()) {
@@ -75,9 +69,27 @@ class RequirementController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
+
+    public function list(){
+        $hostels = \App\Models\Hostel::orderBy('gender')->orderBy('name')->get();
+        if(request()->has('hostel_id')){
+            $hostel = \App\Models\Hostel::find(request()->hostel_id);
+            $allot_hostels = AllotHostel::where('hostel_id',$hostel_id)->where('valid',1);
+            $requirements = Requirement::whereIn('allot_hostel_id',$allot_hostels->pluck('id'))->paginate();
+        }
+        else{
+            $hostel = false;
+            $requirements = Requirement::orderBy('hostel_id')->paginate();
+        }
+
+        $data = [
+            'hostels' => $hostels,
+            'hostel' => $hostel,
+            'requirements' => $requirements,
+        ];
+        return view('requirement.list',$data);
+    }
+
     public function show(Requirement $requirement)
     {
         //

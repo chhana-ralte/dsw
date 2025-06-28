@@ -110,7 +110,7 @@ Route::resource('notification.sem_allot', SemAllotController::class)->shallow()-
 Route::resource('allotment.admission', AdmissionCheckController::class)->shallow()->middleware('auth');
 Route::resource('allotment.allot_hostel', AllotHostelController::class)->shallow()->middleware('auth');
 Route::resource('allotment.cancelSeat', CancelSeatController::class)->shallow()->middleware('auth');
-Route::resource('allotment.requirement', RequirementController::class)->shallow()->middleware('auth');
+Route::resource('allotment.requirement', RequirementController::class)->shallow()->only(['index','create','store'])->middleware('auth');
 Route::resource('user', UserController::class)->middleware(['auth']);
 
 Route::resource('feedbackMaster', FeedbackMasterController::class)->middleware(['auth']);
@@ -146,6 +146,10 @@ Route::controller(App\Http\Controllers\StudentRegistrationController::class)->gr
     Route::post('/studentRegistration', 'registrationStore');
     Route::get('/studentRegistration/create_user', 'create_user');
     Route::post('/studentRegistration/create_user_store', 'create_user_store');
+});
+
+Route::controller(RequirementController::class)->group(function(){
+    Route::get('/requirement/list','list');
 });
 
 Route::controller(App\Http\Controllers\AjaxController::class)->group(function () {
