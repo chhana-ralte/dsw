@@ -165,7 +165,7 @@
                         <td>{{ $no_requirement }}</td>
                         <td>
                             @auth
-                                <a href="/hostel/{{ $hostel->id }}/requirement" class="btn btn-primary btn-sm">
+                                <a href="/requirement/list?hostel_id={{ $hostel->id }}" class="btn btn-primary btn-sm">
                                     view
                                 </a>
                             @endauth

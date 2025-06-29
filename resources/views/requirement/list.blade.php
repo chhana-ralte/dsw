@@ -55,6 +55,9 @@
                                 <th>Current</th>
                                 <th>Requirement</th>
                                 <th>To Update</th>
+                                @if($status == 'Notified')
+                                    <th>Notification</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -113,25 +116,36 @@
                                                 <option value="4" {{ $req->roomType() == 'Dormitory' ? 'selected' : ''}}>Dormitory</option>
                                             </select>
                                         </td>
-                                    @endif
 
+                                    @endif
+                                    @if($status == 'Notified')
+                                        <td>
+                                            <a href="/notification/{{ $req->sem_allot()->notification->id }}">
+                                                {{ $req->sem_allot()->notification->no }}<br>
+                                                {{ $req->sem_allot()->notification->dt }}
+                                            </a>
+
+                                        </td>
+                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>
-                        <footer>
-                            <tr>
-                                <td colspan="6">
-                                    @if($status == 'Applied')
-                                        <button class="btn btn-primary btn-action" type="button" value="resolve">Resolve selected students</button>
-                                    @elseif($status == 'Resolved')
-                                        <button class="btn btn-warning btn-action" type="button" value="undo resolve">Undo selected resolved</button>
-                                        <button class="btn btn-primary btn-action" type="button" value="notify">Notify</button>
-                                    @elseif($status == 'Notified')
-                                        <button class="btn btn-warning btn-action" type="button" value="undo notify">Undo selected notified</button>
-                                    @endif
-                                </td>
-                            </tr>
-                        </footer>
+                        @can('manages',App\Models\Requirement::class)
+                            <footer>
+                                <tr>
+                                    <td colspan="6">
+                                        @if($status == 'Applied')
+                                            <button class="btn btn-primary btn-action" type="button" value="resolve">Resolve selected students</button>
+                                        @elseif($status == 'Resolved')
+                                            <button class="btn btn-warning btn-action" type="button" value="undo resolve">Undo selected resolved</button>
+                                            <button class="btn btn-primary btn-action" type="button" value="notify">Notify</button>
+                                        @elseif($status == 'Notified')
+                                            <button class="btn btn-warning btn-action" type="button" value="undo notify">Undo selected notified</button>
+                                        @endif
+                                    </td>
+                                </tr>
+                            </footer>
+                        @endcan
                     </table>
                     <div id="file-info">
                         <div class="mb-3 form-group">

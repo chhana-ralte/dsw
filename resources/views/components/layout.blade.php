@@ -38,6 +38,13 @@
                             <a class="nav-link" href="/hostel">Hostels</a>
                         </li>
                     @endif
+                    @can('viewList', App\Models\Requirement::class)
+                        <li class="nav-item">
+                            <a class="nav-link" href="/requirement/list">Requirements</a>
+                        </li>
+
+
+                    @endcan
                     {{-- <li class="nav-item">
                         <a class="nav-link" href="/admissioncheck">Check admission status</a>
                     </li> --}}
