@@ -19,6 +19,7 @@
                 <li>Your MZU ID is your application ID in the CUET/Samarth portal.</li>
                 <li>Click <a href="/application/create">here</a> to apply for hostel admission.</li>
                 <li>Click <a href="/application/search">here</a> to view and access your application.</li>
+                <li><b>The existing boarders should apply through their login credentials in the portal. Only new applicants should apply through this online application form.</b></li>
             </ul>
         </x-block>
         @can('manages',\App\Models\Application::class)
