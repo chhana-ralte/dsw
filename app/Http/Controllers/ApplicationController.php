@@ -235,6 +235,7 @@ class ApplicationController extends Controller
         } else {
             $status = 'Applied';
         }
+
         $applications = Application::where('status', $status)->orderBy('id');
         $data = [
             'status' => $status,

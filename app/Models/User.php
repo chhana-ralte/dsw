@@ -67,7 +67,13 @@ class User extends Authenticatable
             return true;
         } else {
             $warden = Warden::where('hostel_id', $hostel_id)->where('valid', 1)->first();
-            return Role_User::where('user_id', $this->id)->where('role_id', $role->id)->where('type', 'warden')->where('foreign_id', $warden->id)->exists();
+            if($warden){
+                return Role_User::where('user_id', $this->id)->where('role_id', $role->id)->where('type', 'warden')->where('foreign_id', $warden->id)->exists();
+            }
+            else{
+                return false;
+            }
+
         }
     }
 

@@ -119,7 +119,10 @@ class RequirementController extends Controller
         } else {
             $status = "Applied";
         }
-        if ($status == 'Applied') {
+        if ($status == 'Nothing') {
+            $requirements = Requirement::nothing($hostel ? $hostel->id : 0);
+        }
+        else if ($status == 'Applied') {
             $requirements = Requirement::applied($hostel ? $hostel->id : 0);
         } else if ($status == 'Resolved') {
             $requirements = Requirement::resolved($hostel ? $hostel->id : 0);
@@ -133,9 +136,12 @@ class RequirementController extends Controller
             'requirements' => $requirements->paginate()->withQueryString(),
             'status' => $status
         ];
-
-        // return Requirement::applied($hostel?$hostel->id:0)->paginate();
-        return view('requirement.list', $data);
+        if($status == "Nothing"){
+            return view('requirement.nothing', $data);
+        }
+        else{
+            return view('requirement.list', $data);
+        }
     }
 
     public function listUpdate()

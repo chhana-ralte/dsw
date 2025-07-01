@@ -8,7 +8,6 @@
                 @else
                     Requirement details
                 @endif
-
                 <p>
                 <div class="form-group row">
                     <label for="hostel" class="col-md-4">Select hostel:</label>
@@ -54,114 +53,71 @@
                             <tr>
                                 <th><input type="checkbox" id="all"></th>
                                 <th>Sl</th>
-
                                 <th>Name</th>
                                 <th>Student info</th>
                                 <th>Current</th>
                                 <th>Requirement</th>
                                 <th>To Update</th>
-                                @if($status == 'Notified')
-                                    <th>Notification</th>
-                                @endif
+
                             </tr>
                         </thead>
                         <tbody>
                             <?php $sl = ($requirements->currentPage() - 1) * $requirements->perPage() + 1; ?>
-                            @foreach ($requirements as $req)
+                            @foreach ($requirements as $allot_hostel)
                                 <tr>
-
                                     <td>
-                                        <input type="checkbox" name="requirement_id[]" value="{{ $req->id }}">
+                                        <input type="checkbox" name="allot_hostel_ids[]" value="{{ $allot_hostel->id }}">
                                     </td>
                                     <td>{{ $sl++ }}</td>
                                     <td>
-                                        @can('view', $req->allot_hostel->allotment)
-                                            <a href="/allotment/{{ $req->allot_hostel->allotment->id }}">{{ $req->person->name }}</a>
+                                        @can('view', $allot_hostel->allotment)
+                                            <a href="/allotment/{{ $allot_hostel->allotment->id }}">{{ $allot_hostel->allotment->person->name }}</a>
                                         @else
-                                            {{ $req->person->name }}
+                                            {{ $allot_hostel->allotment->person->name }}
                                         @endcan
                                     </td>
 
                                     <td>
-                                        @if ($req->person->student())
-                                            ({{ $req->person->student()->department }}: {{ $req->person->student()->course }})
-                                        @elseif($req->person && $req->person->other())
-                                            Not a student ({{ $req->person->other()->remark }})
+                                        @if ($allot_hostel->allotment->person->student())
+                                            ({{ $allot_hostel->allotment->person->student()->department }}: {{ $allot_hostel->allotment->person->student()->course }})
+                                        @elseif($allot_hostel->allotment->person && $allot_hostel->allotment->person->other())
+                                            Not a student ({{ $allot_hostel->allotment->person->other()->remark }})
                                         @else
                                             ( No Info about the person )
                                         @endif
                                     </td>
 
                                     <td>
-                                        Hostel: {{ $req->allot_hostel->hostel->name }}<br>
-                                        @if($req->allot_hostel->valid_allot_seat())
-                                            Type: {{ $req->allot_hostel->valid_allot_seat()->seat->room->type }}
+                                        Hostel: {{ $allot_hostel->hostel->name }}<br>
+                                        @if($allot_hostel->valid_allot_seat())
+                                            Type: {{ $allot_hostel->valid_allot_seat()->seat->room->type }}
                                         @else
                                             Type: Unknown
                                         @endif
                                     </td>
+
                                     <td>
-                                        Hostel: {{ $req->hostel->name }}<br>
-                                        Type: {{ $req->roomtype() }}
+                                        No request received
                                     </td>
-                                    @if ($req->new_hostel_id != 0)
-                                        <td>
-                                            Hostel: {{ $req->new_hostel->name }}<br>
-                                            Type: {{ $req->new_roomtype() }}
-                                        </td>
-                                    @else
-                                        <td>
-                                            <select name="new_hostel_id[{{ $req->id }}]">
-                                                <option value="0">Select Hostel</option>
-                                                @foreach(App\Models\Hostel::where('gender', $req->hostel->gender)->get() as $h)
-                                                    <option value="{{ $h->id }}" {{ $req->hostel->name == $h->name ? 'selected' : ''}}>{{ $h->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            <select name="new_roomcapacity[{{ $req->id }}]">
-                                                <option value="0">Select Room Capacity</option>
-                                                <option value="1" {{ $req->roomType() == 'Single' ? 'selected' : ''}}>Single</option>
-                                                <option value="2" {{ $req->roomType() == 'Double' ? 'selected' : ''}}>Double</option>
-                                                <option value="3" {{ $req->roomType() == 'Triple' ? 'selected' : ''}}>Triple</option>
-                                                <option value="4" {{ $req->roomType() == 'Dormitory' ? 'selected' : ''}}>Dormitory</option>
-                                            </select>
-                                        </td>
+                                    <td>
+                                        <select name="new_hostel_id[{{ $allot_hostel->hostel->id }}]">
+                                            <option value="0">Select Hostel</option>
+                                            @foreach(App\Models\Hostel::where('gender', $allot_hostel->hostel->gender)->get() as $hostel)
+                                                <option value="{{ $hostel->id }}" {{ $allot_hostel->hostel->name == $hostel->name ? 'selected' : ''}}>{{ $hostel->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <select name="new_roomcapacity[{{ $allot_hostel->id }}]">
+                                            <option value="0">Select Room Capacity</option>
+                                            <option value="1">Single</option>
+                                            <option value="2">Double</option>
+                                            <option value="3">Triple</option>
+                                            <option value="4">Dormitory</option>
+                                        </select>
+                                    </td>
 
-                                    @endif
-                                    @if($status == 'Notified')
-                                        <td>
-                                            <a href="/notification/{{ $req->sem_allot()->notification->id }}">
-                                                {{ $req->sem_allot()->notification->no }}<br>
-                                                {{ $req->sem_allot()->notification->dt }}
-                                            </a>
-
-                                        </td>
-                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>
-
-                            <footer>
-                                <tr>
-                                    <td colspan="6">
-                                        @if($status == 'Applied')
-                                            @if(auth()->user()->can('resolves', App\Models\Requirement::class) || auth()->user()->isWardenOf($hostel?$hostel->id:0))
-                                                <button class="btn btn-primary btn-action" type="button" value="resolve">Resolve selected students</button>
-                                            @endif
-                                        @elseif($status == 'Resolved')
-                                            @if(auth()->user()->can('resolves', App\Models\Requirement::class) || auth()->user()->isWardenOf($hostel?$hostel->id:0))
-                                                <button class="btn btn-warning btn-action" type="button" value="undo resolve">Undo selected resolved</button>
-                                            @endif
-                                            @can('notifies', App\Models\Requirement::class)
-                                                <button class="btn btn-primary btn-action" type="button" value="notify">Notify</button>
-                                            @endcan
-                                        @elseif($status == 'Notified')
-                                            @can('notifies', App\Models\Requirement::class)
-                                                <button class="btn btn-warning btn-action" type="button" value="undo notify">Undo selected notified</button>
-                                            @endcan
-                                        @endif
-                                    </td>
-                                </tr>
-                            </footer>
 
                     </table>
                     <div id="file-info">

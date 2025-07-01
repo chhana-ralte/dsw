@@ -149,7 +149,7 @@ Route::controller(App\Http\Controllers\StudentRegistrationController::class)->gr
 });
 
 Route::controller(RequirementController::class)->group(function () {
-    Route::get('/requirement/list', 'list');
+    Route::get('/requirement/list', 'list')->middleware(['auth']);
     Route::post('/requirement/list', 'listUpdate');
 });
 

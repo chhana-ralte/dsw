@@ -46,6 +46,14 @@ class Requirement extends Model
         return $this->new_roomcapacity == 1 ? 'Single' : ($this->new_roomcapacity == 2 ? 'Double' : ($this->new_roomcapacity == '3' ? 'Triple' : 'Dormitory'));
     }
 
+    public static function nothing($hostel_id = 0)
+    {
+        if ($hostel_id == 0) {
+            return AllotHostel::where('valid',1)->whereNotIn('id',Requirement::all()->pluck('allot_hostel_id'));
+        } else {
+            return AllotHostel::where('hostel_id',$hostel_id)->where('valid',1)->whereNotIn('id',Requirement::all()->pluck('allot_hostel_id'));
+        }
+    }
     public static function applied($hostel_id = 0)
     {
         if ($hostel_id == 0) {

@@ -52,7 +52,31 @@ class RequirementPolicy
         }
     }
 
+    public function resolves(User $user): bool
+    {
+        // return true;
+        if ($user->isAdmin() || $user->isDsw()) {
+            return true;
+        }
+        // else if ($user->isWarden()){
+        //     return true;
+        // }
+        else {
+            return false;
+        }
+    }
+
     public function notify(User $user, Requirement $requirement): bool
+    {
+        // return true;
+        if ($user->isAdmin() || $user->isDsw()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function notifies(User $user): bool
     {
         // return true;
         if ($user->isAdmin() || $user->isDsw()) {
