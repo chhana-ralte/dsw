@@ -89,7 +89,11 @@
 
                                     <td>
                                         Hostel: {{ $req->allot_hostel->hostel->name }}<br>
-                                        Type: {{ $req->roomType() }}
+                                        @if($req->allot_hostel->valid_allot_seat())
+                                            Type: {{ $req->allot_hostel->valid_allot_seat()->seat->room->type }}
+                                        @else
+                                            Type: Unknown
+                                        @endif
                                     </td>
                                     <td>
                                         Hostel: {{ $req->hostel->name }}<br>

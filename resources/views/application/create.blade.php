@@ -537,7 +537,7 @@
                     <label
                         for="mzuid"
                         class="col-md-5"
-                    >MZU ID/Application number*</label>
+                    >MZU ID/Form No.*</label>
                     <div class="col-md-7">
                         <input
                             type="text"
