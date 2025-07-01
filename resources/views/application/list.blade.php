@@ -23,6 +23,7 @@
                 </div>
                 <p>
                     <a href="/application/" class="btn btn-secondary btn-sm">Back</a>
+                    <a href="/application/search" class="btn btn-primary btn-sm">Search</a>
                 </p>
 
             </x-slot>

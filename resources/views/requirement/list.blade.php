@@ -130,22 +130,30 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                        @can('manages',App\Models\Requirement::class)
+
                             <footer>
                                 <tr>
                                     <td colspan="6">
                                         @if($status == 'Applied')
-                                            <button class="btn btn-primary btn-action" type="button" value="resolve">Resolve selected students</button>
+                                            @can('resolve', $req)
+                                                <button class="btn btn-primary btn-action" type="button" value="resolve">Resolve selected students</button>
+                                            @endcan
                                         @elseif($status == 'Resolved')
-                                            <button class="btn btn-warning btn-action" type="button" value="undo resolve">Undo selected resolved</button>
-                                            <button class="btn btn-primary btn-action" type="button" value="notify">Notify</button>
+                                            @can('resolve', $req)
+                                                <button class="btn btn-warning btn-action" type="button" value="undo resolve">Undo selected resolved</button>
+                                            @endcan
+                                            @can('notify', $req)
+                                                <button class="btn btn-primary btn-action" type="button" value="notify">Notify</button>
+                                            @endcan
                                         @elseif($status == 'Notified')
-                                            <button class="btn btn-warning btn-action" type="button" value="undo notify">Undo selected notified</button>
+                                            @can('notify', $req)
+                                                <button class="btn btn-warning btn-action" type="button" value="undo notify">Undo selected notified</button>
+                                            @endcan
                                         @endif
                                     </td>
                                 </tr>
                             </footer>
-                        @endcan
+
                     </table>
                     <div id="file-info">
                         <div class="mb-3 form-group">

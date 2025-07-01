@@ -27,6 +27,7 @@
                     Links
                 </x-slot>
                 <p>Click <a href="/application/list">here</a> to view the applications.</p>
+                <p>Click <a href="/duplicate/application">here</a> to view the duplicate applications.</p>
             </x-block>
         @endcan
     </x-container>

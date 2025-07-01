@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Person;
 use App\Models\Student;
 use App\Models\Application;
+
 
 class ApplicationController extends Controller
 {
@@ -239,5 +241,16 @@ class ApplicationController extends Controller
             'applications' => $applications->paginate(),
         ];
         return view('application.list', $data);
+    }
+
+    public function duplicate()
+    {
+        $duplicates = DB::select("select AL.id as allotment_id,A.id as application_id,A.name as application_name,P.name as allotment_name,S.mzuid as mzuid, S.course, S.department
+            FROM applications A join (students S JOIN (people P JOIN allotments AL on AL.person_id = P.id) ON S.person_id = P.id) on A.mzuid=S.mzuid");
+        // return $duplicates;
+        $data = [
+            'duplicates' => $duplicates,
+        ];
+        return view('application.duplicate', $data);
     }
 }

@@ -51,8 +51,8 @@ class Requirement extends Model
         if ($hostel_id == 0) {
             return Requirement::where('new_hostel_id', '0');
         } else {
-            $allot_hostels = AllotHostel::where('hostel_id', $hostel_id)->where('valid', 1);
-            return Requirement::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->where('new_hostel_id', '0');
+            // $allot_hostels = AllotHostel::where('hostel_id', $hostel_id)->where('valid', 1);
+            return Requirement::where('hostel_id', $hostel_id)->where('new_hostel_id', '0');
         }
     }
 

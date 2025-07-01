@@ -89,7 +89,7 @@ Route::post('/hostel/{hostel}/requirement_notify', [HostelController::class, 're
 Route::post('/allotment/{allotment}/clear_allotment', [AllotmentController::class, 'clear_allotment'])->middleware('auth');
 Route::get('/notification/{id}/printable', [NotificationController::class, 'printable'])->middleware('auth');
 Route::resource('application', ApplicationController::class);
-
+Route::get('/duplicate/application', [ApplicationController::class, 'duplicate'])->middleware(['auth']);
 
 Route::resource('person', PersonController::class)->middleware('auth');
 Route::resource('person.student', StudentController::class)->shallow()->middleware('auth');
