@@ -467,7 +467,7 @@
                             required
                         >
                             <option disabled selected>Select Department/Centre</option>
-                            @foreach (App\Models\Department::all() as $dept)
+                            @foreach (App\Models\Department::orderBy('name')->get() as $dept)
                                 <option value="{{ $dept->id }}" {{ old('department')==$dept->name?' selected ':''}}>{{ $dept->name }}</option>
                             @endforeach
                         </select>
