@@ -165,6 +165,7 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::get('/ajax/feedback_criteria/{id}/report_chart', 'report_chart');
     Route::post('/ajax/application/{id}/decline', 'declineApplication');
     Route::post('/ajax/application/{id}/accept', 'acceptApplication');
+    Route::post('/ajax/application/{id}/remark', 'remarkApplication');
     Route::get('/ajax/getCourses', 'getCourses');
     Route::get('/ajax/getMaxSem', 'getMaxSem');
 })->middleware('auth');

@@ -5,18 +5,27 @@ namespace App\Http\Controllers;
 use App\Models\Allotment;
 use App\Models\Requirement;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RequirementController extends Controller
 {
 
     public function index(Allotment $allotment)
     {
+        $requirements = DB::select("SELECT R.*
+            FROM (allotments A JOIN allot_hostels AH ON A.id=AH.allotment_id)
+            JOIN requirements R ON R.allot_hostel_id = A.id
+            WHERE A.id = " . $allotment->id);
+        // return Requirement::hydrate($requirements);
+
+
         if ($allotment->valid_allot_hostel() && $allotment->valid_allot_hostel()->valid_allot_seat()) {
             $data = [
                 'allotment' => $allotment,
                 'allot_hostel' => $allotment->valid_allot_hostel(),
                 'allot_seat' => $allotment->valid_allot_hostel()->valid_allot_seat(),
-                'requirements' => Requirement::where('allot_hostel_id', $allotment->valid_allot_hostel()->id)->get(),
+                //'requirements' => Requirement::where('allot_hostel_id', $allotment->valid_allot_hostel()->id)->get(),
+                'requirements' => Requirement::hydrate($requirements),
             ];
             return view('requirement.index', $data);
         } else {
@@ -71,10 +80,7 @@ class RequirementController extends Controller
 
 
 
-    public function show(Requirement $requirement)
-    {
-        
-    }
+    public function show(Requirement $requirement) {}
 
     /**
      * Show the form for editing the specified resource.
@@ -103,8 +109,7 @@ class RequirementController extends Controller
 
     public function list()
     {
-        if(!(auth()->user() && auth()->user()->can('viewList',App\Models\Requirement::class)))
-        {
+        if (!(auth()->user() && auth()->user()->can('viewList', App\Models\Requirement::class))) {
             abort(403);
         }
         $hostels = \App\Models\Hostel::orderBy('gender')->orderBy('name')->get();
@@ -121,8 +126,7 @@ class RequirementController extends Controller
         }
         if ($status == 'Nothing') {
             $requirements = Requirement::nothing($hostel ? $hostel->id : 0);
-        }
-        else if ($status == 'Applied') {
+        } else if ($status == 'Applied') {
             $requirements = Requirement::applied($hostel ? $hostel->id : 0);
         } else if ($status == 'Resolved') {
             $requirements = Requirement::resolved($hostel ? $hostel->id : 0);
@@ -136,10 +140,9 @@ class RequirementController extends Controller
             'requirements' => $requirements->paginate()->withQueryString(),
             'status' => $status
         ];
-        if($status == "Nothing"){
+        if ($status == "Nothing") {
             return view('requirement.nothing', $data);
-        }
-        else{
+        } else {
             return view('requirement.list', $data);
         }
     }
@@ -230,7 +233,7 @@ class RequirementController extends Controller
         } else if (request()->status == 'Notified' && request()->action == 'undo notify') {
             if (request()->has('requirement_id')) {
                 $requirement_ids = request()->get('requirement_id');
-                \App\Models\SemAllot::whereIn('requirement_id',$requirement_ids)->delete();
+                \App\Models\SemAllot::whereIn('requirement_id', $requirement_ids)->delete();
                 Requirement::whereIn('id', $requirement_ids)->update([
                     'notified' => 0,
                 ]);

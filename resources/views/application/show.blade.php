@@ -128,6 +128,21 @@
                     <td>Reason for hostel requirement</td>
                     <td>{!! nl2br($application->reason) !!}</td>
                 </tr>
+                @if($application->remark)
+                    </tr>
+                        <td>Remark</td>
+                        <td>{!! nl2br($application->remark) !!}</td>
+                    </tr>
+                @endif
+                @can('manage', $application)
+                    </tr>
+                        <td></td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#remarkModal" data-bs-whatever="Remark">Add/Edit remark</button>
+                        </td>
+                    </tr>
+                @endcan
+
 
             </table>
         </x-block>
@@ -150,6 +165,31 @@
             </x-block>
         @endcan
     </x-container>
+
+{{-- Modal for remarks --}}
+<div class="modal fade" id="remarkModal" tabindex="-1" aria-labelledby="remarkModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="remarkModalLabel">Add/ Edit remark</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="remark" class="col-form-label">Remark:</label>
+                        <textarea class="form-control" id="remark" name="remark">{{ old('remark',$application->remark) }}</textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary btn-save">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+{{-- Modal for remarks --}}
     <script>
         $(document).ready(function() {
 
@@ -164,7 +204,7 @@
                     $("form[name='frm_submit']").submit();
                 }
             });
-            $("button.btn-approve").click(function() {
+            {{-- $("button.btn-approve").click(function() {
                 if (confirm("Are you sure you want to approve this application?")) {
                     $.ajax({
                         type: "post",
@@ -193,6 +233,24 @@
                         }
                     });
                 }
+            }); --}}
+            $("button.btn-save").click(function() {
+
+                    $.ajax({
+                        type: "post",
+                        url: "/ajax/application/" + $("input[name='application_id']").val() + "/remark",
+                        data: {
+                            remark: $("#remark").val()
+                        },
+                        success: function(data, status) {
+                            {{-- alert("Remark saved successfully."); --}}
+                            location.reload();
+                        },
+                        error: function(xhr, status, error) {
+                            alert("Error saving remark: " + xhr.responseText);
+                        }
+                    });
+
             });
 
         });

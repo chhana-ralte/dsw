@@ -49,9 +49,9 @@ class Requirement extends Model
     public static function nothing($hostel_id = 0)
     {
         if ($hostel_id == 0) {
-            return AllotHostel::where('valid',1)->whereNotIn('id',Requirement::all()->pluck('allot_hostel_id'));
+            return AllotHostel::where('valid', 1)->whereNotIn('id', Requirement::all()->pluck('allot_hostel_id'));
         } else {
-            return AllotHostel::where('hostel_id',$hostel_id)->where('valid',1)->whereNotIn('id',Requirement::all()->pluck('allot_hostel_id'));
+            return AllotHostel::where('hostel_id', $hostel_id)->where('valid', 1)->whereNotIn('id', Requirement::all()->pluck('allot_hostel_id'));
         }
     }
     public static function applied($hostel_id = 0)
@@ -59,7 +59,6 @@ class Requirement extends Model
         if ($hostel_id == 0) {
             return Requirement::where('new_hostel_id', '0');
         } else {
-            // $allot_hostels = AllotHostel::where('hostel_id', $hostel_id)->where('valid', 1);
             return Requirement::where('hostel_id', $hostel_id)->where('new_hostel_id', '0');
         }
     }

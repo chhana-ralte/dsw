@@ -192,25 +192,35 @@ class AjaxController extends Controller
         return $id;
     }
 
-    public function getCourses(){
+    public function getCourses()
+    {
         // return "Hello";
-        if(request()->has('department')){
+        if (request()->has('department')) {
             // return request()->department;
-            $department = \App\Models\Department::where('id',$_GET['department'])->first();
-            $courses = \App\Models\Course::where('department_id',$department->id)->get();
+            $department = \App\Models\Department::where('id', $_GET['department'])->first();
+            $courses = \App\Models\Course::where('department_id', $department->id)->get();
             return $courses;
         }
         return "Error";
     }
 
-    public function getMaxSem(){
+    public function getMaxSem()
+    {
         // return "Hello";
-        if(request()->has('course')){
+        if (request()->has('course')) {
             // return request()->department;
-            $course = \App\Models\Course::where('id',$_GET['course'])->first();
+            $course = \App\Models\Course::where('id', $_GET['course'])->first();
             // return $course->max_semester;
             return ['max_sem' => $course->max_semester];
         }
         return "Error";
+    }
+
+    public function remarkApplication($id)
+    {
+        $application = \App\Models\Application::findOrFail($id);
+        $application->remark = request()->remark;
+        $application->save();
+        return "Success";
     }
 }
