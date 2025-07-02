@@ -16,7 +16,7 @@ class RequirementPolicy
     }
     public function viewList(User $user): bool
     {
-        return true;
+        // return true;
         return $user->max_role_level() >= 2;
     }
 

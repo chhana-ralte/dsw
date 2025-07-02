@@ -1,12 +1,12 @@
 <x-layout>
     <x-container>
-        @if ($allotment->user() && $allotment->user()->id == auth()->user()->id)
+
             @if ($allotment->valid_allot_hostel())
                 <x-block>
                     @include('common.allotment.partials.requirement')
                 </x-block>
             @endif
-        @endif
+
         <x-block>
             @include('common.allotment.partials.personal')
         </x-block>

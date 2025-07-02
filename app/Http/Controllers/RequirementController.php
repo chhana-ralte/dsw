@@ -73,7 +73,7 @@ class RequirementController extends Controller
 
     public function show(Requirement $requirement)
     {
-        //
+        
     }
 
     /**

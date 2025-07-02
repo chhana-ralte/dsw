@@ -246,11 +246,20 @@ class ApplicationController extends Controller
 
     public function duplicate()
     {
-        $duplicates = DB::select("select AL.id as allotment_id,A.id as application_id,A.name as application_name,P.name as allotment_name,S.mzuid as mzuid, S.course, S.department
+        $duplicates_mzuid = DB::select("select AL.id as allotment_id,A.id as application_id,A.name as application_name,P.name as allotment_name,S.mzuid as mzuid, S.course, S.department
             FROM applications A join (students S JOIN (people P JOIN allotments AL on AL.person_id = P.id) ON S.person_id = P.id) on A.mzuid=S.mzuid");
-        // return $duplicates;
+        $duplicates_mobile = DB::select("select AL.id as allotment_id,A.id as application_id,A.name as application_name,P.name as allotment_name,S.mzuid as mzuid, S.course, S.department
+            from applications A join ((people P JOIN allotments AL on AL.person_id = P.id) join students S on P.id=S.person_id) on A.mobile=P.mobile");
+        $duplicates_email = DB::select("select AL.id as allotment_id,A.id as application_id,A.name as application_name,P.name as allotment_name,S.mzuid as mzuid, S.course, S.department
+            from applications A join ((people P JOIN allotments AL on AL.person_id = P.id) join students S on P.id=S.person_id) on A.email=P.email");
+        $duplicates_name = DB::select("select AL.id as allotment_id,A.id as application_id,A.name as application_name,P.name as allotment_name,S.mzuid as mzuid, S.course, S.department
+            from applications A join ((people P JOIN allotments AL on AL.person_id = P.id) join students S on P.id=S.person_id) on A.name=P.name");
+
         $data = [
-            'duplicates' => $duplicates,
+            'duplicates_mzuid' => $duplicates_mzuid,
+            'duplicates_mobile' => $duplicates_mobile,
+            'duplicates_email' => $duplicates_email,
+            'duplicates_name' => $duplicates_name,
         ];
         return view('application.duplicate', $data);
     }
