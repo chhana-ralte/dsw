@@ -268,9 +268,9 @@ class ApplicationController extends Controller
 
     public function duplicate($id)
     {
-        // return $id;
+
         $application = Application::findOrFail($id);
-        // return $application;
+
         $allotments = $application->duplicates();
         return $allotments;
     }

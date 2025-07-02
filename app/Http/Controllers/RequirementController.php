@@ -246,7 +246,7 @@ class RequirementController extends Controller
         }
     }
 
-    public function duplicates($id)
+    public function duplicate($id)
     {
         $requirement = Requirement::findOrFail($id);
         $applications = $requirement->duplicates();
