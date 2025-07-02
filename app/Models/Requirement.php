@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Requirement extends Model
 {
@@ -89,5 +90,14 @@ class Requirement extends Model
     public function valid_sem_allot()
     {
         return SemAllot::where('requirement_id', $this->id)->where('valid', 1)->get();
+    }
+
+    public function duplicates()
+    {
+        $duplicates = DB::select("SELECT AP.*
+            FROM requirements R JOIN (allot_hostels AH JOIN (allotments A JOIN (people P JOIN students S ON P.id=S.person_id) ON P.id=A.person_id) ON A.id=AH.allotment_id) ON AH.id=R.allot_hostel_id, applications AP
+            WHERE R.id = " . $this->id . "  AND (P.name = AP.name OR S.mzuid = AP.mzuid OR P.mobile = AP.mobile OR P.email = AP.email)");
+        //$duplicates['query'] = $str;
+        return Application::hydrate($duplicates);
     }
 }

@@ -245,4 +245,11 @@ class RequirementController extends Controller
             }
         }
     }
+
+    public function duplicates($id)
+    {
+        $requirement = Requirement::findOrFail($id);
+        $applications = $requirement->duplicates();
+        return $applications;
+    }
 }

@@ -80,6 +80,9 @@
                                         @else
                                             {{ $req->person->name }}
                                         @endcan
+                                        @if(count($req->duplicates()) > 0)
+                                            <br><button type="button" class="btn badge bg-warning btn-duplicate" value="{{ $req->id}}">Possible duplicate</button>
+                                        @endif
                                     </td>
 
                                     <td>
@@ -140,29 +143,28 @@
                             @endforeach
                         </tbody>
 
-                            <footer>
-                                <tr>
-                                    <td colspan="6">
-                                        @if($status == 'Applied')
-                                            @if(auth()->user()->can('resolves', App\Models\Requirement::class) || auth()->user()->isWardenOf($hostel?$hostel->id:0))
-                                                <button class="btn btn-primary btn-action" type="button" value="resolve">Resolve selected students</button>
-                                            @endif
-                                        @elseif($status == 'Resolved')
-                                            @if(auth()->user()->can('resolves', App\Models\Requirement::class) || auth()->user()->isWardenOf($hostel?$hostel->id:0))
-                                                <button class="btn btn-warning btn-action" type="button" value="undo resolve">Undo selected resolved</button>
-                                            @endif
-                                            @can('notifies', App\Models\Requirement::class)
-                                                <button class="btn btn-primary btn-action" type="button" value="notify">Notify</button>
-                                            @endcan
-                                        @elseif($status == 'Notified')
-                                            @can('notifies', App\Models\Requirement::class)
-                                                <button class="btn btn-warning btn-action" type="button" value="undo notify">Undo selected notified</button>
-                                            @endcan
+                        <footer>
+                            <tr>
+                                <td colspan="6">
+                                    @if($status == 'Applied')
+                                        @if(auth()->user()->can('resolves', App\Models\Requirement::class) || auth()->user()->isWardenOf($hostel?$hostel->id:0))
+                                            <button class="btn btn-primary btn-action" type="button" value="resolve">Resolve selected students</button>
                                         @endif
-                                    </td>
-                                </tr>
-                            </footer>
-
+                                    @elseif($status == 'Resolved')
+                                        @if(auth()->user()->can('resolves', App\Models\Requirement::class) || auth()->user()->isWardenOf($hostel?$hostel->id:0))
+                                            <button class="btn btn-warning btn-action" type="button" value="undo resolve">Undo selected resolved</button>
+                                        @endif
+                                        @can('notifies', App\Models\Requirement::class)
+                                            <button class="btn btn-primary btn-action" type="button" value="notify">Notify</button>
+                                        @endcan
+                                    @elseif($status == 'Notified')
+                                        @can('notifies', App\Models\Requirement::class)
+                                            <button class="btn btn-warning btn-action" type="button" value="undo notify">Undo selected notified</button>
+                                        @endcan
+                                    @endif
+                                </td>
+                            </tr>
+                        </footer>
                     </table>
                     <div id="file-info">
                         <div class="mb-3 form-group">
@@ -198,6 +200,45 @@
             </div>
         </x-block>
     </x-container>
+{{-- Modal for duplicate requirement --}}
+
+<div class="modal fade" id="duplicateModal" tabindex="-1" aria-labelledby="duplicateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="duplicateModalLabel">Possible duplicates</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="duplicate" class="col-form-label">Duplicates from new application</label>
+                        <div class="col-md-12" id="app">
+                            <table class="table table-bordered table-striped">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Mobile</th>
+                                    <th>MZU ID</th>
+                                    <th>Course - Department</th>
+                                </tr>
+                                <tbody id="app-body">
+                                </tbody>
+                            </table>
+                        </div>
+                        {{-- <textarea class="form-control" id="duplicate" name="duplicate"></textarea> --}}
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{{-- Modal for duplicate requirement --}}
+
+
+
     <script>
         $(document).ready(function(){
             $.ajaxSetup({
@@ -248,6 +289,24 @@
             $("select[name='hostel']").change(function(){
                 location.replace('/requirement/list?hostel_id=' + $(this).val() + '&status=' + $("input[name='status']").val());
                 exit();
+            });
+
+            $("button.btn-duplicate").click(function(){
+                $.ajax({
+                    type: "get",
+                    url: "/requirement/" + $(this).val() + "/duplicate",
+                    success: function(data, status) {
+                        $("#app-body").empty();
+                        for (var i = 0; i < data.length; i++) {
+                            $("#app-body").append("<tr><td>" + data[i].name + "</td><td>" + data[i].mobile + "</td><td>" + data[i].mzuid + "</td><td>" + data[i].course + " - " + data[i].department + "</td></tr>");
+                        }
+                        {{-- $("textarea#duplicate").val(data.length); --}}
+                    },
+                    error: function(xhr, status, error) {
+                        alert("Error getting duplicate: " + xhr.responseText);
+                    }
+                });
+                $("#duplicateModal").modal('show');
             });
         });
     </script>

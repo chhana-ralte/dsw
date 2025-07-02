@@ -246,7 +246,7 @@ class ApplicationController extends Controller
         return view('application.list', $data);
     }
 
-    public function duplicate()
+    public function duplicates()
     {
         $duplicates_mzuid = DB::select("select AL.id as allotment_id,A.id as application_id,A.name as application_name,P.name as allotment_name,S.mzuid as mzuid,A.mzuid as application_mzuid, S.course, A.course as application_course, S.department, A.department as application_department
             FROM applications A join (students S JOIN (people P JOIN allotments AL on AL.person_id = P.id) ON S.person_id = P.id) on A.mzuid=S.mzuid");
@@ -264,5 +264,14 @@ class ApplicationController extends Controller
             'duplicates_name' => $duplicates_name,
         ];
         return view('application.duplicate', $data);
+    }
+
+    public function duplicate($id)
+    {
+        // return $id;
+        $application = Application::findOrFail($id);
+        // return $application;
+        $allotments = $application->duplicates();
+        return $allotments;
     }
 }

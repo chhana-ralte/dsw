@@ -113,7 +113,7 @@ class AjaxController extends Controller
         } else if (isset($_GET['room_id'])) {
             $seats = DB::table('seats')->join('rooms', 'seats.room_id', 'rooms.id')
                 ->select('seats.id', 'rooms.roomno', 'rooms.id as room_id', 'seats.serial')
-                ->where('rooms.id', $room->id)
+                ->where('rooms.id', $_GET['room_id'])
                 ->get();
             return $seats;
         } else {
