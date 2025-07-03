@@ -213,7 +213,7 @@
                 <form>
                     <div class="mb-3">
                         <label for="duplicate" class="col-form-label">Duplicates from new application</label>
-                        <div class="col-md-12" id="app">
+                        <div class="col-md-12" style="width:100%;overfloy-x:auto" id="app">
                             <table class="table table-bordered table-striped">
                                 <tr>
                                     <th>Name</th>
