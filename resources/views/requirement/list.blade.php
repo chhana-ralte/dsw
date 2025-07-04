@@ -148,7 +148,7 @@
                                 <td colspan="6">
                                     @if($status == 'Applied')
                                         @if(auth()->user()->can('resolves', App\Models\Requirement::class) || auth()->user()->isWardenOf($hostel?$hostel->id:0))
-                                            <button class="btn btn-primary btn-action" type="button" value="resolve">Resolve selected students</button>
+                                            <button class="btn btn-primary btn-action" type="button" value="confirm resolve">Resolve selected students</button>
                                         @endif
                                     @elseif($status == 'Resolved')
                                         @if(auth()->user()->can('resolves', App\Models\Requirement::class) || auth()->user()->isWardenOf($hostel?$hostel->id:0))

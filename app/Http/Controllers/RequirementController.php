@@ -109,7 +109,7 @@ class RequirementController extends Controller
 
     public function list()
     {
-        if (!(auth()->user() && auth()->user()->can('viewList', App\Models\Requirement::class))) {
+        if (!(auth()->user() && auth()->user()->can('viewList', \App\Models\Requirement::class))) {
             abort(403);
         }
         $hostels = \App\Models\Hostel::orderBy('gender')->orderBy('name')->get();
@@ -150,9 +150,37 @@ class RequirementController extends Controller
     public function listUpdate()
     {
 
-        $hostel_id = request()->has('hostel_id') ? request()->hostel_id : 0;
-        return 
-        if (request()->status == 'Applied' && request()->action == 'resolve') {
+
+        // return request()->all();
+        if (request()->has('hostel_id') && \App\Models\Hostel::find(request()->hostel_id)) {
+            $hostel = \App\Models\Hostel::find(request()->hostel_id);
+        } else {
+            $hostel = false;
+        }
+
+        if (request()->status == 'Applied' && request()->action == 'confirm resolve') {
+            $new = array();
+            foreach (request()->get('requirement_id') as $id) {
+                $requirement = Requirement::find($id);
+                $tmp =                    [
+                    'hostel_id' => request()->new_hostel_id[$requirement->id],
+                    'hostel_name' => \App\Models\Hostel::find(request()->new_hostel_id[$requirement->id])->name,
+                    'room_capacity' => request()->new_roomcapacity[$requirement->id],
+                ];
+                $new[$requirement->id] = $tmp;
+            }
+            $data = [
+                'prev_request' => request()->all(),
+                'hostel' => $hostel,
+                'status' => 'confirm resolve',
+                'requirements' => Requirement::whereIn('id', request()->get('requirement_id'))->get(),
+                'new' => $new,
+            ];
+            // return $data;
+            return view('requirement.confirmResolve', $data);
+        } else if (request()->action == 'resolve') {
+            $hostel_id = request()->has('hostel_id') ? request()->hostel_id : 0;
+            // return "Hello";
             if (request()->has('requirement_id')) {
                 $requirement_ids = request()->get('requirement_id');
                 foreach ($requirement_ids as $id) {
