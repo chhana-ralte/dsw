@@ -47,6 +47,7 @@
                     <th>Room type</th>
                     <th>Email</th>
                     <th>Mobile</th>
+                    <th>MZU ID</th>
                 </tr>
                 <?php $sl = 1 ?>
                 @foreach($sem_allots as $allot)
@@ -59,6 +60,7 @@
                         <td>{{ $allot->requirement->new_roomtype() }}</td>
                         <td>{{ $allot->allotment->person->email }}</td>
                         <td>{{ $allot->allotment->person->mobile }}</td>
+                        <td>{{ $allot->allotment->person->student()->mzuid }}</td>
                     </tr>
                 @endforeach
             </table>

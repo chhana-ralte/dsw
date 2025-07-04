@@ -298,9 +298,14 @@
                     success: function(data, status) {
                         $("#app-body").empty();
                         for (var i = 0; i < data.length; i++) {
-                            $("#app-body").append("<tr><td>" + data[i].name + "</td><td>" + data[i].mobile + "</td><td>" + data[i].mzuid + "</td><td>" + data[i].course + " - " + data[i].department + "</td></tr>");
+                            var str = "<tr>";
+                            str += "<td>" + data[i].name + "</td>";
+                            str += "<td>" + data[i].mobile + "</td>";
+                            str += "<td>" + data[i].mzuid + "</td>";
+                            str += "<td>" + data[i].course + " - " + data[i].department + "</td>";
+                            str += "</tr>";
+                            $("#app-body").append(str);
                         }
-                        {{-- $("textarea#duplicate").val(data.length); --}}
                     },
                     error: function(xhr, status, error) {
                         alert("Error getting duplicate: " + xhr.responseText);

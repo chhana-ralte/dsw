@@ -151,6 +151,7 @@ class RequirementController extends Controller
     {
 
         $hostel_id = request()->has('hostel_id') ? request()->hostel_id : 0;
+        return 
         if (request()->status == 'Applied' && request()->action == 'resolve') {
             if (request()->has('requirement_id')) {
                 $requirement_ids = request()->get('requirement_id');
