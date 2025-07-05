@@ -3,9 +3,7 @@
 
         <x-block>
             <x-slot name="heading">
-                Click 'confirm' to resolve the selected students.
-
-                <span class="text-danger">Students can not be resolved if their email and mobile number are not updated.</span>
+                Select students and select the file.
 
                 <p>
                     <a class="btn btn-secondary btn-sm" href="{{ url()->previous()}}">
@@ -14,12 +12,44 @@
                 </p>
 
             </x-slot>
+
             <div style="width: 100%; overflow-x:auto">
                 <form name="frm-submit" method="post" action="/requirement/list">
                     @csrf
                     <input type="hidden" name="status" value="{{ $status }}">
                     <input type="hidden" name="action">
                     <input type="hidden" name="hostel_id" value="{{ $hostel?$hostel->id:0 }}">
+                    <div id="file-info">
+                        <div class="mb-3 form-group row">
+                            <label class="col-md-5">Existing file number</label>
+                            <div class="col md-7">
+                                <select name="file" class="form-control">
+                                    <option value="0">New file</option>
+                                    @foreach($notifications as $noti)
+                                        <option value="{{ $noti->id }}">{{ $noti->no }}:{{ $noti->dt }}: {{ $noti->content }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3 form-group row">
+                            <label class="col-md-5">Enter file number</label>
+                            <div class="col md-7">
+                                <input type="text" class="form-control" name="no">
+                            </div>
+                        </div>
+                        <div class="mb-3 form-group row">
+                            <label class="col-md-5">Enter file date</label>
+                            <div class="col md-7">
+                                <input type="date" class="form-control" name="dt">
+                            </div>
+                        </div>
+                        <div class="mb-3 form-group row">
+                            <label class="col-md-5">Enter subject</label>
+                            <div class="col md-7">
+                                <input type="text" class="form-control" name="subject">
+                            </div>
+                        </div>
+                    </div>
                     <table class="table table-auto">
                         <thead>
                             <tr>
@@ -36,19 +66,14 @@
                                 <tr>
 
                                     <td>
-                                        @if($req->person->mobile != '' && $req->person->email != '')
-                                            <input type="checkbox" name="requirement_id[]" value="{{ $req->id }}" checked>
-                                        @else
-                                            <input type="checkbox" disabled>
-                                        @endif
+
+                                        <input type="checkbox" name="requirement_id[]" value="{{ $req->id }}" checked>
+
                                     </td>
                                     <td>{{ $sl++ }}</td>
                                     <td>
 
                                         {{ $req->person->name }}
-                                        @if($req->person->mobile == '' || $req->person->email == '')
-                                            <br><span class="badge bg-danger">No mobile or email</span>
-                                        @endif
 
                                     </td>
 
@@ -63,10 +88,8 @@
                                     </td>
 
                                     <td>
-                                        <input type="hidden" name="new_hostel_id[{{ $req->id }}]" value="{{ $new[$req->id]['hostel_id'] }}">
-                                        <input type="hidden" name="new_roomcapacity[{{ $req->id }}]" value="{{ $new[$req->id]['room_capacity'] }}">
-                                        Hostel: {{ $new[$req->id]['hostel_name'] }}<br>
-                                        Type: {{ $new[$req->id]['room_type'] }}<br>
+                                        Hostel: {{ $req->new_hostel->name }}<br>
+                                        Type: {{ App\Models\Room::room_type($req->new_roomcapacity) }}<br>
 
                                     </td>
                                 </tr>
@@ -77,7 +100,7 @@
                             <tr>
                                 <td colspan="6">
                                     @if(auth()->user()->can('resolves', App\Models\Requirement::class) || auth()->user()->isWardenOf($hostel?$hostel->id:0))
-                                        <button class="btn btn-primary btn-action" type="button" value="resolve">Confirm</button>
+                                        <button class="btn btn-primary btn-action" type="button" value="notify">Confirm</button>
                                     @endif
 
                                 </td>
@@ -152,7 +175,12 @@
 
                 if(nos == 0){
                     alert("Please select the students.");
-                    return false;
+                    exit();
+                }
+
+                if($("select[name='file']").val() == 0 && ($("input[name='no']").val() == '' || $("input[name='dt']").val() == '' || $("input[name='subject']").val() == '')){
+                    alert("Enter file number, date and subject to proceed.");
+                    exit();
                 }
 
                 else{
@@ -168,7 +196,18 @@
                 });
             });
 
-
+            $("select[name='file']").change(function(){
+                if($(this).val() == 0){
+                    $("input[name='no']").prop('disabled',false);
+                    $("input[name='dt']").prop('disabled',false);
+                    $("input[name='subject']").prop('disabled',false);
+                }
+                else{
+                    $("input[name='no']").prop('disabled',true);
+                    $("input[name='dt']").prop('disabled',true);
+                    $("input[name='subject']").prop('disabled',true);
+                }
+            })
 
 
         });

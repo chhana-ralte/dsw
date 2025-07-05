@@ -62,7 +62,15 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $sl = ($requirements->currentPage() - 1) * $requirements->perPage() + 1; ?>
+                            <?php
+                                if($hostel){
+                                    $sl = 1;
+                                }
+                                else{
+                                    $sl = ($requirements->currentPage() - 1) * $requirements->perPage() + 1;
+                                }
+                            ?>
+
                             @foreach ($requirements as $allot_hostel)
                                 <tr>
                                     <td>
@@ -146,10 +154,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="float-end">
-                        {{ $requirements->links() }}
-                    </div>
-
+                    @if(!($hostel))
+                        <div class="float-end">
+                            {{ $requirements->links() }}
+                        </div>
+                    @endif
                 </form>
             </div>
         </x-block>

@@ -76,8 +76,10 @@ class Requirement extends Model
     public static function notified($hostel_id = 0)
     {
         if ($hostel_id == 0) {
-            return Requirement::where('new_hostel_id', '<>', '0')->where('notified', '1');
+            // return Requirement::where('new_hostel_id', '<>', '0')->where('notified', '1');
+            return Requirement::select('requirements.*')->join('sem_allots','sem_allots.requirement_id','requirements.id')->where('new_hostel_id','<>',0)->where('notified','1')->orderBy('sem_allots.sl');
         } else {
+            return Requirement::select('requirements.*')->join('sem_allots','sem_allots.requirement_id','requirements.id')->where('new_hostel_id',$hostel_id)->where('notified','1')->orderBy('sem_allots.sl');
             return Requirement::where('new_hostel_id', $hostel_id)->where('notified', '1');
         }
     }

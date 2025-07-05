@@ -54,4 +54,19 @@ class Room extends Model
     {
         return $this->capacity == 1 ? 'Single' : ($this->capacity == 2 ? 'Double' : ($this->capacity == 3 ? 'Triple' : ($this->capacity > 3 ? 'Dorm' : 'Undefined')));
     }
+
+    public static function room_type($capacity){
+        if($capacity == 1){
+            return "Single";
+        }
+        else if($capacity == 2){
+            return "Double";
+        }
+        else if($capacity == 3){
+            return "Triple";
+        }
+        else if($capacity >= 4){
+            return "Dorm";
+        }
+    }
 }

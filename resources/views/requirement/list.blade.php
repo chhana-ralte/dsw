@@ -66,14 +66,27 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $sl = ($requirements->currentPage() - 1) * $requirements->perPage() + 1; ?>
+                            <?php
+                                if($hostel){
+                                    $sl = 1;
+                                }
+                                else{
+                                    $sl = ($requirements->currentPage() - 1) * $requirements->perPage() + 1;
+                                }
+                            ?>
                             @foreach ($requirements as $req)
                                 <tr>
 
                                     <td>
                                         <input type="checkbox" name="requirement_id[]" value="{{ $req->id }}">
                                     </td>
-                                    <td>{{ $sl++ }}</td>
+                                    <td>
+                                        @if($status == 'Notified')
+                                            {{ $req->sem_allot()->sl }}
+                                        @else
+                                            {{ $sl++ }}
+                                        @endif
+                                    </td>
                                     <td>
                                         @can('view', $req->allot_hostel->allotment)
                                             <a href="/allotment/{{ $req->allot_hostel->allotment->id }}">{{ $req->person->name }}</a>
@@ -82,6 +95,9 @@
                                         @endcan
                                         @if(count($req->duplicates()) > 0)
                                             <br><button type="button" class="btn badge bg-warning btn-duplicate" value="{{ $req->id}}">Possible duplicate</button>
+                                        @endif
+                                        @if($req->person->mobile == '' || $req->person->email == '')
+                                            <br><span class="badge bg-danger">No mobile or email</span>
                                         @endif
                                     </td>
 
@@ -155,7 +171,7 @@
                                             <button class="btn btn-warning btn-action" type="button" value="undo resolve">Undo selected resolved</button>
                                         @endif
                                         @can('notifies', App\Models\Requirement::class)
-                                            <button class="btn btn-primary btn-action" type="button" value="notify">Notify</button>
+                                            <button class="btn btn-primary btn-action" type="button" value="confirm notify">Notify</button>
                                         @endcan
                                     @elseif($status == 'Notified')
                                         @can('notifies', App\Models\Requirement::class)
@@ -166,36 +182,12 @@
                             </tr>
                         </footer>
                     </table>
-                    <div id="file-info">
-                        <div class="mb-3 form-group">
-                            <label class="col-md-5">Enter file number</label>
-                            <div class="col md-7">
-                                <input type="text" class="form-control" name="file">
-                            </div>
-                        </div>
-                        <div id="file-info" class="mb-3 form-group">
-                            <label class="col-md-5">Enter file date</label>
-                            <div class="col md-7">
-                                <input type="date" class="form-control" name="dt">
-                            </div>
-                        </div>
-                        <div id="file-info" class="mb-3 form-group">
-                            <label class="col-md-5">Enter subject</label>
-                            <div class="col md-7">
-                                <input type="text" class="form-control" name="subject">
-                            </div>
-                        </div>
-                        <div id="file-info" class="mb-3 form-group">
-                            <div class="col-md-5"></div>
-                            <div class="col md-7">
-                                <button class="btn btn-primary btn-action" type="button" value="allot">Make allotment</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="float-end">
-                        {{ $requirements->links() }}
-                    </div>
 
+                    @if(!$hostel)
+                        <div class="float-end">
+                            {{ $requirements->links() }}
+                        </div>
+                    @endif
                 </form>
             </div>
         </x-block>
@@ -249,6 +241,12 @@
 
             $("div#file-info").hide();
 
+            $('.table tr').click(function(event) {
+                if (event.target.type !== 'checkbox') {
+                    $(':checkbox', this).trigger('click');
+                }
+            });
+
             $("button.btn-action").click(function(){
                 var nos=0;
                 $("input[name='requirement_id[]']").each(function(){
@@ -261,9 +259,11 @@
                     alert("Please select the students.");
                     return false;
                 }
+
                 if($(this).val() == "notify"){
                     $("div#file-info").show();
                 }
+
                 else if($(this).val() == "allot"){
                     if($("input[name='file']").val() == "" || $("input[name='dt']").val() == "" || $("input[name='subject']").val() == ""){
                         alert("Please enter file number, date and subject.");
@@ -274,6 +274,7 @@
                         $("form[name='frm-submit']").submit();
                     }
                 }
+
                 else{
                     $("input[name='action']").val($(this).val());
                     $("form[name='frm-submit']").submit();
