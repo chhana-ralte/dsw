@@ -38,34 +38,34 @@
                             <th>Name</th>
                             <th>Other info</th>
                         </tr>
-                        @foreach($persons as $p)
+                        @foreach($search_results as $sr)
                             <tr>
                                 <td>
-                                    @if($p->valid_allotment())
-                                        @can('view',$p->valid_allotment())
-                                            <a href="/allotment/{{ $p->valid_allotment()->id }}?back_link=/search?str={{$str}}">{{ $p->name }}</a>
+                                    @if($sr->allotment)
+                                        @can('view',$sr->allotment)
+                                            <a href="/allotment/{{ $sr->allotment->id }}?back_link=/search?str={{$str}}">{{ $sr->name }}</a>
                                         @else
-                                            {{ $p->name }}
+                                            {{ $sr->name }}
                                         @endcan
                                     @else
-                                        {{ $p->name }}
+                                        {{ $sr->name }}
                                     @endif
                                 </td>
                                 <td>
-                                    @if($p->student())
-                                        dept : {{ $p->student()->department }},
-                                        course : {{ $p->student()->course }},
+                                    @if($sr->student)
+                                        dept : {{ $sr->student->department }},
+                                        course : {{ $sr->student->course }},
                                     @endif
-                                    @if($p->valid_allotment() && count($p->valid_allotment()->allot_hostels)>0)
+                                    @if($sr->allotment && $sr->allotment->valid==1 && count($sr->allotment->allot_hostels)>0)
                                         (
-                                        @foreach($p->valid_allotment()->allot_hostels as $ah)
+                                        @foreach($sr->allotment->allot_hostels as $ah)
                                             hostel : {{ $ah->hostel->name }},
                                             stay : {{ $ah->valid?'Yes':'No' }},
                                         @endforeach
                                         ),
                                     @endif
-                                    @if($p->other())
-                                        {{ $p->other()->remark }}
+                                    @if($sr->person->other())
+                                        {{ $sr->person->remark }}
                                     @endif
                                 </td>
                             </tr>

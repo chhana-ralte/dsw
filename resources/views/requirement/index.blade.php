@@ -5,7 +5,7 @@
                 Kindly select the requirement for next semester
             </x-slot>
         </x-block>
-        @if(count($allotment->person->requirements))
+        @if(count($requirements))
             <div style="width:100%; overflow-x:auto">
                 Requirements submitted list:
                 <table class="table">

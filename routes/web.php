@@ -57,6 +57,7 @@ Route::get('/', function () {
 Route::get('/message', [MessageController::class, 'index']);
 Route::get('/warden', [WardenController::class, 'list']);
 Route::get('/search', [SearchController::class, 'index'])->middleware(['auth']);
+
 Route::get('/consolidate', [ConsolidateController::class, 'index'])->middleware(['dsw']);
 Route::get('/consolidateDetail', [ConsolidateController::class, 'detail'])->middleware(['dsw']);
 Route::post('/consolidate', [ConsolidateController::class, 'store'])->middleware(['dsw']);
@@ -172,7 +173,12 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::get('/ajax/getMaxSem', 'getMaxSem');
 })->middleware('auth');
 
-
+Route::controller(App\Http\Controllers\MergeController::class)->group(function () {
+    Route::get('/merge', [App\Http\Controllers\MergeController::class, 'index']);
+    Route::post('/merge', [App\Http\Controllers\MergeController::class, 'find']);
+    Route::post('/merge/show', [App\Http\Controllers\MergeController::class, 'show']);
+    Route::post('/merge/update', [App\Http\Controllers\MergeController::class, 'update']);
+});
 
 
 

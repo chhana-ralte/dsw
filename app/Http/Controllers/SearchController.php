@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Person;
 // use App\Models\Student;
@@ -20,6 +21,26 @@ class SearchController extends Controller
             abort(403);
         }
         if (isset(request()->str)) {
+
+            $result = DB::select("SELECT P.id AS person_id, A.id AS allotment_id, AH.valid AS valid_allot_hostel, AH.id AS allot_hostel_id, P.name, S.course, S.mzuid, S.department, S.id as student_id
+                FROM `people` P JOIN allotments A ON P.id=A.person_id
+                LEFT JOIN students S ON P.id=S.person_id
+                LEFT JOIN others O ON P.id=O.person_id
+                LEFT JOIN allot_hostels AH ON A.id=AH.allotment_id
+                WHERE S.mzuid = ' . request()->str . '
+                OR P.name LIKE '%" . request()->str . "%'");
+            // return $result->toSql();
+
+            $result = \App\Models\SearchResult::hydrate($result);
+
+            $data = [
+                'search_results' => $result,
+                'str' => request()->str,
+                'hostel' => request()->hostel,
+            ];
+            return view('search2', $data);
+
+            
             $students = \App\Models\Student::whereLike('rollno', '%' . request()->str . '%')
                 ->orWhereLike('course', '%' . request()->str . '%')
                 ->orWhereLike('department', '%' . request()->str . '%');

@@ -12,9 +12,10 @@ class RequirementController extends Controller
 
     public function index(Allotment $allotment)
     {
+        // return $allotment;
         $requirements = DB::select("SELECT R.*
             FROM (allotments A JOIN allot_hostels AH ON A.id=AH.allotment_id)
-            JOIN requirements R ON R.allot_hostel_id = A.id
+            JOIN requirements R ON R.allot_hostel_id = AH.id
             WHERE A.id = " . $allotment->id);
         // return Requirement::hydrate($requirements);
 
@@ -137,7 +138,7 @@ class RequirementController extends Controller
         $data = [
             'hostels' => $hostels,
             'hostel' => $hostel,
-            'requirements' => $hostel?$requirements->get():$requirements->paginate()->withQueryString(),
+            'requirements' => $hostel ? $requirements->get() : $requirements->paginate()->withQueryString(),
             'status' => $status
         ];
         if ($status == "Nothing") {
@@ -181,10 +182,9 @@ class RequirementController extends Controller
             ];
             // return $data;
             return view('requirement.confirmResolve', $data);
-        }
-        else if (request()->status == 'Resolved' && request()->action == 'confirm notify') {
+        } else if (request()->status == 'Resolved' && request()->action == 'confirm notify') {
             // return "Hello";
-            $requirements = Requirement::whereIn('id',request()->requirement_id);
+            $requirements = Requirement::whereIn('id', request()->requirement_id);
             // return "Hello";
             $notifications = \App\Models\Notification::orderBy('dt')->get();
             $data = [
@@ -194,30 +194,26 @@ class RequirementController extends Controller
                 'status' => 'confirm notify',
             ];
             // return $data;
-            return view('requirement.confirmNotify',$data);
-
-        }
-        else if(request()->status == 'confirm notify' && request()->action == 'notify'){
+            return view('requirement.confirmNotify', $data);
+        } else if (request()->status == 'confirm notify' && request()->action == 'notify') {
             // return request()->all();
-            if(request()->file == 0){
+            if (request()->file == 0) {
                 $notification = \App\Models\Notification::create([
                     'no' => request()->no,
                     'dt' => request()->dt,
                     'content' => request()->subject,
                 ]);
-            }
-            else{
+            } else {
                 $notification = \App\Models\Notification::findOrFail(request()->file);
             }
-            if(count($notification->sem_allots) == 0){
+            if (count($notification->sem_allots) == 0) {
                 $sl = 1;
-            }
-            else{
+            } else {
                 $sl = $notification->sem_allots->max('sl') + 1;
             }
 
-            $requirements = Requirement::whereIn('id',request()->requirement_id)->orderBy('new_roomcapacity')->get();
-            foreach($requirements as $req){
+            $requirements = Requirement::whereIn('id', request()->requirement_id)->orderBy('new_roomcapacity')->get();
+            foreach ($requirements as $req) {
                 $semAllot = \App\Models\SemAllot::create([
                     'notification_id' => $notification->id,
                     'requirement_id' => $req->id,
@@ -251,8 +247,7 @@ class RequirementController extends Controller
             }
             return redirect('/requirement/list?hostel_id=' . $hostel_id . '&status=Resolved')
                 ->with(['message' => ['type' => 'info', 'text' => 'Requirements updated']]);
-        }
-        else if (request()->status == 'confirm resolve' && request()->action == 'resolve') {
+        } else if (request()->status == 'confirm resolve' && request()->action == 'resolve') {
             $hostel_id = request()->has('hostel_id') ? request()->hostel_id : 0;
             // return "Hello";
             if (request()->has('requirement_id')) {
@@ -284,7 +279,6 @@ class RequirementController extends Controller
                 return redirect('/requirement/list?hostel_id=' . $hostel_id . '&status=' . request()->status)
                     ->with(['message' => ['type' => 'info', 'text' => 'Select the students']]);;
             }
-
         } else if (request()->status == 'Notified' && request()->action == 'undo notify') {
             if (request()->has('requirement_id')) {
                 $requirement_ids = request()->get('requirement_id');
