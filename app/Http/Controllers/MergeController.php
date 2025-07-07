@@ -51,24 +51,30 @@ class MergeController extends Controller
 
     public function update(Request $request)
     {
-        return $request;
+        // return $request;
         $student = Student::where('mzuid', $request->mzuid)->first();
         $person = $student->person;
         $application = Application::where('mzuid', $request->mzuid)->first();
 
         if ($student) {
-            $student->name = $request->name;
-            $student->father = $request->father;
-            $student->mobile = $request->mobile;
-            $student->email = $request->email;
-            $student->dob = $request->dob;
-            $student->gender = $request->gender;
-            $student->address = $request->address;
+            $person = $student->person;
+            $person->name = $request->name;
+            $person->father = $request->father;
+            $person->mobile = $request->mobile;
+            $person->email = $request->email;
+            $person->dob = $request->dob;
+            $person->gender = $request->gender;
+            $person->address = $request->address;
+            $person->save();
+
             $student->rollno = $request->rollno;
             $student->department = $request->department;
             $student->course = $request->course;
             $student->mzuid = $request->mzuid;
             $student->save();
+            return redirect('/merge')->with(['message' => ['type' => 'info', 'text' => 'Updated with new information']]);
+        } else {
+            return redirect('/merge')->with(['message' => ['type' => 'danger', 'text' => 'Something wrong']])->withInput();
         }
     }
 }
