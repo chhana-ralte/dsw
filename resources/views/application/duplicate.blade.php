@@ -23,7 +23,7 @@
                     <th>Course - Department</th>
 
                     </tr>
-                    @foreach($duplicates_mobile as $duplicate)
+                    @foreach($duplicates_mzuid as $duplicate)
                     <tr>
                         <td><a href="/application/{{ $duplicate->application_id }}?mzuid={{ $duplicate->application_mzuid }}">{{ $duplicate->application_name }}</a></td>
                         <td><a href="/allotment/{{ $duplicate->allotment_id }}">{{ $duplicate->allotment_name }}</a></td>
@@ -81,7 +81,7 @@
                     <th>Course - Department</th>
 
                     </tr>
-                    @foreach($duplicates_mobile as $duplicate)
+                    @foreach($duplicates_email as $duplicate)
                     <tr>
                         <td><a href="/application/{{ $duplicate->application_id }}?mzuid={{ $duplicate->application_mzuid }}">{{ $duplicate->application_name }}</a></td>
                         <td><a href="/allotment/{{ $duplicate->allotment_id }}">{{ $duplicate->allotment_name }}</a></td>
@@ -110,7 +110,7 @@
                     <th>Course - Department</th>
 
                     </tr>
-                    @foreach($duplicates_mobile as $duplicate)
+                    @foreach($duplicates_name as $duplicate)
                     <tr>
                         <td><a href="/application/{{ $duplicate->application_id }}?mzuid={{ $duplicate->application_mzuid }}">{{ $duplicate->application_name }}</a></td>
                         <td><a href="/allotment/{{ $duplicate->allotment_id }}">{{ $duplicate->allotment_name }}</a></td>
