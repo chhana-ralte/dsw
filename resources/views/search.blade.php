@@ -27,7 +27,7 @@
             </form>
         </x-block>
 
-        @if (count($search_results) > 0)
+        @if (isset($search_results) && count($search_results) > 0)
             <x-block>
                 <x-slot name="heading">
                     Persons
