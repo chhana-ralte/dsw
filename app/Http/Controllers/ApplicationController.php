@@ -214,19 +214,38 @@ class ApplicationController extends Controller
 
     public function searchStore(Request $request)
     {
-
-        $application = Application::where('mzuid', $request->mzuid)->where('dob', $request->dob)->first();
-        if ($application) {
-            $data = [
-                'application' => $application,
-
-            ];
-        } else {
-            $data = [
-                'dob' => request()->dob,
-                'mzuid' => request()->mzuid,
-            ];
+        if ($request->type == 'mzuid') {
+            $application = Application::where('mzuid', $request->mzuid)->where('dob', $request->dob)->first();
+            if ($application) {
+                $data = [
+                    'application' => $application,
+                    'dob' => request()->dob,
+                    'mzuid' => request()->mzuid,
+                ];
+            } else {
+                $data = [
+                    'dob' => request()->dob,
+                    'mzuid' => request()->mzuid,
+                ];
+            }
+        } else { // type=str
+            $applications = Application::where('name', 'like', '%' . $request->str . '%')->get();
+            if (count($applications) > 0) {
+                $data = [
+                    'applications' => $applications,
+                    'str' => request()->str,
+                    'dob' => '',
+                    'mzuid' => '',
+                ];
+            } else {
+                $data = [
+                    'str' => request()->str,
+                    'dob' => '',
+                    'mzuid' => '',
+                ];
+            }
         }
+        // return $data;
         return view('application.search', $data);
     }
 

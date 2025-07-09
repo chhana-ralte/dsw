@@ -24,19 +24,20 @@
                 </p>
 
                 <p>
-                    <a class="btn btn-primary btn-sm" href="/requirement/list?{{ $hostel?'hostel_id='. $hostel->id .'&':''}}status=Nothing">
+
+                    <a class="btn {{ $status=='Nothing'?'btn-outline-primary':'btn-primary' }} btn-sm" href="/requirement/list?{{ $hostel?'hostel_id='. $hostel->id .'&':''}}status=Nothing">
                         Not applied
                         <span class="badge bg-secondary">{{ App\Models\Requirement::nothing($hostel?$hostel->id:0)->count() }}</span>
                     </a>
-                    <a class="btn btn-primary btn-sm" href="/requirement/list?{{ $hostel?'hostel_id='. $hostel->id .'&':''}}status=Applied">
+                    <a class="btn {{ $status=='Applied'?'btn-outline-primary':'btn-primary' }} btn-sm" href="/requirement/list?{{ $hostel?'hostel_id='. $hostel->id .'&':''}}status=Applied">
                         Applied
                         <span class="badge bg-secondary">{{ App\Models\Requirement::applied($hostel?$hostel->id:0)->count() }}</span>
                     </a>
-                    <a class="btn btn-primary btn-sm" href="/requirement/list?{{ $hostel?'hostel_id='. $hostel->id .'&':''}}status=Resolved">
+                    <a class="btn {{ $status=='Resolved'?'btn-outline-primary':'btn-primary' }} btn-sm" href="/requirement/list?{{ $hostel?'hostel_id='. $hostel->id .'&':''}}status=Resolved">
                         Resolved
                         <span class="badge bg-secondary">{{ App\Models\Requirement::resolved($hostel?$hostel->id:0)->count() }}</span>
                     </a>
-                    <a class="btn btn-primary btn-sm" href="/requirement/list?{{ $hostel?'hostel_id='. $hostel->id .'&':''}}status=Notified">
+                    <a class="btn {{ $status=='Notified'?'btn-outline-primary':'btn-primary' }} btn-sm" href="/requirement/list?{{ $hostel?'hostel_id='. $hostel->id .'&':''}}status=Notified">
                         Notified
                         <span class="badge bg-secondary">{{ App\Models\Requirement::notified($hostel?$hostel->id:0)->count() }}</span>
                     </a>

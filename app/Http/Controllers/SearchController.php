@@ -17,19 +17,32 @@ class SearchController extends Controller
 {
     public function index()
     {
+        // return "ASASS";
         if (Gate::denies('search')) {
             abort(403);
         }
         if (isset(request()->str)) {
+            if (request()->has('hostel') && request()->hostel != 0) {
+                // $hostel = Hostel::find(request()->hostel);
 
-            $result = DB::select("SELECT P.id AS person_id, A.id AS allotment_id, AH.valid AS valid_allot_hostel, AH.id AS allot_hostel_id, P.name, S.course, S.mzuid, S.department, S.id as student_id
+
+                $result = DB::select("SELECT P.id AS person_id, A.id AS allotment_id, AH.valid AS valid_allot_hostel, AH.id AS allot_hostel_id, P.name, S.course, S.mzuid, S.department, S.id as student_id
+                FROM `people` P JOIN allotments A ON P.id=A.person_id
+                LEFT JOIN students S ON P.id=S.person_id
+                LEFT JOIN others O ON P.id=O.person_id
+                LEFT JOIN allot_hostels AH ON A.id=AH.allotment_id
+                WHERE (S.mzuid = '" . request()->str . "' OR P.name LIKE '%" . request()->str . "%')
+                AND (AH.hostel_id = '" . request()->hostel . "' OR A.hostel_id = '" . request()->hostel . "')");
+            } else {
+                $hostel = false;
+                $result = DB::select("SELECT P.id AS person_id, A.id AS allotment_id, AH.valid AS valid_allot_hostel, AH.id AS allot_hostel_id, P.name, S.course, S.mzuid, S.department, S.id as student_id
                 FROM `people` P JOIN allotments A ON P.id=A.person_id
                 LEFT JOIN students S ON P.id=S.person_id
                 LEFT JOIN others O ON P.id=O.person_id
                 LEFT JOIN allot_hostels AH ON A.id=AH.allotment_id
                 WHERE S.mzuid = ' . request()->str . '
                 OR P.name LIKE '%" . request()->str . "%'");
-            // return $result->toSql();
+            }
 
             $result = \App\Models\SearchResult::hydrate($result);
 
@@ -38,9 +51,10 @@ class SearchController extends Controller
                 'str' => request()->str,
                 'hostel' => request()->hostel,
             ];
+            // return $data;
             return view('search2', $data);
 
-            
+
             $students = \App\Models\Student::whereLike('rollno', '%' . request()->str . '%')
                 ->orWhereLike('course', '%' . request()->str . '%')
                 ->orWhereLike('department', '%' . request()->str . '%');

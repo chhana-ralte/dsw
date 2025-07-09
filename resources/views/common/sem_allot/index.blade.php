@@ -26,7 +26,8 @@
                         @foreach ($sem_allots as $allot)
                             <tr class="table-white">
                                 <td>{{ $sl++ }}</td>
-                                <td><a href="/sem_allot/{{ $allot->id }}">{{ $allot->allotment->person->name }}</td>
+                                {{-- <td><a href="/sem_allot/{{ $allot->id }}">{{ $allot->allotment->person->name }}</a></td> --}}
+                                <td>{{ $allot->allotment->person->name }}</td>
                                 @if ($allot->allotment->person->student())
                                     <td>{{ $allot->allotment->person->student()->course }}</td>
                                     <td>{{ $allot->allotment->person->student()->department }}</td>

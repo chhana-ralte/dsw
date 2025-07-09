@@ -110,6 +110,7 @@ class RequirementController extends Controller
 
     public function list()
     {
+        // return request()->status;
         if (!(auth()->user() && auth()->user()->can('viewList', \App\Models\Requirement::class))) {
             abort(403);
         }
