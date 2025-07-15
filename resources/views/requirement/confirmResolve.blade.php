@@ -36,7 +36,7 @@
                                 <tr>
 
                                     <td>
-                                        @if($req->person->mobile != '' && $req->person->email != '')
+                                        @if(($req->person->mobile != '' && $req->person->email != '') && $req->allot_hostel->valid == 1)
                                             <input type="checkbox" name="requirement_id[]" value="{{ $req->id }}" checked>
                                         @else
                                             <input type="checkbox" disabled>
@@ -48,6 +48,10 @@
                                         {{ $req->person->name }}
                                         @if($req->person->mobile == '' || $req->person->email == '')
                                             <br><span class="badge bg-danger">No mobile or email</span>
+                                        @endif
+
+                                        @if($req->allot_hostel->valid == 0)
+                                            <br><span class="badge bg-danger">Possible invalid allotment</span>
                                         @endif
 
                                     </td>

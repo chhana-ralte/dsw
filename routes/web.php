@@ -154,6 +154,7 @@ Route::controller(App\Http\Controllers\StudentRegistrationController::class)->gr
 Route::controller(RequirementController::class)->group(function () {
     Route::get('/requirement/list', 'list')->middleware(['auth']);
     Route::post('/requirement/list', 'listUpdate');
+    Route::get('/requirement/summary', 'summary')->middleware(['auth']);
 });
 
 Route::controller(App\Http\Controllers\AjaxController::class)->group(function () {

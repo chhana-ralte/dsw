@@ -149,6 +149,21 @@ class RequirementController extends Controller
         }
     }
 
+    public function summary()
+    {
+        if (!(auth()->user() && auth()->user()->can('viewList', \App\Models\Requirement::class))) {
+            return redirect('/');
+        }
+
+        $summary = DB::select("SELECT H.name, count(AH.id) AS allot_hostels, count(R.id) AS requirements, count(if(AH.hostel_id = R.hostel_id,1,null)) AS same_hostel, count(if(AH.hostel_id <> R.hostel_id,1,null)) AS diff_hostel,
+            count(if(R.new_hostel_id=0,1,null)) AS `applied`,count(if(R.new_hostel_id<>0 AND R.notified=0,1,null)) AS `resolved`,count(if(R.notified=1,0,null)) AS `notified`
+            FROM hostels H JOIN allot_hostels AH ON H.id = AH.hostel_id AND AH.valid=1
+            LEFT JOIN requirements R ON AH.id = R.allot_hostel_id
+            GROUP BY H.name
+            ORDER BY H.gender, H.name;
+        ");
+        return view('requirement.summary', ['summary' => $summary]);
+    }
     public function listUpdate()
     {
 
