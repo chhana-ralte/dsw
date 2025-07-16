@@ -3,15 +3,15 @@
 
         <x-block>
             <x-slot name="heading">
-                Add to existing allotment
+                Application form
                 <p>
                     <a
-                        href="/application/{{ $application->id}}"
+                        href="/application"
                         class="btn btn-secondary btn-sm"
                     >Back</a>
                 </p>
-
             </x-slot>
+
 
             <form
                 class="col-md-7"
@@ -21,7 +21,7 @@
 
             >
                 @csrf
-                
+
                 <div class="mb-3 form-group row">
                     <label
                         for="name"
