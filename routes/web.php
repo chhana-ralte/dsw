@@ -151,6 +151,7 @@ Route::controller(App\Http\Controllers\StudentRegistrationController::class)->gr
 Route::controller(RequirementController::class)->group(function(){
     Route::get('/requirement/list','list');
     Route::post('/requirement/list','listUpdate');
+    Route::get('/requirement/{id}/duplicate','duplicate');
 });
 
 Route::controller(App\Http\Controllers\AjaxController::class)->group(function () {

@@ -206,9 +206,10 @@
                 <form>
                     <div class="mb-3">
                         <label for="duplicate" class="col-form-label">Duplicates from new application</label>
-                        <div class="col-md-12" style="width:100%;overfloy-x:auto" id="app">
+                        <div class="col-md-12" style="width:100%;overflow-x:auto" id="app">
                             <table class="table table-bordered table-striped">
                                 <tr>
+                                    <th>Appl. ID</th>
                                     <th>Name</th>
                                     <th>Mobile</th>
                                     <th>MZU ID</th>
@@ -301,6 +302,7 @@
                         $("#app-body").empty();
                         for (var i = 0; i < data.length; i++) {
                             var str = "<tr>";
+                            str += "<td>" + data[i].id + "</td>";
                             str += "<td>" + data[i].name + "</td>";
                             str += "<td>" + data[i].mobile + "</td>";
                             str += "<td>" + data[i].mzuid + "</td>";
