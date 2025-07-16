@@ -159,7 +159,7 @@ class RequirementController extends Controller
             count(if(R.new_hostel_id=0,1,null)) AS `applied`,count(if(R.new_hostel_id<>0 AND R.notified=0,1,null)) AS `resolved`,count(if(R.notified=1,0,null)) AS `notified`
             FROM hostels H JOIN allot_hostels AH ON H.id = AH.hostel_id AND AH.valid=1
             LEFT JOIN requirements R ON AH.id = R.allot_hostel_id
-            GROUP BY H.name
+            GROUP BY H.name, H.gender
             ORDER BY H.gender, H.name;
         ");
         return view('requirement.summary', ['summary' => $summary]);
