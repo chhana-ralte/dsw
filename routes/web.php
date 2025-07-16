@@ -57,7 +57,6 @@ Route::get('/', function () {
 Route::get('/message', [MessageController::class, 'index']);
 Route::get('/warden', [WardenController::class, 'list']);
 Route::get('/search', [SearchController::class, 'index'])->middleware(['auth']);
-
 Route::get('/consolidate', [ConsolidateController::class, 'index'])->middleware(['dsw']);
 Route::get('/consolidateDetail', [ConsolidateController::class, 'detail'])->middleware(['dsw']);
 Route::post('/consolidate', [ConsolidateController::class, 'store'])->middleware(['dsw']);
@@ -73,8 +72,6 @@ Route::get('/application/search', [ApplicationController::class, 'search']);
 Route::post('/application/search', [ApplicationController::class, 'searchStore']);
 Route::put('/application/{id}/statusUpdate', [ApplicationController::class, 'statusUpdate'])->middleware('auth');
 Route::get('/application/list', [ApplicationController::class, 'list'])->middleware('auth');
-Route::get('/application/{id}/existing', [ApplicationController::class, 'existing'])->middleware('auth');
-Route::put('/application/{id}/existing', [ApplicationController::class, 'existingStore'])->middleware('auth');
 
 
 
@@ -92,9 +89,7 @@ Route::post('/hostel/{hostel}/requirement_notify', [HostelController::class, 're
 Route::post('/allotment/{allotment}/clear_allotment', [AllotmentController::class, 'clear_allotment'])->middleware('auth');
 Route::get('/notification/{id}/printable', [NotificationController::class, 'printable'])->middleware('auth');
 Route::resource('application', ApplicationController::class);
-Route::get('/duplicate/application', [ApplicationController::class, 'duplicates'])->middleware(['auth']);
-Route::get('/requirement/{id}/duplicate', [RequirementController::class, 'duplicate'])->middleware(['auth']);
-Route::get('/application/{id}/duplicate', [ApplicationController::class, 'duplicate'])->middleware(['auth']);
+
 
 Route::resource('person', PersonController::class)->middleware('auth');
 Route::resource('person.student', StudentController::class)->shallow()->middleware('auth');
@@ -115,7 +110,7 @@ Route::resource('notification.sem_allot', SemAllotController::class)->shallow()-
 Route::resource('allotment.admission', AdmissionCheckController::class)->shallow()->middleware('auth');
 Route::resource('allotment.allot_hostel', AllotHostelController::class)->shallow()->middleware('auth');
 Route::resource('allotment.cancelSeat', CancelSeatController::class)->shallow()->middleware('auth');
-Route::resource('allotment.requirement', RequirementController::class)->shallow()->only(['index', 'create', 'store'])->middleware('auth');
+Route::resource('allotment.requirement', RequirementController::class)->shallow()->only(['index','create','store'])->middleware('auth');
 Route::resource('user', UserController::class)->middleware(['auth']);
 
 Route::resource('feedbackMaster', FeedbackMasterController::class)->middleware(['auth']);
@@ -153,10 +148,9 @@ Route::controller(App\Http\Controllers\StudentRegistrationController::class)->gr
     Route::post('/studentRegistration/create_user_store', 'create_user_store');
 });
 
-Route::controller(RequirementController::class)->group(function () {
-    Route::get('/requirement/list', 'list')->middleware(['auth']);
-    Route::post('/requirement/list', 'listUpdate');
-    Route::get('/requirement/summary', 'summary')->middleware(['auth']);
+Route::controller(RequirementController::class)->group(function(){
+    Route::get('/requirement/list','list');
+    Route::post('/requirement/list','listUpdate');
 });
 
 Route::controller(App\Http\Controllers\AjaxController::class)->group(function () {
@@ -171,18 +165,12 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::get('/ajax/feedback_criteria/{id}/report_chart', 'report_chart');
     Route::post('/ajax/application/{id}/decline', 'declineApplication');
     Route::post('/ajax/application/{id}/accept', 'acceptApplication');
-    Route::post('/ajax/application/{id}/remark', 'remarkApplication');
-
     Route::get('/ajax/getCourses', 'getCourses');
     Route::get('/ajax/getMaxSem', 'getMaxSem');
+    Route::post('/ajax/notification/{id}/reserial', 'reserialNotification');
 })->middleware('auth');
 
-Route::controller(App\Http\Controllers\MergeController::class)->group(function () {
-    Route::get('/merge', [App\Http\Controllers\MergeController::class, 'index']);
-    Route::post('/merge', [App\Http\Controllers\MergeController::class, 'find']);
-    Route::post('/merge/show', [App\Http\Controllers\MergeController::class, 'show']);
-    Route::post('/merge/update', [App\Http\Controllers\MergeController::class, 'update']);
-});
+
 
 
 

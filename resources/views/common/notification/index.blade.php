@@ -27,9 +27,13 @@
                                 <td>{{ $notif->dt }}</td>
                                 <td>{{ $notif->content }}</td>
                                 <td>
-                                    
-                                    <a href="/notification/{{ $notif->id }}/allotment" class="btn btn-primary btn-sm">Allotments</a>
-                                    
+                                    @if($notif->type == 'allotment')
+                                        <a href="/notification/{{ $notif->id }}/allotment" class="btn btn-primary btn-sm">New Allotments</a>
+                                    @elseif($notif->type == 'sem_allot')
+                                        <a href="/notification/{{ $notif->id }}/sem_allot" class="btn btn-primary btn-sm">Sem Allotments</a>
+                                    @else
+                                        Other
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

@@ -6,6 +6,9 @@
                 <p>
                     <a class="btn btn-secondary btn-sm" href="/notification/{{ $notification->id }}">Back</a>
                     <button class="btn btn-secondary btn-sm" id="printable" value="{{ $notification->id }}">Printable</button>
+                    @if(auth()->user() && auth()->user()->isAdmin())
+                        <button class="btn btn-danger btn-sm" id="reserial" value="{{ $notification->id }}">Reserial</button>
+                    @endif
                 </p>
             </x-slot>
             <div style="width: 100%; overflow-x:auto">
@@ -25,7 +28,7 @@
                         <?php $sl = 1 ?>
                         @foreach ($sem_allots as $allot)
                             <tr class="table-white">
-                                <td>{{ $sl++ }}</td>
+                                <td>{{ $allot->sl }}</td>
                                 {{-- <td><a href="/sem_allot/{{ $allot->id }}">{{ $allot->allotment->person->name }}</a></td> --}}
                                 <td>{{ $allot->allotment->person->name }}</td>
                                 @if ($allot->allotment->person->student())
@@ -61,6 +64,25 @@
         });
         $("button#printable").click(function(){
             window.open("/notification/" + $(this).val() + "/printable");
+        });
+
+        $("button#reserial").click(function(){
+            if(confirm("Serial numbers will be changed. Are you sure to continue?")){
+
+
+
+                $.ajax({
+                    type : "post",
+                    url : "/ajax/notification/" + $(this).val() + "/reserial",
+                    success : function(data,status){
+                        alert("Successful");
+                        location.reload();
+                    },
+                    error : function(){
+                        alert("Error");
+                    }
+                });
+            }
         });
     </script>
 </x-layout>
