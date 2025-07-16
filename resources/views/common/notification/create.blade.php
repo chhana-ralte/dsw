@@ -10,7 +10,7 @@
             <form method="post" action="/notification">
                 @csrf
                 <div>
-                    <div class="form-group row pt-3">
+                    <div class="pt-3 form-group row">
                         <div class="col col-md-4">
                             Notification No.
                         </div>
@@ -19,7 +19,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row pt-3">
+                    <div class="pt-3 form-group row">
                         <div class="col col-md-4">
                             Date
                         </div>
@@ -28,7 +28,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row pt-3">
+                    <div class="pt-3 form-group row">
                         <div class="col col-md-4">
                             Content
                         </div>
@@ -37,9 +37,22 @@
                         </div>
                     </div>
 
-                    <div class="form-group row pt-3">
+                    <div class="pt-3 form-group row">
                         <div class="col col-md-4">
-                            
+                            Type
+                        </div>
+                        <div class="col col-md-4">
+                            <select name="type" class="form-control">
+                                <option value="allotment">New allotments</option>
+                                <option value="sem_allot">Semester-wise allotments</option>
+                            </select>
+
+                        </div>
+                    </div>
+
+                    <div class="pt-3 form-group row">
+                        <div class="col col-md-4">
+
                         </div>
                         <div class="col col-md-4">
                             <button type="submit" class="btn btn-primary">Create</button>

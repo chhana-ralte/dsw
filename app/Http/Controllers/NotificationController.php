@@ -35,6 +35,7 @@ class NotificationController extends Controller
             'no' => $request->no,
             'dt' => $request->dt,
             'content' => $request->content,
+            'type' => $request->type,
         ]);
         return redirect('/notification')->with(['message' => ['type' => 'info', 'text' => 'Notification created']]);
     }
@@ -70,6 +71,9 @@ class NotificationController extends Controller
             'no' => $request->no,
             'dt' => $request->dt,
             'content' => $request->content,
+            'type' => $request->type,
+            'status' => $request->status,
+
         ]);
         return redirect('/notification/' . $notification->id)->with(['message' => ['type' => 'info', 'text' => 'Notification updated']]);
     }

@@ -293,4 +293,65 @@ class ApplicationController extends Controller
         $allotments = $application->duplicates();
         return $allotments;
     }
+
+    public function existing($id)
+    {
+        $application = Application::findOrFail($id);
+        $notifications = \App\Models\Notification::where('type', 'allotment')->where('status', 'active')->orderBy('id')->get();
+        return view('application.existing', ['application' => $application, 'notifications' => $notifications]);
+    }
+
+    public function existingStore(Request $request, $id)
+    {
+        // return $request;
+        $application = Application::findOrFail($id);
+        // return $application;
+        $validated = $request->validate([
+            'notification' => 'required',
+            'hostel' => 'required',
+            'from_dt' => 'required',
+            'to_dt' => 'required',
+        ]);
+
+        $person = \App\Models\Person::create([
+            'name' => $application->name,
+            'father' => $application->father,
+            'state' => $application->state,
+            'category' => $application->category,
+            'address' => $application->address,
+            'state' => $application->state,
+            'mobile' => $application->mobile,
+            'email' => $application->email,
+            'dob' => $application->dob,
+            'photo' => $application->photo,
+            'pwd' => $application->pwd ? '1' : '0',
+            'gender' => $application->gender,
+        ]);
+
+        $student = \App\Models\Student::create([
+            'person_id' => $person->id,
+            'course' => $application->course,
+            'department' => $application->department,
+            'mzuid' => $application->mzuid,
+            'rollno' => $application->rollno,
+        ]);
+
+        $allotment = \App\Models\Allotment::create([
+            'person_id' => $person->id,
+            'notification_id' => $validated['notification'],
+            'hostel_id' => $request->hostel,
+            'admitted' => 0,
+            'valid' => 1,
+            'finished' => 0,
+            'from_dt' => $request->from_dt,
+            'to_dt' => $request->to_dt,
+        ]);
+
+        if ($request->delete_application == 1) {
+            $application->delete();
+            //return "Hehe";
+
+        }
+        return redirect('/allotment/' . $allotment->id)->with(['message' => ['type' => 'info', 'text' => 'Application created successfully']]);
+    }
 }

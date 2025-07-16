@@ -11,7 +11,7 @@
                 @method('PUT')
                 @csrf
                 <div>
-                    <div class="form-group row pt-3">
+                    <div class="pt-3 form-group row">
                         <div class="col col-md-4">
                             Notification No.
                         </div>
@@ -20,7 +20,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row pt-3">
+                    <div class="pt-3 form-group row">
                         <div class="col col-md-4">
                             Date
                         </div>
@@ -29,7 +29,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row pt-3">
+                    <div class="pt-3 form-group row">
                         <div class="col col-md-4">
                             Content
                         </div>
@@ -38,9 +38,33 @@
                         </div>
                     </div>
 
-                    <div class="form-group row pt-3">
+                    <div class="pt-3 form-group row">
                         <div class="col col-md-4">
-                            
+                            Type
+                        </div>
+                        <div class="col col-md-4">
+                            <select name="type" class="form-control">
+                                <option value="allotment" {{ old('type',$notification->type) == 'allotment' ? 'selected' : '' }}>New allotments</option>
+                                <option value="sem_allot" {{ old('type',$notification->type) == 'sem_allot' ? 'selected' : '' }}>Semester-wise allotments</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="pt-3 form-group row">
+                        <div class="col col-md-4">
+                            Status
+                        </div>
+                        <div class="col col-md-4">
+                            <select name="status" class="form-control">
+                                <option value="closed" {{ old('status',$notification->status) == 'closed' ? 'selected' : '' }}>Closed</option>
+                                <option value="active" {{ old('status',$notification->status) == 'active' ? 'selected' : '' }}>Active</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="pt-3 form-group row">
+                        <div class="col col-md-4">
+
                         </div>
                         <div class="col col-md-4">
                             <button type="submit" class="btn btn-primary">Update</button>

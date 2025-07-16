@@ -155,6 +155,9 @@
                     <button class="btn btn-danger btn-status" value="decline">Decline</button>
                     <button class="btn btn-success btn-status" value="approve">Approve</button>
                     <button class="btn btn-warning btn-status" value="pending">Pending</button>
+                    @if(auth()->user() && (auth()->user()->isAdmin() || auth()->user()->isDsw()))
+                        <a class="btn btn-warning btn-existing" href="/application/{{ $application->id }}/existing">Add as existing</a>
+                    @endif
                 </div>
                 <form type="hidden" action="/application/{{ $application->id }}/statusUpdate" method="post" name="frm_submit">
                     @csrf
@@ -204,6 +207,7 @@
                     $("form[name='frm_submit']").submit();
                 }
             });
+
             {{-- $("button.btn-approve").click(function() {
                 if (confirm("Are you sure you want to approve this application?")) {
                     $.ajax({

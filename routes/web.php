@@ -73,6 +73,8 @@ Route::get('/application/search', [ApplicationController::class, 'search']);
 Route::post('/application/search', [ApplicationController::class, 'searchStore']);
 Route::put('/application/{id}/statusUpdate', [ApplicationController::class, 'statusUpdate'])->middleware('auth');
 Route::get('/application/list', [ApplicationController::class, 'list'])->middleware('auth');
+Route::get('/application/{id}/existing', [ApplicationController::class, 'existing'])->middleware('auth');
+Route::put('/application/{id}/existing', [ApplicationController::class, 'existingStore'])->middleware('auth');
 
 
 
@@ -170,6 +172,7 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::post('/ajax/application/{id}/decline', 'declineApplication');
     Route::post('/ajax/application/{id}/accept', 'acceptApplication');
     Route::post('/ajax/application/{id}/remark', 'remarkApplication');
+
     Route::get('/ajax/getCourses', 'getCourses');
     Route::get('/ajax/getMaxSem', 'getMaxSem');
 })->middleware('auth');

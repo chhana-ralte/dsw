@@ -11,7 +11,7 @@
                 @method('PUT')
                 @csrf
                 <div>
-                    <div class="form-group row pt-3">
+                    <div class="pt-3 form-group row">
                         <div class="col col-md-4">
                             Notification No.
                         </div>
@@ -20,7 +20,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row pt-3">
+                    <div class="pt-3 form-group row">
                         <div class="col col-md-4">
                             Date
                         </div>
@@ -29,7 +29,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row pt-3">
+                    <div class="pt-3 form-group row">
                         <div class="col col-md-4">
                             Content
                         </div>
@@ -38,7 +38,25 @@
                         </div>
                     </div>
 
-                    <div class="form-group row pt-3">
+                    <div class="pt-3 form-group row">
+                        <div class="col col-md-4">
+                            Type
+                        </div>
+                        <div class="col col-md-4">
+                            <input type="text" name="type" class="form-control" value="{{ old('type',$notification->type) }}" disabled>
+                        </div>
+                    </div>
+
+                    <div class="pt-3 form-group row">
+                        <div class="col col-md-4">
+                            Status
+                        </div>
+                        <div class="col col-md-4">
+                            <input type="text" name="status" class="form-control" value="{{ old('status',$notification->status) }}" disabled>
+                        </div>
+                    </div>
+
+                    <div class="pt-3 form-group row">
                         <div class="col col-md-4">
 
                         </div>

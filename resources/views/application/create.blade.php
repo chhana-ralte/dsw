@@ -1,46 +1,27 @@
 <x-layout>
     <x-container>
-        @if(Session::has('exists'))
-            <x-block>
-                <span class="text-danger">There is already an application matching your detail, click <a href="/application/search">here</a> to search and manage your application.</span>
-            </x-block>
-        @endif
+
         <x-block>
             <x-slot name="heading">
-                Application form
+                Add to existing allotment
                 <p>
                     <a
-                        href="/application"
+                        href="/application/{{ $application->id}}"
                         class="btn btn-secondary btn-sm"
                     >Back</a>
                 </p>
 
             </x-slot>
 
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
             <form
                 class="col-md-7"
                 name="frm_submit"
                 method="post"
                 action="/application/"
-                enctype="multipart/form-data"
+
             >
                 @csrf
-                <input type="hidden" name="ready" value="{{ Session::has('ready')?"1":"0" }}">
-                @if(Session::has('ready'))
-                    <input type="hidden" name="department" value="{{ old('department') }}">
-                    <input type="hidden" name="course" value="{{ old('course') }}">
-                    <input type="hidden" name="semester" value="{{ old('semester') }}">
-                @endif
+                
                 <div class="mb-3 form-group row">
                     <label
                         for="name"
