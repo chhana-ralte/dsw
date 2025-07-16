@@ -53,7 +53,7 @@
                                 <td>{{ $application->id }}</td>
                                 <td>
                                     <a href="/application/{{ $application->id }}?mzuid={{ $application->mzuid }}">{{ $application->name }}</a>
-                                    @if(count($application->duplicates()) > 0)
+                                    @if(count($application->existing_allotments()) > 0)
                                         <br><button type="button" class="btn badge bg-warning btn-duplicate" value="{{ $application->id}}">Possible duplicate</button>
                                     @endif
 

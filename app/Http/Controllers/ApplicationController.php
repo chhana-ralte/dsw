@@ -298,7 +298,14 @@ class ApplicationController extends Controller
     {
         $application = Application::findOrFail($id);
         $notifications = \App\Models\Notification::where('type', 'allotment')->where('status', 'active')->orderBy('id')->get();
-        return view('application.existing', ['application' => $application, 'notifications' => $notifications]);
+
+
+        $data = [
+            'application' => $application,
+            'notifications' => $notifications,
+
+        ];
+        return view('application.existing', $data);
     }
 
     public function existingStore(Request $request, $id)

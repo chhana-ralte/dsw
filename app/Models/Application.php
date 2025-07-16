@@ -43,4 +43,12 @@ class Application extends Model
         return $duplicates;
         return Allotment::hydrate($duplicates);
     }
+
+    public function existing_allotments()
+    {
+        $existing_allotments = DB::select("SELECT A.* FROM allotments A JOIN people P ON A.person_id = P.id
+            JOIN students S ON S.person_id = P.id WHERE S.mzuid = '" . $this->mzuid . "'");
+
+        return Allotment::hydrate($existing_allotments);
+    }
 }

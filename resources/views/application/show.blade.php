@@ -146,6 +146,58 @@
 
             </table>
         </x-block>
+        @if(count($application->existing_allotments()) > 0)
+            <x-block>
+                <x-slot name="heading">
+                    <span class="text-danger">The following existing allotment(s) are found</span>
+                </x-slot>
+                <div style="width:100%; overflow-x:auto">
+                    <table class="table">
+                        <tr>
+                            <th>Alltment ID</th>
+                            <th>Name</th>
+                            <th>Course</th>
+                            <th>Department</th>
+                            <th>Current hostel</th>
+                        </tr>
+                        @foreach($application->existing_allotments() as $allotment)
+                            <tr>
+                                <td>
+                                    <a href="{{ $allotment->id }}">{{ $allotment->id }}</a>
+                                </td>
+                                <td>
+                                    {{ $allotment->person->name }}
+                                </td>
+                                @if($allotment->person->student())
+                                    <td>
+                                        {{ $allotment->person->student()->course }}
+                                    </td>
+                                    <td>
+                                        {{ $allotment->person->student()->department }}
+                                    </td>
+                                @else
+                                    <td colspan=2>
+                                        Not a student
+                                    </td>
+                                @endif
+                                @if($allotment->valid_allot_hostel())
+                                    <td>
+                                        {{ $allotment->valid_allot_hostel()->hostel->name }}
+                                    </td>
+                                @else
+                                    <td colspan=2>
+                                        No valid hostel
+                                    </td>
+                                @endif
+
+                            </tr>
+
+                        @endforeach
+                    </table>
+                </div>
+            </x-block>
+        @endif
+
         @can('manage',$application)
             <x-block>
                 <x-slot name="heading">
