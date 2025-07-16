@@ -72,6 +72,7 @@ Route::get('/application/search', [ApplicationController::class, 'search']);
 Route::post('/application/search', [ApplicationController::class, 'searchStore']);
 Route::put('/application/{id}/statusUpdate', [ApplicationController::class, 'statusUpdate'])->middleware('auth');
 Route::get('/application/list', [ApplicationController::class, 'list'])->middleware('auth');
+Route::get('/application/{id}/duplicate', [ApplicationController::class, 'duplicate'])->middleware('auth');
 
 
 

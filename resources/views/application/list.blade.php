@@ -53,7 +53,7 @@
                                 <td>{{ $application->id }}</td>
                                 <td>
                                     <a href="/application/{{ $application->id }}?mzuid={{ $application->mzuid }}">{{ $application->name }}</a>
-                                    @if(count($application->existing_allotments()) > 0)
+                                    @if(count($application->duplicates()) > 0)
                                         <br><button type="button" class="btn badge bg-warning btn-duplicate" value="{{ $application->id}}">Possible duplicate</button>
                                     @endif
 
@@ -102,6 +102,7 @@
                         <div class="col-md-12" style="width : 100%; overflow-x : auto" id="app">
                             <table class="table table-bordered table-striped">
                                 <tr>
+                                    <th>Alltmt. ID</th>
                                     <th>Name</th>
                                     <th>Mobile</th>
                                     <th>MZU ID</th>
@@ -147,7 +148,7 @@
                     success: function(data, status) {
                         $("#app-body").empty();
                         for (var i = 0; i < data.length; i++) {
-                            $("#app-body").append("<tr><td>" + data[i].name + "</td><td>" + data[i].mobile + "</td><td>" + data[i].mzuid + "</td><td>" + data[i].course + " - " + data[i].department + "</td></tr>");
+                            $("#app-body").append("<tr><td>" + data[i].id + "</td><td>" + data[i].name + "</td><td>" + data[i].mobile + "</td><td>" + data[i].mzuid + "</td><td>" + data[i].course + " - " + data[i].department + "</td></tr>");
                         }
 
                     },

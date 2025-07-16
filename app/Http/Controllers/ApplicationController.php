@@ -291,6 +291,7 @@ class ApplicationController extends Controller
         $application = Application::findOrFail($id);
 
         $allotments = $application->duplicates();
+        // $allotments = $application->existing_allotments();
         return $allotments;
     }
 

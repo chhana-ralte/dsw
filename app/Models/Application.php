@@ -37,9 +37,7 @@ class Application extends Model
 
     public function duplicates()
     {
-        $duplicates = DB::select("SELECT A.id, P.name as name, P.mobile, P.email, S.mzuid as mzuid, S.course as course, S.department as department
-            FROM requirements R JOIN (allot_hostels AH JOIN (allotments A JOIN (people P JOIN students S ON P.id=S.person_id) ON P.id=A.person_id) ON A.id=AH.allotment_id) ON AH.id=R.allot_hostel_id, applications AP
-            WHERE AP.id = " . $this->id . "  AND (P.name = AP.name OR S.mzuid = AP.mzuid OR P.mobile = AP.mobile OR P.email = AP.email)");
+        $duplicates = DB::select("SELECT A.id, P.name as name, P.mobile, P.email, S.mzuid as mzuid, S.course as course, S.department as department FROM allot_hostels AH JOIN (allotments A JOIN (people P JOIN students S ON P.id=S.person_id) ON P.id=A.person_id) ON A.id=AH.allotment_id, applications AP WHERE AP.id = '". $this->id ."' AND (S.mzuid = AP.mzuid OR P.mobile = AP.mobile OR P.email = AP.email);");
         return $duplicates;
         return Allotment::hydrate($duplicates);
     }
