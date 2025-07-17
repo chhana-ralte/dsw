@@ -39,7 +39,7 @@
         @if(count($sem_allots) > 0)
             <table class="table">
                 <tr>
-                    <th>Sl.</th>
+                    <th>Ref.</th>
                     <th>Name</th>
                     <th>Course</th>
                     <th>Department</th>
@@ -52,7 +52,7 @@
                 <?php $sl = 1 ?>
                 @foreach($sem_allots as $allot)
                     <tr>
-                        <td>{{ $allot->sl }}</td>
+                        <td>{{ $notification->id }}/{{ $allot->id }}/{{ $allot->sl }}</td>
                         <td>{{ $allot->allotment->person->name }}</td>
                         <td>{{ $allot->allotment->person->student()->course }}</td>
                         <td>{{ $allot->allotment->person->student()->department }}</td>

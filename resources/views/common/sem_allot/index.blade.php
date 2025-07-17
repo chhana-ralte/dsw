@@ -15,7 +15,7 @@
                 <table class="table table-auto table-hover">
                     <thead>
                         <tr>
-                            <th>Sl.</th>
+                            <th>Ref.</th>
                             <th>Name</th>
                             <th>Course</th>
                             <th>Department</td>
@@ -25,10 +25,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php $sl = 1 ?>
                         @foreach ($sem_allots as $allot)
                             <tr class="table-white">
-                                <td>{{ $allot->sl }}</td>
+                                <td>{{ $notification->id }}/{{ $allot->id }}/{{ $allot->sl }}</td>
                                 {{-- <td><a href="/sem_allot/{{ $allot->id }}">{{ $allot->allotment->person->name }}</a></td> --}}
                                 <td>{{ $allot->allotment->person->name }}</td>
                                 @if ($allot->allotment->person->student())

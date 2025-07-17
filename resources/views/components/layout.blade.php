@@ -28,6 +28,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/clearance/search">Clearance</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/notification/check">Reference checking</a>
+                    </li>
                     @guest
                         <li class="nav-item">
                             <a class="nav-link" href="/studentRegistration">Student user registration</a>

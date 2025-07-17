@@ -103,4 +103,28 @@ class NotificationController extends Controller
         ];
         return view('common.notification.printable', $data);
     }
+
+    public function check()
+    {
+
+        // return request()->all();
+        return view('common.notification.check', ['str' => '']);
+    }
+
+    public function checkStore()
+    {
+        if (request()->has('str')) {
+            $arr = explode('/', request()->str);
+            if (sizeof($arr) == 3) {
+                $notification = Notification::where('id', $arr[0])->first();
+                if ($notification && $notification->type == 'sem_allot') {
+                    $sem_allot = \App\Models\SemAllot::where('notification_id', $arr[0])->where('id', $arr[1])->where('sl', $arr[2])->first();
+                    return view('common.notification.check', ['sem_allot' => $sem_allot, 'str' => request()->str]);
+                }
+                return redirect('/notification/check')->with(['message' => ['type' => 'info', 'text' => 'Reference not found.']])->withInput();
+            }
+            return redirect('/notification/check')->with(['message' => ['type' => 'info', 'text' => 'Incorrect reference format. use x/y/z where x,y,and z are numbers']])->withInput();
+        }
+        return redirect('/notification/check')->with(['message' => ['type' => 'info', 'text' => 'Reference not found.']])->withInput();
+    }
 }
