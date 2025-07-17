@@ -232,7 +232,12 @@ class RequirementController extends Controller
             }
 
             $requirements = Requirement::whereIn('id', request()->requirement_id)->orderBy('new_roomcapacity')->get();
+            $chars = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+            $len = strlen($chars);
+            $str = $chars[rand(0, $len - 1)] . $chars[rand(0, $len - 1)];
+
             foreach ($requirements as $req) {
+                $str = $chars[rand(0, $len - 1)] . $chars[rand(0, $len - 1)];
                 $semAllot = \App\Models\SemAllot::create([
                     'notification_id' => $notification->id,
                     'requirement_id' => $req->id,
@@ -240,6 +245,7 @@ class RequirementController extends Controller
                     'sessn_id' => $req->for_sessn_id,
                     'valid' => 1,
                     'sl' => $sl++,
+                    'rand' => $str,
                 ]);
 
                 if ($req->allot_hostel->hostel->id != $req->new_hostel_id) {

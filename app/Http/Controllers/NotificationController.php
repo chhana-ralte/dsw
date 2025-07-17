@@ -107,7 +107,6 @@ class NotificationController extends Controller
     public function check()
     {
 
-        // return request()->all();
         return view('common.notification.check', ['str' => '']);
     }
 
@@ -118,12 +117,12 @@ class NotificationController extends Controller
             if (sizeof($arr) == 3) {
                 $notification = Notification::where('id', $arr[0])->first();
                 if ($notification && $notification->type == 'sem_allot') {
-                    $sem_allot = \App\Models\SemAllot::where('notification_id', $arr[0])->where('id', $arr[1])->where('sl', $arr[2])->first();
+                    $sem_allot = \App\Models\SemAllot::where('notification_id', $arr[0])->where('rand', $arr[1])->where('sl', $arr[2])->first();
                     return view('common.notification.check', ['sem_allot' => $sem_allot, 'str' => request()->str]);
                 }
                 return redirect('/notification/check')->with(['message' => ['type' => 'info', 'text' => 'Reference not found.']])->withInput();
             }
-            return redirect('/notification/check')->with(['message' => ['type' => 'info', 'text' => 'Incorrect reference format. use x/y/z where x,y,and z are numbers']])->withInput();
+            return redirect('/notification/check')->with(['message' => ['type' => 'info', 'text' => 'Incorrect reference format. use x/y/z where x and z are numbers, y is 2 alpabets string']])->withInput();
         }
         return redirect('/notification/check')->with(['message' => ['type' => 'info', 'text' => 'Reference not found.']])->withInput();
     }
