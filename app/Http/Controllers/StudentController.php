@@ -25,8 +25,7 @@ class StudentController extends Controller
             'person' => $person,
             'back_link' => request('back_link')
         ];
-        return view('common.student.create',$data);
-        
+        return view('common.student.create', $data);
     }
 
     /**
@@ -58,14 +57,15 @@ class StudentController extends Controller
      */
     public function edit(Student $student)
     {
-        if(auth()->user()->cannot('edit',$student->person)){
+        if (auth()->user() && auth()->user()->cannot('edit', $student->person)) {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
         }
         $data = [
             'student' => $student,
             'back_link' => request()->back_link
         ];
-        return view('common.student.edit',$data);
+        return view('common.student.edit', $data);
     }
 
     /**

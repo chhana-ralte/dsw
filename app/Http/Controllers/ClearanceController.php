@@ -76,7 +76,7 @@ class ClearanceController extends Controller
             ];
             return view('common.clearance.show', $data);
         } else {
-            // return "asds";
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
         }
     }

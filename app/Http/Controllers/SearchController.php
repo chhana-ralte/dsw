@@ -19,6 +19,7 @@ class SearchController extends Controller
     {
         // return "ASASS";
         if (Gate::denies('search')) {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
         }
         if (isset(request()->str)) {

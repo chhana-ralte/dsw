@@ -32,19 +32,19 @@ class AdmissionCheckController extends Controller
     public function create(Allotment $allotment)
     {
         // return "asdsadasd";
-        if (!auth()->user() && auth()->user()->can('manage', $allotment)) {
+        if (!(auth()->user() && auth()->user()->can('manage', $allotment))) {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
         }
 
-        if(count($allotment->allot_hostels)>0){
+        if (count($allotment->allot_hostels) > 0) {
             $data = [
-            'allotment' => $allotment,
-            'sessns' => \App\Models\Sessn::orderBy('start_yr')->orderBy('odd_even')->get(),
+                'allotment' => $allotment,
+                'sessns' => \App\Models\Sessn::orderBy('start_yr')->orderBy('odd_even')->get(),
             ];
             // return view('common.admission.create',$data);
             return view('admissioncheck.create', $data);
-        }
-        else{ // new admission
+        } else { // new admission
             if (isset($_GET['sessn_id'])) {
                 $sessn = Sessn::findOrFail($_GET['sessn_id']);
             } else {
@@ -66,11 +66,12 @@ class AdmissionCheckController extends Controller
 
     public function store(Allotment $allotment)
     {
-        if (!auth()->user() && auth()->user()->can('manage', $allotment)) {
+        if (!(auth()->user() && auth()->user()->can('manage', $allotment))) {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
         }
 
-        if(request()->type && request()->type == 'new'){
+        if (request()->type && request()->type == 'new') {
             // return "Hello";
 
 
@@ -89,7 +90,7 @@ class AdmissionCheckController extends Controller
                 ]
             );
 
-            AllotSeat::where('seat_id',request()->seat)->where('valid',1)->update(['valid' => 0]);
+            AllotSeat::where('seat_id', request()->seat)->where('valid', 1)->update(['valid' => 0]);
 
             $allot_seat = AllotSeat::updateOrCreate(
                 [
@@ -123,9 +124,7 @@ class AdmissionCheckController extends Controller
                     'admitted' => 1
                 ]);
             }
-        }
-
-        else{
+        } else {
             request()->validate([
                 'amount' => 'numeric:required',
                 'payment_dt' => 'required',
@@ -157,7 +156,8 @@ class AdmissionCheckController extends Controller
 
     public function edit(Admission $admission)
     {
-        if (!auth()->user() && auth()->user()->can('manage', $allotment)) {
+        if (!(auth()->user() && auth()->user()->can('manage', $admission->allotment))) {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
         }
 
@@ -171,7 +171,8 @@ class AdmissionCheckController extends Controller
 
     public function update(Admission $admission)
     {
-        if (!auth()->user() && auth()->user()->can('manage', $allotment)) {
+        if (!(auth()->user() && auth()->user()->can('manage', $admission->allotment))) {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
         }
         request()->validate([
@@ -191,12 +192,12 @@ class AdmissionCheckController extends Controller
             ->with(['message' => ['type' => 'info', 'text' => 'Admission details updated.']]);
     }
 
-    public function destroy(Admission $admission){
+    public function destroy(Admission $admission)
+    {
         $allotment = $admission->allotment;
         $admission->delete();
         return redirect('/allotment/' . $allotment->id . '/admission')
             ->with(['message' => ['type' => 'info', 'text' => 'Admission detail deleted.']]);
-
     }
 
     public function check()

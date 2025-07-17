@@ -45,6 +45,7 @@ class RequirementController extends Controller
             ];
             return view('requirement.create', $data);
         } else {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
         }
     }
@@ -75,6 +76,7 @@ class RequirementController extends Controller
 
             return redirect("/allotment/" . $allotment->id . "/requirement")->with(['message' => ['type' => 'info', 'text' => 'Requirement submitted']]);
         } else {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
         }
     }
@@ -112,6 +114,7 @@ class RequirementController extends Controller
     {
         // return request()->status;
         if (!(auth()->user() && auth()->user()->can('viewList', \App\Models\Requirement::class))) {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
         }
         $hostels = \App\Models\Hostel::orderBy('gender')->orderBy('name')->get();

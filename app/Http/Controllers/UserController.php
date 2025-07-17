@@ -22,7 +22,7 @@ class UserController extends Controller
         $level = $role->level;
         // return $level;
         // return auth()->user()->max_role_level();
-        if (auth()->user()->isDsw() || auth()->user()->isAdmin()) {
+        if (auth()->user() && (auth()->user()->isDsw() || auth()->user()->isAdmin())) {
             $roles = Role::whereIn('role', ['DSW', 'Warden', 'Prefect', 'Mess Secretary']);
             $role_users = Role_User::whereIn('role_id', $roles->pluck('id'));
             $users = User::whereIn('id', $role_users->pluck('user_id'))->get();
@@ -38,6 +38,7 @@ class UserController extends Controller
             $role_users = Role_User::where('type', 'allotment')->whereIn('foreign_id', $allotments->pluck('id'));
             $users = User::whereIn('id', $role_users->pluck('user_id'))->get();
         } else {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
         }
         return view('user.index', ['users' => $users]);
@@ -47,10 +48,11 @@ class UserController extends Controller
     {
         $role = Role::where('role', 'Warden')->first();
         $level = $role->level;
-        if (auth()->user()->max_role_level() >= $level)
+        if (auth()->user() && auth()->user()->max_role_level() >= $level)
             return view('user.show', ['user' => $user]);
-        else
-            abort(403);
+        else {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
+        }
     }
 
     public function create()
@@ -79,8 +81,6 @@ class UserController extends Controller
             $data = ['type' => '', 'id' => ''];
         }
         return view('user.create', $data);
-
-        abort(403);
     }
 
     public function store()
@@ -124,6 +124,7 @@ class UserController extends Controller
             ];
             return view('user.edit', $data);
         } else {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
         }
     }
@@ -181,7 +182,7 @@ class UserController extends Controller
                         $warden = Warden::updateOrCreate([
                             'hostel_id' => $hostel_id,
                             'person_id' => $person->id,
-                        ],[
+                        ], [
                             'hostel_id' => $hostel_id,
                             'person_id' => $person->id,
                             'valid' => 1
@@ -248,9 +249,10 @@ class UserController extends Controller
     public function changePassword($user_id)
     {
         $user = User::findOrFail($user_id);
-        if (auth() && auth()->user()->can('changePassword', $user)) {
+        if (auth()->user() && auth()->user()->can('changePassword', $user)) {
             return view('user.changePassword', ['user' => $user]);
         } else {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
         }
     }

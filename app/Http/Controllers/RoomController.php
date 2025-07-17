@@ -92,6 +92,7 @@ class RoomController extends Controller
         if (auth()->user() && auth()->user()->can('manage', $hostel)) {
             return view('common.room.create', ['hostel' => $hostel]);
         } else {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
         }
     }
@@ -159,6 +160,7 @@ class RoomController extends Controller
             ];
             return view('common.room.edit', $data);
         } else {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
         }
     }

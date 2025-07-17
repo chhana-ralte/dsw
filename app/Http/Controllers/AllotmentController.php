@@ -93,17 +93,16 @@ class AllotmentController extends Controller
 
     public function show(Allotment $allotment)
     {
-        if (auth()->user()->cannot('view', $allotment)) {
+        if (auth()->user() && auth()->user()->cannot('view', $allotment)) {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
         }
 
         if ($allotment->valid_allot_hostel()) {
             $current_hostel = $allotment->valid_allot_hostel()->hostel;
-        }
-        else if($allotment->hostel){
+        } else if ($allotment->hostel) {
             $current_hostel = $allotment->hostel;
-        }
-        else {
+        } else {
             $current_hostel = Hostel::default();
         }
         $data = [
@@ -117,7 +116,8 @@ class AllotmentController extends Controller
 
     public function edit(Allotment $allotment)
     {
-        if (auth()->user()->cannot('manage_self', $allotment)) {
+        if (auth()->user() && auth()->user()->cannot('manage_self', $allotment)) {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
         }
         $data = [

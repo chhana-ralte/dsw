@@ -37,6 +37,7 @@ class HostelController extends Controller
         // return view('test.casttest', ['occupants' => $hostel->current_occupants()]);
 
         if (!auth()->user() || !auth()->user()->can('view', $hostel)) {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
         }
         $rooms = Room::where('hostel_id', $hostel->id);

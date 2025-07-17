@@ -114,6 +114,7 @@ class ApplicationController extends Controller
         if ($application->mzuid == $_GET['mzuid']) {
             return view('application.show', ['application' => $application]);
         } else {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
         }
     }
@@ -126,6 +127,7 @@ class ApplicationController extends Controller
         if ($application->mzuid == $_GET['mzuid']) {
             return view('application.edit', ['application' => $application]);
         } else {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
         }
     }
@@ -199,6 +201,7 @@ class ApplicationController extends Controller
             $application->delete();
             return redirect('/application/list')->with(['message' => ['type' => 'info', 'text' => 'Application deleted successfully']]);
         } else {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
         }
     }

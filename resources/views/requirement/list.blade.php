@@ -24,7 +24,9 @@
                 </p>
 
                 <p>
-
+                    <a class="btn btn-primary btn-sm" href="/requirement/summary">
+                        Summary
+                    </a>
                     <a class="btn {{ $status=='Nothing'?'btn-outline-primary':'btn-primary' }} btn-sm" href="/requirement/list?{{ $hostel?'hostel_id='. $hostel->id .'&':''}}status=Nothing">
                         Not applied
                         <span class="badge bg-secondary">{{ App\Models\Requirement::nothing($hostel?$hostel->id:0)->count() }}</span>
