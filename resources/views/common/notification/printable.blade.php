@@ -52,7 +52,7 @@
                 <?php $sl = 1 ?>
                 @foreach($sem_allots as $allot)
                     <tr>
-                        <td>{{ $notification->id }}/{{ $allot->id }}/{{ $allot->sl }}</td>
+                        <td>{{ $notification->id }}/{{ $allot->rand }}/{{ $allot->sl }}</td>
                         <td>{{ $allot->allotment->person->name }}</td>
                         <td>{{ $allot->allotment->person->student()->course }}</td>
                         <td>{{ $allot->allotment->person->student()->department }}</td>

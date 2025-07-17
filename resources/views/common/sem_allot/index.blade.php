@@ -27,7 +27,7 @@
                     <tbody>
                         @foreach ($sem_allots as $allot)
                             <tr class="table-white">
-                                <td>{{ $notification->id }}/{{ $allot->id }}/{{ $allot->sl }}</td>
+                                <td>{{ $notification->id }}/{{ $allot->rand }}/{{ $allot->sl }}</td>
                                 {{-- <td><a href="/sem_allot/{{ $allot->id }}">{{ $allot->allotment->person->name }}</a></td> --}}
                                 <td>{{ $allot->allotment->person->name }}</td>
                                 @if ($allot->allotment->person->student())
@@ -41,9 +41,7 @@
                                 <td>{{ $allot->requirement->new_hostel->name }}</td>
                                 <td>{{ $allot->requirement->new_roomtype() }}</td>
                                 <td>
-
                                     Valid: {{ $allot->valid ? 'Yes' : 'No' }},
-
                                 </td>
                             </tr>
                         @endforeach
