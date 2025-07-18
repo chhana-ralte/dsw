@@ -42,15 +42,7 @@ class ApplicationController extends Controller
 
     public function store(Request $request)
     {
-        // return $request->has('AMC')?'Yes':'No';
-        // return $request;
-        // if ($request->hasFile('photo')) {
-        //     $path = $request->file('photo')->store('photos', 'public');
-        //     return "/storage/" . $path;
-        // } else {
-        //     return "Photo is not present";
-        // }
-        // return $request->photo;
+
         $validated = $request->validate([
             'person_id' => '0',
             'name' => 'required|min:4',
@@ -87,10 +79,10 @@ class ApplicationController extends Controller
             exit();
         }
 
-        if ($request->ready == 0) {
-            return redirect()->back()->withInput()->with(['ready' => 1]);
-            exit();
-        }
+        // if ($request->ready == 0) {
+        //     return redirect()->back()->withInput()->with(['ready' => 1]);
+        //     exit();
+        // }
         // return $validated;
         $application = Application::create($validated);
 
