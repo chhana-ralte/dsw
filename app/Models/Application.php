@@ -22,9 +22,12 @@ class Application extends Model
 
     public static function approved()
     {
-        return Application::where('status', 'Approved')->orderBy('id')->get();
+        return Application::where('status', 'Approved')->where('hostel_id',0)->orderBy('id')->get();
     }
-
+    public static function approved_hostel()
+    {
+        return Application::where('status', 'Approved')->where('hostel_id','<>',0)->orderBy('id')->get();
+    }
     public static function declined()
     {
         return Application::where('status', 'Declined')->orderBy('id')->get();
@@ -48,5 +51,20 @@ class Application extends Model
             JOIN students S ON S.person_id = P.id WHERE S.mzuid = '" . $this->mzuid . "'");
 
         return Allotment::hydrate($existing_allotments);
+    }
+
+    public static function status()
+    {
+        $manage = Manage::where('name', 'application')->first();
+        return $manage->status;
+    }
+
+    public static function statusUpdate($status)
+    {
+        Manage::where('name', 'application')->update(['status' => $status]);
+    }
+
+    public function hostel(){
+        return $this->belongsTo(Hostel::class);
     }
 }

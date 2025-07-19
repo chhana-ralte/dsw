@@ -44,12 +44,8 @@ class StudentRegistrationController extends Controller
         } else {
             $mzuid = request()->mzuid;
         }
-        if (request()->rollno == "") {
-            $rollno = "98s7t9eut9sreujhtguisdhg";
-        } else {
-            $rollno = request()->rollno;
-        }
-        $students = Student::where('mzuid', $mzuid)->orWhere('rollno', $rollno);
+
+        $students = Student::where('mzuid', $mzuid);
 
         if (count($students->get()) == 0) {
             return redirect('/studentRegistration')

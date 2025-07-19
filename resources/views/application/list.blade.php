@@ -16,9 +16,13 @@
                         Pending
                         <span class="badge bg-secondary">{{ App\Models\Application::pending()->count() }}</span>
                     </a>
-                    <a href="/application/list?status=Approved" class="btn btn-success">
-                        Approved
+                    <a href="/application/list?status=Approved&hostel=0" class="btn btn-success">
+                        Approved (No hostel)
                         <span class="badge bg-secondary">{{ App\Models\Application::approved()->count() }}</span>
+                    </a>
+                    <a href="/application/list?status=Approved&hostel=1" class="btn btn-success">
+                        Approved
+                        <span class="badge bg-secondary">{{ App\Models\Application::approved_hostel()->count() }}</span>
                     </a>
                 </div>
                 <p>
@@ -41,6 +45,7 @@
                             <th>Course</th>
                             <th>Department</th>
                             <th>MZU ID</th>
+                            <th>AMC?</th>
                             <th>Status</th>
                             @can('manages', App\Models\Application::class)
                                 <th>Action</th>
@@ -62,8 +67,13 @@
                                 <td>{{ $application->course }}</td>
                                 <td>{{ $application->department }}</td>
                                 <td>{{ $application->mzuid }}</td>
+                                <td>{{ $application->AMC?'Yes':'No' }}</td>
+                                @if($application->hostel)
+                                    <td>{{ $application->hostel->name }}</td>
+                                @else
+                                    <td>{{ $application->status }}</td>
+                                @endif
 
-                                <td>{{ $application->status }}</td>
                                 @can('manage', $application)
                                     <td>
                                         <div class="btn-group">
@@ -124,7 +134,6 @@
 </div>
 {{-- Modal for duplicate requirement --}}
 
-
     <script>
         $(document).ready(function() {
 
@@ -142,22 +151,22 @@
         });
 
         $("button.btn-duplicate").click(function(){
-                $.ajax({
-                    type: "get",
-                    url: "/application/" + $(this).val() + "/duplicate",
-                    success: function(data, status) {
-                        $("#app-body").empty();
-                        for (var i = 0; i < data.length; i++) {
-                            $("#app-body").append("<tr><td>" + data[i].id + "</td><td>" + data[i].name + "</td><td>" + data[i].mobile + "</td><td>" + data[i].mzuid + "</td><td>" + data[i].course + " - " + data[i].department + "</td></tr>");
-                        }
-
-                    },
-                    error: function(xhr, status, error) {
-                        alert("Error getting duplicate: " + xhr.responseText);
+            $.ajax({
+                type: "get",
+                url: "/application/" + $(this).val() + "/duplicate",
+                success: function(data, status) {
+                    $("#app-body").empty();
+                    for (var i = 0; i < data.length; i++) {
+                        $("#app-body").append("<tr><td>" + data[i].id + "</td><td>" + data[i].name + "</td><td>" + data[i].mobile + "</td><td>" + data[i].mzuid + "</td><td>" + data[i].course + " - " + data[i].department + "</td></tr>");
                     }
-                })
-                $("textarea#duplicate").val($(this).val());
-                $("#duplicateModal").modal('show');
-            });
+
+                },
+                error: function(xhr, status, error) {
+                    alert("Error getting duplicate: " + xhr.responseText);
+                }
+            })
+            $("textarea#duplicate").val($(this).val());
+            $("#duplicateModal").modal('show');
+        });
     </script>
 </x-layout>

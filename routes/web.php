@@ -72,6 +72,12 @@ Route::get('/application/search', [ApplicationController::class, 'search']);
 Route::post('/application/search', [ApplicationController::class, 'searchStore']);
 Route::put('/application/{id}/statusUpdate', [ApplicationController::class, 'statusUpdate'])->middleware('auth');
 Route::get('/application/list', [ApplicationController::class, 'list'])->middleware('auth');
+Route::get('/application/summary', [ApplicationController::class, 'summary'])->middleware('auth');
+Route::get('/application/summary-hostel', [ApplicationController::class, 'summary_hostel'])->middleware('auth');
+Route::post('/application/navigate', [ApplicationController::class, 'navigate'])->middleware('auth');
+// Route::post('/application/navigate', function(){
+//     return "Hello";
+// })->middleware('auth');
 Route::get('/application/{id}/duplicate', [ApplicationController::class, 'duplicate'])->middleware('auth');
 
 
@@ -170,9 +176,12 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::get('/ajax/feedback_criteria/{id}/report_chart', 'report_chart');
     Route::post('/ajax/application/{id}/decline', 'declineApplication');
     Route::post('/ajax/application/{id}/accept', 'acceptApplication');
+    Route::post('/ajax/application/{id}/remark', 'remarkApplication');
     Route::get('/ajax/getCourses', 'getCourses');
     Route::get('/ajax/getMaxSem', 'getMaxSem');
     Route::post('/ajax/notification/{id}/reserial', 'reserialNotification');
+    Route::post('/ajax/application/status_update', 'applicationStatusUpdate');
+
 })->middleware('auth');
 
 

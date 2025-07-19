@@ -4,7 +4,7 @@
             <x-slot name="heading">
                 Registration of Student (Enter either your MZU ID or your Roll number)
             </x-slot>
-            
+
             <form method="post" action="/studentRegistration">
                 @csrf
                 <div class="form-group row mb-3">
@@ -14,17 +14,6 @@
                             <input type="text" class="form-control" name="mzuid" value="{{ old('mzuid',$student->mzuid) }}">
                         @else
                             <input type="text" class="form-control" name="mzuid" value="{{ old('mzuid') }}">
-                        @endif
-                    </div>
-                </div>
-
-                <div class="form-group row mb-3">
-                    <label for="rollno" class="col col-md-3">Roll No.</label>
-                    <div class="col col-md-4">
-                        @if(isset($student))
-                            <input type="text" class="form-control" name="rollno" value="{{ old('rollno',$student->rollno) }}">
-                        @else
-                            <input type="text" class="form-control" name="rollno" value="{{ old('rollno') }}">
                         @endif
                     </div>
                 </div>

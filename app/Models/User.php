@@ -77,6 +77,14 @@ class User extends Authenticatable
         }
     }
 
+    public function isWardensOf()
+    {
+        $role_users = Role_User::where('type', 'warden')->where('user_id',$this->id);
+        $wardens = Warden::whereIn('id',$role_users->pluck('foreign_id'));
+        return Hostel::whereIn('id',$wardens->pluck('hostel_id'))->get();
+        return ['hostels' => Hostel::whereIn('id',$wardens->pluck('hostel_id'))->get()];
+    }
+
     public function isPrefectOf($hostel_id)
     {
         $role = Role::where('role', 'Prefect')->first();

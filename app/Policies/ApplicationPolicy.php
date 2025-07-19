@@ -28,7 +28,7 @@ class ApplicationPolicy
 
     public function manage(User $user, Application $application): bool
     {
-        return $user->isDsw() || $user->isAdmin();
+        // return $user->isDsw() || $user->isAdmin();
         return $user->max_role_level() >= 3;
     }
 

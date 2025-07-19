@@ -9,6 +9,36 @@
                     @endcan
                     <a href="/application/{{ $application->id }}/edit?mzuid={{ $application->mzuid }}" class="btn btn-secondary btn-sm">Edit</a>
                 </p>
+                <form name="frm-navigate" method="post" action="/application/navigate">
+                    @csrf
+                    <input type="hidden" name="navigation" value="">
+                    @can('manages',App\Models\Application::class)
+                        <div class="btn-group">
+
+                            <?php
+                                if($prev){
+                                    $str_prev = "href=/application/" . $prev->id . "?mzuid=" . $prev->mzuid;
+                                }
+                                if($next){
+                                    $str_next = "href=/application/" . $next->id . "?mzuid=" . $next->mzuid;
+                                }
+                            ?>
+                            @if($prev)
+                                <a class="btn btn-primary btn-navigate" href="/application/{{ $prev->id }}?mzuid={{ $prev->mzuid }}">&lt;&lt;Prev</a>
+                            @else
+                                <button class="btn btn-primary btn-navigate" disabled>&lt;&lt;Prev</button>
+                            @endif
+
+                            <input type=text style="text-align: center" size="1" name="application_id" value="{{ $application->id }}">
+
+                            @if($next)
+                                <a class="btn btn-primary btn-navigate" href="/application/{{ $next->id }}?mzuid={{ $next->mzuid }}">Next&gt;&gt;</a>
+                            @else
+                                <button class="btn btn-primary btn-navigate" disabled>Next&gt;&gt;</button>
+                            @endif
+                        </div>
+                    @endcan
+                </form>
             </x-slot>
         </x-block>
         <x-block>
@@ -205,8 +235,8 @@
                 </x-slot>
                 <div>
                     <button class="btn btn-danger btn-status" value="decline">Decline</button>
-                    <button class="btn btn-success btn-status" value="approve">Approve</button>
                     <button class="btn btn-warning btn-status" value="pending">Pending</button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#hostelModal" data-bs-whatever="Remark">Approve</button>
                     @if(auth()->user() && (auth()->user()->isAdmin() || auth()->user()->isDsw()))
                         <a class="btn btn-warning btn-existing" href="/application/{{ $application->id }}/existing">Add as existing</a>
                     @endif
@@ -216,6 +246,8 @@
                     @method('PUT')
                     <input type="hidden" name="application_id" value="{{ $application->id }}">
                     <input type="hidden" name="status" value="">
+                    <input type="hidden" name="hostel_id">
+                    <input type="hidden" name="roomtype">
                 </form>
             </x-block>
         @endcan
@@ -244,20 +276,88 @@
         </div>
     </div>
 </div>
-{{-- Modal for remarks --}}
+{{-- End Modal for remarks --}}
+
+{{-- Modal for hostel allotment --}}
+<div class="modal fade" id="hostelModal" tabindex="-1" aria-labelledby="hostelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="hostelModalLabel">Assign Hostel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="hostel" class="col-form-label">Hostel</label>
+                        <select id="hostel" name="hostel" class="form-control">
+                            <option value="" disabled selected>Select hostel</option>
+
+                            @foreach($hostels as $h)
+                                @if(auth()->user() && auth()->user()->isWardenOf($h->id))
+                                    <option value="{{ $h->id }}" selected>{{ $h->name }}</option>
+                                @else
+                                    <option value="{{ $h->id }}">{{ $h->name }}</option>
+                                @endif
+                            @endforeach
+
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="type" class="col-form-label">Room type:</label>
+                        <select id="type" name="type" class="form-control">
+                            <option value="1">Single</option>
+                            <option value="2" selected>Double</option>
+                            <option value="3">Triple</option>
+                            <option value="4">Dorm</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary btn-status" value="approve">Just approve</button>
+                <button type="button" class="btn btn-primary btn-status" value="approve-hostel">Approve hostel</button>
+            </div>
+        </div>
+    </div>
+</div>
+{{-- End Modal for hostel allotment --}}
     <script>
         $(document).ready(function() {
-
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
                 }
             });
+
             $("button.btn-status").click(function() {
-                if (confirm("Are you sure to " + $(this).val() + " this application?")) {
+                if($(this).val() == 'approve-hostel'){
+                    $("input[name='status']").val($(this).val());
+                    $("input[name='hostel_id']").val($("select#hostel").val());
+                    $("input[name='roomtype']").val($("select#type").val());
+                    $("form[name='frm_submit']").submit();
+                }
+                else {
                     $("input[name='status']").val($(this).val());
                     $("form[name='frm_submit']").submit();
                 }
+            });
+
+            $("button.btn-approve").click(function() {
+                alert($(this).val());
+                    $.ajax({
+                        type: "post",
+                        url: "/ajax/application/" + $(this).val() + "/accept",
+                        success: function(data, status) {
+                            alert("Application accepted successfully.");
+                            location.reload();
+                        },
+                        error: function(xhr, status, error) {
+                            alert("Error accepting application: " + xhr.responseText);
+                        }
+                    });
+
             });
 
             {{-- $("button.btn-approve").click(function() {
@@ -274,39 +374,29 @@
                         }
                     });
                 }
-            });
-            $("button.btn-approve").click(function() {
-                if (confirm("Are you sure you want to approve this application?")) {
-                    $.ajax({
-                        type: "post",
-                        url: "/ajax/application/" + $(this).val() + "/accept",
-                        success: function(data, status) {
-                            alert("Application accepted successfully.");
-                            location.reload();
-                        },
-                        error: function(xhr, status, error) {
-                            alert("Error accepting application: " + xhr.responseText);
-                        }
-                    });
-                }
             }); --}}
             $("button.btn-save").click(function() {
 
-                    $.ajax({
-                        type: "post",
-                        url: "/ajax/application/" + $("input[name='application_id']").val() + "/remark",
-                        data: {
-                            remark: $("#remark").val()
-                        },
-                        success: function(data, status) {
-                            {{-- alert("Remark saved successfully."); --}}
-                            location.reload();
-                        },
-                        error: function(xhr, status, error) {
-                            alert("Error saving remark: " + xhr.responseText);
-                        }
-                    });
+                $.ajax({
+                    type: "post",
+                    url: "/ajax/application/" + $("input[name='application_id']").val() + "/remark",
+                    data: {
+                        remark: $("#remark").val()
+                    },
+                    success: function(data, status) {
+                        {{-- alert("Remark saved successfully."); --}}
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        alert("Error saving remark: " + xhr.responseText);
+                    }
+                });
 
+            });
+
+            $("button.btn-navigate").click(function(){
+                $("input[name='navigation']").val($(this).val());
+                $("form[name='frm-navigate']").submit();
             });
 
         });

@@ -239,4 +239,10 @@ class AjaxController extends Controller
         }
         return "Success";
     }
+    public function applicationStatusUpdate()
+    {
+        \App\Models\Application::statusUpdate(request()->status);
+        return \App\Models\Application::status();
+    }
+
 }
