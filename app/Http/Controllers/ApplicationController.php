@@ -452,11 +452,15 @@ class ApplicationController extends Controller
     }
 
     public function priority_list(){
-        $applications = Application::where('status','Applied')->orderBy('department')->orderBy('percent','desc')->get();
+        $applications = Application::where('status','Applied')
+            ->where('AMC',0)
+            ->orderBy('department')
+            ->orderBy('course')
+            ->orderBy('percent','desc');
         $data = [
-            'applications' => $applications,
+            'applications' => $applications->paginate(),
         ];
-        return view('application.priority-list',['applications'=>$applications]);
+        return view('application.priority-list',$data);
     }
 
     public function navigate()

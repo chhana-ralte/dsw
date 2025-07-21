@@ -184,6 +184,7 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::get('/ajax/getMaxSem', 'getMaxSem');
     Route::post('/ajax/notification/{id}/reserial', 'reserialNotification');
     Route::post('/ajax/application/status_update', 'applicationStatusUpdate');
+    Route::post('/ajax/requirement/{id}/delete', 'requirementDelete');
 })->middleware('auth');
 
 

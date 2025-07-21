@@ -14,6 +14,9 @@
                         <td>For session</td>
                         <td>Hostel</td>
                         <td>Room type</td>
+                        @if(auth()->user() && auth()->user()->max_role_level()>2)
+                            <td>Action</td>
+                        @endif
                     </tr>
                     <?php $sl=1 ?>
                     @foreach($requirements as $req)
@@ -22,6 +25,14 @@
                             <td>{{ $req->for_sessn()->name() }}</td>
                             <td>{{ $req->hostel->name }}</td>
                             <td>{{ $req->roomcapacity }}</td>
+                            @if(auth()->user() && auth()->user()->max_role_level()>2)
+                                <td>
+                                    <div class="btn-group">
+                                        <a class="btn btn-secondary btn-sm" href="/requirement/{{ $req->id }}/edit">Edit</a>
+                                        <button class="btn btn-danger btn-sm btn-delete" value="{{ $req->id }}">Delete</button>
+                                    </div>
+                                </td>
+                            @endif
                         </tr>
                     @endforeach
                 </table>
@@ -48,6 +59,21 @@
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
+                }
+            });
+
+            $("button.btn-delete").click(function(){
+                if(confirm("Are you sure you want to delete?")){
+                    $.ajax({
+                        type : "post",
+                        url : "/ajax/requirement/" + $(this).val() + "/delete",
+                        success : function(data, status){
+                            location.reload();
+                        },
+                        error : function(){
+                            alert("Error");
+                        }
+                    });
                 }
             });
         });

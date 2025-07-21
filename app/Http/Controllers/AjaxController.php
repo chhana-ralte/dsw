@@ -257,4 +257,9 @@ class AjaxController extends Controller
         \App\Models\Application::destroy($id);
         return ['message' => "Success", "id" => $next[0]->id];
     }
+
+    public function requirementDelete($id){
+        \App\Models\Requirement::destroy($id);
+        return "Success";
+    }
 }
