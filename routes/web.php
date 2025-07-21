@@ -79,6 +79,7 @@ Route::post('/application/navigate', [ApplicationController::class, 'navigate'])
 //     return "Hello";
 // })->middleware('auth');
 Route::get('/application/{id}/duplicate', [ApplicationController::class, 'duplicate'])->middleware('auth');
+Route::get('/duplicate/application', [ApplicationController::class, 'duplicates'])->middleware('auth');
 
 
 
@@ -181,7 +182,6 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::get('/ajax/getMaxSem', 'getMaxSem');
     Route::post('/ajax/notification/{id}/reserial', 'reserialNotification');
     Route::post('/ajax/application/status_update', 'applicationStatusUpdate');
-
 })->middleware('auth');
 
 
