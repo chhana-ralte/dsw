@@ -8,6 +8,9 @@
                         <a href="/application/list" class="btn btn-secondary btn-sm">Back</a>
                     @endcan
                     <a href="/application/{{ $application->id }}/edit?mzuid={{ $application->mzuid }}" class="btn btn-secondary btn-sm">Edit</a>
+                    @if(auth()->user() && (auth()->user()->isDsw() || auth()->user()->isAdmin()))
+                        <button class="btn btn-danger btn-delete btn-sm" value="{{ $application->id }}">Delete</button>
+                    @endif
                 </p>
                 <form name="frm-navigate" method="post" action="/application/navigate">
                     @csrf
@@ -29,7 +32,7 @@
                                 <button class="btn btn-primary btn-navigate" disabled>&lt;&lt;Prev</button>
                             @endif
 
-                            <input type=text style="text-align: center" size="1" name="application_id" value="{{ $application->id }}">
+                            <input type=text style="text-align: center" size="3" name="application_id" value="{{ $application->id }}">
 
                             @if($next)
                                 <a class="btn btn-primary btn-navigate" href="/application/{{ $next->id }}?mzuid={{ $next->mzuid }}">Next&gt;&gt;</a>
@@ -358,6 +361,23 @@
                         }
                     });
 
+            });
+
+            $("button.btn-delete").click(function(){
+                if(confirm("Are you sure you want to delete this application?")){
+                    $.ajax({
+                        type: "post",
+                        url: "/ajax/application/" + $(this).val() + "/delete",
+                        success: function(data, status) {
+                            alert("Application deleted successfully.");
+                            location.replace("/application/list");
+                            {{-- location.reload(); --}}
+                        },
+                        error: function(xhr, status, error) {
+                            alert("Error deleting application: " + xhr.responseText);
+                        }
+                    });
+                }
             });
 
             {{-- $("button.btn-approve").click(function() {

@@ -224,13 +224,14 @@ class AjaxController extends Controller
         return "Success";
     }
 
-    public function reserialNotification($id){
+    public function reserialNotification($id)
+    {
         $notification = \App\Models\Notification::findOrFail($id);
-        if($notification->type == "sem_allot"){
+        if ($notification->type == "sem_allot") {
             // $sem_allots = $notification->sem_allots->orderBy('sl')->get();
-            $sem_allots = \App\Models\SemAllot::where('notification_id',$notification->id)->orderBy('sl')->orderBy('id')->get();
+            $sem_allots = \App\Models\SemAllot::where('notification_id', $notification->id)->orderBy('sl')->orderBy('id')->get();
             $sl = 1;
-            foreach($sem_allots as $sa){
+            foreach ($sem_allots as $sa) {
                 $sa->update([
                     'sl' => $sl++,
                 ]);
@@ -245,4 +246,9 @@ class AjaxController extends Controller
         return \App\Models\Application::status();
     }
 
+    public function deleteApplication($id)
+    {
+        \App\Models\Application::destroy($id);
+        return "Success";
+    }
 }
