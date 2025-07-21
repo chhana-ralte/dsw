@@ -433,12 +433,30 @@ class ApplicationController extends Controller
 
     public function summary_hostel()
     {
-        $data = DB::select("SELECT H.name AS hostel, count(if(roomtype=1,1,null)) AS `single`,count(if(roomtype=2,1,null)) AS `double`,count(if(roomtype=3,1,null)) AS `triple`,count(if(roomtype>3,1,null)) AS `dorm`, count(*) as `total`
+        $hostel_wise = DB::select("SELECT H.name AS hostel, count(if(roomtype=1,1,null)) AS `single`,count(if(roomtype=2,1,null)) AS `double`,count(if(roomtype=3,1,null)) AS `triple`,count(if(roomtype>3,1,null)) AS `dorm`, count(*) as `total`
             FROM applications A LEFT JOIN hostels H ON H.id=A.hostel_id
             WHERE hostel_id <> 0
             GROUP BY H.gender,H.name
             ORDER BY H.gender, H.name;");
-        return view('application.summary-hostel', ['data' => (object)$data]);
+        $dept_wise = DB::select("SELECT department, count(*) as cnt
+            FROM applications
+            WHERE hostel_id <> 0
+            GROUP BY department
+            ORDER BY department");
+
+        $data = [
+            'hostel_wise' => $hostel_wise,
+            'dept_wise' => $dept_wise,
+        ];
+        return view('application.summary-hostel', $data);
+    }
+
+    public function priority_list(){
+        $applications = Application::where('status','Applied')->orderBy('department')->orderBy('percent','desc')->get();
+        $data = [
+            'applications' => $applications,
+        ];
+        return view('application.priority-list',['applications'=>$applications]);
     }
 
     public function navigate()

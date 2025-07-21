@@ -32,7 +32,8 @@
                 <p>Click <a href="/application/list">here</a> to view the applications.</p>
                 <p>Click <a href="/duplicate/application">here</a> to view the duplicate applications.</p>
                 <p>Click <a href="/application/summary">here</a> to view the application summary.</p>
-                <p>Click <a href="/application/summary-hostel">here</a> to view the hostel-wise allotment.</p>
+                <p>Click <a href="/application/summary-hostel">here</a> to view the hostel/department-wise allotment.</p>
+                <p>Click <a href="/application/priority-list">here</a> to view the priority list.</p>
             </x-block>
         @endcan
 
