@@ -248,7 +248,13 @@ class AjaxController extends Controller
 
     public function deleteApplication($id)
     {
+        // return "Hjasdhfjsdf";
+        $next = DB::select("SELECT min(id) AS id FROM applications WHERE id > " . $id);
+        if (!$next) {
+            $next = DB::select("SELECT max(id) AS id FROM applications WHERE id < " . $id);
+        }
+        // return $next[0]->id;
         \App\Models\Application::destroy($id);
-        return "Success";
+        return ['message' => "Success", "id" => $next[0]->id];
     }
 }

@@ -370,7 +370,8 @@
                         url: "/ajax/application/" + $(this).val() + "/delete",
                         success: function(data, status) {
                             alert("Application deleted successfully.");
-                            location.replace("/application/list");
+                            {{-- alert(data.id) --}}
+                            location.replace("/application/" + data.id);
                             {{-- location.reload(); --}}
                         },
                         error: function(xhr, status, error) {

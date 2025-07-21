@@ -109,7 +109,7 @@ class ApplicationController extends Controller
         // For example, $application = Application::findOrFail($id);
         $application = Application::findOrFail($id);
         // return $application;
-        if ($application->mzuid == $_GET['mzuid']) {
+        if ((auth()->user() && auth()->user()->max_role_level() >= 3) || $application->mzuid == $_GET['mzuid']) {
             $prev = DB::select("SELECT * FROM applications WHERE id = (SELECT max(id) FROM applications WHERE id < '" . $application->id . "')");
             $next = DB::select("SELECT * FROM applications WHERE id = (SELECT min(id) FROM applications WHERE id > '" . $application->id . "')");
             // $data = [
@@ -117,16 +117,15 @@ class ApplicationController extends Controller
             //     'prev' => Application::hydrate($prev[0]),
             //     'next' => Application::hydrate($next[0]),
             // ];
-            if(auth()->user() && auth()->user()->isWarden()){
+            if (auth()->user() && auth()->user()->isWarden()) {
                 $hostels = auth()->user()->isWardensOf();
-            }
-            else{
+            } else {
                 $hostels = \App\Models\Hostel::where('gender', $application->gender)->orderBy('name')->get();
             }
             $data = [
                 'application' => $application,
-                'prev' => $prev?$prev[0]:false,
-                'next' => $next?$next[0]:false,
+                'prev' => $prev ? $prev[0] : false,
+                'next' => $next ? $next[0] : false,
                 'hostels' => $hostels,
             ];
             // return $data;
@@ -212,15 +211,13 @@ class ApplicationController extends Controller
                     'hostel_id' => 0,
                     'roomtype' => 0,
                 ]);
-            } else if ($request->status == 'approve-hostel'){
+            } else if ($request->status == 'approve-hostel') {
                 $application->update([
                     'status' => 'Approved',
                     'hostel_id' => $request->hostel_id,
                     'roomtype' => $request->roomtype,
                 ]);
-            }
-            else{
-
+            } else {
             }
 
             $application->save();
@@ -301,12 +298,11 @@ class ApplicationController extends Controller
         }
 
         $applications = Application::where('status', $status);
-        if($status == 'Approved'){
-            if(isset($_GET['hostel']) && $_GET['hostel'] > 0){
-                $applications->where('hostel_id','<>',0);
-            }
-            else{
-                $applications->where('hostel_id',0);
+        if ($status == 'Approved') {
+            if (isset($_GET['hostel']) && $_GET['hostel'] > 0) {
+                $applications->where('hostel_id', '<>', 0);
+            } else {
+                $applications->where('hostel_id', 0);
             }
         }
 
@@ -415,7 +411,8 @@ class ApplicationController extends Controller
         return redirect('/allotment/' . $allotment->id)->with(['message' => ['type' => 'info', 'text' => 'Application created successfully']]);
     }
 
-    public function summary(){
+    public function summary()
+    {
         $amc = DB::select("SELECT if(amc=1,'Yes','No') as amc, count(*) AS cnt FROM applications GROUP BY amc ORDER BY amc");
         $gender = DB::select("SELECT gender, count(*) AS cnt FROM applications GROUP BY gender ORDER BY gender");
         $state = DB::select("SELECT state, count(*) AS cnt FROM applications GROUP BY state ORDER BY state");
@@ -434,26 +431,27 @@ class ApplicationController extends Controller
         return $tmp;
     }
 
-    public function summary_hostel(){
+    public function summary_hostel()
+    {
         $data = DB::select("SELECT H.name AS hostel, count(if(roomtype=1,1,null)) AS `single`,count(if(roomtype=2,1,null)) AS `double`,count(if(roomtype=3,1,null)) AS `triple`,count(if(roomtype>3,1,null)) AS `dorm`, count(*) as `total`
             FROM applications A LEFT JOIN hostels H ON H.id=A.hostel_id
             WHERE hostel_id <> 0
             GROUP BY H.gender,H.name
             ORDER BY H.gender, H.name;");
-        return view('application.summary-hostel',['data' => (object)$data]);
+        return view('application.summary-hostel', ['data' => (object)$data]);
     }
 
-    public function navigate(){
+    public function navigate()
+    {
         // if(request()->navigation == 'next'){
         //     DB::select("SELECT * FROM ")
         // }
-        if(request()->has('application_id')){
+        if (request()->has('application_id')) {
             $id = request()->application_id;
             $application = Application::find($id);
-            if($application){
+            if ($application) {
                 return redirect('/application/' . $application->id . '?mzuid=' . $application->mzuid);
-            }
-            else{
+            } else {
                 return redirect('/application/list')->with(['message' => ['type' => 'info', 'text' => 'Application id not found']]);
             }
         }
