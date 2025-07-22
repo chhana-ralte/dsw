@@ -117,11 +117,11 @@ class ApplicationController extends Controller
             //     'prev' => Application::hydrate($prev[0]),
             //     'next' => Application::hydrate($next[0]),
             // ];
-            if (auth()->user() && auth()->user()->isWarden()) {
-                $hostels = auth()->user()->isWardensOf();
-            } else {
-                $hostels = \App\Models\Hostel::where('gender', $application->gender)->orderBy('name')->get();
-            }
+            // if (auth()->user() && auth()->user()->isWarden()) {
+            //     $hostels = auth()->user()->isWardensOf();
+            // } else {
+            $hostels = \App\Models\Hostel::where('gender', $application->gender)->orderBy('name')->get();
+            // }
             $data = [
                 'application' => $application,
                 'prev' => $prev ? $prev[0] : false,
