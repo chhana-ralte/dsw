@@ -416,7 +416,7 @@ class ApplicationController extends Controller
         $amc = DB::select("SELECT if(amc=1,'Yes','No') as amc, count(*) AS cnt FROM applications GROUP BY amc ORDER BY amc");
         $gender = DB::select("SELECT gender, count(*) AS cnt FROM applications GROUP BY gender ORDER BY gender");
         $state = DB::select("SELECT state, count(*) AS cnt FROM applications GROUP BY state ORDER BY state");
-        $course = DB::select("SELECT course,gender count(*) AS cnt FROM applications GROUP BY course ORDER BY course,gender");
+        $course = DB::select("SELECT course,gender count(*) AS cnt FROM applications GROUP BY course,gender ORDER BY course,gender");
         // return
 
         $data = [
