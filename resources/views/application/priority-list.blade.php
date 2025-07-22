@@ -18,6 +18,7 @@
                         <tr>
                             <th>Application ID</th>
                             <th>Name</th>
+                            <th>Gender</th>
                             <th>Course</th>
                             <th>Address</th>
                             <th>Status</th>
@@ -37,7 +38,7 @@
                                     @endif
 
                                 </td>
-
+                                <td>{{ $application->gender }}</td>
                                 <td>{{ $application->course }}</td>
                                 <td>{{ $application->address }}</td>
                                 @if($application->hostel)
