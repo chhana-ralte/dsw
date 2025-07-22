@@ -36,8 +36,9 @@
                                     echo "<th>". $total ."</th>";
                                     echo "</tr>";
                                     $total=0;
-                                    $gender=$data->gender;
+
                                 }
+                                $gender=$data->gender;
                             ?>
                             <tr>
                             <td>{{ $sl++ }}</td>
