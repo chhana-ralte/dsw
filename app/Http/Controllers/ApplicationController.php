@@ -416,7 +416,7 @@ class ApplicationController extends Controller
         $amc = DB::select("SELECT if(amc=1,'Yes','No') as amc, count(*) AS cnt FROM applications GROUP BY amc ORDER BY amc");
         $gender = DB::select("SELECT gender, count(*) AS cnt FROM applications GROUP BY gender ORDER BY gender");
         $state = DB::select("SELECT state, count(*) AS cnt FROM applications GROUP BY state ORDER BY state");
-        $course = DB::select("SELECT course, count(*) AS cnt FROM applications GROUP BY course ORDER BY course");
+        $course = DB::select("SELECT course,gender count(*) AS cnt FROM applications GROUP BY course ORDER BY course,gender");
         // return
 
         $data = [
@@ -451,16 +451,17 @@ class ApplicationController extends Controller
         return view('application.summary-hostel', $data);
     }
 
-    public function priority_list(){
-        $applications = Application::where('status','Applied')
-            ->where('AMC',0)
+    public function priority_list()
+    {
+        $applications = Application::where('status', 'Applied')
+            ->where('AMC', 0)
             ->orderBy('department')
             ->orderBy('course')
-            ->orderBy('percent','desc');
+            ->orderBy('percent', 'desc');
         $data = [
             'applications' => $applications->paginate(),
         ];
-        return view('application.priority-list',$data);
+        return view('application.priority-list', $data);
     }
 
     public function navigate()

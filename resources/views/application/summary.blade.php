@@ -60,6 +60,7 @@
                         @foreach($course as $cr)
                             <tr>
                                 <th>{{ $cr->course }}</th>
+                                <th>{{ $cr->gender }}</th>
                                 <th>{{ $cr->cnt }}</th>
                             </tr>
                         @endforeach

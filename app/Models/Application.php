@@ -22,11 +22,11 @@ class Application extends Model
 
     public static function approved()
     {
-        return Application::where('status', 'Approved')->where('hostel_id',0)->orderBy('id')->get();
+        return Application::where('status', 'Approved')->where('hostel_id', 0)->orderBy('id')->get();
     }
     public static function approved_hostel()
     {
-        return Application::where('status', 'Approved')->where('hostel_id','<>',0)->orderBy('id')->get();
+        return Application::where('status', 'Approved')->where('hostel_id', '<>', 0)->orderBy('id')->get();
     }
     public static function declined()
     {
@@ -40,7 +40,10 @@ class Application extends Model
 
     public function duplicates()
     {
-        $duplicates = DB::select("SELECT A.id, P.name as name, P.mobile, P.email, S.mzuid as mzuid, S.course as course, S.department as department FROM allot_hostels AH JOIN (allotments A JOIN (people P JOIN students S ON P.id=S.person_id) ON P.id=A.person_id) ON A.id=AH.allotment_id, applications AP WHERE AP.id = '". $this->id ."' AND (S.mzuid = AP.mzuid OR P.mobile = AP.mobile OR P.email = AP.email);");
+        $duplicates = DB::select("SELECT A.id, P.name as name, P.mobile, P.email, S.mzuid as mzuid, S.course as course, S.department as department
+            FROM allot_hostels AH JOIN (allotments A JOIN (people P JOIN students S ON P.id=S.person_id) ON P.id=A.person_id) ON A.id=AH.allotment_id, applications AP
+            WHERE AP.id = '" . $this->id . "' AND (S.mzuid = AP.mzuid OR P.mobile = AP.mobile OR P.email = AP.email)
+            AND AP.status <> 'Declined';");
         return $duplicates;
         return Allotment::hydrate($duplicates);
     }
@@ -64,7 +67,8 @@ class Application extends Model
         Manage::where('name', 'application')->update(['status' => $status]);
     }
 
-    public function hostel(){
+    public function hostel()
+    {
         return $this->belongsTo(Hostel::class);
     }
 }
