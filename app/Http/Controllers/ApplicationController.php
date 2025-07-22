@@ -433,7 +433,7 @@ class ApplicationController extends Controller
 
     public function summary_hostel()
     {
-        $hostel_wise = DB::select("SELECT H.name AS hostel, count(if(roomtype=1,1,null)) AS `single`,count(if(roomtype=2,1,null)) AS `double`,count(if(roomtype=3,1,null)) AS `triple`,count(if(roomtype>3,1,null)) AS `dorm`, count(*) as `total`
+        $hostel_wise = DB::select("SELECT H.name AS hostel, H.gender AS gender, count(if(roomtype=1,1,null)) AS `single`,count(if(roomtype=2,1,null)) AS `double`,count(if(roomtype=3,1,null)) AS `triple`,count(if(roomtype>3,1,null)) AS `dorm`, count(*) as `total`
             FROM applications A LEFT JOIN hostels H ON H.id=A.hostel_id
             WHERE hostel_id <> 0
             GROUP BY H.gender,H.name

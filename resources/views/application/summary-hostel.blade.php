@@ -13,6 +13,7 @@
                         <tr>
                             <th>Sl.</th>
                             <th>Hostel</th>
+                            <th>Gender</th>
                             <th>Single</th>
                             <th>Double</th>
                             <th>Triple</th>
@@ -21,18 +22,35 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php $sl=1 ?>
+                        <?php $sl=1;
+                            $gender='xx';
+                            $total = 0;
+                         ?>
                         @foreach($hostel_wise as $data)
                             <tr>
                             <td>{{ $sl++ }}</td>
                             <td>{{ $data->hostel }}</td>
+                            <td>{{ $data->gender }}</td>
                             <td>{{ $data->single }}</td>
                             <td>{{ $data->double }}</td>
                             <td>{{ $data->triple }}</td>
                             <td>{{ $data->dorm }}</td>
                             <td>{{ $data->total }}</td>
                             </tr>
+                            <?php
+                                $total+=$data->total;
+                                if($data->gender!=$gender){
+                                    echo "<tr>";
+                                    echo "<td></td>";
+                                    echo "<th colspan='6'>Sub-Total of ".$data->gender."</th>";
+                                    echo "<th>". $total ."</th>";
+                                    echo "</tr>";
+                                    $total=0;
+                                    $gender=$data->gender;
+                                }
+                            ?>
                         @endforeach
+
                         </tbody>
                 </table>
 
@@ -56,14 +74,24 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php $sl=1 ?>
+                        <?php $sl=1;
+                            $total = 0;
+                        ?>
                         @foreach($dept_wise as $data)
                             <tr>
                             <td>{{ $sl++ }}</td>
                             <td>{{ $data->department }}</td>
                             <td>{{ $data->cnt }}</td>
                             </tr>
+                            <?php
+                                $total+=$data->cnt;
+                            ?>
                         @endforeach
+                        <tr>
+                            <td></td>
+                            <th>Total</th>
+                            <th>{{ $total }}</th>
+                        </tr>
                         </tbody>
                 </table>
 
