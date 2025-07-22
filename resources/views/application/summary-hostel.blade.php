@@ -27,6 +27,18 @@
                             $total = 0;
                          ?>
                         @foreach($hostel_wise as $data)
+                            <?php
+                                $total+=$data->total;
+                                if($data->gender!=$gender && $sl !=1){
+                                    echo "<tr>";
+                                    echo "<td></td>";
+                                    echo "<th colspan='6'>Sub-Total of ".$data->gender."</th>";
+                                    echo "<th>". $total ."</th>";
+                                    echo "</tr>";
+                                    $total=0;
+                                    $gender=$data->gender;
+                                }
+                            ?>
                             <tr>
                             <td>{{ $sl++ }}</td>
                             <td>{{ $data->hostel }}</td>
@@ -37,20 +49,12 @@
                             <td>{{ $data->dorm }}</td>
                             <td>{{ $data->total }}</td>
                             </tr>
-                            <?php
-                                $total+=$data->total;
-                                if($data->gender!=$gender){
-                                    echo "<tr>";
-                                    echo "<td></td>";
-                                    echo "<th colspan='6'>Sub-Total of ".$data->gender."</th>";
-                                    echo "<th>". $total ."</th>";
-                                    echo "</tr>";
-                                    $total=0;
-                                    $gender=$data->gender;
-                                }
-                            ?>
-                        @endforeach
 
+                        @endforeach
+                        <tr>
+                            <td></td>
+                            <th colspan=6>Sub-Total of {{ $data->gender }}</th>
+                            <th>{{ $total }}</th>
                         </tbody>
                 </table>
 
