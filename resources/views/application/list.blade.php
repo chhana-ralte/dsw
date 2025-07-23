@@ -24,6 +24,10 @@
                         Approved
                         <span class="badge bg-secondary">{{ App\Models\Application::approved_hostel()->count() }}</span>
                     </a>
+                    <a href="/application/notified" class="btn btn-success">
+                        Notified
+                        <span class="badge bg-secondary">{{ App\Models\Application::notified()->count() }}</span>
+                    </a>
                 </div>
 
                 <p>

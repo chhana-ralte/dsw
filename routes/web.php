@@ -74,6 +74,7 @@ Route::put('/application/{id}/statusUpdate', [ApplicationController::class, 'sta
 Route::get('/application/list', [ApplicationController::class, 'list'])->middleware('auth');
 Route::get('/application/approved', [ApplicationController::class, 'approved'])->middleware('auth');
 Route::post('/application/approved', [ApplicationController::class, 'notify'])->middleware('auth');
+Route::get('/application/notified', [ApplicationController::class, 'notified'])->middleware('auth');
 Route::get('/application/summary', [ApplicationController::class, 'summary'])->middleware('auth');
 Route::get('/application/summary-hostel', [ApplicationController::class, 'summary_hostel'])->middleware('auth');
 Route::get('/application/priority-list', [ApplicationController::class, 'priority_list'])->middleware('auth');

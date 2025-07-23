@@ -238,6 +238,16 @@ class AjaxController extends Controller
                 $sa->save();
             }
         }
+        else if ($notification->type == "allotment") {
+            $allotments = \App\Models\Allotment::where('notification_id', $notification->id)->orderBy('sl')->orderBy('id')->get();
+            $sl = 1;
+            foreach ($allotments as $allot) {
+                $allot->update([
+                    'sl' => $sl++,
+                ]);
+                $allot->save();
+            }
+        }
         return "Success";
     }
     public function applicationStatusUpdate()

@@ -450,6 +450,37 @@ class ApplicationController extends Controller
         }
     }
 
+    public function notified(){
+        // return "asdasd";
+        $applications = Application::where('status','Notified');
+        if(request()->has('hostel') && $hostel=\App\Models\Hostel::find(request()->hostel)){
+            $applications->where('hostel_id',request()->hostel);
+            $hostel_id = $hostel->id;
+        }
+        else{
+            $hostel_id = 0;
+            $hostel = false;
+        }
+
+
+        if($hostel){
+            $allotments = \App\Models\Allotment::whereIn('application_id',$applications->pluck('id'))->get();
+        }
+        else{
+            $allotments = \App\Models\Allotment::whereIn('application_id',$applications->pluck('id'))->paginate()->withQueryString();
+        }
+        // return $allotments;
+        $data = [
+            'status' => 'notified',
+            'allotments' => $allotments,
+            'hostel' => $hostel,
+            'hostel_id' => $hostel_id,
+        ];
+        // return $data;
+        return view('application.notified', $data);
+        return $allotments->get();
+    }
+
 
     public function duplicates()
     {

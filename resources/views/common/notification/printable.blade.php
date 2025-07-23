@@ -11,7 +11,7 @@
         @if(count($allotments) > 0)
             <table class="table">
                 <tr>
-                    <th>Sl.</th>
+                    <th>Ref.</th>
                     <th>Name</th>
                     <th>Course</th>
                     <th>Department</th>
@@ -23,12 +23,12 @@
                 <?php $sl = 1 ?>
                 @foreach($allotments as $allot)
                     <tr>
-                        <td>{{ $sl++ }}</td>
+                        <td>{{ $notification->id }}/{{ $allot->rand }}/{{ $allot->sl }}</td>
                         <td>{{ $allot->person->name }}</td>
                         <td>{{ $allot->person->student()->course }}</td>
                         <td>{{ $allot->person->student()->department }}</td>
-                        <td>{{ $allot->requirement->new_hostel->name }}</td>
-                        <td>{{ $allot->requirement->new_roomtype() }}</td>
+                        <td>{{ $allot->hostel->name }}</td>
+                        <td>{{ App\Models\Room::room_type($allot->roomtype) }}</td>
                         <td>{{ $allot->person->email }}</td>
                         <td>{{ $allot->person->mobile }}</td>
                     </tr>

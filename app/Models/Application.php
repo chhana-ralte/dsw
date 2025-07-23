@@ -28,6 +28,10 @@ class Application extends Model
     {
         return Application::where('status', 'Approved')->where('hostel_id', '<>', 0)->orderBy('id')->get();
     }
+    public static function notified()
+    {
+        return Application::where('status', 'Notified')->where('hostel_id', '<>', 0)->orderBy('id')->get();
+    }
     public static function declined()
     {
         return Application::where('status', 'Declined')->orderBy('id')->get();

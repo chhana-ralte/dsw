@@ -28,7 +28,7 @@
         @if(isset($sem_allot))
             <x-block>
                 <x-slot name="heading">
-                    Notification reference details
+                    Notification reference details : Semester allotment
                 </x-slot>
                 <div style="width: 100%; overflow-x:auto">
                     <table class="table table-auto">
@@ -77,7 +77,56 @@
 
             </x-block>
         @elseif(isset($allotment))
-            <span class="text-danger">No application found.</span>
+            <x-block>
+                <x-slot name="heading">
+                    Notification reference details: New allotment
+                </x-slot>
+                <div style="width: 100%; overflow-x:auto">
+                    <table class="table table-auto">
+                        <tr>
+                            <td>Notification no.</td>
+                            <td>{{ $allotment->notification->no }}</td>
+                        </tr>
+                        <tr>
+                            <td>Allotment subject</td>
+                            <td>{{ $allotment->notification->content }}</td>
+                        </tr>
+                        <tr>
+                            <td>Allotment date</td>
+                            <td>{{ $allotment->notification->dt }}</td>
+                        </tr>
+                        <tr>
+                            <td>Allotment type</td>
+                            <td>{{ $allotment->notification->type }}</td>
+                        </tr>
+                        <tr>
+                            <td>Name of Student</td>
+                            <td><a href="/allotment/{{ $allotment->id }}">{{ $allotment->person->name }}</a></td>
+                        </tr>
+                        <tr>
+                            <td>Student's course</td>
+                            <td>{{ $allotment->person->student()->course }}</td>
+                        </tr>
+                        <tr>
+                            <td>Student's department</td>
+                            <td>{{ $allotment->person->student()->department }}</td>
+                        </tr>
+                        <tr>
+                            <td>Hostel</td>
+                            <td>{{ $allotment->hostel->name }}</td>
+                        </tr>
+                        <tr>
+                            <td>Room type</td>
+                            <td>{{ App\Models\Room::room_type($allotment->roomtype) }}</td>
+                        </tr>
+                        <tr>
+                            <td>Payment status</td>
+                            <td>To be updated.</td>
+                        </tr>
+                    </table>
+                </div>
+
+            </x-block>
         @elseif($str != '')
             <span class="text-danger">No application found.</span>
         @endif

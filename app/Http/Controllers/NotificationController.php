@@ -120,6 +120,10 @@ class NotificationController extends Controller
                     $sem_allot = \App\Models\SemAllot::where('notification_id', $arr[0])->where('rand', $arr[1])->where('sl', $arr[2])->first();
                     return view('common.notification.check', ['sem_allot' => $sem_allot, 'str' => request()->str]);
                 }
+                else if($notification && $notification->type == 'allotment'){
+                    $allotment = \App\Models\Allotment::where('notification_id', $arr[0])->where('rand', $arr[1])->where('sl', $arr[2])->first();
+                    return view('common.notification.check', ['allotment' => $allotment, 'str' => request()->str]);
+                }
                 return redirect('/notification/check')->with(['message' => ['type' => 'info', 'text' => 'Reference not found.']])->withInput();
             }
             return redirect('/notification/check')->with(['message' => ['type' => 'info', 'text' => 'Incorrect reference format. use x/y/z where x and z are numbers, y is 2 alpabets string']])->withInput();
