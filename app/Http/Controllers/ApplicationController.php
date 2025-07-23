@@ -300,17 +300,56 @@ class ApplicationController extends Controller
         $applications = Application::where('status', $status);
         if ($status == 'Approved') {
             if (isset($_GET['hostel']) && $_GET['hostel'] > 0) {
-                $applications->where('hostel_id', '<>', 0);
+                $hostel = \App\Models\Hostel::findOrFail($_GET['hostel']);
+                $hostel_id = $hostel->id;
+                $applications->where('hostel_id', $hostel_id);
             } else {
+                $hostel_id = 0;
                 $applications->where('hostel_id', 0);
             }
+        } else {
+            $hostel_id = 0;
         }
 
         $data = [
             'status' => $status,
-            'applications' => $applications->paginate(),
+            'hostel_id' => $hostel_id,
+            'applications' => $applications->paginate()->withQueryString(),
         ];
+
         return view('application.list', $data);
+    }
+
+    public function approved()
+    {
+        if (isset($_GET['hostel']) && $_GET['hostel'] != 0) {
+            $hostel_id = $_GET['hostel'];
+            $hostel = \App\Models\Hostel::findOrFail($hostel_id);
+        } else {
+            $hostel_id = 0;
+            $hostel = null;
+        }
+        $applications = Application::where('status', 'Approved')->where('hostel_id', '<>', 0)->orderBy('hostel_id')->orderBy('name');
+        if ($hostel_id != 0) {
+            $applications = Application::where('status', 'Approved')
+                ->where('hostel_id', $hostel->id)
+                ->orderBy('roomtype')
+                ->orderBy('name')
+                ->get();
+        } else {
+            $applications = Application::where('status', 'Approved')
+                ->where('hostel_id', '<>', 0)
+                ->orderBy('hostel_id')
+                ->orderBy('roomtype')
+                ->orderBy('name')
+                ->paginate();
+        }
+        $data = [
+            'hostel_id' => $hostel_id,
+            'hostel' => $hostel,
+            'applications' => $applications,
+        ];
+        return view('application.approved', $data);
     }
 
     public function duplicates()

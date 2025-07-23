@@ -2,32 +2,9 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                Applications:
-                <div class="btn-group">
-                    <a href="/application/list" class="btn btn-primary">
-                        Applied
-                        <span class="badge bg-secondary">{{ App\Models\Application::applied()->count() }}</span>
-                    </a>
-                    <a href="/application/list?status=Declined" class="btn btn-danger">
-                        Declined
-                        <span class="badge bg-secondary">{{ App\Models\Application::declined()->count() }}</span>
-                    </a>
-                    <a href="/application/list?status=Pending" class="btn btn-warning">
-                        Pending
-                        <span class="badge bg-secondary">{{ App\Models\Application::pending()->count() }}</span>
-                    </a>
-                    <a href="/application/list?status=Approved&hostel=0" class="btn btn-success">
-                        Approved (No hostel)
-                        <span class="badge bg-secondary">{{ App\Models\Application::approved()->count() }}</span>
-                    </a>
-                    <a href="/application/approved" class="btn btn-success">
-                        Approved
-                        <span class="badge bg-secondary">{{ App\Models\Application::approved_hostel()->count() }}</span>
-                    </a>
-                </div>
-
+                Approved applications for {{ $hostel_id == 0 ? 'All hostels' : $hostel->name }}
                 <p>
-                    <a href="/application/" class="btn btn-secondary btn-sm">Back</a>
+                    <a href="/application/list" class="btn btn-secondary btn-sm">Back</a>
                     <a href="/application/search" class="btn btn-primary btn-sm">Search</a>
                 </p>
 
@@ -37,56 +14,57 @@
             <x-slot name="heading">
                 Applications
             </x-slot>
-            @if ($status == 'Approved' && $hostel_id != 0)
-                <p>
-                    Select the hostel:
-                    <select name="hostel" id="hostel">
-                        <option value="0">No Hostel</option>
-                        @foreach (App\Models\Hostel::orderBy('gender')->orderBy('name')->get() as $ht)
-                            <option value="{{ $ht->id }}">{{ $ht->name }}</option>
-                        @endforeach
-                    </select>
-                </p>
-            @endif
+
+            <p>
+                Select the hostel:
+                <select name="hostel" id="hostel">
+                    <option value="0">No Hostel</option>
+                    @foreach (App\Models\Hostel::orderBy('gender')->orderBy('name')->get() as $ht)
+                        <option value="{{ $ht->id }}" {{ $ht->id == $hostel_id ? 'selected' : '' }}>
+                            {{ $ht->name }}</option>
+                    @endforeach
+                </select>
+            </p>
+
             <div style="width: 100%; overflow-x:auto">
                 <table class="table table-auto table-hover">
                     <thead>
                         <tr>
+                            <th>Sl.</th>
                             <th>Application ID</th>
                             <th>Name</th>
                             <th>Course</th>
-                            <th>Department</th>
                             <th>MZU ID</th>
-                            <th>AMC?</th>
-                            <th>Status</th>
+                            <th>Hostel</th>
+                            <th>Type</th>
                             @can('manages', App\Models\Application::class)
                                 <th>Action</th>
                                 @endif
                             </tr>
                         </thead>
                         <tbody>
+                            <?php
+                            if ($hostel_id != 0) {
+                                $sl = 1;
+                            } else {
+                                $sl = ($applications->currentPage() - 1) * $applications->perPage() + 1;
+                            }
+                            ?>
                             @foreach ($applications as $application)
                                 <tr>
+                                    <td>{{ $sl++ }}</td>
                                     <td>{{ $application->id }}</td>
                                     <td>
                                         <a
                                             href="/application/{{ $application->id }}?mzuid={{ $application->mzuid }}">{{ $application->name }}</a>
-                                        @if (count($application->duplicates()) > 0)
-                                            <br><button type="button" class="btn badge bg-warning btn-duplicate"
-                                                value="{{ $application->id }}">Possible duplicate</button>
-                                        @endif
-
                                     </td>
 
                                     <td>{{ $application->course }}</td>
-                                    <td>{{ $application->department }}</td>
                                     <td>{{ $application->mzuid }}</td>
-                                    <td>{{ $application->AMC ? 'Yes' : 'No' }}</td>
-                                    @if ($application->hostel)
-                                        <td>{{ $application->hostel->name }}</td>
-                                    @else
-                                        <td>{{ $application->status }}</td>
-                                    @endif
+                                    <td>{{ $application->hostel->name }}</td>
+
+                                    <td>{{ App\Models\Room::room_type($application->roomtype) }}</td>
+
 
                                     @can('manage', $application)
                                         <td>
@@ -106,9 +84,11 @@
                             </form>
                         </tbody>
                     </table>
-                    <div class="d-flex justify-content-center">
-                        {{ $applications->links() }}
-                    </div>
+                    @if ($hostel_id == 0)
+                        <div class="d-flex justify-content-center">
+                            {{ $applications->links() }}
+                        </div>
+                    @endif
                 </div>
             </x-block>
         </x-container>
@@ -158,38 +138,11 @@
                         'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
                     }
                 });
-                $("button.btn-delete").click(function() {
-                    if (confirm("Are you sure you want to delete this application?")) {
-                        $("form[name='frm-delete']").attr('action', '/application/' + $(this).val());
-                        $("form[name='frm-delete']").submit();
-                    }
+
+                $("select#hostel").change(function() {
+
+                    window.location.href = "/application/approved?hostel=" + $(this).val();
                 });
-            });
-
-            $("button.btn-duplicate").click(function() {
-                $.ajax({
-                    type: "get",
-                    url: "/application/" + $(this).val() + "/duplicate",
-                    success: function(data, status) {
-                        $("#app-body").empty();
-                        for (var i = 0; i < data.length; i++) {
-                            $("#app-body").append("<tr><td>" + data[i].id + "</td><td>" + data[i].name +
-                                "</td><td>" + data[i].mobile + "</td><td>" + data[i].mzuid +
-                                "</td><td>" + data[i].course + " - " + data[i].department + "</td></tr>"
-                                );
-                        }
-
-                    },
-                    error: function(xhr, status, error) {
-                        alert("Error getting duplicate: " + xhr.responseText);
-                    }
-                })
-                $("textarea#duplicate").val($(this).val());
-                $("#duplicateModal").modal('show');
-            });
-
-            $("select#hostel").change(function() {
-                window.location.href = "/application/list?status=Approved&hostel=" + $(this).val();
             });
         </script>
     </x-layout>

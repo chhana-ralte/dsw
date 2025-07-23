@@ -28,16 +28,15 @@
                          ?>
                         @foreach($hostel_wise as $data)
                             <?php
-                                $total+=$data->total;
                                 if($data->gender!=$gender && $sl !=1){
                                     echo "<tr>";
                                     echo "<td></td>";
-                                    echo "<th colspan='6'>Sub-Total of ".$data->gender."</th>";
+                                    echo "<th colspan='6'>Sub-Total of ".$gender."</th>";
                                     echo "<th>". $total ."</th>";
                                     echo "</tr>";
                                     $total=0;
-
                                 }
+                                $total+=$data->total;
                                 $gender=$data->gender;
                             ?>
                             <tr>
@@ -54,9 +53,10 @@
                         @endforeach
                         <tr>
                             <td></td>
-                            <th colspan=6>Sub-Total of {{ $data->gender }}</th>
+                            <th colspan=6>Sub-Total of {{ $gender }}</th>
                             <th>{{ $total }}</th>
-                        </tbody>
+                        </tr>
+                    </tbody>
                 </table>
 
             </div>
