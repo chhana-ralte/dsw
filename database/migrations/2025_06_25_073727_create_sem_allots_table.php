@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+
     public function up(): void
     {
         Schema::create('sem_allots', function (Blueprint $table) {
@@ -17,7 +15,7 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\Requirement::class)->nullable();
             $table->foreignIdFor(\App\Models\Allotment::class);
             $table->foreignIdFor(\App\Models\Sessn::class);
-            $table->boolean('valid')->default(0);
+            $table->boolean('valid')->default(1);
             $table->timestamps();
         });
     }

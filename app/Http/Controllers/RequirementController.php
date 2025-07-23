@@ -205,7 +205,9 @@ class RequirementController extends Controller
             // return "Hello";
             $requirements = Requirement::whereIn('id', request()->requirement_id);
             // return "Hello";
-            $notifications = \App\Models\Notification::where('status', 'active')->orderBy('dt')->get();
+            $notifications = \App\Models\Notification::where('status', 'active')
+                ->where('type', 'sem_allot')
+                ->orderBy('dt')->get();
             $data = [
                 'requirements' => $requirements->orderBy('new_roomcapacity')->get(),
                 'notifications' => $notifications,
@@ -220,6 +222,7 @@ class RequirementController extends Controller
                 $notification = \App\Models\Notification::create([
                     'no' => request()->no,
                     'dt' => request()->dt,
+                    'type' => 'sem_allot',
                     'content' => request()->subject,
                 ]);
             } else {

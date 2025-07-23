@@ -37,6 +37,11 @@ class ApplicationPolicy
         return $user->max_role_level() >= 3;
     }
 
+    public function notifies(User $user): bool
+    {
+        return $user->max_role_level() >= 4;
+    }
+
     public function delete(User $user, Application $application): bool
     {
         return $user->isDsw() || $user->isAdmin();

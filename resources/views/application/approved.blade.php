@@ -5,7 +5,7 @@
                 Approved applications for {{ $hostel_id == 0 ? 'All hostels' : $hostel->name }}
                 <p>
                     <a href="/application/list" class="btn btn-secondary btn-sm">Back</a>
-                    <a href="/application/search" class="btn btn-primary btn-sm">Search</a>
+                    
                 </p>
 
             </x-slot>
@@ -18,77 +18,99 @@
             <p>
                 Select the hostel:
                 <select name="hostel" id="hostel">
-                    <option value="0">No Hostel</option>
+                    <option value="0" selected disabled>Select Hostel</option>
                     @foreach (App\Models\Hostel::orderBy('gender')->orderBy('name')->get() as $ht)
                         <option value="{{ $ht->id }}" {{ $ht->id == $hostel_id ? 'selected' : '' }}>
                             {{ $ht->name }}</option>
                     @endforeach
                 </select>
+                @if($hostel_id != 0)
+                    <button class="btn btn-primary btn-sm">Notify</button>
+                @endif
             </p>
 
             <div style="width: 100%; overflow-x:auto">
-                <table class="table table-auto table-hover">
-                    <thead>
-                        <tr>
-                            <th>Sl.</th>
-                            <th>Application ID</th>
-                            <th>Name</th>
-                            <th>Course</th>
-                            <th>MZU ID</th>
-                            <th>Hostel</th>
-                            <th>Type</th>
-                            @can('manages', App\Models\Application::class)
-                                <th>Action</th>
-                                @endif
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            if ($hostel_id != 0) {
-                                $sl = 1;
-                            } else {
-                                $sl = ($applications->currentPage() - 1) * $applications->perPage() + 1;
-                            }
-                            ?>
-                            @foreach ($applications as $application)
-                                <tr>
-                                    <td>{{ $sl++ }}</td>
-                                    <td>{{ $application->id }}</td>
-                                    <td>
-                                        <a
-                                            href="/application/{{ $application->id }}?mzuid={{ $application->mzuid }}">{{ $application->name }}</a>
-                                    </td>
-
-                                    <td>{{ $application->course }}</td>
-                                    <td>{{ $application->mzuid }}</td>
-                                    <td>{{ $application->hostel->name }}</td>
-
-                                    <td>{{ App\Models\Room::room_type($application->roomtype) }}</td>
-
-
-                                    @can('manage', $application)
-                                        <td>
-                                            <div class="btn-group">
-                                                <a href="/application/{{ $application->id }}/edit?mzuid={{ $application->mzuid }}"
-                                                    class="btn btn-primary btn-sm">Edit</a>
-                                                <button value="{{ $application->id }}"
-                                                    class="btn btn-danger btn-sm btn-delete">Delete</button>
-                                            </div>
-                                        </td>
-                                    @endcan
+                <form name="frm-notify" method="post" action="">
+                    @csrf
+                    <input type="hidden" name="status" value="{{ $status }}">
+                    <input type="hidden" name="hostel_id" value="{{ $hostel?$hostel->id:0 }}">
+                    <table class="table table-auto table-hover">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="all"></th>
+                                <th>Sl.</th>
+                                <th>Application ID</th>
+                                <th>Name</th>
+                                <th>Course</th>
+                                <th>MZU ID</th>
+                                <th>Hostel</th>
+                                <th>Type</th>
+                                @can('manages', App\Models\Application::class)
+                                    <th>Action</th>
+                                    @endif
                                 </tr>
-                            @endforeach
-                            <form name="frm-delete" method="post">
-                                @csrf
-                                @method('delete')
-                            </form>
-                        </tbody>
-                    </table>
-                    @if ($hostel_id == 0)
-                        <div class="d-flex justify-content-center">
-                            {{ $applications->links() }}
-                        </div>
-                    @endif
+                            </thead>
+                            <tbody>
+                                <?php
+                                if ($hostel_id != 0) {
+                                    $sl = 1;
+                                } else {
+                                    $sl = ($applications->currentPage() - 1) * $applications->perPage() + 1;
+                                }
+                                ?>
+                                @foreach ($applications as $application)
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="application_id[]" value="{{ $application->id }}">
+                                        </td>
+                                        <td>{{ $sl++ }}</td>
+                                        <td>{{ $application->id }}</td>
+                                        <td>
+                                            <a
+                                                href="/application/{{ $application->id }}?mzuid={{ $application->mzuid }}">{{ $application->name }}</a>
+                                        </td>
+
+                                        <td>{{ $application->course }}</td>
+                                        <td>{{ $application->mzuid }}</td>
+                                        <td>{{ $application->hostel->name }}</td>
+
+                                        <td>{{ App\Models\Room::room_type($application->roomtype) }}</td>
+
+
+                                        @can('manage', $application)
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a href="/application/{{ $application->id }}/edit?mzuid={{ $application->mzuid }}"
+                                                        class="btn btn-primary btn-sm">Edit</a>
+                                                    <button value="{{ $application->id }}"
+                                                        class="btn btn-danger btn-sm btn-delete">Delete</button>
+                                                </div>
+                                            </td>
+                                        @endcan
+                                    </tr>
+                                    
+                                @endforeach
+                                @if($hostel_id != 0 && auth()->user()->can('notifies', App\Models\Application::class))
+                                    <footer>
+                                        
+                                        <tr>
+                                            <td colspan="6">
+                                                
+                                                    <button id="notify" class="btn btn-primary btn-action" type="button" value="notify">Notify selected students</button>
+                                                
+                                            </td>
+                                        </tr>
+                                    </footer>
+                                    @endif
+
+                            </tbody>
+                        </table>
+                        @if ($hostel_id == 0)
+                            <div class="d-flex justify-content-center">
+                                {{ $applications->links() }}
+                            </div>
+                        @endif
+                    </form>
                 </div>
             </x-block>
         </x-container>
@@ -143,6 +165,34 @@
 
                     window.location.href = "/application/approved?hostel=" + $(this).val();
                 });
+
+                $('.table tr').click(function(event) {
+                    if (event.target.type !== 'checkbox') {
+                        $(':checkbox', this).trigger('click');
+                    }
+                });
+
+                $("input#all").click(function(){
+                    $("input[name='application_id[]']").each(function(){
+                        $(this).prop('checked',$("input#all").prop("checked"));
+                    });
+                });
+                $("button#notify").click(function(){
+                    var nos=0;
+                    $("input[name='application_id[]']").each(function(){
+                        if($(this).prop('checked')){
+                            nos++;
+                        }
+                    });
+
+                    if(nos == 0){
+                        alert("Please select the students.");
+                        exit();
+                    }
+                    $("form[name='frm-notify']").submit();
+                });
+                
             });
+
         </script>
     </x-layout>

@@ -348,9 +348,108 @@ class ApplicationController extends Controller
             'hostel_id' => $hostel_id,
             'hostel' => $hostel,
             'applications' => $applications,
+            'status' => 'approved'
         ];
         return view('application.approved', $data);
     }
+
+    public function notify()
+    {
+        // return request()->all();
+        $hostel = \App\Models\Hostel::findOrFail(request()->hostel_id);
+
+        if (request()->status == 'approved') {
+            $applications = Application::whereIn('id', request()->application_id);
+            $hostel = \App\Models\Hostel::find(request()->hostel);
+            // return "Hello";
+            $notifications = \App\Models\Notification::where('status', 'active')
+                ->where('type', 'allotment')
+                ->orderBy('dt')
+                ->get();
+            $data = [
+                'applications' => $applications->orderBy('roomtype',)->orderBy('name')->get(),
+                'notifications' => $notifications,
+                'hostel' => $hostel,
+                'status' => 'confirm notify',
+            ];
+            // return $data;
+            return view('application.confirmNotify', $data);
+        } else if (request()->status == 'confirm notify') {
+            if (request()->file == 0) {
+                $notification = \App\Models\Notification::create([
+                    'no' => request()->no,
+                    'dt' => request()->dt,
+                    'type' => 'allotment',
+                    'content' => request()->subject,
+                ]);
+            } else {
+                $notification = \App\Models\Notification::findOrFail(request()->file);
+            }
+            if (count($notification->allotments) == 0) {
+                $sl = 1;
+            } else {
+                $sl = $notification->sem_allots->max('sl') + 1;
+            }
+
+            $applications = Application::whereIn('id', request()->application_id)
+                ->orderBy('roomtype')
+                ->orderBy('name')
+                ->get();
+            $chars = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+            $len = strlen($chars);
+            $str = $chars[rand(0, $len - 1)] . $chars[rand(0, $len - 1)];
+
+            foreach ($applications as $appl) {
+                $str = $chars[rand(0, $len - 1)] . $chars[rand(0, $len - 1)];
+                $person = \App\Models\Person::create([
+                    'name' => $appl->name,
+                    'father' => $appl->father,
+                    'state' => $appl->state,
+                    'category' => $appl->category,
+                    'PWD' => $appl->PWD,
+                    'mobile' => $appl->mobile,
+                    'dob' => $appl->dob,
+                    'email' => $appl->email,
+                    'address' => $appl->address,
+                    'photo' => $appl->photo,
+                    'gender' => $appl->gender,
+                    'religion' => $appl->religion,
+                ]);
+
+                $student = \App\Models\Student::create([
+                    'person_id' => $person->id,
+                    'course' => $appl->course,
+                    'department' => $appl->department,
+                    'mzuid' => $appl->mzuid,
+                    'rollno' => $appl->rollno,
+                ]);
+
+                $allotment = \App\Models\Allotment::create([
+                    'person_id' => $person->id,
+                    'notification_id' => $notification->id,
+                    'hostel_id' => $appl->hostel_id,
+                    'from_dt' => '2025-08-01',
+                    'to_dt' => '2026-07-31',
+                    'admitted' => 0,
+                    'valid' => 1,
+                    'finished' => 0,
+                    'start_sessn_id' => 15,
+                    'application_id' => $appl->id,
+                    'sl' => $sl++,
+                    'rand' => $str,
+                    'roomtype' => $appl->roomtype,
+                ]);
+
+                $appl->update([
+                    'status' => 'Notified'
+                ]);
+                $appl->save();
+            }
+            return redirect('/application/approved?hostel=' . $hostel->id)
+                ->with(['message' => ['type' => 'info', 'text' => 'Notified']]);
+        }
+    }
+
 
     public function duplicates()
     {
