@@ -183,6 +183,15 @@ class ApplicationController extends Controller
             $application->photo = "/storage/" . $path;
         }
         $application->save();
+        if ($application->valid_allotment()) {
+            $allotment = $application->valid_allotment();
+            if ($student = $allotment->person->student()) {
+                $student->update([
+                    'mzuid' => $validated['mzuid'],
+                ]);
+                $student->save();
+            }
+        }
 
         return redirect('/application/' . $application->id . "?mzuid=" . $application->mzuid)->with(['message' => ['type' => 'info', 'text' => 'Application updated successfully']]);
     }
@@ -193,7 +202,7 @@ class ApplicationController extends Controller
         $application = Application::findOrFail($id);
         // return $request;
         if ($request->has('status')) {
-            if($application->status == 'Notified'){
+            if ($application->status == 'Notified') {
                 $allotments = \App\Models\Allotment::where('application_id', $application->id)->get();
                 $people = \App\Models\Person::whereIn('id', $allotments->pluck('person_id'))->get();
                 \App\Models\Student::whereIn('person_id', $people->pluck('id'))->delete();
@@ -432,24 +441,26 @@ class ApplicationController extends Controller
                     'rollno' => $appl->rollno,
                 ]);
 
-                $allotment = \App\Models\Allotment::updateOrCreate([
-                    'application_id' => $appl->id
-                ],
+                $allotment = \App\Models\Allotment::updateOrCreate(
                     [
-                    'person_id' => $person->id,
-                    'notification_id' => $notification->id,
-                    'hostel_id' => $appl->hostel_id,
-                    'from_dt' => '2025-08-01',
-                    'to_dt' => '2026-07-31',
-                    'admitted' => 0,
-                    'valid' => 1,
-                    'finished' => 0,
-                    'start_sessn_id' => 15,
-                    'application_id' => $appl->id,
-                    'sl' => $sl++,
-                    'rand' => $str,
-                    'roomtype' => $appl->roomtype,
-                ]);
+                        'application_id' => $appl->id
+                    ],
+                    [
+                        'person_id' => $person->id,
+                        'notification_id' => $notification->id,
+                        'hostel_id' => $appl->hostel_id,
+                        'from_dt' => '2025-08-01',
+                        'to_dt' => '2026-07-31',
+                        'admitted' => 0,
+                        'valid' => 1,
+                        'finished' => 0,
+                        'start_sessn_id' => 15,
+                        'application_id' => $appl->id,
+                        'sl' => $sl++,
+                        'rand' => $str,
+                        'roomtype' => $appl->roomtype,
+                    ]
+                );
 
                 $appl->update([
                     'status' => 'Notified'
@@ -461,24 +472,23 @@ class ApplicationController extends Controller
         }
     }
 
-    public function notified(){
+    public function notified()
+    {
         // return "asdasd";
-        $applications = Application::where('status','Notified');
-        if(request()->has('hostel') && $hostel=\App\Models\Hostel::find(request()->hostel)){
-            $applications->where('hostel_id',request()->hostel);
+        $applications = Application::where('status', 'Notified');
+        if (request()->has('hostel') && $hostel = \App\Models\Hostel::find(request()->hostel)) {
+            $applications->where('hostel_id', request()->hostel);
             $hostel_id = $hostel->id;
-        }
-        else{
+        } else {
             $hostel_id = 0;
             $hostel = false;
         }
 
 
-        if($hostel){
-            $allotments = \App\Models\Allotment::whereIn('application_id',$applications->pluck('id'))->get();
-        }
-        else{
-            $allotments = \App\Models\Allotment::whereIn('application_id',$applications->pluck('id'))->paginate()->withQueryString();
+        if ($hostel) {
+            $allotments = \App\Models\Allotment::whereIn('application_id', $applications->pluck('id'))->get();
+        } else {
+            $allotments = \App\Models\Allotment::whereIn('application_id', $applications->pluck('id'))->paginate()->withQueryString();
         }
         // return $allotments;
         $data = [
