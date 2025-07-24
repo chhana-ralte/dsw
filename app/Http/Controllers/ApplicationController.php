@@ -193,6 +193,14 @@ class ApplicationController extends Controller
         $application = Application::findOrFail($id);
         // return $request;
         if ($request->has('status')) {
+            if($application->status == 'Notified'){
+                $allotments = \App\Models\Allotment::where('application_id', $application->id)->get();
+                $people = \App\Models\Person::whereIn('id', $allotments->pluck('person_id'))->get();
+                \App\Models\Student::whereIn('person_id', $people->pluck('id'))->delete();
+                \App\Models\Other::whereIn('person_id', $people->pluck('id'))->delete();
+                \App\Models\Person::whereIn('id', $allotments->pluck('person_id'))->delete();
+                \App\Models\Allotment::where('application_id', $application->id)->delete();
+            }
             if ($request->status == 'approve') {
                 $application->update([
                     'status' => 'Approved',
@@ -424,7 +432,10 @@ class ApplicationController extends Controller
                     'rollno' => $appl->rollno,
                 ]);
 
-                $allotment = \App\Models\Allotment::create([
+                $allotment = \App\Models\Allotment::updateOrCreate([
+                    'application_id' => $appl->id
+                ],
+                    [
                     'person_id' => $person->id,
                     'notification_id' => $notification->id,
                     'hostel_id' => $appl->hostel_id,

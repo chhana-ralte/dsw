@@ -91,9 +91,7 @@ class NotificationController extends Controller
     {
         $notification = Notification::findOrFail($id);
 
-
         $allotments = $notification->allotments;
-
 
         $sem_allots = $notification->sem_allots;
         $data = [
