@@ -19,6 +19,7 @@
                     <th>Room type</th>
                     <th>Email</th>
                     <th>Mobile</th>
+                    <th>MZU ID</th>
                 </tr>
                 <?php $sl = 1 ?>
                 @foreach($allotments as $allot)
@@ -31,6 +32,7 @@
                         <td>{{ App\Models\Room::room_type($allot->roomtype) }}</td>
                         <td>{{ $allot->person->email }}</td>
                         <td>{{ $allot->person->mobile }}</td>
+                        <td>{{ $allot->person->student()->mzuid }}</td>
                     </tr>
                 @endforeach
             </table>

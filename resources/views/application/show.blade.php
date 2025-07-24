@@ -153,6 +153,22 @@
                     <td>Status</td>
                     <td>{{ $application->status }}</td>
                 </tr>
+                @if($application->hostel)
+                    <tr>
+                        <td>Hostel allotted</td>
+                        <td>{{ $application->hostel->name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Room type</td>
+                        <td>{{ App\Models\Room::room_type($application->roomtype) }}</td>
+                    </tr>
+                    @if($application->valid_allotment())
+                        <tr>
+                            <td>Allotment reference</td>
+                            <td>{{ $application->valid_allotment()->notification->id }}/{{ $application->valid_allotment()->rand }}/{{ $application->valid_allotment()->sl }}</td>
+                        </tr>
+                    @endif
+                @endif
                 </tr>
                     <td>Whether valid?</td>
                     <td>{{ $application->valid ? 'Yes' : 'No' }}</td>
@@ -196,7 +212,7 @@
                         @foreach($application->existing_allotments() as $allotment)
                             <tr>
                                 <td>
-                                    <a href="{{ $allotment->id }}">{{ $allotment->id }}</a>
+                                    <a href="/allotment/{{ $allotment->id }}">{{ $allotment->id }}</a>
                                 </td>
                                 <td>
                                     {{ $allotment->person->name }}

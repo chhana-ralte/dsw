@@ -82,7 +82,14 @@ class Allotment extends Model
         return Sessn::where('id', $this->end_sessn_id)->first();
     }
 
-    public function requirements(){
-        return $this->hasMany(Requirement::class);
+    public function requirements()
+    {
+        $allot_hostels = AllotHostel::where('allotment_id', $this->id);
+        return Requirement::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->get();
+    }
+
+    public function application()
+    {
+        return $this->belongsTo(Application::class);
     }
 }

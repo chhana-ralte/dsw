@@ -25,9 +25,16 @@ class RequirementController extends Controller
                 'allotment' => $allotment,
                 'allot_hostel' => $allotment->valid_allot_hostel(),
                 'allot_seat' => $allotment->valid_allot_hostel()->valid_allot_seat(),
-                //'requirements' => Requirement::where('allot_hostel_id', $allotment->valid_allot_hostel()->id)->get(),
                 'requirements' => Requirement::hydrate($requirements),
             ];
+            // return $data;
+            return view('requirement.index', $data);
+        } else if (count($allotment->requirements()) > 0) {
+            $data = [
+                'allotment' => $allotment,
+                'requirements' => Requirement::hydrate($requirements),
+            ];
+            // return $data;
             return view('requirement.index', $data);
         } else {
             return redirect()->back()->with(['message' => ['type' => 'danger', 'text' => 'You should have valid allotment for hostel and seat to request for requirement']]);
@@ -260,13 +267,18 @@ class RequirementController extends Controller
                         'leave_dt' => date('Y-m-d'),
                     ]);
 
+                    \App\Models\AllotSeat::where('allot_hostel_id', $req->allot_hostel_id)->update([
+                        'valid' => 0,
+                        'to_dt' => date('Y-m-d'),
+                        'leave_dt' => date('Y-m-d'),
+                    ]);
+
                     $allot_hostel = \App\Models\AllotHostel::create([
                         'allotment_id' => $req->allot_hostel->allotment->id,
                         'hostel_id' => $req->new_hostel_id,
                         'from_dt' => date('Y-m-d'),
                         'to_dt' => $req->allot_hostel->allotment->to_dt,
                         'valid' => 1,
-
                     ]);
                 }
 

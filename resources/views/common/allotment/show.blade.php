@@ -62,5 +62,12 @@
                 @include('common.allotment.partials.admission')
             </x-block>
         @endif
+
+        @if ($allotment->application)
+            <x-block>
+                @include('common.allotment.partials.application')
+            </x-block>
+        @endif
+
     </x-container>
 </x-layout>

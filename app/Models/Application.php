@@ -54,8 +54,12 @@ class Application extends Model
 
     public function existing_allotments()
     {
-        $existing_allotments = DB::select("SELECT A.* FROM allotments A JOIN people P ON A.person_id = P.id
-            JOIN students S ON S.person_id = P.id WHERE S.mzuid = '" . $this->mzuid . "'");
+        $existing_allotments = DB::select("SELECT A.* 
+            FROM allotments A JOIN people P ON A.person_id = P.id
+            JOIN students S ON S.person_id = P.id 
+            WHERE S.mzuid = '" . $this->mzuid . "'
+            AND A.application_id <> '" . $this->id . "'
+            ");
 
         return Allotment::hydrate($existing_allotments);
     }
@@ -74,5 +78,14 @@ class Application extends Model
     public function hostel()
     {
         return $this->belongsTo(Hostel::class);
+    }
+
+    public function allotment()
+    {
+        return $this->hasOne(Allotment::class);
+    }
+    public function valid_allotment()
+    {
+        return Allotment::where('application_id', $this->id)->where('valid', 1)->first();
     }
 }

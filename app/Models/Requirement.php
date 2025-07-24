@@ -17,7 +17,8 @@ class Requirement extends Model
 
     public function allotment()
     {
-        return $this->belongsTo(Allotment::class);
+
+        return Allotment::where('id', $this->allot_hostel->allotment_id)->first();
     }
 
     public function allot_hostel()
@@ -77,9 +78,9 @@ class Requirement extends Model
     {
         if ($hostel_id == 0) {
             // return Requirement::where('new_hostel_id', '<>', '0')->where('notified', '1');
-            return Requirement::select('requirements.*')->join('sem_allots','sem_allots.requirement_id','requirements.id')->where('new_hostel_id','<>',0)->where('notified','1')->orderBy('sem_allots.sl');
+            return Requirement::select('requirements.*')->join('sem_allots', 'sem_allots.requirement_id', 'requirements.id')->where('new_hostel_id', '<>', 0)->where('notified', '1')->orderBy('sem_allots.sl');
         } else {
-            return Requirement::select('requirements.*')->join('sem_allots','sem_allots.requirement_id','requirements.id')->where('new_hostel_id',$hostel_id)->where('notified','1')->orderBy('sem_allots.sl');
+            return Requirement::select('requirements.*')->join('sem_allots', 'sem_allots.requirement_id', 'requirements.id')->where('new_hostel_id', $hostel_id)->where('notified', '1')->orderBy('sem_allots.sl');
             return Requirement::where('new_hostel_id', $hostel_id)->where('notified', '1');
         }
     }
@@ -89,9 +90,14 @@ class Requirement extends Model
         return SemAllot::where('requirement_id', $this->id)->first();
     }
 
-    public function valid_sem_allot()
+    public function valid_sem_allots()
     {
         return SemAllot::where('requirement_id', $this->id)->where('valid', 1)->get();
+    }
+
+    public function valid_sem_allot()
+    {
+        return SemAllot::where('requirement_id', $this->id)->where('valid', 1)->first();
     }
 
     public function duplicates()
@@ -101,5 +107,16 @@ class Requirement extends Model
             WHERE R.id = " . $this->id . "  AND (P.name = AP.name OR S.mzuid = AP.mzuid OR P.mobile = AP.mobile OR P.email = AP.email)");
         //$duplicates['query'] = $str;
         return Application::hydrate($duplicates);
+    }
+
+    public function status()
+    {
+        if ($this->new_hostel_id == 0) {
+            return "Applied";
+        } else if ($this->notified == 0) {
+            return "Resolved";
+        } else {
+            return "Notified";
+        }
     }
 }

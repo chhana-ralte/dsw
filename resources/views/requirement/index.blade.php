@@ -14,6 +14,7 @@
                         <td>For session</td>
                         <td>Hostel</td>
                         <td>Room type</td>
+                        <td>Status</td>
                         @if(auth()->user() && auth()->user()->max_role_level()>2)
                             <td>Action</td>
                         @endif
@@ -25,6 +26,7 @@
                             <td>{{ $req->for_sessn()->name() }}</td>
                             <td>{{ $req->hostel->name }}</td>
                             <td>{{ $req->roomcapacity }}</td>
+                            <td>{{ $req->status() }}</td>
                             @if(auth()->user() && auth()->user()->max_role_level()>2)
                                 <td>
                                     <div class="btn-group">
