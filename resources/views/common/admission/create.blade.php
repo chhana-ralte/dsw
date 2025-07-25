@@ -2,7 +2,7 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                Create Admission for newly allotted student {{ $allotment->person->name }}
+                Seat allotment for newly allotted resident: {{ $allotment->person->name }}
                 <p>
                     <a href="/hostel/{{ $allotment->hostel->id }}/admission?sessn_id={{ $sessn->id }}&adm_type=new" class="btn btn-primary btn-sm">Back</a>
                 </p>
@@ -58,7 +58,7 @@
                 <div class="form-group row mb-3">
                     <label for="hostel" class="col col-md-3">Hostel allotted</label>
                     <div class="col col-md-4">
-                        <input type="text" class="form-control" name="mzuid" value="{{ $allotment->hostel->name }}" disabled>
+                        <input type="text" class="form-control" name="hostel" value="{{ $allotment->hostel->name }}" disabled>
                     </div>
                 </div>
 
@@ -66,10 +66,46 @@
                     <div class="col col-md-3"></div>
                     <div class="col col-md-4">
                         <label for="admitted">Admission done?</label>
-                        <input type="checkbox" name="admitted" id="admitted">
+                        <input type="checkbox" name="admitted" id="admitted" {{ old('admitted')?' checked ':''}}>
                     </div>
                 </div>
 
+                <div class="admission">
+                    <div class="form-group row mb-3">
+                        <label for="sessn" class="col col-md-3">Starting session</label>
+                        <div class="col col-md-4">
+
+                            <select class="form-control" name="sessn">
+                                @foreach(App\Models\Sessn::orderBy('start_yr')->orderBy('odd_even')->get() as $ssn)
+                                    <option value="{{ $ssn->id }}" {{ $allotment->start_sessn_id==$ssn->id?' selected ':''}}>{{ $ssn->name() }}</option>
+                                @endforeach
+                            </select>
+                            @error('sessn')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-3">
+                        <label for="amount" class="col col-md-3">Payment amount</label>
+                        <div class="col col-md-4">
+                            <input type="text" class="form-control" name="amount" value="{{ old('amount') }}">
+                            @error('amount')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-group row mb-3">
+                        <label for="dt" class="col col-md-3">Payment date</label>
+                        <div class="col col-md-4">
+                            <input type="date" class="form-control" name="dt" value="{{ old('dt') }}" required>
+                            @error('dt')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group row mb-2">
                     <div class="col col-md-3">
                         <label for="seat">Seat No.:</label>
@@ -78,7 +114,7 @@
                         <select class="form-control" id="seat" name="seat">
 
                         </select>
-                        <input class="form-check-input" type="checkbox" value="1" id="available">
+                        <input class="form-check-input" type="checkbox" value="1" id="available" checked>
                         <label class="form-check-label" for="available">
                             Show only available rooms/seats
                         </label>
@@ -88,7 +124,7 @@
                 <div class="form-group row mb-3">
                     <div class="col col-md-3"></div>
                     <div class="col col-md-4">
-                        <button type="button" class="btn btn-primary submit">Admit</button>
+                        <button type="button" class="btn btn-primary submit">Submit</button>
                         <button type="button" class="btn btn-danger decline">Decline</button>
                     </div>
                 </div>
@@ -108,8 +144,15 @@ function load_seats(){
         url : "/ajax/get_all_seats?hostel_id={{ $allotment->hostel->id }}",
         success : function(data,status){
             var s="<option value='0'>Select Seat</option>";
+
             for(i=0; i<data.length; i++){
-                s += "<option value='" + data[i].id + "'>Seat: " + data[i].serial + " of " + data[i].roomno + "</option>";
+                if({{ old('seat',0) }} == data[i].id){
+                    s += "<option value='" + data[i].id + "' selected>Seat: " + data[i].serial + " of " + data[i].roomno + "</option>";
+                }
+                else{
+                    s += "<option value='" + data[i].id + "'>Seat: " + data[i].serial + " of " + data[i].roomno + "</option>";
+                }
+
             }
             $("select[id='seat']").html(s);
             //alert(data[0].roomno);
@@ -119,11 +162,40 @@ function load_seats(){
         }
     });
 }
-load_seats();
+
+function load_available_seats(){
+    $.ajax({
+        type : "get",
+        url : "/ajax/get_available_seats?hostel_id={{ $allotment->hostel->id }}",
+        success : function(data,status){
+            var s="<option value='0'>Select Seat</option>";
+            for(i=0; i<data.length; i++){
+                if({{ old('seat',0) }} == data[i].id){
+                    s += "<option value='" + data[i].id + "' selected>Seat: " + data[i].serial + " of " + data[i].roomno + "</option>";
+                }
+                else{
+                    s += "<option value='" + data[i].id + "'>Seat: " + data[i].serial + " of " + data[i].roomno + "</option>";
+                }
+            }
+            $("select[id='seat']").html(s);
+            //alert(data[0].roomno);
+        },
+        error : function(){
+            alert("Error");
+        }
+    });
+}
+
+load_available_seats();
+
 
 $(document).ready(function(){
-    $("div.student").hide();
-    $("div.other").hide();
+    if($("input[name='admitted']").prop('checked')){
+        $("div.admission").show();
+    }
+    else{
+        $("div.admission").hide();
+    }
 
     $.ajaxSetup({
         headers : {
@@ -131,23 +203,18 @@ $(document).ready(function(){
         }
     });
 
+    $("input[name='admitted']").click(function(){
+        if($(this).prop('checked')){
+            $("div.admission").show();
+        }
+        else{
+            $("div.admission").hide();
+        }
+    });
+
     $("input#available").click(function(){
         if($(this).prop('checked')){
-            $.ajax({
-                type : "get",
-                url : "/ajax/get_available_seats?hostel_id={{ $allotment->hostel->id }}",
-                success : function(data,status){
-                    var s="<option value='0'>Select Seat</option>";
-                    for(i=0; i<data.length; i++){
-                        s += "<option value='" + data[i].id + "'>Seat: " + data[i].serial + " of " + data[i].roomno + "</option>";
-                    }
-                    $("select[id='seat']").html(s);
-                    //alert(data[0].roomno);
-                },
-                error : function(){
-                    alert("Error");
-                }
-            });
+            load_available_seats();
         }
         else{
             load_seats();
@@ -156,18 +223,17 @@ $(document).ready(function(){
 
     $("button.submit").click(function(){
 
-        if($("select#seat").val() != 0){
-            $("form[name='frm_submit']").submit();
+        if($("select#seat").val() == 0){
+            alert("Make sure the seat is selected");
+            exit();
         }
-        else{
-            alert("Make sure the seat is selected")
-        }
+        $("form[name='frm_submit']").submit();
     });
 
     $("button.decline").click(function(){
         if(confirm("Are you sure the student won't do admission?")){
             $("form[name='frm_decline']").submit();
-            alert("asdasds");
+            alert("Successful");
         }
     });
 });

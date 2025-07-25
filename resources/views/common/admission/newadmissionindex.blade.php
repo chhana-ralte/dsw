@@ -20,8 +20,9 @@
                             <th>Sl.</th>
                             <th>Name</th>
                             <th>Course</th>
-                            <th>Department</td>
-                            <td>Action</td>
+                            <th>Department</th>
+                            <th>Status</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -38,6 +39,32 @@
                                 @else
                                     <td colspan="2"><b>No info</b></td>
                                 @endif
+                                <td>
+
+                                    @if($allotment->valid_allot_hostel() && $allotment->valid_allot_hostel()->valid_allot_seat())
+                                        <span class="text-success">
+                                            Seat: {{ $allotment->valid_allot_hostel()->valid_allot_seat()->seat->room->roomno}}
+                                        </span>
+                                    @else
+                                        <span class="text-warning">
+                                            Seat: Not assigned
+                                        </span>
+                                    @endif
+                                    <br>
+                                    @if($allotment->confirmed)
+                                        <span class="text-success">
+                                            Admission : Confirmed
+                                        </span>
+                                    @elseif($allotment->valid)
+                                        <span class="text-warning">
+                                            Admission : Pending
+                                        </span>
+                                    @else
+                                        <span class="text-danger">
+                                            Admission : Declined
+                                        </span>
+                                    @endif
+                                </td>
                                 <td>
                                     <a class="btn btn-primary" href="/allotment/{{ $allotment->id }}/admission/create?sessn_id={{ $sessn->id }}">Options</a>
                                 </td>

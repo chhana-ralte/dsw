@@ -40,7 +40,7 @@
                 </table>
             </div>
         @endif
-        @if($allotment->person->requirement(App\Models\Sessn::current()->next()->id))
+        @if($allotment->person->requirement(App\Models\Sessn::current()->id))
             Current requirement submitted.
         @else
             <div style="width: 100%; overflow-x:auto">

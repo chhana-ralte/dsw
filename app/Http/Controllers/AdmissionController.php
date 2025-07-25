@@ -45,15 +45,14 @@ class AdmissionController extends Controller
         } else {
             $new_allotments = Allotment::where('hostel_id', $hostel->id)
                 ->where('valid', 1)
-                ->where('admitted', 0)
-                ->whereNotIn('id', AllotHostel::where('hostel_id', $hostel->id)->pluck('allotment_id'));
+                ->where('start_sessn_id', \App\Models\Sessn::current()->id);
             $data = [
                 'sessn' => $sessn,
                 'new_allotments' => $new_allotments->get(),
                 'hostel' => $hostel,
                 'adm_type' => $adm_type
             ];
-            // return $data;
+            return $data;
             return view("common.admission.newadmissionindex", $data);
         }
     }
@@ -63,83 +62,155 @@ class AdmissionController extends Controller
      */
     public function create(Allotment $allotment)
     {
-        // return "Hehe";
-        if (isset($_GET['sessn_id'])) {
-            $sessn = Sessn::findOrFail($_GET['sessn_id']);
-        } else {
-            $sessn = Sessn::default();
+        if (!(auth()->user() && auth()->user()->can('manage', $allotment))) {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
+            abort(403);
         }
-        $data = [
-            'admissions' => Admission::where('allotment_id', $allotment->id)->get(),
-            'allotment' => $allotment,
-            'sessn' => $sessn
-        ];
-        return view('common.admission.create', $data);
-        // return $allotment;
-    }
 
+        if (count($allotment->allot_hostels) > 0) {
+            $data = [
+                'allotment' => $allotment,
+                'sessns' => \App\Models\Sessn::orderBy('start_yr')->orderBy('odd_even')->get(),
+                'sessn' => \App\Models\Sessn::current(),
+            ];
+
+            return view('common.admission.create-existing', $data);
+        }
+        else { // new admission
+            if (isset($_GET['sessn_id'])) {
+                $sessn = Sessn::findOrFail($_GET['sessn_id']);
+            } else {
+                $sessn = Sessn::default();
+            }
+            $data = [
+                'admissions' => Admission::where('allotment_id', $allotment->id)->get(),
+                'allotment' => $allotment,
+                'sessn' => $sessn
+            ];
+            return view('common.admission.create', $data);
+        }
+    }
+    /*
+        Form for storing
+    */
     public function store(Request $request, Allotment $allotment)
     {
-        // if($request->admitted){
-        //     return "Yes";
-        // }
-        // else{
-        //     return "No";
-        // }
-        // return request()->admitted;
+        if (!(auth()->user() && auth()->user()->can('manage', $allotment))) {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
+            abort(403);
+        }
 
-        return "HUHU";
-        $allot_hostel = AllotHostel::updateOrCreate(
-            [
-                'allotment_id' => $allotment->id,
-                'hostel_id' => $allotment->hostel->id,
-                'valid' => 1,
-            ],
-            [
-                'allotment_id' => $allotment->id,
-                'hostel_id' => $allotment->hostel->id,
-                'valid' => 1,
-                'from_dt' => $allotment->from_dt,
-                'to_dt' => $allotment->to_dt,
-            ]
-        );
+        if($request->has('admitted')){
+            $errors = [];
+            if(!is_numeric($request->amount)){
+                //array_push($errors, ['amount' => "It should be number"]);
+                $errors['amount'] = "It should be number";
+            }
+            if($request->dt == ''){
+                //array_push($errors, ['dt' => "Date can not be empty"]);
+                $errors['dt'] = "Date can not be empty";
+            }
+            // return $errors;
+            if(count($errors) > 0){
+                return redirect()->back()->withErrors($errors)->withInput();
+            }
+        }
 
-        AllotSeat::where('seat_id',$request->seat)->where('valid',1)->update(['valid' => 0]);
-
-        $allot_seat = AllotSeat::updateOrCreate(
-            [
-                'allot_hostel_id' => $allot_hostel->id,
-                'seat_id' => $request->seat,
-            ],
-            [
-                'allot_hostel_id' => $allot_hostel->id,
-                'seat_id' => $request->seat,
-                'valid' => 1,
-                'from_dt' => $allot_hostel->from_dt,
-                'to_dt' => $allot_hostel->to_dt,
-            ]
-        );
-
-        if ($request->admitted) {
-            Admission::updateOrCreate(
+        if (request()->type && request()->type == 'new') {
+            // return "Hello";
+            $allot_hostel = AllotHostel::updateOrCreate(
                 [
                     'allotment_id' => $allotment->id,
-                    'sessn_id' => $request->sessn_id,
-                    'allot_hostel_id' => $allot_hostel->id,
+                    'hostel_id' => $allotment->hostel->id,
+                    'valid' => 1,
                 ],
                 [
                     'allotment_id' => $allotment->id,
-                    'sessn_id' => $request->sessn_id,
-                    'allot_hostel_id' => $allot_hostel->id,
+                    'hostel_id' => $allotment->hostel->id,
+                    'valid' => 1,
+                    'from_dt' => $allotment->from_dt,
+                    'to_dt' => $allotment->to_dt,
                 ]
             );
 
-            $allotment->update([
-                'admitted' => 1
+            AllotSeat::where('seat_id', request()->seat)->where('valid', 1)->update(['valid' => 0]);
+
+            $allot_seat = AllotSeat::updateOrCreate(
+                [
+                    'allot_hostel_id' => $allot_hostel->id,
+                    'seat_id' => request()->seat,
+                ],
+                [
+                    'allot_hostel_id' => $allot_hostel->id,
+                    'seat_id' => request()->seat,
+                    'valid' => 1,
+                    'from_dt' => $allot_hostel->from_dt,
+                    'to_dt' => $allot_hostel->to_dt,
+                ]
+            );
+
+            if (request()->admitted) {
+                Admission::updateOrCreate(
+                    [
+                        'allotment_id' => $allotment->id,
+                        'sessn_id' => request()->sessn,
+                        'allot_hostel_id' => $allot_hostel->id,
+                    ],
+                    [
+                        'allotment_id' => $allotment->id,
+                        'sessn_id' => request()->sessn,
+                        'allot_hostel_id' => $allot_hostel->id,
+                        'amount' => $request->amount,
+                        'payment_dt' => $request->dt,
+                    ]
+                );
+
+                $allotment->update([
+                    'admitted' => 1,
+                    'confirmed' => 1,
+                    'valid' => 1,
+                ]);
+            }
+            return redirect('/hostel/' . $allotment->hostel->id . '/admission?adm_type=new')
+                ->with(['message' => ['type' => 'info', 'text' => 'Seat allotted.']]);
+        } else { // Existing allotments
+            request()->validate([
+                'amount' => 'numeric:required',
+                'payment_dt' => 'required',
+                'sessn' => 'required',
             ]);
+
+            if ($allotment->valid_allot_hostel()) {
+                $allot_hostel_id = $allotment->valid_allot_hostel()->id;
+            } else {
+                $allot_hostel_id = 0;
+            }
+            Admission::updateOrCreate(
+                [
+                    'sessn_id' => request()->sessn,
+                    'allotment_id' => $allotment->id,
+                ],
+                [
+                    'sessn_id' => request()->sessn,
+                    'allotment_id' => $allotment->id,
+                    'payment_dt' => request()->payment_dt,
+                    'amount' => request()->amount,
+                    'allot_hostel_id' => $allot_hostel_id,
+                ]
+            );
+
+            $allotment->update(['confirmed' => 1]);
+            $allotment->save();
         }
-        return redirect('/hostel/' . $allotment->hostel->id . '/admission?sessn=1&adm_type=new')
-            ->with(['message' => ['type' => 'info', 'text' => 'Room allotted successfully']]);
+        if($allotment->start_sessn_id == \App\Models\Sessn::current()->id)
+        {
+            $adm_type = 'new';
+        }
+        else{
+            $adm_type = 'old';
+        }
+        return redirect('/hostel/' . $allotment->hostel->id . '/admission?adm_type=' . $adm_type)
+            ->with(['message' => ['type' => 'info', 'text' => 'Admission detail created.']]);
     }
 
     /**

@@ -2,7 +2,7 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                Kindly select the requirement for next semester
+                Kindly select the requirement for current semester
             </x-slot>
         </x-block>
         @if(count($allotment->person->requirements)>0)
@@ -46,7 +46,7 @@
                             <label for="sessn">Requirement for session:</label>
                         </div>
                         <div class="col-md-4">
-                            <input type="text" class="form-control" name="sessn" value="{{ App\Models\Sessn::current()->next()->name() }}" disabled>
+                            <input type="text" class="form-control" name="sessn" value="{{ App\Models\Sessn::current()->name() }}" disabled>
                             @error('sessn')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -58,11 +58,12 @@
                             <label for="hostel">Option of Hostel</label>
                         </div>
                         <div class="col-md-4">
-                            <select class="form-control" name="hostel">
+                            <input type="text" class="form-control" name="hostel" value="{{ $allot_hostel->hostel->name }}" readonly>
+                            {{-- <select class="form-control" name="hostel" readonly>
                                 @foreach(App\Models\Hostel::where('gender',$allotment->person->gender)->get() as $h)
                                     <option value="{{ $h->id }}" {{ $allot_hostel->hostel->id==$h->id?' selected ':''}}>{{ $h->name }}</option>
                                 @endforeach
-                            </select>
+                            </select> --}}
                             @error('hostel')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror

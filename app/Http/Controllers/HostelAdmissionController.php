@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
+use App\Models\Hostel;
 use App\Models\Student;
 use App\Models\Person;
 use App\Models\Allotment;
@@ -12,10 +14,46 @@ use App\Models\Admission;
 use App\Models\Sessn;
 
 
-class AdmissionCheckController extends Controller
+class HostelAdmissionController extends Controller
 {
-    public function index(Allotment $allotment)
+    public function index(Hostel $hostel)
     {
+        if (isset($_GET['sessn'])) {
+            $sessn = Sessn::findOrFail($_GET['sessn']);
+        } else {
+            $sessn = Sessn::current();
+        }
+
+        $adm_type = isset($_GET['adm_type']) && $_GET['adm_type'] == 'new' ? 'new' : 'old';
+
+        $allot_hostels = AllotHostel::where('hostel_id', $hostel->id)->where('valid', 1);
+
+        if ($adm_type == 'old') {
+
+            $data = [
+                'sessn' => $sessn,
+                'allot_hostels' => $allot_hostels->get(),
+                'hostel' => $hostel,
+                'adm_type' => $adm_type
+            ];
+            return view("common.admission.index", $data);
+        } else {
+            $new_allotments = Allotment::where('hostel_id', $hostel->id)
+                ->where('start_sessn_id', \App\Models\Sessn::current()->id);
+            $data = [
+                'sessn' => $sessn,
+                'new_allotments' => $new_allotments->get(),
+                'hostel' => $hostel,
+                'adm_type' => $adm_type
+            ];
+            // return $data;
+            return view("common.admission.newadmissionindex", $data);
+        }
+
+
+
+
+
         // $admissions = $allotment->admissions->orderBy('session_id');
         $admissions = Admission::where('allotment_id', $allotment->id)->orderBy('sessn_id')->get();
         // $admissions->join('sessns', 'sessns.id', 'admissions.sessn_id')->orderBy('sessn_id'); //->orderBy('start_yr')->orderBy('odd_even');

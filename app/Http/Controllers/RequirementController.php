@@ -67,15 +67,15 @@ class RequirementController extends Controller
             $requirement = Requirement::updateOrCreate(
                 [
                     'person_id' => $allotment->person->id,
-                    'for_sessn_id' => \App\Models\Sessn::current()->next()->id,
+                    'for_sessn_id' => \App\Models\Sessn::current()->id,
                 ],
                 [
                     'person_id' => $allotment->person->id,
                     'allot_hostel_id' => $allotment->valid_allot_hostel()->id,
-                    'hostel_id' => $request->hostel,
+                    'hostel_id' => $allotment->valid_allot_hostel()->hostel->id,
                     'roomcapacity' => $request->roomcapacity,
                     'type' => 'Next Session',
-                    'for_sessn_id' => \App\Models\Sessn::current()->next()->id,
+                    'for_sessn_id' => \App\Models\Sessn::current()->id,
                     'dt' => now(),
                     'user_id' => auth()->user()->id,
                 ]

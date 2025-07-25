@@ -25,7 +25,7 @@ use App\Http\Controllers\PersonRemarkDetailController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SessnController;
 use App\Http\Controllers\AdmissionController;
-use App\Http\Controllers\AdmissionCheckController;
+use App\Http\Controllers\HostelAdmissionController;
 use App\Http\Controllers\CancelSeatController;
 use App\Http\Controllers\CancelHostelController;
 use App\Http\Controllers\ConsolidateController;
@@ -116,13 +116,13 @@ Route::resource('hostel.room', RoomController::class)->shallow()->middleware('au
 Route::resource('cancelSeat.clearance', ClearanceController::class)->shallow()->middleware('auth')->except(['show']);
 Route::resource('hostel.cancelHostel', CancelHostelController::class)->shallow()->middleware('auth');
 Route::resource('hostel.warden', WardenController::class)->shallow()->middleware(['auth', 'dsw']);
-Route::resource('hostel.admission', AdmissionController::class)->shallow()->middleware('auth');
+Route::resource('hostel.admission', HostelAdmissionController::class)->shallow()->middleware('auth');
 
 Route::resource('room.seat', SeatController::class)->shallow()->middleware('auth');
 Route::resource('notification', NotificationController::class)->middleware('auth');
 Route::resource('notification.allotment', AllotmentController::class)->shallow()->middleware('auth');
 Route::resource('notification.sem_allot', SemAllotController::class)->shallow()->middleware('auth');
-Route::resource('allotment.admission', AdmissionCheckController::class)->shallow()->middleware('auth');
+Route::resource('allotment.admission', AdmissionController::class)->only(['index', 'create', 'store' ])->shallow()->middleware('auth');
 Route::resource('allotment.allot_hostel', AllotHostelController::class)->shallow()->middleware('auth');
 Route::resource('allotment.cancelSeat', CancelSeatController::class)->shallow()->middleware('auth');
 Route::resource('allotment.requirement', RequirementController::class)->shallow()->only(['index', 'create', 'store'])->middleware('auth');
@@ -135,7 +135,7 @@ Route::resource('feedbackCriteria', FeedbackCriteriaController::class)->except([
 Route::resource('feedbackCriteria.option', FeedbackOptionController::class)->shallow()->only(['index', 'create', 'store'])->middleware(['auth']);
 // Route::resource('feedbackMaster.criteria', FeedbackCriteriaController::class)->shallow()->middleware(['auth']);
 Route::resource('feedback', FeedbackController::class)->middleware(['auth']);
-// Route::resource('allotment.admission', AdmissionController::class)->shallow()->middleware('auth');
+
 
 Route::resource('sessn', SessnController::class)->middleware(['auth']);
 

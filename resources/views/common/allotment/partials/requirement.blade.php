@@ -1,5 +1,5 @@
 <x-slot name="heading">
-    @if ($allotment->person->requirement(App\Models\Sessn::current()->next()->id))
+    @if ($allotment->person->requirement(App\Models\Sessn::current()->id))
         <strong class="text-success">Requirement already submitted. click <a
                 href="/allotment/{{ $allotment->id }}/requirement">here</a> to view/edit</strong>
     @else
