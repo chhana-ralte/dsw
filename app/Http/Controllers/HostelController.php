@@ -77,7 +77,9 @@ class HostelController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $hostel = Hostel::find($id);
+        // return $hostel->get_available_seats('object');
+        return $hostel->get_available_seats('array');
     }
 
     /**

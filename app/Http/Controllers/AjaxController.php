@@ -77,6 +77,18 @@ class AjaxController extends Controller
 
     public function get_available_seats()
     {
+        // return [['id' => 1, 'roomno' => "D-3", 'serial' => "5", 'room_id' =>'5']];
+        if(isset($_GET['hostel_id'])){
+            $hostel = \App\Models\Hostel::findOrFail($_GET['hostel_id']);
+            $seats = $hostel->get_available_seats('array');
+            return $seats;
+        }
+        return false;
+
+
+
+
+
         if (isset($_GET['hostel_id'])) {
             $hostel = \App\Models\Hostel::findOrFail($_GET['hostel_id']);
             $room_ids = \App\Models\Room::where('hostel_id', $hostel->id)->pluck('id');
@@ -96,14 +108,29 @@ class AjaxController extends Controller
         $available_seat_ids = \App\Models\Seat::where('available', '<>', 0)->whereIn('room_id', $room_ids)->whereNotIn('id', $occupied_seat_ids)->pluck('id');
         //return $available_seat_ids;
         $seats = DB::table('seats')->join('rooms', 'seats.room_id', 'rooms.id')
-            ->select('seats.id', 'rooms.roomno', 'rooms.id as room_id', 'seats.serial')
+            ->select('seats.id', 'rooms.roomno', 'rooms.id as room_id', 'seats.serial', '')
             ->whereIn('seats.id', $available_seat_ids)
             ->get();
+
         return $seats;
     }
 
     public function get_all_seats()
     {
+
+        if(isset($_GET['hostel_id'])){
+            $hostel = \App\Models\Hostel::findOrFail($_GET['hostel_id']);
+            $seats = $hostel->get_all_seats('array');
+            return $seats;
+        }
+        return false;
+
+
+        if($isset($_GET['hostel_id'])){
+            $hostel = \App\Models\Hostel::findOrFail($_GET['hostel_id']);
+            return $hostel->get_all_seats();
+        }
+
         if (isset($_GET['hostel_id'])) {
             $seats = DB::table('seats')->join('rooms', 'seats.room_id', 'rooms.id')
                 ->select('seats.id', 'rooms.roomno', 'rooms.id as room_id', 'seats.serial')

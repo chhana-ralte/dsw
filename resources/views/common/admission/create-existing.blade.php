@@ -2,7 +2,7 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                Admission status update for {{ $allotment->person->name }} asd asdsa
+                Admission status update for {{ $allotment->person->name }}
             </x-slot>
 
             <form method="post" action="/allotment/{{ $allotment->id }}/admission">

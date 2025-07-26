@@ -2,7 +2,7 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                Admission status of residents of {{ $hostel->name }} Hall of Residence for the {{ $sessn->name() }} session.
+                Admission status of residents of {{ $hostel->name }} Hall of Residence for the {{ $sessn->name() }} session. asd
                 <p>
                     <a class="btn btn-secondary btn-sm" href="/hostel/{{ $hostel->id }}">Back to {{ $hostel->name }}</a>
 

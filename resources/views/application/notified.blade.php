@@ -67,7 +67,7 @@
                                         <td>{{ $allotment->hostel->name }}</td>
 
                                         <td>{{ App\Models\Room::room_type($allotment->roomtype) }}</td>
-                                        <td><a href="/notification/{{ $allotment->notification->id }}">{{ $allotment->notification->no }}</a></td>
+                                        <td><a href="/notification/{{ $allotment->notification->id }}">{{ $allotment->notification->no }}</a>   </td>
 
                                     </tr>
 

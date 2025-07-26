@@ -167,6 +167,22 @@
                             <td>Allotment reference</td>
                             <td>{{ $application->valid_allotment()->notification->id }}/{{ $application->valid_allotment()->rand }}/{{ $application->valid_allotment()->sl }}</td>
                         </tr>
+                        @if($application->valid_allotment()->valid_allot_hostel() && $application->valid_allotment()->valid_allot_hostel()->valid_allot_seat())
+                            <tr>
+                                <td>Room/Seat allotted</td>
+                                <td>{{ $application->valid_allotment()->valid_allot_hostel()->valid_allot_seat()->seat->room->roomno }}</td>
+                            </tr>
+                        @endif
+                        <tr>
+                            <td>Admission confirmation</td>
+                            @if($application->valid_allotment()->confirmed == 1)
+                                <td>Confirmed</td>
+                            @else
+                                <td>Not Confirmed</td>
+                            @endif
+                        </tr>
+
+
                     @endif
                 @endif
                 </tr>
@@ -195,7 +211,7 @@
 
             </table>
         </x-block>
-        @if(count($application->existing_allotments()) > 0)
+        @if(auth()->user() && auth()->user()->max_role_level()>=3 && count($application->existing_allotments()) > 0)
             <x-block>
                 <x-slot name="heading">
                     <span class="text-danger">The following existing allotment(s) are found</span>

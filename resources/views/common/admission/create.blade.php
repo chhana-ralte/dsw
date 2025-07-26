@@ -55,10 +55,18 @@
                         </div>
                     </div>
                 @endif
+
                 <div class="form-group row mb-3">
                     <label for="hostel" class="col col-md-3">Hostel allotted</label>
                     <div class="col col-md-4">
                         <input type="text" class="form-control" name="hostel" value="{{ $allotment->hostel->name }}" disabled>
+                    </div>
+                </div>
+
+                <div class="form-group row mb-3">
+                    <label for="roomtype" class="col col-md-3">Allotted room type</label>
+                    <div class="col col-md-4">
+                        <input type="text" class="form-control" name="roomtype" value="{{ App\Models\Room::room_type($allotment->roomtype) }}" disabled>
                     </div>
                 </div>
 
@@ -147,17 +155,31 @@ function load_seats(){
 
             for(i=0; i<data.length; i++){
                 if({{ old('seat',0) }} == data[i].id){
-                    s += "<option value='" + data[i].id + "' selected>Seat: " + data[i].serial + " of " + data[i].roomno + "</option>";
+                    s += "<option value='" + data[i].id + "' selected>Seat: " + data[i].serial + " of " + data[i].roomno + "(" + data[i].room_type + ")</option>";
                 }
                 else{
-                    s += "<option value='" + data[i].id + "'>Seat: " + data[i].serial + " of " + data[i].roomno + "</option>";
+                    s += "<option value='" + data[i].id + "'>Seat: " + data[i].serial + " of " + data[i].roomno + "(" + data[i].room_type + ")</option>";
                 }
 
             }
             $("select[id='seat']").html(s);
             //alert(data[0].roomno);
         },
-        error : function(){
+        error: function(jqXHR, textStatus, errorThrown) {
+            // // Analyze the error
+            // console.log('jqXHR:', jqXHR);
+            // console.log('textStatus:', textStatus);
+            // console.log('errorThrown:', errorThrown);
+
+            // // Access Laravel validation errors (if status is 422)
+            // if (jqXHR.status === 422) {
+            //     var errors = jqXHR.responseJSON.errors;
+            //     console.log('Validation Errors:', errors);
+            //     // Display validation errors to the user
+            // } else {
+            //     // Handle other types of errors
+            //     console.log('Server Error:', jqXHR.responseText);
+            // }
             alert("Error");
         }
     });
@@ -171,10 +193,10 @@ function load_available_seats(){
             var s="<option value='0'>Select Seat</option>";
             for(i=0; i<data.length; i++){
                 if({{ old('seat',0) }} == data[i].id){
-                    s += "<option value='" + data[i].id + "' selected>Seat: " + data[i].serial + " of " + data[i].roomno + "</option>";
+                    s += "<option value='" + data[i].id + "' selected>Seat: " + data[i].serial + " of " + data[i].roomno + "(" + data[i].room_type + ")</option>";
                 }
                 else{
-                    s += "<option value='" + data[i].id + "'>Seat: " + data[i].serial + " of " + data[i].roomno + "</option>";
+                    s += "<option value='" + data[i].id + "'>Seat: " + data[i].serial + " of " + data[i].roomno + " (" + data[i].room_type + ")</option>";
                 }
             }
             $("select[id='seat']").html(s);

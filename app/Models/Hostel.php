@@ -112,4 +112,93 @@ class Hostel extends Model
             AND H.id = :hostel_id ORDER BY P.name;', ['hostel_id' => $this->id]);
         return Occupant::hydrate($occupants);
     }
+
+    public function get_all_seats($type = 'object'){
+        $seats = DB::select("SELECT S.*
+                FROM rooms R join seats S ON R.id = S.room_id AND S.available = 1
+                WHERE R.hostel_id = '". $this->id ."'
+                ORDER BY R.capacity, R.roomno, S.serial ");
+
+        if($type == 'array'){
+            $tmp = array();
+            $seats = Seat::Hydrate($seats);
+            foreach($seats as $s){
+                $x = [
+                    'id' => $s->id,
+                    'serial' => $s->serial,
+                    'available' => $s->available,
+                    'room_id' => $s->room_id,
+                    'roomno' => $s->room->roomno,
+                    'room_capacity' => $s->room->capacity,
+                    'room_type' => $s->room->capacity == 1?'Single':($s->room->capacity == 2?"Double":($s->room->capacity == 3?"Triple":"Dorm")),
+                    'hostel_id' => $s->room->hostel->id,
+                ];
+                array_push($tmp, $x);
+            }
+            return $tmp;
+            return (object)$tmp;
+            return Seat::Hydrate($tmp);
+        }
+        else{
+            return Seat::Hydrate($seats);
+        }
+
+    }
+
+    public function get_available_seats($type = 'object'){
+
+        // $room_ids = \App\Models\Room::where('hostel_id', $this->id)->pluck('id');
+        // $seat_ids = \App\Models\Seat::whereIn('room_id', $room_ids)->pluck('id');
+
+        // $occupied_seat_ids = \App\Models\AllotSeat::whereIn('seat_id', $seat_ids)->where('valid', 1)->pluck('seat_id');
+
+        // $available_seat_ids = \App\Models\Seat::where('available', '<>', 0)->whereIn('room_id', $room_ids)->whereNotIn('id', $occupied_seat_ids)->pluck('id');
+
+        // $seats = DB::table('seats')->join('rooms', 'seats.room_id', 'rooms.id')
+        //     ->select('seats.id', 'rooms.roomno', 'rooms.id as room_id', 'seats.serial')
+        //     ->whereIn('seats.id', $available_seat_ids)
+        //     ->get();
+
+        // return $seats;
+
+
+
+
+
+
+
+
+
+
+
+        $seats = DB::select("SELECT S.*
+                FROM rooms R join seats S ON R.id = S.room_id AND S.available = 1
+                WHERE S.id NOT IN (SELECT seat_id FROM allot_seats WHERE valid = 1)
+                AND R.hostel_id = '". $this->id ."'
+                ORDER BY R.capacity, R.roomno, S.serial ");
+        if($type == 'array'){
+            $tmp = array();
+            $seats = Seat::Hydrate($seats);
+            foreach($seats as $s){
+                $x = [
+                    'id' => $s->id,
+                    'serial' => $s->serial,
+                    'available' => $s->available,
+                    'room_id' => $s->room_id,
+                    'roomno' => $s->room->roomno,
+                    'room_capacity' => $s->room->capacity,
+                    'room_type' => $s->room->capacity == 1?'Single':($s->room->capacity == 2?"Double":($s->room->capacity == 3?"Triple":"Dorm")),
+                    'hostel_id' => $s->room->hostel->id,
+                ];
+                array_push($tmp, $x);
+            }
+            return $tmp;
+            return (object)$tmp;
+            return Seat::Hydrate($tmp);
+        }
+        else{
+            return Seat::Hydrate($seats);
+        }
+
+    }
 }
