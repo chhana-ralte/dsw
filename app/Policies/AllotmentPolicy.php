@@ -43,11 +43,14 @@ class AllotmentPolicy
 
     public function manage(User $user, Allotment $allotment): bool
     {
+
         if ($user->max_role_level() >= 4) { // DSW
             return true;
         } else if ($allotment->valid_allot_hostel() && $user->isWardenOf($allotment->valid_allot_hostel()->hostel->id)) { //Concerned Warden
             return true;
-        } else {
+        } else if ($allotment->start_sessn_id == \App\Models\Sessn::current()->id)
+            return true;
+        else {
             return false;
         }
     }
