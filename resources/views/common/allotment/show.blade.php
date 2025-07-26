@@ -1,7 +1,7 @@
 <x-layout>
     <x-container>
 
-            @if ($allotment->valid_allot_hostel())
+            @if ($allotment->valid_allot_hostel() && $allotment->start_sessn_id != App\Models\Sessn::current()->id && $allotment->confirmed == 1)
                 <x-block>
                     @include('common.allotment.partials.requirement')
                 </x-block>
