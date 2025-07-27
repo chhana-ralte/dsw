@@ -37,9 +37,6 @@ class Allotment extends Model
     public function valid_allot_hostel()
     {
         return AllotHostel::where('allotment_id', $this->id)->where('valid', 1)->orderBy('id', 'desc')->first();
-        //     ->withDefault([
-        //     NoHostel::make(['id' => 0, 'hostel_id' => '0'])
-        // ]);
     }
 
     public function admissions()

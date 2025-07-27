@@ -299,4 +299,80 @@ class AjaxController extends Controller
         \App\Models\Requirement::destroy($id);
         return "Success";
     }
+
+    public function createAllotHostel($id){
+        // return $id;
+        $allotment = \App\Models\Allotment::findOrFail($id);
+        $seat = \App\Models\Seat::findOrFail(request()->seat);
+
+        $allot_hostel = \App\Models\AllotHostel::updateOrCreate(
+            [
+                'allotment_id' => $allotment->id,
+                'hostel_id' => $allotment->hostel->id,
+                'valid' => 1,
+            ],
+            [
+                'allotment_id' => $allotment->id,
+                'hostel_id' => $allotment->hostel->id,
+                'valid' => 1,
+                'from_dt' => $allotment->from_dt,
+                'to_dt' => $allotment->to_dt,
+            ]
+        );
+
+        \App\Models\AllotSeat::where('seat_id', request()->seat)->where('valid', 1)->update(['valid' => 0]);
+
+        \App\Models\AllotSeat::where('allot_hostel_id', $allot_hostel->id)->where('valid', 1)->update(['valid' => 0]);
+
+        $allot_seat = \App\Models\AllotSeat::updateOrCreate(
+            [
+                'allot_hostel_id' => $allot_hostel->id,
+                'seat_id' => $seat->id,
+            ],
+            [
+                'allot_hostel_id' => $allot_hostel->id,
+                'seat_id' => $seat->id,
+                'valid' => 1,
+                'from_dt' => $allot_hostel->from_dt,
+                'to_dt' => $allot_hostel->to_dt,
+            ]
+        );
+    }
+
+    public function createAdmission($id){
+
+        $allotment = \App\Models\Allotment::findOrFail($id);
+
+        if($allotment->valid_allot_hostel()){
+            \App\Models\Admission::updateOrCreate(
+                [
+                    'allotment_id' => $allotment->id,
+                    'sessn_id' => request()->sessn,
+                    'allot_hostel_id' => $allot_hostel->id,
+                ],
+                [
+                    'allotment_id' => $allotment->id,
+                    'sessn_id' => request()->sessn,
+                    'allot_hostel_id' => $allot_hostel->id,
+                    'amount' => $request->amount,
+                    'payment_dt' => $request->dt,
+                ]
+            );
+
+            $allotment->update([
+                'admitted' => 1,
+                'confirmed' => 1,
+                'valid' => 1,
+            ]);
+            return "Successful";
+
+        }
+        else{
+            return "Valid allotment of seat is required";
+        }
+
+
+
+
+    }
 }

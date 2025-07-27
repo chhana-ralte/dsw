@@ -44,6 +44,11 @@
     </tr>
 
     <tr>
+        <td>Admission confirmed</td>
+        <td>{{ $allotment->confirmed ? 'Yes' : 'No' }}</td>
+    </tr>
+
+    <tr>
         <td>Admission done?</td>
         <td>{{ $allotment->admitted ? 'Yes' : 'No' }}</td>
     </tr>

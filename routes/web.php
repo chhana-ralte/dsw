@@ -188,6 +188,9 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::post('/ajax/notification/{id}/reserial', 'reserialNotification');
     Route::post('/ajax/application/status_update', 'applicationStatusUpdate');
     Route::post('/ajax/requirement/{id}/delete', 'requirementDelete');
+    Route::post('/ajax/allotment/{id}/allot_hostel/store', 'createAllotHostel');
+    Route::post('/ajax/allotment/{id}/admission/store', 'createAdmission');
+
 })->middleware('auth');
 
 

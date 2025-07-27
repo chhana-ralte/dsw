@@ -117,7 +117,7 @@ class AdmissionController extends Controller
         }
 
         if (request()->type && request()->type == 'new') {
-            // return "Hello";
+
             $allot_hostel = AllotHostel::updateOrCreate(
                 [
                     'allotment_id' => $allotment->id,

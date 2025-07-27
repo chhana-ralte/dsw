@@ -45,7 +45,9 @@
                 <div class="form-group row mb-3">
                     <div class="col col-md-3"></div>
                     <div class="col col-md-4">
-                        <a class="btn btn-secondary" href="/allotment/{{ $allotment->id }}/admission">Back</a>
+                        <a class="btn btn-secondary" href="/allotment/{{ $allotment->id }}/admission?">
+                            Back
+                        </a>
                         <button class="btn btn-primary btn-create" type="submit">Update</update>
                     </div>
                 </div>
