@@ -155,7 +155,7 @@
             </div>
             <div class="modal-body">
                 <div class="form-group mb-3">
-                    <label for="sessn" class="col">Starting session</label>
+                    <label for="sessn" class="col">Starting session (in the hostel)</label>
                     <div class="col">
 
                         <select class="form-control" name="sessn">
@@ -292,7 +292,7 @@ $(document).ready(function(){
     });
 
     $("button.btn-add-admission").click(function(){
-        alert(typeof $("input[name='amount']").val());
+        // alert(typeof $("input[name='amount']").val());
         if($("input[name='amount']").val() == '' || $("input[name='dt']").val() == ''){
             alert("Enter correct amount and date");
             exit();

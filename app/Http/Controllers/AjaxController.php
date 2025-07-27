@@ -343,19 +343,22 @@ class AjaxController extends Controller
 
         $allotment = \App\Models\Allotment::findOrFail($id);
 
+
         if($allotment->valid_allot_hostel()){
             \App\Models\Admission::updateOrCreate(
                 [
                     'allotment_id' => $allotment->id,
                     'sessn_id' => request()->sessn,
-                    'allot_hostel_id' => $allot_hostel->id,
+                    'allot_hostel_id' => $allotment->valid_allot_hostel()->id,
+
                 ],
                 [
                     'allotment_id' => $allotment->id,
-                    'sessn_id' => request()->sessn,
-                    'allot_hostel_id' => $allot_hostel->id,
-                    'amount' => $request->amount,
-                    'payment_dt' => $request->dt,
+                    'sessn_id' => request()->sessn_id,
+                    'allot_hostel_id' => $allotment->valid_allot_hostel()->id,
+                    'amount' => request()->amount,
+                    'payment_dt' => request()->payment_dt,
+                    'detail' => 'New Admission payment'
                 ]
             );
 
@@ -364,6 +367,7 @@ class AjaxController extends Controller
                 'confirmed' => 1,
                 'valid' => 1,
             ]);
+            $allotment->save();
             return "Successful";
 
         }
