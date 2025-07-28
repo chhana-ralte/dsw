@@ -50,10 +50,11 @@ class Requirement extends Model
 
     public static function nothing($hostel_id = 0)
     {
+        $allotments = Allotment::where('start_sessn_id', Sessn::current()->id)->where('valid', 1);
         if ($hostel_id == 0) {
-            return AllotHostel::where('valid', 1)->whereNotIn('id', Requirement::all()->pluck('allot_hostel_id'));
+            return AllotHostel::where('valid', 1)->whereNotIn('id', Requirement::all()->pluck('allot_hostel_id'))->whereNotIn('allotment_id', $allotments->pluck('id'));
         } else {
-            return AllotHostel::where('hostel_id', $hostel_id)->where('valid', 1)->whereNotIn('id', Requirement::all()->pluck('allot_hostel_id'));
+            return AllotHostel::where('hostel_id', $hostel_id)->where('valid', 1)->whereNotIn('id', Requirement::all()->pluck('allot_hostel_id'))->whereNotIn('allotment_id', $allotments->pluck('id'));
         }
     }
     public static function applied($hostel_id = 0)
