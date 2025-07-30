@@ -116,13 +116,13 @@ Route::resource('hostel.room', RoomController::class)->shallow()->middleware('au
 Route::resource('cancelSeat.clearance', ClearanceController::class)->shallow()->middleware('auth')->except(['show']);
 Route::resource('hostel.cancelHostel', CancelHostelController::class)->shallow()->middleware('auth');
 Route::resource('hostel.warden', WardenController::class)->shallow()->middleware(['auth', 'dsw']);
-Route::resource('hostel.admission', HostelAdmissionController::class)->shallow()->middleware('auth');
+Route::resource('hostel.admission', HostelAdmissionController::class)->only(['index'])->shallow()->middleware('auth');
 
 Route::resource('room.seat', SeatController::class)->shallow()->middleware('auth');
 Route::resource('notification', NotificationController::class)->middleware('auth');
 Route::resource('notification.allotment', AllotmentController::class)->shallow()->middleware('auth');
 Route::resource('notification.sem_allot', SemAllotController::class)->shallow()->middleware('auth');
-Route::resource('allotment.admission', AdmissionController::class)->only(['index', 'create', 'store' ])->shallow()->middleware('auth');
+Route::resource('allotment.admission', AdmissionController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy' ])->shallow()->middleware('auth');
 Route::resource('allotment.allot_hostel', AllotHostelController::class)->shallow()->middleware('auth');
 Route::resource('allotment.cancelSeat', CancelSeatController::class)->shallow()->middleware('auth');
 Route::resource('allotment.requirement', RequirementController::class)->shallow()->only(['index', 'create', 'store'])->middleware('auth');
@@ -190,6 +190,7 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::post('/ajax/requirement/{id}/delete', 'requirementDelete');
     Route::post('/ajax/allotment/{id}/allot_hostel/store', 'createAllotHostel');
     Route::post('/ajax/allotment/{id}/admission/store', 'createAdmission');
+    Route::post('/ajax/admission/{id}/delete', 'deleteAdmission');
 
 })->middleware('auth');
 

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Admission;
 use App\Models\Sessn;
@@ -16,46 +17,29 @@ class AdmissionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index2(Allotment $allotment)
+    public function index(Allotment $allotment)
     {
-        return $allotment;
-    }
-    public function index(Hostel $hostel)
-    {
-        // return $hostel;
-        if (isset($_GET['sessn'])) {
-            $sessn = Sessn::findOrFail($_GET['sessn']);
-        } else {
-            $sessn = Sessn::current();
+        $admissions = DB::select("SELECT AD.*
+                FROM admissions AD JOIN sessns SS ON SS.id=AD.sessn_id
+                WHERE allotment_id = " . $allotment->id . "
+                ORDER BY SS.start_yr, SS.odd_even
+            ");
+
+        if(request()->has('back_link')){
+            $back_link = request()->back_link;
         }
-
-        $adm_type = isset($_GET['adm_type']) && $_GET['adm_type'] == 'new' ? 'new' : 'old';
-
-        $allot_hostels = AllotHostel::where('hostel_id', $hostel->id)->where('valid', 1);
-
-        if ($adm_type == 'old') {
-
-            $data = [
-                'sessn' => $sessn,
-                'allot_hostels' => $allot_hostels->get(),
-                'hostel' => $hostel,
-                'adm_type' => $adm_type
-            ];
-            return view("common.admission.index", $data);
-        } else {
-            $new_allotments = Allotment::where('hostel_id', $hostel->id)
-                ->where('valid', 1)
-                ->where('start_sessn_id', \App\Models\Sessn::current()->id);
-            $data = [
-                'sessn' => $sessn,
-                'new_allotments' => $new_allotments->get(),
-                'hostel' => $hostel,
-                'adm_type' => $adm_type
-            ];
-            return $data;
-            return view("common.admission.newadmissionindex", $data);
+        else{
+            $back_link = "/allotment/" . $allotment->id;
         }
+        $data = [
+            'allotment' => $allotment,
+            'admissions' => \App\Models\Admission::hydrate($admissions),
+            'back_link' => $back_link,
+        ];
+        // return $data;
+        return view('common.admission.allotment-index', $data);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -226,23 +210,60 @@ class AdmissionController extends Controller
      */
     public function edit(Admission $admission)
     {
-        //
+        if (!(auth()->user() && auth()->user()->can('manage', $admission->allotment))) {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
+            abort(403);
+        }
+        if(request()->has('back_link')){
+            $back_link = request()->back_link;
+        }
+        else{
+            $back_link = "/allotment/" . $admission->allotment;
+        }
+        $data = [
+            'allotment' => $admission->allotment,
+            'admission' => $admission,
+            'sessns' => \App\Models\Sessn::orderBy('start_yr')->orderBy('odd_even')->get(),
+            'back_link' => $back_link
+        ];
+        return view('common.admission.edit', $data);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Admission $admission)
+    public function update(Admission $admission)
     {
-        //
+        if (!(auth()->user() && auth()->user()->can('manage', $admission->allotment))) {
+            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
+            abort(403);
+        }
+        request()->validate([
+            'amount' => 'numeric:required',
+            'payment_dt' => 'required',
+            'sessn' => 'required',
+
+        ]);
+
+        $admission->update(
+            [
+                'sessn_id' => request()->sessn,
+                'payment_dt' => request()->payment_dt,
+                'amount' => request()->amount,
+            ]
+        );
+        return redirect('/allotment/' . $admission->allotment->id . '/admission?back_link=' . request()->back_link)
+            ->with(['message' => ['type' => 'info', 'text' => 'Admission details updated.']]);
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Admission $admission)
     {
-        //
+        $admission->delete();
+        return "Deleted";
     }
 
     public function admission_decline($allotment_id)

@@ -21,7 +21,7 @@ class AllotmentController extends Controller
     {
         $data = [
             'notification' => $notification,
-            'allotments' => Allotment::where('notification_id', $notification->id)->orderBy('hostel_id')->paginate()
+            'allotments' => Allotment::where('notification_id', $notification->id)->orderBy('hostel_id')->orderBy('sl')->paginate()
         ];
         return view('common.allotment.index', $data);
     }

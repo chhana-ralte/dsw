@@ -4,10 +4,11 @@
             <x-slot name="heading">
                 Admission status update for {{ $allotment->person->name }}
             </x-slot>
-        
+
             <form method="post" action="/admission/{{ $admission->id }}">
                 @csrf
                 @method('PUT')
+                <input type="hidden" name="back_link" value="{{ $back_link }}">
                 <div class="form-group row mb-3">
                     <label for="name" class="col col-md-3">Name</label>
                     <div class="col col-md-4">

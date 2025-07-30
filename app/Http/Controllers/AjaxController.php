@@ -160,32 +160,17 @@ class AjaxController extends Controller
         return $seats;
     }
 
-    public function manage_admission()
+    public function deleteAdmission($id)
     {
+        // return $id;
         // return request()->undo;
+        \App\Models\Admission::find($id)->delete();
+        return "Successful";
+
         $allot_hostel = \App\Models\AllotHostel::findOrFail(request()->allot_hostel_id);
-        if (request()->undo == '0') {
-            \App\Models\Admission::updateOrCreate(
-                [
-                    'allot_hostel_id' => request()->allot_hostel_id,
-                    'sessn_id' => request()->sessn_id
-                ],
-                [
-                    'allot_hostel_id' => request()->allot_hostel_id,
-                    'sessn_id' => request()->sessn_id,
-                    'allotment_id' => $allot_hostel->allotment->id
-                ]
-            );
-        } else {
             \App\Models\Admission::where('allot_hostel_id', $allot_hostel->id)
                 ->where('sessn_id', request()->sessn_id)
                 ->delete();
-        }
-        $data = [
-            'allot_hostel_id' => request()->allot_hostel_id,
-            'undo' => request()->undo == 1 ? 1 : 0
-        ];
-        return $data;
     }
 
     public function report_chart($feedback_criteria_id)
@@ -345,12 +330,17 @@ class AjaxController extends Controller
 
 
         if($allotment->valid_allot_hostel()){
+            if($allotment->start_sessn_id == request()->sessn_id){
+                $detail = "New admission payment";
+            }
+            else{
+                $detail = "Semester admission payment";
+            }
             \App\Models\Admission::updateOrCreate(
                 [
                     'allotment_id' => $allotment->id,
-                    'sessn_id' => request()->sessn,
+                    'sessn_id' => request()->sessn_id,
                     'allot_hostel_id' => $allotment->valid_allot_hostel()->id,
-
                 ],
                 [
                     'allotment_id' => $allotment->id,
@@ -358,7 +348,7 @@ class AjaxController extends Controller
                     'allot_hostel_id' => $allotment->valid_allot_hostel()->id,
                     'amount' => request()->amount,
                     'payment_dt' => request()->payment_dt,
-                    'detail' => 'New Admission payment'
+                    'detail' => $detail,
                 ]
             );
 

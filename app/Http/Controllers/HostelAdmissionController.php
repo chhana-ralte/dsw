@@ -36,7 +36,7 @@ class HostelAdmissionController extends Controller
                 'hostel' => $hostel,
                 'adm_type' => $adm_type
             ];
-            return view("common.admission.index", $data);
+            return view("common.admission.hostel-index", $data);
         } else {
             $new_allotments = Allotment::where('hostel_id', $hostel->id)
                 ->where('start_sessn_id', \App\Models\Sessn::current()->id);
@@ -78,43 +78,8 @@ class HostelAdmissionController extends Controller
         // Shifted to AdmissionController::store
     }
 
-    public function edit(Admission $admission)
-    {
-        if (!(auth()->user() && auth()->user()->can('manage', $admission->allotment))) {
-            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
-            abort(403);
-        }
 
-        $data = [
-            'allotment' => $admission->allotment,
-            'admission' => $admission,
-            'sessns' => \App\Models\Sessn::orderBy('start_yr')->orderBy('odd_even')->get()
-        ];
-        return view('admissioncheck.edit', $data);
-    }
 
-    public function update(Admission $admission)
-    {
-        if (!(auth()->user() && auth()->user()->can('manage', $admission->allotment))) {
-            return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
-            abort(403);
-        }
-        request()->validate([
-            'amount' => 'numeric:required',
-            'payment_dt' => 'required',
-            'sessn' => 'required',
-        ]);
-
-        $admission->update(
-            [
-                'sessn_id' => request()->sessn,
-                'payment_dt' => request()->payment_dt,
-                'amount' => request()->amount,
-            ]
-        );
-        return redirect('/allotment/' . $admission->allotment->id . '/admission')
-            ->with(['message' => ['type' => 'info', 'text' => 'Admission details updated.']]);
-    }
 
     public function destroy(Admission $admission)
     {

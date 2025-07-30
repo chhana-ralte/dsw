@@ -44,4 +44,17 @@ class AdmissionPolicy
             return false;
         }
     }
+
+    public function manages(User $user){
+        if($user->isAdmin() || $user->isDsw()){
+            return true;
+        }
+        else if($user->isWarden()){
+            return true;
+        }
+
+        else{
+            return false;
+        }
+    }
 }
