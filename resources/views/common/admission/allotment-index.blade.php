@@ -5,6 +5,9 @@
                 Admission details of {{ $allotment->person->name }}
                 <p>
                     <a class="btn btn-secondary btn-sm" href="{{ $back_link }}">Back</a>
+                    @can('manages', App\Models\Admission::class)
+                        <button class="btn btn-primary btn-sm btn-admission" value="{{ $allotment->id }}">Add admission payment</button>
+                    @endcan
                 </p>
             </x-slot>
             <form>
@@ -46,9 +49,11 @@
             </div>
         </x-block>
     </x-container>
-
 {{-- Modal for admission --}}
 
+<form>
+    <input type="hidden" name="allotment_id" id="allotment_id">
+</form>
 
 <div class="modal fade" id="admissionModal" tabindex="-1" aria-labelledby="admissionModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -64,7 +69,7 @@
 
                         <select class="form-control" name="sessn">
                             @foreach(App\Models\Sessn::orderBy('start_yr')->orderBy('odd_even')->get() as $ssn)
-                                <option value="{{ $ssn->id }}" {{ $allotment->start_sessn_id==$ssn->id?' selected ':''}}>{{ $ssn->name() }}</option>
+                                <option value="{{ $ssn->id }}" {{ App\Models\Sessn::current()->id == $ssn->id?' selected ':''}}>{{ $ssn->name() }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -107,6 +112,46 @@ $(document).ready(function(){
             'X-CSRF-TOKEN' : $("meta[name='csrf-token']").attr('content')
         }
     });
+
+    $("button.btn-admission").click(function(){
+        $("input#allotment_id").val($(this).val());
+        $("div#admissionModal").modal("show");
+    });
+
+    $("button.btn-add-admission").click(function(){
+        // alert(typeof $("input[name='amount']").val());
+        if($("input[name='amount']").val() == '' || $("input[name='dt']").val() == ''){
+            alert("Enter correct amount and date");
+            exit();
+        }
+        else{
+            $.ajax({
+                url : "/ajax/allotment/" + $("input#allotment_id").val() + "/admission/store",
+                type : "post",
+                data : {
+                    sessn_id : $("select[name=sessn]").val(),
+                    amount : $("input[name='amount']").val(),
+                    payment_dt : $("input[name='dt']").val(),
+                },
+                success : function(data,status){
+                    if(data == "Successful"){
+                        alert(data);
+                        location.reload();
+                    }
+                    else{
+                        alert(data);
+                    }
+
+                },
+                error : function(){
+                    alert("Error");
+                }
+            });
+        }
+
+        // alert("hehe");
+    });
+
 
     $("button.btn-delete").click(function(){
         if(confirm("Are you sure you want to delete this record?")){

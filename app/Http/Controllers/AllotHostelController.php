@@ -21,34 +21,42 @@ class AllotHostelController extends Controller
             'allot_hostels' => AllotHostel::where('allotment_id', $allotment->id)->orderBy('valid')->orderBy('id')->get(),
         ];
         return view('common.allot_hostel.create', $data);
-        // return "Hostel allotment details";
     }
 
     public function store(Request $request, Allotment $allotment)
     {
-        // return $allotment;
-        $allot_hostels = AllotHostel::where('allotment_id', $allotment->id);
-        $allot_seats = AllotSeat::whereIn('allot_hostel_id', $allot_hostels->pluck('id'));
 
-        $allot_seats->where('valid', 1)->update([
-            'valid' => 0,
-            'to_dt' => date('Y-m-d'),
-        ]);
+        if($request->has('hostel')){
+            $hostel = \App\Models\Hostel::findOrFail($request->hostel);
+        }
+        else{
+            return redirect()->back()->withErrors(['hostel' => 'Select the hostel'])->withInput();
+        }
 
-        $allot_hostels->where('valid', 1)->update([
-            'valid' => 0,
-            'to_dt' => date('Y-m-d'),
-            'leave_dt' => date('Y-m-d'),
-        ]);
+        if($allotment->valid_allot_hostel()){
+            if($allotment->valid_allot_hostel()->hostel->id == $hostel->id){
+                return redirect()->back()->withErrors(['hostel' => 'Existing hostel can not be selected'])->withInput();
+            }
+            $allot_hostel = $allotment->valid_allot_hostel();
+            AllotSeat::where('allot_hostel_id', $allot_hostel->id)->update([
+                'valid' => 0,
+                'to_dt' => date('Y-m-d'),
+            ]);
+            $allot_hostel->update([
+                'valid' => 0,
+                'to_dt' => date('Y-m-d'),
+            ]);
 
+            $allot_hostel->save();
+        }
         AllotHostel::create([
             'allotment_id' => $allotment->id,
-            'hostel_id' => $request->hostel,
+            'hostel_id' => $hostel->id,
             'valid' => 1,
             'from_dt' => date('Y-m-d'),
             'to_dt' => $allotment->to_dt
         ]);
-        return redirect('/allotment/' . $allotment->id)
+        return redirect()->back()
             ->with(['message' => ['type' => 'info', 'text' => 'Hostel changed']]);
     }
 

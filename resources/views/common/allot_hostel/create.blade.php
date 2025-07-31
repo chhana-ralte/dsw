@@ -50,7 +50,7 @@
                             <input type="text" class="form-control" name="department" value="{{ $allotment->person->student()->department }}" disabled>
                         </div>
                     </div>
-                    
+
                     <div class="form-group row mb-3">
                         <label for="mzuid" class="col col-md-3">MZU ID</label>
                         <div class="col col-md-4">
@@ -85,11 +85,14 @@
                     </div>
                     <div class="col col-md-4">
                         <select class="form-control" id="hostel" name="hostel">
-                            <option value="0">Select Hostel</option>
+                            <option value="0" disabled selected>Select Hostel</option>
                             @foreach(\App\Models\Hostel::orderBy('gender')->orderBy('name')->get() as $h)
                                 <option value="{{ $h->id }}">{{ $h->name }}</option>
                             @endforeach
                         </select>
+                        @error('hostel')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -113,14 +116,17 @@ $(document).ready(function(){
 
 
     $("button.submit").click(function(){
+        /*
         if($("select[name='hostel']").val() == 0){
             alert("Select the hostel");
             exit();
         }
+
         if($("select[name='hostel']").val() == $("input[name='current_hostel_id']").val()){
             alert("Current hostel can not be same as currently allotted hostel");
             exit();
         }
+            */
         $("form[name='frmcreate']").submit();
     });
 });

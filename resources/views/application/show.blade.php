@@ -2,7 +2,7 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                Applications details
+                Applications status: {{ $application->status }}
                 <p>
                     @can('manage', $application)
                         <a href="/application/list" class="btn btn-secondary btn-sm">Back</a>
