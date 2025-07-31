@@ -33,11 +33,16 @@
                         @foreach($new_allotments as $allotment)
                             <tr class="table-white row_{{ $allotment->id }}">
                                 <td>{{ $sl++ }}</td>
+                                <td class="name">
                                 @if(auth()->user() && (auth()->user()->isDsw() || auth()->user()->isAdmin()))
-                                    <td class="name"><a href="/allotment/{{ $allotment->id }}">{{ $allotment->person->name }}</a></td>
+                                    <a href="/allotment/{{ $allotment->id }}">{{ $allotment->person->name }}</a>
                                 @else
-                                    <td class="name">{{ $allotment->person->name }}</td>
+                                    {{ $allotment->person->name }}
                                 @endif
+                                @if($allotment->valid_allot_hostel() && $allotment->valid_allot_hostel()->hostel->id != $allotment->hostel->id)
+                                    <br><span class="badge bg-warning">Now in {{ $allotment->valid_allot_hostel()->hostel->name }}</span>
+                                @endif
+                                </td>
                                 @if($allotment->person->student())
                                     <td>{{ $allotment->person->student()->course }}</td>
 
@@ -86,8 +91,12 @@
                                 <td>
                                     <div class="btn-group">
                                         @if($allotment->valid)
-                                            <button class="btn btn-primary btn-sm btn-allot-seat" value="{{ $allotment->id }}">Allot seat</button>
-                                            @if($allotment->valid_allot_hostel())
+                                            @if($allotment->valid_allot_hostel() && ($allotment->valid_allot_hostel()->valid_allot_seat() || $allotment->valid_allot_hostel()->hostel->id != $allotment->hostel->id))
+                                                <button class="btn btn-primary btn-sm btn-allot-seat" value="{{ $allotment->id }}" disabled>Allot seat</button>
+                                            @else
+                                                <button class="btn btn-primary btn-sm btn-allot-seat" value="{{ $allotment->id }}">Allot seat</button>
+                                            @endif
+                                            @if($allotment->valid_allot_hostel() && $allotment->confirmed == 0)
                                                 <button class="btn btn-secondary btn-sm btn-admission" value="{{ $allotment->id }}">Admit</button>
                                             @else
                                                 <button class="btn btn-secondary btn-sm btn-admission" value="{{ $allotment->id }}" disabled>Admit</button>

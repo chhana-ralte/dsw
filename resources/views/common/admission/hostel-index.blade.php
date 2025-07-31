@@ -15,17 +15,19 @@
                     <input style="font-size:15px" type="text" name="find"/>
                 </p>
             </x-slot>
+            <h3>Existing Occupants</h3>
             <div style="width: 100%; overflow-x:auto">
                 <table class="table table-hover table-auto">
                     <thead>
-                        <tr>
-                            <th colspan=4>Existing occupants</th>
-                        </tr>
+                        
                         <tr>
                             <th>Seat No.</th>
                             <th>Name</th>
                             <th>Department</th>
                             <th>Status</td>
+                            
+                            <th>Action</th>
+                            
                         </tr>
                     </thead>
                     <tbody>
@@ -47,16 +49,21 @@
                                 <td>
                                     @if($ah->allotment->admission($sessn->id))
                                         <label id="label_{{ $ah->id }}">Done</label>
-                                        @can('update',$hostel)
-                                            <button class="btn btn-primary btn-sm btn-undo" name="admit_{{ $ah->id }}" value="{{ $ah->allotment->admission($sessn->id)->id }}">Undo</button>
-                                        @endcan
                                     @else
                                         <label id="label_{{ $ah->id }}">Not done</label>
-                                        @can('update',$hostel)
-                                            <button class="btn btn-primary btn-sm btn-admission" name="admit_{{ $ah->id }}" value="{{ $ah->allotment->id }}">Admit</button>
-                                        @endcan
                                     @endif
-                                    <a class="btn btn-primary btn-sm" href="/allotment/{{ $ah->allotment->id }}/admission?back_link=/hostel/{{ $hostel->id }}/admission?sessn={{ $sessn->id }}">detail</a>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        @can('manages',App\Models\Admission::class)
+                                            @if($ah->allotment->admission($sessn->id))
+                                                <button class="btn btn-danger btn-sm btn-undo" name="admit_{{ $ah->id }}" value="{{ $ah->allotment->admission($sessn->id)->id }}">Undo</button>
+                                            @else
+                                                <button class="btn btn-primary btn-sm btn-admission" name="admit_{{ $ah->id }}" value="{{ $ah->allotment->id }}">Admit</button>
+                                            @endif
+                                        @endcan
+                                        <a class="btn btn-secondary btn-sm" href="/allotment/{{ $ah->allotment->id }}/admission?back_link=/hostel/{{ $hostel->id }}/admission?sessn={{ $sessn->id }}">detail</a>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
