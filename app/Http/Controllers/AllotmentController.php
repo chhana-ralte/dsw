@@ -76,7 +76,7 @@ class AllotmentController extends Controller
                 'person_id' => $person->id
             ]);
         }
-
+        
         $allotment = Allotment::create([
             'person_id' => $person->id,
             'hostel_id' => $request->hostel,

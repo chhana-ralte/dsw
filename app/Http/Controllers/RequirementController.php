@@ -17,7 +17,7 @@ class RequirementController extends Controller
             FROM (allotments A JOIN allot_hostels AH ON A.id=AH.allotment_id)
             JOIN requirements R ON R.allot_hostel_id = AH.id
             WHERE A.id = " . $allotment->id . "
-            ORDER R.id ");
+            ORDER BY R.id ");
         // return Requirement::hydrate($requirements);
 
 
