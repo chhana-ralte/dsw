@@ -16,7 +16,8 @@ class RequirementController extends Controller
         $requirements = DB::select("SELECT R.*
             FROM (allotments A JOIN allot_hostels AH ON A.id=AH.allotment_id)
             JOIN requirements R ON R.allot_hostel_id = AH.id
-            WHERE A.id = " . $allotment->id);
+            WHERE A.id = " . $allotment->id . "
+            ORDER R.id ");
         // return Requirement::hydrate($requirements);
 
 

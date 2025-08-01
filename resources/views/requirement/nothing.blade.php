@@ -131,32 +131,7 @@
                         </tbody>
 
                     </table>
-                    <div id="file-info">
-                        <div class="mb-3 form-group">
-                            <label class="col-md-5">Enter file number</label>
-                            <div class="col md-7">
-                                <input type="text" class="form-control" name="file">
-                            </div>
-                        </div>
-                        <div id="file-info" class="mb-3 form-group">
-                            <label class="col-md-5">Enter file date</label>
-                            <div class="col md-7">
-                                <input type="date" class="form-control" name="dt">
-                            </div>
-                        </div>
-                        <div id="file-info" class="mb-3 form-group">
-                            <label class="col-md-5">Enter subject</label>
-                            <div class="col md-7">
-                                <input type="text" class="form-control" name="subject">
-                            </div>
-                        </div>
-                        <div id="file-info" class="mb-3 form-group">
-                            <div class="col-md-5"></div>
-                            <div class="col md-7">
-                                <button class="btn btn-primary btn-action" type="button" value="allot">Make allotment</button>
-                            </div>
-                        </div>
-                    </div>
+
                     @if(!($hostel))
                         <div class="float-end">
                             {{ $requirements->links() }}
