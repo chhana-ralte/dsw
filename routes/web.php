@@ -44,7 +44,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 
 Route::get('/testing', function () {
-    return "Hello World";
+    return \App\Models\Lib::rand(5);
 });
 
 Route::get('/test', [App\Http\Controllers\PdfController::class, 'download']);
@@ -122,7 +122,7 @@ Route::resource('room.seat', SeatController::class)->shallow()->middleware('auth
 Route::resource('notification', NotificationController::class)->middleware('auth');
 Route::resource('notification.allotment', AllotmentController::class)->shallow()->middleware('auth');
 Route::resource('notification.sem_allot', SemAllotController::class)->shallow()->middleware('auth');
-Route::resource('allotment.admission', AdmissionController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy' ])->shallow()->middleware('auth');
+Route::resource('allotment.admission', AdmissionController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->shallow()->middleware('auth');
 Route::resource('allotment.allot_hostel', AllotHostelController::class)->shallow()->middleware('auth');
 Route::resource('allotment.cancelSeat', CancelSeatController::class)->shallow()->middleware('auth');
 Route::resource('allotment.requirement', RequirementController::class)->shallow()->only(['index', 'create', 'store'])->middleware('auth');
@@ -191,7 +191,6 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::post('/ajax/allotment/{id}/allot_hostel/store', 'createAllotHostel');
     Route::post('/ajax/allotment/{id}/admission/store', 'createAdmission');
     Route::post('/ajax/admission/{id}/delete', 'deleteAdmission');
-
 })->middleware('auth');
 
 

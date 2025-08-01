@@ -76,7 +76,7 @@ class AllotmentController extends Controller
                 'person_id' => $person->id
             ]);
         }
-        
+
         $allotment = Allotment::create([
             'person_id' => $person->id,
             'hostel_id' => $request->hostel,
@@ -87,8 +87,10 @@ class AllotmentController extends Controller
             'start_sessn_id' => $request->start_sessn,
             'end_sessn_id' => $request->end_sessn,
             'admitted' => 0,
+            'confirmed' => 0,
             'valid' => 1,
             'finished' => 0,
+            'rand' => \App\Models\Lib::rand(2),
         ]);
 
         return redirect('/allotment/' . $allotment->id)->with(['message' => ['type' => 'info', 'text' => 'Allotment details entered successfully']]);

@@ -40,9 +40,14 @@ class HostelAdmissionController extends Controller
         } else {
             $new_allotments = Allotment::where('hostel_id', $hostel->id)
                 ->where('start_sessn_id', \App\Models\Sessn::current()->id);
+            $old_allotments = Allotment::where('hostel_id', $hostel->id)
+                ->where('start_sessn_id', '<>', \App\Models\Sessn::current()->id)
+                ->where('valid', 1)
+                ->where('confirmed', 0);
             $data = [
                 'sessn' => $sessn,
                 'new_allotments' => $new_allotments->get(),
+                'old_allotments' => $old_allotments->get(),
                 'hostel' => $hostel,
                 'adm_type' => $adm_type
             ];
