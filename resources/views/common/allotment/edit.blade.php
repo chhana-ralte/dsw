@@ -11,23 +11,23 @@
                 @csrf
                 @method('put')
                 <input type="hidden" name="back_link" value="{{ $back_link }}">
-                <div class="form-group row mb-3">
+                <div class="mb-3 form-group row">
                     <label for="name" class="col col-md-3">Name</label>
                     <div class="col col-md-4">
                         <input type="text" class="form-control" name="name" value="{{ old('name',$allotment->person->name) }}" disabled>
                     </div>
                 </div>
 
-                <div class="form-group row mb-3">
+                <div class="mb-3 form-group row">
                     <label for="name" class="col col-md-3">Allotment order</label>
                     <div class="col col-md-4">
                         <input type="text" class="form-control" name="no" value="{{ $allotment->notification->no }} dated {{$allotment->notification->dt}}" disabled>
                     </div>
                 </div>
 
-                
 
-                <div class="form-group row mb-3">
+
+                <div class="mb-3 form-group row">
                     <label for="hostel" class="col col-md-3">Hostel*</label>
                     <div class="col col-md-4">
                         <select name='hostel' class='form-control' required
@@ -43,7 +43,27 @@
                     </div>
                 </div>
 
-                <div class="form-group row mb-3">
+                <div class="mb-3 form-group row">
+                    <label for="roomtype" class="col col-md-3">Room type*</label>
+                    <div class="col col-md-4">
+                        <select name='roomtype' class='form-control' required
+                            @cannot('manage',$allotment)
+                                disabled
+                            @endcan
+                        >
+                            <option disabled selected>Room type</option>
+                            <option value='1' {{ $allotment->roomtype==1?" selected ":""}}>Single</option>
+                            <option value='2' {{ $allotment->roomtype==2?" selected ":""}}>Double</option>
+                            <option value='3' {{ $allotment->roomtype==3?" selected ":""}}>Triple</option>
+                            <option value='4' {{ $allotment->roomtype==4?" selected ":""}}>Dormitory</option>
+                        </select>
+                        @error('roomtype')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="mb-3 form-group row">
                     <label for="start_sessn" class="col col-md-3">Starting session</label>
                     <div class="col col-md-4">
                         <select name='start_sessn' class='form-control' required
@@ -59,7 +79,7 @@
                     </div>
                 </div>
 
-                <div class="form-group row mb-3">
+                <div class="mb-3 form-group row">
                     <label for="end_sessn" class="col col-md-3">Expected ending session</label>
                     <div class="col col-md-4">
                         <select name='end_sessn' class='form-control' required
@@ -79,7 +99,7 @@
 
                 @can('manage',$allotment)
 
-                    <div class="form-group row mb-3">
+                    <div class="mb-3 form-group row">
                         <label for="from_dt" class="col col-md-3">Allotment from*</label>
                         <div class="col col-md-4">
                             <input type="date" class="form-control" name="from_dt" value="{{ old('from_dt',$allotment->from_dt) }}"
@@ -90,7 +110,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row mb-3">
+                    <div class="mb-3 form-group row">
                         <label for="to_dt" class="col col-md-3">To*</label>
                         <div class="col col-md-4">
                             <input type="date" class="form-control" name="to_dt" value="{{ old('to_dt',$allotment->to_dt) }}" required
@@ -101,7 +121,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row mb-3">
+                    <div class="mb-3 form-group row">
                         <div class="col col-md-3"></div>
                         <div class="col col-md-4">
                             <input type="checkbox" id="admitted" name="admitted" {{ $allotment->admitted?" checked ":""}} disabled>
@@ -124,8 +144,8 @@
                         </div>
                     </div>
                 @endcan
-                
-                <div class="form-group row mb-3">
+
+                <div class="mb-3 form-group row">
                     <div class="col col-md-3"></div>
                     <div class="col col-md-4">
                         <a class="btn btn-secondary" href="{{ $back_link }}">Cancel</a>

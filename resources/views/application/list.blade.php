@@ -180,7 +180,7 @@
                             $("#app-body").append("<tr><td>" + data[i].id + "</td><td>" + data[i].name +
                                 "</td><td>" + data[i].mobile + "</td><td>" + data[i].mzuid +
                                 "</td><td>" + data[i].course + " - " + data[i].department + "</td></tr>"
-                                );
+                            );
                         }
 
                     },

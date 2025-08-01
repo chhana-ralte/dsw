@@ -17,29 +17,29 @@ class Application extends Model
 
     public static function applied()
     {
-        return Application::where('status', 'Applied')->orderBy('id')->get();
+        return Application::where('status', 'Applied');
     }
 
     public static function approved()
     {
-        return Application::where('status', 'Approved')->where('hostel_id', 0)->orderBy('id')->get();
+        return Application::where('status', 'Approved')->where('hostel_id', 0);
     }
     public static function approved_hostel()
     {
-        return Application::where('status', 'Approved')->where('hostel_id', '<>', 0)->orderBy('id')->get();
+        return Application::where('status', 'Approved')->where('hostel_id', '<>', 0);
     }
     public static function notified()
     {
-        return Application::where('status', 'Notified')->where('hostel_id', '<>', 0)->orderBy('id')->get();
+        return Application::where('status', 'Notified')->where('hostel_id', '<>', 0);
     }
     public static function declined()
     {
-        return Application::where('status', 'Declined')->orderBy('id')->get();
+        return Application::where('status', 'Declined')->orderBy('id');
     }
 
     public static function pending()
     {
-        return Application::where('status', 'Pending')->orderBy('id')->get();
+        return Application::where('status', 'Pending')->orderBy('id');
     }
 
     public function duplicates()
@@ -54,9 +54,9 @@ class Application extends Model
 
     public function existing_allotments()
     {
-        $existing_allotments = DB::select("SELECT A.* 
+        $existing_allotments = DB::select("SELECT A.*
             FROM allotments A JOIN people P ON A.person_id = P.id
-            JOIN students S ON S.person_id = P.id 
+            JOIN students S ON S.person_id = P.id
             WHERE S.mzuid = '" . $this->mzuid . "'
             AND A.application_id <> '" . $this->id . "'
             ");

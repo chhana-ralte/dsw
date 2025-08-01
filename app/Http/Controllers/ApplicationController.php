@@ -110,8 +110,8 @@ class ApplicationController extends Controller
         $application = Application::findOrFail($id);
         // return $application;
         if ((auth()->user() && auth()->user()->max_role_level() >= 3) || $application->mzuid == $_GET['mzuid']) {
-            $prev = DB::select("SELECT * FROM applications WHERE id = (SELECT max(id) FROM applications WHERE status='". $application->status ."' AND id < '" . $application->id . "')");
-            $next = DB::select("SELECT * FROM applications WHERE id = (SELECT min(id) FROM applications WHERE status='". $application->status ."' AND id > '" . $application->id . "')");
+            $prev = DB::select("SELECT * FROM applications WHERE id = (SELECT max(id) FROM applications WHERE status='" . $application->status . "' AND id < '" . $application->id . "')");
+            $next = DB::select("SELECT * FROM applications WHERE id = (SELECT min(id) FROM applications WHERE status='" . $application->status . "' AND id > '" . $application->id . "')");
             // $data = [
             //     'application' => $application,
             //     'prev' => Application::hydrate($prev[0]),
@@ -346,7 +346,8 @@ class ApplicationController extends Controller
             $hostel_id = 0;
             $hostel = null;
         }
-        $applications = Application::where('status', 'Approved')->where('hostel_id', '<>', 0)->orderBy('hostel_id')->orderBy('name');
+        // $applications = Application::where('status', 'Approved')->where('hostel_id', '<>', 0)->orderBy('hostel_id')->orderBy('name');
+        $applications = Application::approved()->orderBy('hostel_id')->orderBy('name');
         if ($hostel_id != 0) {
             $applications = Application::where('status', 'Approved')
                 ->where('hostel_id', $hostel->id)

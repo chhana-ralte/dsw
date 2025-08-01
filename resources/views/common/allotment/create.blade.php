@@ -200,6 +200,22 @@
                 </div>
 
                 <div class="mb-3 form-group row">
+                    <label for="roomtype" class="col col-md-3">Room type*</label>
+                    <div class="col col-md-4">
+                        <select name='roomtype' class='form-control' required>
+                            <option disabled selected>Room type</option>
+                            <option value='1'>Single</option>
+                            <option value='2'>Double</option>
+                            <option value='3'>Triple</option>
+                            <option value='4'>Dormitory</option>
+                        </select>
+                        @error('roomtype')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="mb-3 form-group row">
                     <label for="from_dt" class="col col-md-3">Allotment from*</label>
                     <div class="col col-md-4">
                         <input type="date" class="form-control" name="from_dt" value="{{ old('from_dt') }}"
@@ -222,6 +238,38 @@
                 </div>
 
                 <div class="mb-3 form-group row">
+                    <label for="start_sessn" class="col col-md-3">Starting session in the hostel*</label>
+                    <div class="col col-md-4">
+                        <select name='start_sessn' class='form-control' required>
+                            <option value=0>Select starting session</option>
+                            @foreach (\App\Models\Sessn::orderBy('start_yr')->orderBy('odd_even')->get() as $ssn)
+                                <option value='{{ $ssn->id }}'>{{ $ssn->name() }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('start_sessn')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="mb-3 form-group row">
+                    <label for="end_sessn" class="col col-md-3">Expected ending session in the hostel*</label>
+                    <div class="col col-md-4">
+                        <select name='end_sessn' class='form-control' required>
+                            <option value=0>Select starting session</option>
+                            @foreach (\App\Models\Sessn::orderBy('start_yr')->orderBy('odd_even')->get() as $ssn)
+                                <option value='{{ $ssn->id }}'>{{ $ssn->name() }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('end_sessn')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="mb-3 form-group row">
                     <div class="col col-md-3"></div>
                     <div class="col col-md-4">
                         <button class="btn btn-primary btn-create" type="button">Create</update>
@@ -230,6 +278,7 @@
             </form>
         </x-block>
     </x-container>
+
     <script>
         $(document).ready(function() {
             $("div.student").hide();
@@ -267,7 +316,7 @@
                 } else if (!$("input[name='selected']").val()) {
                     if (!confirm(
                             "Are you sure you want to continue without choosing whether the person is whether student or not?"
-                            )) {
+                        )) {
                         exit();
                     }
                 } else if ($("input[name='selected']").val() == "student" && ($("input[name='department']")
