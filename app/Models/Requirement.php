@@ -51,13 +51,18 @@ class Requirement extends Model
     public static function nothing($hostel_id = 0)
     {
         if ($hostel_id == 0) {
-            $allotments = Allotment::where('valid', 1)->where('start_sessn_id', '<>', Sessn::current()->id)->orWhereNotNull('start_sessn_id');
             $requirements = Requirement::where('id', '>', 0);
-            return AllotHostel::where('valid',1)->whereIn('allotment_id', $allotments->pluck('id'))->whereNotIn('id', $requirements->pluck('allot_hostel_id'));
+            $allotments = DB::select("SELECT allotments.id
+                FROM requirements JOIN allotments ON requirements.allotment_id = allotments.id AND allotments.valid=1
+                WHERE (allotments.start_sessn_id IS NULL OR allotments.start_sessn_id <> '" . Sessn::current()->id . "')");
+
+            $allotments = Allotment::hydrate($allotments);
+
+            return AllotHostel::where('valid', 1)->whereNotIn('allotment_id', $allotments->pluck('id'));
         } else {
             $allotments = Allotment::where('valid', 1)->where('start_sessn_id', '<>', Sessn::current()->id)->whereNotNull('start_sessn_id');
             $requirements = Requirement::where('id', '>', 0);
-            return AllotHostel::where('valid',1)->where('hostel_id', $hostel_id)->whereNotIn('id', $requirements->pluck('allot_hostel_id'));
+            return AllotHostel::where('valid', 1)->where('hostel_id', $hostel_id)->whereNotIn('id', $requirements->pluck('allot_hostel_id'));
         }
 
         $allotments = Allotment::where('start_sessn_id', Sessn::current()->id)->where('valid', 1);
