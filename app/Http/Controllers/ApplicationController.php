@@ -204,10 +204,13 @@ class ApplicationController extends Controller
         if ($request->has('status')) {
             if ($application->status == 'Notified') {
                 $allotments = \App\Models\Allotment::where('application_id', $application->id)->get();
+                $allot_hostels = \App\Models\AllotHostel::where('allotment_id', $allotments->pluck('id'))->get();
                 $people = \App\Models\Person::whereIn('id', $allotments->pluck('person_id'))->get();
                 \App\Models\Student::whereIn('person_id', $people->pluck('id'))->delete();
                 \App\Models\Other::whereIn('person_id', $people->pluck('id'))->delete();
                 \App\Models\Person::whereIn('id', $allotments->pluck('person_id'))->delete();
+                \App\Models\AllotSeat::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->delete();
+                \App\Models\AllotHostel::whereIn('id', $allot_hostels->pluck('id'))->delete();
                 \App\Models\Allotment::where('application_id', $application->id)->delete();
             }
             if ($request->status == 'approve') {

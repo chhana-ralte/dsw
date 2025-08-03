@@ -114,6 +114,7 @@
                                                 <button class="btn btn-secondary btn-sm btn-admission"
                                                     value="{{ $allotment->id }}" disabled>Admit</button>
                                             @endif
+                                            <button class="btn btn-danger btn-sm btn-decline" value="{{ $allotment->id }}">Decline</button>
                                         @else
                                             Invalid
                                         @endif
@@ -219,6 +220,7 @@
                                                     <button class="btn btn-secondary btn-sm btn-admission"
                                                         value="{{ $allotment->id }}" disabled>Admit</button>
                                                 @endif
+                                                <button class="btn btn-danger btn-sm btn-decline" value="{{ $allotment->id }}">Decline</button>
                                             @else
                                                 Invalid
                                             @endif
@@ -327,6 +329,38 @@
     </div>
     {{-- End Modal for admission --}}
 
+{{-- Modal for declining --}}
+
+
+    <div class="modal fade" id="declineModal" tabindex="-1" aria-labelledby="declineModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="declineModalLabel">Decline admission</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="mb-3 form-group">
+                        <label for="remark" class="col">Reason for cancellation</label>
+                        <div class="col">
+                            <textarea name="remark" class="form-control"></textarea>
+                            @error('remark')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-confirm-decline" value="decline">Decline</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- End Modal for declining --}}
 
 
     <script>
@@ -457,6 +491,40 @@
                 }
 
                 // alert("hehe");
+            });
+
+            $("button.btn-decline").click(function(){
+                // alert($(this).val());
+                $("input#allotment_id").val($(this).val());
+                $.ajax({
+                    type : "get",
+                    url : "/ajax/allotment/" + $(this).val() + "/application",
+                    success : function (data, status){
+                        $("textarea[name='remark']").val(data.remark);
+                        // alert(data.application_id);
+                    },
+                    error : function(){
+                        alert("Error");
+                    }
+                });
+                $("#declineModal").modal("show");
+            });
+
+            $("button.btn-confirm-decline").click(function(){
+                $.ajax({
+                    type : "post",
+                    url : "/ajax/allotment/" + $("input#allotment_id").val() + "/decline",
+                    data : {
+                        remark : $("textarea[name='remark']").val()
+                    },
+                    success : function (data, status){
+                        alert(data);
+                        location.reload();
+                    },
+                    error : function(){
+                        alert("Error");
+                    }
+                });
             });
 
             $("input[name='find']").on("keyup", function() {

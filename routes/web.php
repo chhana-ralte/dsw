@@ -191,6 +191,8 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::post('/ajax/allotment/{id}/allot_hostel/store', 'createAllotHostel');
     Route::post('/ajax/allotment/{id}/admission/store', 'createAdmission');
     Route::post('/ajax/admission/{id}/delete', 'deleteAdmission');
+    Route::get('/ajax/allotment/{id}/application', 'getApplication');
+    Route::post('/ajax/allotment/{id}/decline', 'declineAllotment');
 })->middleware('auth');
 
 

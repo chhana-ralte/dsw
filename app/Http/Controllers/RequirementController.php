@@ -73,6 +73,7 @@ class RequirementController extends Controller
                 [
                     'person_id' => $allotment->person->id,
                     'allot_hostel_id' => $allotment->valid_allot_hostel()->id,
+                    'allotment_id' => $allotment->valid_allot_hostel()->allotment->id,
                     'hostel_id' => $allotment->valid_allot_hostel()->hostel->id,
                     'roomcapacity' => $request->roomcapacity,
                     'type' => 'Next Session',

@@ -25,7 +25,7 @@
                             <th>{{ $sl++ }}</th>
                             <td>{{ $req->for_sessn()->name() }}</td>
                             <td>{{ $req->hostel->name }}</td>
-                            <td>{{ $req->roomcapacity }}</td>
+                            <td>{{ App\Models\Room::room_type($req->roomcapacity) }}</td>
                             <td>{{ $req->status() }}</td>
                             @if(auth()->user() && auth()->user()->max_role_level()>2)
                                 <td>

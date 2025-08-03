@@ -369,4 +369,55 @@ class AjaxController extends Controller
 
 
     }
+
+    public function getApplication($allotment_id){
+        // return "Here: " . $allotment_id;
+        $allotment = \App\Models\Allotment::find($allotment_id);
+        if($allotment->application){
+            return ['remark' => $allotment->application->remark];
+        }
+        else{
+            return ['remark' => ''];
+        }
+    }
+
+    public function declineAllotment($allotment_id){
+        $allotment = \App\Models\Allotment::find($allotment_id);
+        $application = $allotment->application;
+        if($application){
+            $application->update([
+                'remark' => request()->remark,
+                'valid' => 0,
+            ]);
+            $application->save();
+            \App\Models\Remark::create([
+                'type' => 'applications',
+                'foreign_id' => $application->id,
+                'remark' => 'Application declined',
+            ]);
+        }
+        $allotment->update([
+            'valid' => 0,
+            'admitted' => 0,
+            'confirmed' => 0,
+        ]);
+
+
+        $allotment->save();
+
+        $allot_hostels = $allotment->allot_hostels;
+
+        if(count($allot_hostels) > 0){
+            \App\Models\AllotSeat::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->delete();
+        }
+
+        \App\Models\AllotHostel::whereIn('id', $allot_hostels->pluck('id'))->delete();
+
+        \App\Models\Remark::create([
+            'type' => 'allotments',
+            'foreign_id' => $allotment->id,
+            'remark' => request()->remark,
+        ]);
+        return "Successfully declined";
+    }
 }

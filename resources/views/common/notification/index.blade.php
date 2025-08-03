@@ -14,6 +14,7 @@
                             <th>Sl.</th>
                             <th>Notification No.</th>
                             <th>Date</th>
+                            <th>Type</th>
                             <th>Content</td>
                             <th>Detail</td>
                         </tr>
@@ -25,6 +26,7 @@
                                 <td>{{ $sl++ }}</td>
                                 <td><a href="/notification/{{ $notif->id }}">{{ $notif->no }}</td>
                                 <td>{{ $notif->dt }}</td>
+                                <td>{{ $notif->type }}</td>
                                 <td>{{ $notif->content }}</td>
                                 <td>
                                     @if($notif->type == 'allotment')

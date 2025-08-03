@@ -17,29 +17,29 @@ class Application extends Model
 
     public static function applied()
     {
-        return Application::where('status', 'Applied');
+        return Application::where('valid', 1)->where('status', 'Applied');
     }
 
     public static function approved()
     {
-        return Application::where('status', 'Approved')->where('hostel_id', 0);
+        return Application::where('valid', 1)->where('status', 'Approved')->where('hostel_id', 0);
     }
     public static function approved_hostel()
     {
-        return Application::where('status', 'Approved')->where('hostel_id', '<>', 0);
+        return Application::where('valid', 1)->where('status', 'Approved')->where('hostel_id', '<>', 0);
     }
     public static function notified()
     {
-        return Application::where('status', 'Notified')->where('hostel_id', '<>', 0);
+        return Application::where('valid', 1)->where('status', 'Notified')->where('hostel_id', '<>', 0);
     }
     public static function declined()
     {
-        return Application::where('status', 'Declined')->orderBy('id');
+        return Application::where('valid', 0)->orWhere('status', 'Declined')->orderBy('id');
     }
 
     public static function pending()
     {
-        return Application::where('status', 'Pending')->orderBy('id');
+        return Application::where('valid', 1)->where('status', 'Pending')->orderBy('id');
     }
 
     public function duplicates()
@@ -47,7 +47,7 @@ class Application extends Model
         $duplicates = DB::select("SELECT A.id, P.name as name, P.mobile, P.email, S.mzuid as mzuid, S.course as course, S.department as department
             FROM allot_hostels AH JOIN (allotments A JOIN (people P JOIN students S ON P.id=S.person_id) ON P.id=A.person_id) ON A.id=AH.allotment_id, applications AP
             WHERE AP.id = '" . $this->id . "' AND (S.mzuid = AP.mzuid OR P.mobile = AP.mobile OR P.email = AP.email)
-            AND AP.status <> 'Declined';");
+            AND AP.status <> 'Declined' AND AP.valid = 1;");
         return $duplicates;
         return Allotment::hydrate($duplicates);
     }

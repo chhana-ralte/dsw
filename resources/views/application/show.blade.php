@@ -2,7 +2,7 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                Applications status: {{ $application->status }}
+                Applications status: {{ $application->status }} {{ $application->valid?'':' (Declined)'}}
                 <p>
                     @can('manage', $application)
                         <a href="/application/list" class="btn btn-secondary btn-sm">Back</a>
@@ -268,22 +268,26 @@
                 <x-slot name="heading">
                     Decision:
                 </x-slot>
-                <div>
-                    <button class="btn btn-danger btn-status" value="decline">Decline</button>
-                    <button class="btn btn-warning btn-status" value="pending">Pending</button>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#hostelModal" data-bs-whatever="Remark">Approve</button>
-                    @if(auth()->user() && (auth()->user()->isAdmin() || auth()->user()->isDsw()))
-                        <a class="btn btn-warning btn-existing" href="/application/{{ $application->id }}/existing">Add as existing</a>
-                    @endif
-                </div>
-                <form type="hidden" action="/application/{{ $application->id }}/statusUpdate" method="post" name="frm_submit">
-                    @csrf
-                    @method('PUT')
-                    <input type="hidden" name="application_id" value="{{ $application->id }}">
-                    <input type="hidden" name="status" value="">
-                    <input type="hidden" name="hostel_id">
-                    <input type="hidden" name="roomtype">
-                </form>
+                @if($application->valid)
+                    <div>
+                        <button class="btn btn-danger btn-status" value="decline">Decline</button>
+                        <button class="btn btn-warning btn-status" value="pending">Pending</button>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#hostelModal" data-bs-whatever="Remark">Approve</button>
+                        @if(auth()->user() && (auth()->user()->isAdmin() || auth()->user()->isDsw()))
+                            <a class="btn btn-warning btn-existing" href="/application/{{ $application->id }}/existing">Add as existing</a>
+                        @endif
+                    </div>
+                    <form type="hidden" action="/application/{{ $application->id }}/statusUpdate" method="post" name="frm_submit">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="application_id" value="{{ $application->id }}">
+                        <input type="hidden" name="status" value="">
+                        <input type="hidden" name="hostel_id">
+                        <input type="hidden" name="roomtype">
+                    </form>
+                @else
+                    <h3 class="text-danger">Application already declined</h3>
+                @endif
             </x-block>
         @endcan
     </x-container>

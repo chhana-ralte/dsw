@@ -27,7 +27,7 @@
                     @foreach($requirements as $req)
                         <tr>
                             <th>{{ $sl++ }}</th>
-                            <td>{{ $req->sessn->name }}</td>
+                            <td>{{ $req->sessn->name() }}</td>
                             <td>{{ $req->hostel->name }}</td>
                             <td>{{ $req->roomtype }}</td>
                         </tr>
