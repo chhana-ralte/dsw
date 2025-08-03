@@ -409,19 +409,16 @@ class ApplicationController extends Controller
             if (count($notification->allotments) == 0) {
                 $sl = 1;
             } else {
-                $sl = $notification->sem_allots->max('sl') + 1;
+                $sl = $notification->allotments->max('sl') + 1;
             }
 
             $applications = Application::whereIn('id', request()->application_id)
                 ->orderBy('roomtype')
                 ->orderBy('name')
                 ->get();
-            $chars = "ABCDEFGHJKLMNPQRSTUVWXYZ";
-            $len = strlen($chars);
-            $str = $chars[rand(0, $len - 1)] . $chars[rand(0, $len - 1)];
 
             foreach ($applications as $appl) {
-                $str = $chars[rand(0, $len - 1)] . $chars[rand(0, $len - 1)];
+
                 $person = \App\Models\Person::create([
                     'name' => $appl->name,
                     'father' => $appl->father,
@@ -461,7 +458,7 @@ class ApplicationController extends Controller
                         'start_sessn_id' => 15,
                         'application_id' => $appl->id,
                         'sl' => $sl++,
-                        'rand' => $str,
+                        'rand' => \App\Models\Lib::rand(2),
                         'roomtype' => $appl->roomtype,
                     ]
                 );
