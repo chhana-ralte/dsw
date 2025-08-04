@@ -151,7 +151,7 @@ class RequirementController extends Controller
         $data = [
             'hostels' => $hostels,
             'hostel' => $hostel,
-            'requirements' => $hostel ? $requirements->get() : $requirements->paginate()->withQueryString(),
+            'requirements' => $hostel ? $requirements->orderBy()->get() : $requirements->paginate()->withQueryString(),
             'status' => $status
         ];
         if ($status == "Nothing") {
