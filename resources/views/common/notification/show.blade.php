@@ -16,7 +16,8 @@
                             Notification No.
                         </div>
                         <div class="col col-md-4">
-                            <input type="text" name="no" value="{{ old('no',$notification->no) }}" class="form-control" disabled>
+                            <input type="text" name="no" value="{{ old('no', $notification->no) }}"
+                                class="form-control" disabled>
                         </div>
                     </div>
 
@@ -25,7 +26,8 @@
                             Date
                         </div>
                         <div class="col col-md-4">
-                            <input type="date" name="dt" class="form-control" value="{{ old('dt',$notification->dt) }}" disabled>
+                            <input type="date" name="dt" class="form-control"
+                                value="{{ old('dt', $notification->dt) }}" disabled>
                         </div>
                     </div>
 
@@ -34,7 +36,7 @@
                             Content
                         </div>
                         <div class="col col-md-4">
-                            <textarea name="content" class="form-control" disabled>{{ old('content',$notification->content) }}</textarea>
+                            <textarea name="content" class="form-control" disabled>{{ old('content', $notification->content) }}</textarea>
                         </div>
                     </div>
 
@@ -43,7 +45,8 @@
                             Type
                         </div>
                         <div class="col col-md-4">
-                            <input type="text" name="type" class="form-control" value="{{ old('type',$notification->type) }}" disabled>
+                            <input type="text" name="type" class="form-control"
+                                value="{{ old('type', $notification->type) }}" disabled>
                         </div>
                     </div>
 
@@ -52,7 +55,8 @@
                             Status
                         </div>
                         <div class="col col-md-4">
-                            <input type="text" name="status" class="form-control" value="{{ old('status',$notification->status) }}" disabled>
+                            <input type="text" name="status" class="form-control"
+                                value="{{ old('status', $notification->status) }}" disabled>
                         </div>
                     </div>
 
@@ -67,7 +71,7 @@
                 </div>
             </form>
         </x-block>
-        @if(count($notification->allotments) > 0)
+        @if (count($notification->allotments) > 0)
             <x-block>
                 <x-slot name="heading">
                     New hostel allotments
@@ -80,7 +84,8 @@
                             </td>
                             <td>
                                 {{ $notification->allotments->count('id') }}
-                                <a class="btn btn-primary btn-sm" href="/notification/{{ $notification->id }}/allotment">View</a>
+                                <a class="btn btn-primary btn-sm"
+                                    href="/notification/{{ $notification->id }}/allotment">View</a>
                             </td>
                         </tr>
                         <tr>
@@ -88,7 +93,7 @@
                                 Who paid fee and did admission :
                             </td>
                             <td>
-                                {{ $notification->allotments->count('id') }}
+                                {{ $notification->admissions(15)->count('id') }}
                             </td>
                         </tr>
                         <tr>
@@ -112,7 +117,7 @@
             </x-block>
         @endif
 
-        @if(count($notification->sem_allots) > 0)
+        @if (count($notification->sem_allots) > 0)
             <x-block>
                 <x-slot name="heading">
                     Existing students continuing hostel allotments
@@ -125,7 +130,8 @@
                             </td>
                             <td>
                                 {{ $notification->sem_allots->count('id') }}
-                                <a class="btn btn-primary btn-sm" href="/notification/{{ $notification->id }}/sem_allot">View</a>
+                                <a class="btn btn-primary btn-sm"
+                                    href="/notification/{{ $notification->id }}/sem_allot">View</a>
                             </td>
                         </tr>
                         <tr>
@@ -157,14 +163,14 @@
             </x-block>
         @endif
     </x-container>
-<script>
-$(document).ready(function(){
-    $("input[name='start_yr']").keyup(function(){
-        if($(this).val().length >= 4){
-            vl = parseInt($(this).val()) + 1;
-            $("input[name='end_yr']").val(vl);
-        }
-    });
-});
-</script>
+    <script>
+        $(document).ready(function() {
+            $("input[name='start_yr']").keyup(function() {
+                if ($(this).val().length >= 4) {
+                    vl = parseInt($(this).val()) + 1;
+                    $("input[name='end_yr']").val(vl);
+                }
+            });
+        });
+    </script>
 </x-layout>
