@@ -16,10 +16,9 @@ class AllotHostelController extends Controller
 
     public function create(Allotment $allotment)
     {
-        if($allotment->cancel_seat()){
+        if ($allotment->cancel_seat) {
             return redirect()->back()->with(['message' => ['type' => 'danger', 'text' => 'Invalid allotment']]);
-        }
-        else{
+        } else {
             $data = [
                 'allotment' => $allotment,
                 'allot_hostels' => AllotHostel::where('allotment_id', $allotment->id)->orderBy('valid')->orderBy('id')->get(),
@@ -31,15 +30,14 @@ class AllotHostelController extends Controller
     public function store(Request $request, Allotment $allotment)
     {
 
-        if($request->has('hostel')){
+        if ($request->has('hostel')) {
             $hostel = \App\Models\Hostel::findOrFail($request->hostel);
-        }
-        else{
+        } else {
             return redirect()->back()->withErrors(['hostel' => 'Select the hostel'])->withInput();
         }
 
-        if($allotment->valid_allot_hostel()){
-            if($allotment->valid_allot_hostel()->hostel->id == $hostel->id){
+        if ($allotment->valid_allot_hostel()) {
+            if ($allotment->valid_allot_hostel()->hostel->id == $hostel->id) {
                 return redirect()->back()->withErrors(['hostel' => 'Existing hostel can not be selected'])->withInput();
             }
             $allot_hostel = $allotment->valid_allot_hostel();
