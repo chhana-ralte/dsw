@@ -92,9 +92,7 @@ class RequirementController extends Controller
 
 
 
-    public function show(Requirement $requirement) {
-
-    }
+    public function show(Requirement $requirement) {}
 
     /**
      * Show the form for editing the specified resource.
@@ -153,7 +151,7 @@ class RequirementController extends Controller
         $data = [
             'hostels' => $hostels,
             'hostel' => $hostel,
-            'requirements' => $hostel ? $requirements->orderBy()->get() : $requirements->paginate()->withQueryString(),
+            'requirements' => $hostel ? $requirements->orderBy('id')->get() : $requirements->paginate()->withQueryString(),
             'status' => $status
         ];
         if ($status == "Nothing") {
