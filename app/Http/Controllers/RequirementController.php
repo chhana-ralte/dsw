@@ -92,7 +92,9 @@ class RequirementController extends Controller
 
 
 
-    public function show(Requirement $requirement) {}
+    public function show(Requirement $requirement) {
+
+    }
 
     /**
      * Show the form for editing the specified resource.

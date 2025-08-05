@@ -22,6 +22,8 @@
 
                 @if($allot_seat)
                     <input type="hidden" name="allot_seat_id" value="{{ $allot_seat->id }}">
+                @else
+                    <input type="hidden" name="allot_seat_id" value="0">
                 @endif
 
                 <div class="form-group row mb-3">
@@ -52,7 +54,7 @@
                             <input type="text" class="form-control" name="department" value="{{ $allotment->person->student()->department }}" disabled>
                         </div>
                     </div>
-                    
+
                     <div class="form-group row mb-3">
                         <label for="mzuid" class="col col-md-3">MZU ID</label>
                         <div class="col col-md-4">
@@ -87,7 +89,7 @@
                     <div class="col col-md-3">
                     </div>
                     <div class="col col-md-4">
-                        
+
                         <input type="checkbox" id="completed" name="completed" checked>
                         <label for="completed">Whether course completed?</label>
                         <br>
@@ -96,7 +98,7 @@
                         <br>
                     </div>
                 </div>
-                
+
                 <div class="form-group row mb-3 outstanding">
                     <label class="col col-md-3">Any outstanding amount</label>
                     <div class="col col-md-4">
@@ -162,7 +164,7 @@ $(document).ready(function(){
             alert("If fee is not cleared, amount can not be zero/null");
             exit();
         }
-        if(confirm("Are you sure you want to disallocate the inmate? Only DSW would be able to revert.")){   
+        if(confirm("Are you sure you want to disallocate the inmate? Only DSW would be able to revert.")){
             $("form[name='frmSubmit']").submit();
         }
     });

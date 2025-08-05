@@ -16,11 +16,16 @@ class AllotHostelController extends Controller
 
     public function create(Allotment $allotment)
     {
-        $data = [
-            'allotment' => $allotment,
-            'allot_hostels' => AllotHostel::where('allotment_id', $allotment->id)->orderBy('valid')->orderBy('id')->get(),
-        ];
-        return view('common.allot_hostel.create', $data);
+        if($allotment->cancel_seat()){
+            return redirect()->back()->with(['message' => ['type' => 'danger', 'text' => 'Invalid allotment']]);
+        }
+        else{
+            $data = [
+                'allotment' => $allotment,
+                'allot_hostels' => AllotHostel::where('allotment_id', $allotment->id)->orderBy('valid')->orderBy('id')->get(),
+            ];
+            return view('common.allot_hostel.create', $data);
+        }
     }
 
     public function store(Request $request, Allotment $allotment)

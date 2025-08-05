@@ -36,9 +36,9 @@ class CancelSeatController extends Controller
             $allot_hostel = false;
             $allot_seat = false;
         }
-        if (!$allot_hostel || !$allot_seat) {
+        if (!$allot_hostel) {
             return redirect('/allotment/' . $allotment->id)
-                ->with(['message' => ['type' => 'warning', 'text' => 'To cancel seat, inmate must be allotted room/seat first.']]);
+                ->with(['message' => ['type' => 'warning', 'text' => 'To cancel seat, inmate must be allotted hostel.']]);
         }
         $data = [
             'allotment' => $allotment,
@@ -121,7 +121,13 @@ class CancelSeatController extends Controller
         $allotment_id = CancelSeat::find($id)->allotment_id;
         $cancel_seat = CancelSeat::find($id);
         AllotHostel::where('id', $cancel_seat->allot_hostel_id)->update(['valid' => 1]);
-        AllotSeat::where('id', $cancel_seat->allot_seat_id)->update(['valid' => 1]);
+        if($cancel_seat->allot_seat_id != 0){
+            $allot_seat = AllotSeat::findOrFail($cancel_seat->allot_seat_id);
+            if(!AllotSeat::where('seat_id', $allot_seat->seat_id)->where('valid', 1)->exists()){
+                AllotSeat::where('id', $cancel_seat->allot_seat_id)->update(['valid' => 1]);
+            }
+        }
+
         Allotment::where('id', $cancel_seat->allotment_id)->update(['valid' => 1, 'finished' => 0]);
         Clearance::where('cancel_seat_id', $id)->delete();
         $cancel_seat->delete();

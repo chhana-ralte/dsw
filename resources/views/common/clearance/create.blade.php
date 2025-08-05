@@ -72,7 +72,11 @@
                     <label for="roomno" class="col col-md-3">Room No.</label>
                     <div class="col col-md-4">
                         <input type="text" class="form-control" name="roomno"
+                        @if($cancel_seat->allot_seat)
                             value="{{ old('roomno', $cancel_seat->allot_seat->seat->room->roomno) }}" required>
+                        @else
+                            value="{{ old('roomno') }}" required>
+                        @endif
                         @error('roomno')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
