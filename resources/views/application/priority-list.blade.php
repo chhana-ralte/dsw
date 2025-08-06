@@ -13,7 +13,7 @@
                 Applications arranged in dept-wise, and then percentage, excluding AMC
             </x-slot>
             <p>
-                Select the hostel:
+                Select the Department:
                 <select name="department" id="department">
                     <option value="All">All</option>
                     @foreach ($departments as $dept)
