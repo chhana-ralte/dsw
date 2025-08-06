@@ -18,7 +18,7 @@ class Requirement extends Model
     public function allotment()
     {
 
-        return Allotment::where('id', $this->allot_hostel->allotment_id)->first();
+        return $this->belongsTo(Allotment::class);
     }
 
     public function allot_hostel()

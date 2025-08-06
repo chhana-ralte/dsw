@@ -644,13 +644,27 @@ class ApplicationController extends Controller
 
     public function priority_list()
     {
-        $applications = Application::where('status', 'Applied')
-            ->where('AMC', 0)
-            ->orderBy('department')
-            ->orderBy('course')
-            ->orderBy('percent', 'desc');
+        $departments = DB::select("SELECT department
+            FROM applications WHERE (status='Applied' OR status='Pending') AND AMC=0 GROUP BY department ORDER BY department");
+        if (request()->has('department') && request()->department != 'All') {
+            $department = request()->department;
+            $applications = Application::where('status', 'Applied')
+                ->where('AMC', 0)
+                ->where('department', request()->department)
+                ->orderBy('course')
+                ->orderBy('percent', 'desc')->get();
+        } else {
+            $department = 'All';
+            $applications = Application::where('status', 'Applied')
+                ->where('AMC', 0)
+                ->orderBy('department')
+                ->orderBy('course')
+                ->orderBy('percent', 'desc')->paginate();
+        }
         $data = [
-            'applications' => $applications->paginate(),
+            'applications' => $applications,
+            'department' => $department,
+            'departments' => $departments,
         ];
         return view('application.priority-list', $data);
     }
