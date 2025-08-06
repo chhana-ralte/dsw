@@ -41,86 +41,86 @@
 
                                     <a href="/allotment/{{ $allotment->id }}">{{ $allotment->person->name }}</a>
 
-                        @endif
-                        @if ($allotment->valid_allot_hostel() && $allotment->valid_allot_hostel()->hostel->id != $allotment->hostel->id)
-                            <br><span class="badge bg-warning">Now in
-                                {{ $allotment->valid_allot_hostel()->hostel->name }}</span>
-                        @endif
-                        </td>
-                        @if ($allotment->person->student())
-                            <td>{{ $allotment->person->student()->course }}</td>
-                        @elseif($allotment->person->other())
-                            <td colspan="2"><b>Not a student ({{ $allotment->person->other()->remark }})</b>
-                            </td>
-                        @else
-                            <td colspan="2"><b>No info</b></td>
-                        @endif
-                        <td>
 
-                            @if ($allotment->valid_allot_hostel() && $allotment->valid_allot_hostel()->valid_allot_seat())
-                                <span class="text-success">
-                                    Seat:
-                                    {{ $allotment->valid_allot_hostel()->valid_allot_seat()->seat->room->roomno }}
-                                </span>
-                            @else
-                                <span class="text-warning">
-                                    Seat: Not assigned
-                                </span>
-                            @endif
-                            <br>
-                            @if ($allotment->confirmed)
-                                <span class="text-success">
-                                    Admission : Confirmed
-                                </span>
-                            @elseif($allotment->valid)
-                                <span class="text-warning">
-                                    Admission : Pending
-                                </span>
-                            @else
-                                <span class="text-danger">
-                                    Admission : Declined
-                                </span>
-                            @endif
-                        </td>
-                        <td>
-                            @if ($allotment->application)
-                                {{ App\Models\Room::room_type($allotment->application->roomtype) }}
-                            @else
-                                Unknown
-                            @endif
-                        </td>
-                        {{-- <td>
+                                    @if ($allotment->valid_allot_hostel() && $allotment->valid_allot_hostel()->hostel->id != $allotment->hostel->id)
+                                        <br><span class="badge bg-warning">Now in
+                                            {{ $allotment->valid_allot_hostel()->hostel->name }}</span>
+                                    @endif
+                                </td>
+                                @if ($allotment->person->student())
+                                    <td>{{ $allotment->person->student()->course }}</td>
+                                @elseif($allotment->person->other())
+                                    <td colspan="2"><b>Not a student ({{ $allotment->person->other()->remark }})</b>
+                                    </td>
+                                @else
+                                    <td colspan="2"><b>No info</b></td>
+                                @endif
+                                <td>
+
+                                    @if ($allotment->valid_allot_hostel() && $allotment->valid_allot_hostel()->valid_allot_seat())
+                                        <span class="text-success">
+                                            Seat:
+                                            {{ $allotment->valid_allot_hostel()->valid_allot_seat()->seat->room->roomno }}
+                                        </span>
+                                    @else
+                                        <span class="text-warning">
+                                            Seat: Not assigned
+                                        </span>
+                                    @endif
+                                    <br>
+                                    @if ($allotment->confirmed)
+                                        <span class="text-success">
+                                            Admission : Confirmed
+                                        </span>
+                                    @elseif($allotment->valid)
+                                        <span class="text-warning">
+                                            Admission : Pending
+                                        </span>
+                                    @else
+                                        <span class="text-danger">
+                                            Admission : Declined
+                                        </span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($allotment->application)
+                                        {{ App\Models\Room::room_type($allotment->application->roomtype) }}
+                                    @else
+                                        Unknown
+                                    @endif
+                                </td>
+                                {{-- <td>
 
                                     <a class="btn btn-primary" href="/allotment/{{ $allotment->id }}/admission/create?sessn_id={{ $sessn->id }}">Options</a>
                                 </td> --}}
-                        <td>
-                            <div class="btn-group">
-                                @if ($allotment->valid)
-                                    @if (
-                                        $allotment->valid_allot_hostel() &&
-                                            ($allotment->valid_allot_hostel()->valid_allot_seat() ||
-                                                $allotment->valid_allot_hostel()->hostel->id != $allotment->hostel->id))
-                                        <button class="btn btn-primary btn-sm btn-allot-seat"
-                                            value="{{ $allotment->id }}" disabled>Allot seat</button>
-                                    @else
-                                        <button class="btn btn-primary btn-sm btn-allot-seat"
-                                            value="{{ $allotment->id }}">Allot seat</button>
-                                    @endif
-                                    @if ($allotment->valid_allot_hostel() && $allotment->confirmed == 0)
-                                        <button class="btn btn-secondary btn-sm btn-admission"
-                                            value="{{ $allotment->id }}">Admit</button>
-                                    @else
-                                        <button class="btn btn-secondary btn-sm btn-admission"
-                                            value="{{ $allotment->id }}" disabled>Admit</button>
-                                    @endif
-                                    <button class="btn btn-danger btn-sm btn-decline"
-                                        value="{{ $allotment->id }}">Decline</button>
-                                @else
-                                    Invalid
-                                @endif
-                            </div>
-                        </td>
-                        </tr>
+                                <td>
+                                    <div class="btn-group">
+                                        @if ($allotment->valid)
+                                            @if (
+                                                $allotment->valid_allot_hostel() &&
+                                                    ($allotment->valid_allot_hostel()->valid_allot_seat() ||
+                                                        $allotment->valid_allot_hostel()->hostel->id != $allotment->hostel->id))
+                                                <button class="btn btn-primary btn-sm btn-allot-seat"
+                                                    value="{{ $allotment->id }}" disabled>Allot seat</button>
+                                            @else
+                                                <button class="btn btn-primary btn-sm btn-allot-seat"
+                                                    value="{{ $allotment->id }}">Allot seat</button>
+                                            @endif
+                                            @if ($allotment->valid_allot_hostel() && $allotment->confirmed == 0)
+                                                <button class="btn btn-secondary btn-sm btn-admission"
+                                                    value="{{ $allotment->id }}">Admit</button>
+                                            @else
+                                                <button class="btn btn-secondary btn-sm btn-admission"
+                                                    value="{{ $allotment->id }}" disabled>Admit</button>
+                                            @endif
+                                            <button class="btn btn-danger btn-sm btn-decline"
+                                                value="{{ $allotment->id }}">Decline</button>
+                                        @else
+                                            Invalid
+                                        @endif
+                                    </div>
+                                </td>
+                            </tr>
                         @endforeach
 
                         @if (count($old_allotments) > 0)
