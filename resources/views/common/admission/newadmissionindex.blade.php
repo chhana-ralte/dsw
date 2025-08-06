@@ -38,89 +38,89 @@
                             <tr class="table-white row_{{ $allotment->id }}">
                                 <td>{{ $sl++ }}</td>
                                 <td class="name">
-                                    @if (auth()->user() && (auth()->user()->isDsw() || auth()->user()->isAdmin()))
-                                        <a href="/allotment/{{ $allotment->id }}">{{ $allotment->person->name }}</a>
-                                    @else
-                                        {{ $allotment->person->name }}
-                                    @endif
-                                    @if ($allotment->valid_allot_hostel() && $allotment->valid_allot_hostel()->hostel->id != $allotment->hostel->id)
-                                        <br><span class="badge bg-warning">Now in
-                                            {{ $allotment->valid_allot_hostel()->hostel->name }}</span>
-                                    @endif
-                                </td>
-                                @if ($allotment->person->student())
-                                    <td>{{ $allotment->person->student()->course }}</td>
-                                @elseif($allotment->person->other())
-                                    <td colspan="2"><b>Not a student ({{ $allotment->person->other()->remark }})</b>
-                                    </td>
-                                @else
-                                    <td colspan="2"><b>No info</b></td>
-                                @endif
-                                <td>
 
-                                    @if ($allotment->valid_allot_hostel() && $allotment->valid_allot_hostel()->valid_allot_seat())
-                                        <span class="text-success">
-                                            Seat:
-                                            {{ $allotment->valid_allot_hostel()->valid_allot_seat()->seat->room->roomno }}
-                                        </span>
-                                    @else
-                                        <span class="text-warning">
-                                            Seat: Not assigned
-                                        </span>
-                                    @endif
-                                    <br>
-                                    @if ($allotment->confirmed)
-                                        <span class="text-success">
-                                            Admission : Confirmed
-                                        </span>
-                                    @elseif($allotment->valid)
-                                        <span class="text-warning">
-                                            Admission : Pending
-                                        </span>
-                                    @else
-                                        <span class="text-danger">
-                                            Admission : Declined
-                                        </span>
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($allotment->application)
-                                        {{ App\Models\Room::room_type($allotment->application->roomtype) }}
-                                    @else
-                                        Unknown
-                                    @endif
-                                </td>
-                                {{-- <td>
+                                    <a href="/allotment/{{ $allotment->id }}">{{ $allotment->person->name }}</a>
+
+                        @endif
+                        @if ($allotment->valid_allot_hostel() && $allotment->valid_allot_hostel()->hostel->id != $allotment->hostel->id)
+                            <br><span class="badge bg-warning">Now in
+                                {{ $allotment->valid_allot_hostel()->hostel->name }}</span>
+                        @endif
+                        </td>
+                        @if ($allotment->person->student())
+                            <td>{{ $allotment->person->student()->course }}</td>
+                        @elseif($allotment->person->other())
+                            <td colspan="2"><b>Not a student ({{ $allotment->person->other()->remark }})</b>
+                            </td>
+                        @else
+                            <td colspan="2"><b>No info</b></td>
+                        @endif
+                        <td>
+
+                            @if ($allotment->valid_allot_hostel() && $allotment->valid_allot_hostel()->valid_allot_seat())
+                                <span class="text-success">
+                                    Seat:
+                                    {{ $allotment->valid_allot_hostel()->valid_allot_seat()->seat->room->roomno }}
+                                </span>
+                            @else
+                                <span class="text-warning">
+                                    Seat: Not assigned
+                                </span>
+                            @endif
+                            <br>
+                            @if ($allotment->confirmed)
+                                <span class="text-success">
+                                    Admission : Confirmed
+                                </span>
+                            @elseif($allotment->valid)
+                                <span class="text-warning">
+                                    Admission : Pending
+                                </span>
+                            @else
+                                <span class="text-danger">
+                                    Admission : Declined
+                                </span>
+                            @endif
+                        </td>
+                        <td>
+                            @if ($allotment->application)
+                                {{ App\Models\Room::room_type($allotment->application->roomtype) }}
+                            @else
+                                Unknown
+                            @endif
+                        </td>
+                        {{-- <td>
 
                                     <a class="btn btn-primary" href="/allotment/{{ $allotment->id }}/admission/create?sessn_id={{ $sessn->id }}">Options</a>
                                 </td> --}}
-                                <td>
-                                    <div class="btn-group">
-                                        @if ($allotment->valid)
-                                            @if (
-                                                $allotment->valid_allot_hostel() &&
-                                                    ($allotment->valid_allot_hostel()->valid_allot_seat() ||
-                                                        $allotment->valid_allot_hostel()->hostel->id != $allotment->hostel->id))
-                                                <button class="btn btn-primary btn-sm btn-allot-seat"
-                                                    value="{{ $allotment->id }}" disabled>Allot seat</button>
-                                            @else
-                                                <button class="btn btn-primary btn-sm btn-allot-seat"
-                                                    value="{{ $allotment->id }}">Allot seat</button>
-                                            @endif
-                                            @if ($allotment->valid_allot_hostel() && $allotment->confirmed == 0)
-                                                <button class="btn btn-secondary btn-sm btn-admission"
-                                                    value="{{ $allotment->id }}">Admit</button>
-                                            @else
-                                                <button class="btn btn-secondary btn-sm btn-admission"
-                                                    value="{{ $allotment->id }}" disabled>Admit</button>
-                                            @endif
-                                            <button class="btn btn-danger btn-sm btn-decline" value="{{ $allotment->id }}">Decline</button>
-                                        @else
-                                            Invalid
-                                        @endif
-                                    </div>
-                                </td>
-                            </tr>
+                        <td>
+                            <div class="btn-group">
+                                @if ($allotment->valid)
+                                    @if (
+                                        $allotment->valid_allot_hostel() &&
+                                            ($allotment->valid_allot_hostel()->valid_allot_seat() ||
+                                                $allotment->valid_allot_hostel()->hostel->id != $allotment->hostel->id))
+                                        <button class="btn btn-primary btn-sm btn-allot-seat"
+                                            value="{{ $allotment->id }}" disabled>Allot seat</button>
+                                    @else
+                                        <button class="btn btn-primary btn-sm btn-allot-seat"
+                                            value="{{ $allotment->id }}">Allot seat</button>
+                                    @endif
+                                    @if ($allotment->valid_allot_hostel() && $allotment->confirmed == 0)
+                                        <button class="btn btn-secondary btn-sm btn-admission"
+                                            value="{{ $allotment->id }}">Admit</button>
+                                    @else
+                                        <button class="btn btn-secondary btn-sm btn-admission"
+                                            value="{{ $allotment->id }}" disabled>Admit</button>
+                                    @endif
+                                    <button class="btn btn-danger btn-sm btn-decline"
+                                        value="{{ $allotment->id }}">Decline</button>
+                                @else
+                                    Invalid
+                                @endif
+                            </div>
+                        </td>
+                        </tr>
                         @endforeach
 
                         @if (count($old_allotments) > 0)
@@ -220,7 +220,8 @@
                                                     <button class="btn btn-secondary btn-sm btn-admission"
                                                         value="{{ $allotment->id }}" disabled>Admit</button>
                                                 @endif
-                                                <button class="btn btn-danger btn-sm btn-decline" value="{{ $allotment->id }}">Decline</button>
+                                                <button class="btn btn-danger btn-sm btn-decline"
+                                                    value="{{ $allotment->id }}">Decline</button>
                                             @else
                                                 Invalid
                                             @endif
@@ -329,10 +330,11 @@
     </div>
     {{-- End Modal for admission --}}
 
-{{-- Modal for declining --}}
+    {{-- Modal for declining --}}
 
 
-    <div class="modal fade" id="declineModal" tabindex="-1" aria-labelledby="declineModalLabel" aria-hidden="true">
+    <div class="modal fade" id="declineModal" tabindex="-1" aria-labelledby="declineModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -355,7 +357,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-confirm-decline" value="decline">Decline</button>
+                    <button type="button" class="btn btn-primary btn-confirm-decline"
+                        value="decline">Decline</button>
                 </div>
             </div>
         </div>
@@ -493,35 +496,35 @@
                 // alert("hehe");
             });
 
-            $("button.btn-decline").click(function(){
+            $("button.btn-decline").click(function() {
                 // alert($(this).val());
                 $("input#allotment_id").val($(this).val());
                 $.ajax({
-                    type : "get",
-                    url : "/ajax/allotment/" + $(this).val() + "/application",
-                    success : function (data, status){
+                    type: "get",
+                    url: "/ajax/allotment/" + $(this).val() + "/application",
+                    success: function(data, status) {
                         $("textarea[name='remark']").val(data.remark);
                         // alert(data.application_id);
                     },
-                    error : function(){
+                    error: function() {
                         alert("Error");
                     }
                 });
                 $("#declineModal").modal("show");
             });
 
-            $("button.btn-confirm-decline").click(function(){
+            $("button.btn-confirm-decline").click(function() {
                 $.ajax({
-                    type : "post",
-                    url : "/ajax/allotment/" + $("input#allotment_id").val() + "/decline",
-                    data : {
-                        remark : $("textarea[name='remark']").val()
+                    type: "post",
+                    url: "/ajax/allotment/" + $("input#allotment_id").val() + "/decline",
+                    data: {
+                        remark: $("textarea[name='remark']").val()
                     },
-                    success : function (data, status){
+                    success: function(data, status) {
                         alert(data);
                         location.reload();
                     },
-                    error : function(){
+                    error: function() {
                         alert("Error");
                     }
                 });
