@@ -37,7 +37,7 @@
                                 <tr>
 
                                     <td>
-                                        @if ($req->person->mobile != '' && $req->person->email != '' && $req->allotment->valid == 1)
+                                        @if ($req->person->mobile != '' && $req->person->email != '' && $req->allotment()->valid == 1)
                                             <input type="checkbox" name="requirement_id[]" value="{{ $req->id }}"
                                                 checked>
                                         @else
@@ -52,7 +52,7 @@
                                             <br><span class="badge bg-danger">No mobile or email</span>
                                         @endif
 
-                                        @if ($req->allotment->valid == 0)
+                                        @if ($req->allotment()->valid == 0)
                                             <br><span class="badge bg-danger">Possible invalid allotment</span>
                                         @endif
 

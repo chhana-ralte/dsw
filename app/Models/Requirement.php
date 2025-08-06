@@ -26,6 +26,8 @@ class Requirement extends Model
         return $this->belongsTo(AllotHostel::class);
     }
 
+
+
     public function for_sessn()
     {
         return Sessn::where('id', $this->for_sessn_id)->first();
@@ -54,7 +56,7 @@ class Requirement extends Model
             $valid_allot_hostels = DB::select("SELECT allot_hostels.id
                 FROM allot_hostels JOIN allotments ON allotments.id=allot_hostels.allotment_id AND allotments.valid = 1
                 WHERE allot_hostels.valid = 1
-                AND (allotments.start_sessn_id <> '". Sessn::current()->id ."' OR allotments.start_sessn_id IS NULL)
+                AND (allotments.start_sessn_id <> '" . Sessn::current()->id . "' OR allotments.start_sessn_id IS NULL)
                 AND allot_hostels.allotment_id NOT IN (SELECT allotment_id FROM requirements)
                 ");
             $valid_allot_hostels = AllotHostel::hydrate($valid_allot_hostels);
@@ -73,8 +75,8 @@ class Requirement extends Model
         } else {
             $valid_allot_hostels = DB::select("SELECT allot_hostels.id
                 FROM allot_hostels JOIN allotments ON allotments.id=allot_hostels.allotment_id AND allotments.valid = 1
-                WHERE allot_hostels.valid = 1 AND allot_hostels.hostel_id = '". $hostel_id ."'
-                AND (allotments.start_sessn_id <> '". Sessn::current()->id ."' OR allotments.start_sessn_id IS NULL)
+                WHERE allot_hostels.valid = 1 AND allot_hostels.hostel_id = '" . $hostel_id . "'
+                AND (allotments.start_sessn_id <> '" . Sessn::current()->id . "' OR allotments.start_sessn_id IS NULL)
                 AND allot_hostels.allotment_id NOT IN (SELECT allotment_id FROM requirements)
                 ");
             $valid_allot_hostels = AllotHostel::hydrate($valid_allot_hostels);
@@ -90,7 +92,6 @@ class Requirement extends Model
                 ->where('allotments.valid', 1)
                 ->where('allot_hostels.valid', 1)
                 ->where('allot_hostels.hostel_id', $hostel_id);
-
         }
 
         $allotments = Allotment::where('start_sessn_id', Sessn::current()->id)->where('valid', 1);
