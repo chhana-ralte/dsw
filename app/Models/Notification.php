@@ -9,6 +9,11 @@ class Notification extends Model
 {
     protected $guarded = [];
 
+    public function notiMaster()
+    {
+        return $this->belongsTo(NotiMaster::class);
+    }
+
     public function allotments()
     {
         return $this->hasMany(Allotment::class);

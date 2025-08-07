@@ -648,7 +648,7 @@ class ApplicationController extends Controller
         if (request()->has('department_id') && request()->department_id != '0') {
             $department = \App\Models\Department::find(request()->department_id);
             $department_id = $department->id;
-            $applications = Application::where('status', 'Applied')
+            $applications = Application::whereIn('status', ['Applied', 'Pending'])
                 ->where('AMC', 0)
                 ->where('department_id', $department->id)
                 ->orderBy('course')
@@ -656,7 +656,7 @@ class ApplicationController extends Controller
         } else {
             $department = null;
             $department_id = 0;
-            $applications = Application::where('status', 'Applied')
+            $applications = Application::whereIn('status', ['Applied', 'Pending'])
                 ->where('AMC', 0)
                 ->orderBy('department')
                 ->orderBy('course')

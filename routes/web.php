@@ -13,6 +13,7 @@ use App\Http\Controllers\WardenController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\SeatController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\NotiMasterController;
 use App\Http\Controllers\AllotmentController;
 use App\Http\Controllers\AllotHostelController;
 use App\Http\Controllers\AllotSeatController;
@@ -119,7 +120,8 @@ Route::resource('hostel.warden', WardenController::class)->shallow()->middleware
 Route::resource('hostel.admission', HostelAdmissionController::class)->only(['index'])->shallow()->middleware('auth');
 
 Route::resource('room.seat', SeatController::class)->shallow()->middleware('auth');
-Route::resource('notification', NotificationController::class)->middleware('auth');
+Route::resource('notiMaster', NotiMasterController::class)->middleware('auth');
+Route::resource('notiMaster.notification', NotificationController::class)->middleware('auth')->shallow();
 Route::resource('notification.allotment', AllotmentController::class)->shallow()->middleware('auth');
 Route::resource('notification.sem_allot', SemAllotController::class)->shallow()->middleware('auth');
 Route::resource('allotment.admission', AdmissionController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->shallow()->middleware('auth');

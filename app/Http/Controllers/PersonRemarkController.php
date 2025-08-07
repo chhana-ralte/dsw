@@ -14,16 +14,18 @@ class PersonRemarkController extends Controller
      */
     public function index(Person $person)
     {
-        if(isset($request->back_link)){
-            $back_link = $request->back_link;
-        }
-        else{
+        if (request()->has('back_link')) {
+            $back_link = request()->back_link;
+        } else {
             $allotment = $person->valid_allotment();
+            if ($allotment) {
+                $allotment = $person->alotments->first();
+            }
             $back_link = '/allotment/' . $allotment->id;
         }
         $data = [
             'person' => $person,
-            'person_remarks' => PersonRemark::where('person_id',$person->id)->orderBy('remark_dt')->get(),
+            'person_remarks' => PersonRemark::where('person_id', $person->id)->orderBy('remark_dt')->get(),
             'back_link' => $back_link
         ];
         return view('common.person.remark.index', $data);
@@ -34,7 +36,7 @@ class PersonRemarkController extends Controller
      */
     public function create(Person $person)
     {
-        return view('common.person.remark.create',['person' => $person]);
+        return view('common.person.remark.create', ['person' => $person]);
     }
 
     /**
@@ -64,7 +66,7 @@ class PersonRemarkController extends Controller
      */
     public function edit(PersonRemark $personRemark)
     {
-        return view('common.person.remark.edit',['person_remark' => $personRemark]);
+        return view('common.person.remark.edit', ['person_remark' => $personRemark]);
     }
 
     /**
@@ -78,7 +80,8 @@ class PersonRemarkController extends Controller
             'remark' => $request->remark,
             'score' => $request->score
         ]);
-        return redirect('/person/' . $personRemark->person->id . '/person_remark')->with(['message' => ['type' => 'info', 'text' => 'Remark updated']]);    }
+        return redirect('/person/' . $personRemark->person->id . '/person_remark')->with(['message' => ['type' => 'info', 'text' => 'Remark updated']]);
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -87,7 +90,7 @@ class PersonRemarkController extends Controller
     {
         // return $personRemark->id;
         $person = $personRemark->person;
-        PersonRemarkDetail::where('person_remark_id',$personRemark->id)->delete();
+        PersonRemarkDetail::where('person_remark_id', $personRemark->id)->delete();
         $personRemark->delete();
         return redirect('/person/' . $person->id . '/person_remark')->with(['message' => ['type' => 'info', 'text' => 'Remark deleted successfully']]);
     }
