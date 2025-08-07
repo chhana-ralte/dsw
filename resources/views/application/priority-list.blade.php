@@ -15,10 +15,10 @@
             <p>
                 Select the Department:
                 <select name="department" id="department">
-                    <option value="All">All</option>
-                    @foreach ($departments as $dept)
-                        <option value="{{ $dept->department }}" {{ $dept->department == $department ? 'selected' : '' }}>
-                            {{ $dept->department }}</option>
+                    <option value="0">All</option>
+                    @foreach (App\Models\Department::all() as $dept)
+                        <option value="{{ $dept->id }}" {{ $dept->id == $department_id ? 'selected' : '' }}>
+                            {{ $dept->name }}</option>
                     @endforeach
                 </select>
             </p>
@@ -77,7 +77,7 @@
                             </form>
                         </tbody>
                     </table>
-                    @if ($department == 'All')
+                    @if (!$department)
                         <div class="d-flex justify-content-center">
                             {{ $applications->links() }}
                         </div>
@@ -138,11 +138,11 @@
                     }
                 });
                 $("select[name='department']").change(function() {
-                    if ($(this).val() == 'All') {
+                    if ($(this).val() == '0') {
                         location.replace('/application/priority-list');
                         exit();
                     } else {
-                        location.replace('/application/priority-list?department=' + $(this).val());
+                        location.replace('/application/priority-list?department_id=' + $(this).val());
                         exit();
                     }
                 });
