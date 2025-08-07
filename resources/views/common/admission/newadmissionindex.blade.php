@@ -39,7 +39,7 @@
                                 <td>{{ $sl++ }}</td>
                                 <td class="name">
 
-                                    <a href="/allotment/{{ $allotment->id }}">{{ $allotment->person->name }}</a>
+                                    <a href="/allotment/{{ $allotment->id }}?back_link=/hostel/{{$hostel->id}}/admission?sessn={{$sessn->id}}&adm_type=new">{{ $allotment->person->name }}</a>
 
 
                                     @if ($allotment->valid_allot_hostel() && $allotment->valid_allot_hostel()->hostel->id != $allotment->hostel->id)

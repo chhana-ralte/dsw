@@ -113,7 +113,7 @@ class AllotmentController extends Controller
         $data = [
             'allotment' => $allotment,
             'current_hostel' => $current_hostel,
-            'back_link' => isset(request()->back_link) ? request()->back_link : '/notification/' . $allotment->notification->id . '/allotment',
+            'back_link' => request()->has('back_link') ? request()->back_link : '/notification/' . $allotment->notification->id . '/allotment',
         ];
         // return $data;
         return view('common.allotment.show', $data);

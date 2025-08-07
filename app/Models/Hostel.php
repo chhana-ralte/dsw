@@ -75,13 +75,7 @@ class Hostel extends Model
 
     public function current_occupants() // All occupants, empty rooms are not shown
     {
-        // DB::table('allot_hostels')->join('allot_seats', 'allot_hostels.id', '=', 'allot_seats.allot_hostel_id')
-        //     ->join('seats', 'allot_seats.seat_id', '=', 'seats.id')
-        //     ->join('rooms', 'seats.room_id', '=', 'rooms.id')
-        //     ->where('allot_hostels.hostel_id', $this->id)
-        //     ->where('allot_seats.valid', 1)
-        //     ->select('allot_hostels.*', 'allot_seats.*', 'seats.*', 'rooms.*')
-        //     ->get();
+
 
         $occupants = DB::select('SELECT R.id as room_id,R.roomno, R.type as roomtype, S.id as seat_id, S.serial, P.name, P.father, P.mobile, P.email, P.state, P.address, P.photo, P.gender, ST.id as student_id, ST.course, ST.department, ST.mzuid, ST.rollno, AH.id as allot_hostel_id, A.id as allotment_id, AST.id as allot_seat_id
             FROM (people P LEFT JOIN students ST ON P.id=ST.person_id) JOIN allotments A on P.id=A.person_id
@@ -200,5 +194,38 @@ class Hostel extends Model
             return Seat::Hydrate($seats);
         }
 
+    }
+
+    public function no_of_approved($sessn_id = 0){
+        return Application::where('status', 'Approved')->where('hostel_id', $this->id)->count();
+    }
+
+    public function no_of_notified($sessn_id = 0){
+        return Application::where('status', 'Notified')->where('hostel_id', $this->id)->count();
+    }
+
+    public function no_of_seat_allotted($sessn_id = 0){
+
+        return Application::join('allotments', 'applications.id', '=', 'allotments.application_id')
+            ->join('allot_hostels', 'allot_hostels.allotment_id', '=', 'allotments.id')
+            ->join('allot_seats', 'allot_seats.allot_hostel_id', '=', 'allot_hostels.id')
+            ->where('applications.status', 'Notified')
+            ->where('applications.hostel_id', $this->id)
+            ->count();
+    }
+
+    public function no_of_confirmed($sessn_id = 0){
+        return Application::join('allotments', 'applications.id', '=', 'allotments.application_id')
+            ->where('applications.status', 'Notified')
+            ->where('applications.hostel_id', $this->id)
+            ->where('allotments.confirmed', 1)
+            ->count();
+    }
+    public function no_of_declined($sessn_id = 0){
+        return Application::join('allotments', 'applications.id', '=', 'allotments.application_id')
+            ->where('applications.status', 'Notified')
+            ->where('applications.hostel_id', $this->id)
+            ->where('allotments.valid', 0)
+            ->count();
     }
 }

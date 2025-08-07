@@ -22,6 +22,8 @@
             @endauth
             <p>
                 @auth
+                    <a class="btn btn-secondary btn-sm"
+                        href="{{ $back_link }}">Back</a>
                     @if (auth()->user()->isAdmin())
                         <a class="btn btn-secondary btn-sm"
                             href="/notification/{{ $allotment->notification->id }}/allotment">Back to

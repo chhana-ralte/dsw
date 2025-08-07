@@ -185,7 +185,50 @@
 
             </table>
         </x-block>
-
-
+        <x-block>
+            <x-slot name="heading">
+                Admission related
+            </x-slot>
+            <div class="form-group row mb-3">
+                <label class="col-md-4">
+                    No. of applicants approved:
+                </label>
+                <label class="col-md-4">
+                    {{ $hostel->no_of_approved() }}
+                </label>
+            </div>
+            <div class="form-group row mb-3">
+                <label class="col-md-4">
+                    No. of applicants notified:
+                </label>
+                <label class="col-md-4">
+                    {{ $hostel->no_of_notified() }}
+                </label>
+            </div>
+            <div class="form-group row mb-3">
+                <label class="col-md-4">
+                    No. of applicants who are allotted seats:
+                </label>
+                <label class="col-md-4">
+                    {{ $hostel->no_of_seat_allotted() }}
+                </label>
+            </div>
+            <div class="form-group row mb-3">
+                <label class="col-md-4">
+                    No. of applicants who are confirmed:
+                </label>
+                <label class="col-md-4">
+                    {{ $hostel->no_of_confirmed() }}
+                </label>
+            </div>
+            <div class="form-group row mb-3">
+                <label class="col-md-4">
+                    No. of applicants who are declined:
+                </label>
+                <label class="col-md-4">
+                    {{ $hostel->no_of_declined() }}
+                </label>
+            </div>
+        </x-block>
     </x-container>
 </x-layout>
