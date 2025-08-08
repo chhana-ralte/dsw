@@ -5,7 +5,7 @@
                 Approved applications for {{ $hostel_id == 0 ? 'All hostels' : $hostel->name }}
                 <p>
                     <a href="/application/list" class="btn btn-secondary btn-sm">Back</a>
-                    
+
                 </p>
 
             </x-slot>
@@ -24,9 +24,6 @@
                             {{ $ht->name }}</option>
                     @endforeach
                 </select>
-                @if($hostel_id != 0)
-                    <button class="btn btn-primary btn-sm">Notify</button>
-                @endif
             </p>
 
             <div style="width: 100%; overflow-x:auto">
@@ -47,73 +44,73 @@
                                 <th>Type</th>
                                 @can('manages', App\Models\Application::class)
                                     <th>Action</th>
-                                    @endif
+                                @endif
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            if ($hostel_id != 0) {
+                                $sl = 1;
+                            } else {
+                                $sl = ($applications->currentPage() - 1) * $applications->perPage() + 1;
+                            }
+                            ?>
+                            @foreach ($applications as $application)
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="application_id[]" value="{{ $application->id }}">
+                                    </td>
+                                    <td>{{ $sl++ }}</td>
+                                    <td>{{ $application->id }}</td>
+                                    <td>
+                                        <a
+                                            href="/application/{{ $application->id }}?mzuid={{ $application->mzuid }}">{{ $application->name }}</a>
+                                    </td>
+
+                                    <td>{{ $application->course }}</td>
+                                    <td>{{ $application->mzuid }}</td>
+                                    <td>{{ $application->hostel->name }}</td>
+
+                                    <td>{{ App\Models\Room::room_type($application->roomtype) }}</td>
+
+
+                                    @can('manage', $application)
+                                        <td>
+                                            <div class="btn-group">
+                                                <a href="/application/{{ $application->id }}/edit?mzuid={{ $application->mzuid }}"
+                                                    class="btn btn-primary btn-sm">Edit</a>
+                                                <button value="{{ $application->id }}"
+                                                    class="btn btn-danger btn-sm btn-delete">Delete</button>
+                                            </div>
+                                        </td>
+                                    @endcan
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                if ($hostel_id != 0) {
-                                    $sl = 1;
-                                } else {
-                                    $sl = ($applications->currentPage() - 1) * $applications->perPage() + 1;
-                                }
-                                ?>
-                                @foreach ($applications as $application)
+
+                            @endforeach
+                            @if($hostel_id != 0 && auth()->user()->can('notifies', App\Models\Application::class))
+                                <footer>
+
                                     <tr>
-                                        <td>
-                                            <input type="checkbox" name="application_id[]" value="{{ $application->id }}">
+                                        <td colspan="6">
+
+                                                <button id="notify" class="btn btn-primary btn-action" type="button" value="notify">Notify selected students</button>
+
                                         </td>
-                                        <td>{{ $sl++ }}</td>
-                                        <td>{{ $application->id }}</td>
-                                        <td>
-                                            <a
-                                                href="/application/{{ $application->id }}?mzuid={{ $application->mzuid }}">{{ $application->name }}</a>
-                                        </td>
-
-                                        <td>{{ $application->course }}</td>
-                                        <td>{{ $application->mzuid }}</td>
-                                        <td>{{ $application->hostel->name }}</td>
-
-                                        <td>{{ App\Models\Room::room_type($application->roomtype) }}</td>
-
-
-                                        @can('manage', $application)
-                                            <td>
-                                                <div class="btn-group">
-                                                    <a href="/application/{{ $application->id }}/edit?mzuid={{ $application->mzuid }}"
-                                                        class="btn btn-primary btn-sm">Edit</a>
-                                                    <button value="{{ $application->id }}"
-                                                        class="btn btn-danger btn-sm btn-delete">Delete</button>
-                                                </div>
-                                            </td>
-                                        @endcan
                                     </tr>
-                                    
-                                @endforeach
-                                @if($hostel_id != 0 && auth()->user()->can('notifies', App\Models\Application::class))
-                                    <footer>
-                                        
-                                        <tr>
-                                            <td colspan="6">
-                                                
-                                                    <button id="notify" class="btn btn-primary btn-action" type="button" value="notify">Notify selected students</button>
-                                                
-                                            </td>
-                                        </tr>
-                                    </footer>
-                                    @endif
+                                </footer>
+                                @endif
 
-                            </tbody>
-                        </table>
-                        @if ($hostel_id == 0)
-                            <div class="d-flex justify-content-center">
-                                {{ $applications->links() }}
-                            </div>
-                        @endif
-                    </form>
-                </div>
-            </x-block>
-        </x-container>
+                        </tbody>
+                    </table>
+                    @if ($hostel_id == 0)
+                        <div class="d-flex justify-content-center">
+                            {{ $applications->links() }}
+                        </div>
+                    @endif
+                </form>
+            </div>
+        </x-block>
+    </x-container>
         {{-- Modal for duplicate requirement --}}
 
         <div class="modal fade" id="duplicateModal" tabindex="-1" aria-labelledby="duplicateModalLabel" aria-hidden="true">
@@ -191,7 +188,7 @@
                     }
                     $("form[name='frm-notify']").submit();
                 });
-                
+
             });
 
         </script>

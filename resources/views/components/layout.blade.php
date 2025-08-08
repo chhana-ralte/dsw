@@ -78,7 +78,7 @@
                             </li>
                             @if (auth()->user()->isAdmin() || auth()->user()->isDsw())
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/notification/">Notifications</a>
+                                    <a class="nav-link" href="/notiMaster/">Notifications</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="/application/">Applications</a>

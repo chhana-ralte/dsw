@@ -389,7 +389,7 @@ class ApplicationController extends Controller
                 ->get();
             $data = [
                 'applications' => $applications->orderBy('roomtype',)->orderBy('name')->get(),
-                'notifications' => $notifications,
+                //'notifications' => $notifications,
                 'hostel' => $hostel,
                 'status' => 'confirm notify',
             ];
@@ -398,6 +398,7 @@ class ApplicationController extends Controller
         } else if (request()->status == 'confirm notify') {
             if (request()->file == 0) {
                 $notification = \App\Models\Notification::create([
+                    'noti_master_id' => request()->filemaster,
                     'no' => request()->no,
                     'dt' => request()->dt,
                     'type' => 'allotment',
@@ -502,7 +503,6 @@ class ApplicationController extends Controller
         return view('application.notified', $data);
         return $allotments->get();
     }
-
 
     public function duplicates()
     {

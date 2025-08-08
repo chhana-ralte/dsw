@@ -21,13 +21,21 @@
                     <input type="hidden" name="hostel_id" value="{{ $hostel?$hostel->id:0 }}">
                     <div id="file-info">
                         <div class="mb-3 form-group row">
-                            <label class="col-md-5">Existing file number</label>
+                            <label class="col-md-5">File number</label>
+                            <div class="col md-7">
+                                <select name="filemaster" class="form-control">
+                                    <option value="0" selected disabled>Select the file</option>
+                                    @foreach(App\Models\NotiMaster::where('type', 'allotment')->get() as $nm)
+                                        <option value="{{ $nm->id }}">{{ $nm->no }}:{{ $nm->dt }}: {{ $nm->content }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 form-group row">
+                            <label class="col-md-5">Sub-file number</label>
                             <div class="col md-7">
                                 <select name="file" class="form-control">
-                                    <option value="0">New file</option>
-                                    @foreach($notifications as $noti)
-                                        <option value="{{ $noti->id }}">{{ $noti->no }}:{{ $noti->dt }}: {{ $noti->content }}</option>
-                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -79,9 +87,9 @@
                                     </td>
 
                                     <td>
-                                        
+
                                             {{ $appl->course }}
-                                        
+
                                     </td>
 
                                     <td>
@@ -191,6 +199,23 @@
 
                 $("input[name='application_id[]']").each(function(){
                     $(this).prop('checked',$("input#all").prop("checked"));
+                });
+            });
+
+            $("select[name='filemaster']").change(function(){
+                $.ajax({
+                    url : '/ajax/notiMaster/' + $(this).val() + '/getNotifications',
+                    type : 'get',
+                    success : function(data, status){
+                        var s = "<option value='0' selected>New File</option>";
+                            for (i = 0; i < data.length; i++) {
+                                s += "<option value='" + data[i].id + "'>" + data[i].no + "</option>";
+                            }
+                            $("select[name='file']").html(s);
+                    },
+                    error : function(){
+                        alert('Error');
+                    },
                 });
             });
 

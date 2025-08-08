@@ -4,7 +4,7 @@
             <x-slot name="heading">
                 Notification Detail
                 <p>
-                    <a href="/notification/" class="btn btn-primary btn-sm">Back</a>
+                    <a href="/notiMaster/{{ $notification->notiMaster->id }}" class="btn btn-primary btn-sm">Back</a>
                 </p>
             </x-slot>
             <form method="post" action="/notification/{{ $notification->id }}">
@@ -59,15 +59,16 @@
                                 value="{{ old('status', $notification->status) }}" disabled>
                         </div>
                     </div>
+                    @can('manages', App\Models\Notification::class)
+                        <div class="pt-3 form-group row">
+                            <div class="col col-md-4">
 
-                    <div class="pt-3 form-group row">
-                        <div class="col col-md-4">
-
+                            </div>
+                            <div class="col col-md-4">
+                                <a href="/notification/{{ $notification->id }}/edit" class="btn btn-secondary">Edit</a>
+                            </div>
                         </div>
-                        <div class="col col-md-4">
-                            <a href="/notification/{{ $notification->id }}/edit" class="btn btn-secondary">Edit</a>
-                        </div>
-                    </div>
+                    @endcan
                 </div>
             </form>
         </x-block>

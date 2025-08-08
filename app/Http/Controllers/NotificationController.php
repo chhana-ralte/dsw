@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Notification;
+use App\Models\NotiMaster;
 use Illuminate\Http\Request;
 
 class NotificationController extends Controller
@@ -10,9 +11,10 @@ class NotificationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(NotiMaster $notiMaster)
     {
         $data = [
+            'noti_master' => $notiMaster,
             'notifications' => Notification::orderBy('dt')->get()
         ];
         return view("common.notification.index", $data);
@@ -21,23 +23,24 @@ class NotificationController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(NotiMaster $notiMaster)
     {
-        return view('common.notification.create');
+        return view('common.notification.create',['noti_master' => $notiMaster]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(NotiMaster $notiMaster, Request $request)
     {
         $notification = Notification::create([
+            'noti_master_id' => $request->notiMaster->id,
             'no' => $request->no,
             'dt' => $request->dt,
             'content' => $request->content,
             'type' => $request->type,
         ]);
-        return redirect('/notification')->with(['message' => ['type' => 'info', 'text' => 'Notification created']]);
+        return redirect('/notiMaster/' . $notiMaster->id)->with(['message' => ['type' => 'info', 'text' => 'Sub-notification created']]);
     }
 
     /**

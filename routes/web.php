@@ -195,6 +195,8 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::post('/ajax/admission/{id}/delete', 'deleteAdmission');
     Route::get('/ajax/allotment/{id}/application', 'getApplication');
     Route::post('/ajax/allotment/{id}/decline', 'declineAllotment');
+    Route::get('/ajax/notiMaster/{id}/getNotifications', 'getNotifications');
+    Route::post('/ajax/addToNotiMaster', 'addToNotiMaster');
 })->middleware('auth');
 
 

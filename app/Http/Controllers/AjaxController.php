@@ -420,4 +420,12 @@ class AjaxController extends Controller
         ]);
         return "Successfully declined";
     }
+
+    public function getNotifications($noti_master_id){
+        return \App\Models\Notification::where('noti_master_id', $noti_master_id)->where('status','active')->get();
+    }
+
+    public function addToNotiMaster(){
+        return "Hello";
+    }
 }

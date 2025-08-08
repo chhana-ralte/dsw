@@ -7,24 +7,43 @@
                     <a href="/notification/" class="btn btn-primary btn-sm">Back</a>
                 </p>
             </x-slot>
-            <form method="post" action="/notification">
+            <form method="post" action="/notiMaster/{{ $noti_master->id }}/notification">
+                <input type="hidden" name="noti_master_id" value="{{ $noti_master->id }}">
                 @csrf
                 <div>
                     <div class="pt-3 form-group row">
                         <div class="col col-md-4">
-                            Notification No.
+                            Notification Master
                         </div>
                         <div class="col col-md-4">
-                            <input type="text" name="no" value="{{ old('no') }}" class="form-control" required>
+                            <input type="text" name="no" value="{{ $noti_master->no }}" class="form-control" disabled>
                         </div>
                     </div>
 
                     <div class="pt-3 form-group row">
                         <div class="col col-md-4">
-                            Date
+                            Date of notification
                         </div>
                         <div class="col col-md-4">
-                            <input type="date" name="dt" class="form-control" value="{{ old('dt') }}" required>
+                            <input type="text" value="{{ $noti_master->dt }}" class="form-control" disabled>
+                        </div>
+                    </div>
+
+                    <div class="pt-3 form-group row">
+                        <div class="col col-md-4">
+                            Type of notification
+                        </div>
+                        <div class="col col-md-4">
+                            <input type="text" value="{{ $noti_master->type }}" class="form-control" disabled>
+                        </div>
+                    </div>
+
+                    <div class="pt-3 form-group row">
+                        <div class="col col-md-4">
+                            Sub-Notification
+                        </div>
+                        <div class="col col-md-4">
+                            <input type="text" name="no" value="{{ old('no') }}" class="form-control" required>
                         </div>
                     </div>
 
