@@ -78,7 +78,7 @@ class AjaxController extends Controller
     public function get_available_seats()
     {
         // return [['id' => 1, 'roomno' => "D-3", 'serial' => "5", 'room_id' =>'5']];
-        if(isset($_GET['hostel_id'])){
+        if (isset($_GET['hostel_id'])) {
             $hostel = \App\Models\Hostel::findOrFail($_GET['hostel_id']);
             $seats = $hostel->get_available_seats('array');
             return $seats;
@@ -118,7 +118,7 @@ class AjaxController extends Controller
     public function get_all_seats()
     {
 
-        if(isset($_GET['hostel_id'])){
+        if (isset($_GET['hostel_id'])) {
             $hostel = \App\Models\Hostel::findOrFail($_GET['hostel_id']);
             $seats = $hostel->get_all_seats('array');
             return $seats;
@@ -126,7 +126,7 @@ class AjaxController extends Controller
         return false;
 
 
-        if($isset($_GET['hostel_id'])){
+        if ($isset($_GET['hostel_id'])) {
             $hostel = \App\Models\Hostel::findOrFail($_GET['hostel_id']);
             return $hostel->get_all_seats();
         }
@@ -168,9 +168,9 @@ class AjaxController extends Controller
         return "Successful";
 
         $allot_hostel = \App\Models\AllotHostel::findOrFail(request()->allot_hostel_id);
-            \App\Models\Admission::where('allot_hostel_id', $allot_hostel->id)
-                ->where('sessn_id', request()->sessn_id)
-                ->delete();
+        \App\Models\Admission::where('allot_hostel_id', $allot_hostel->id)
+            ->where('sessn_id', request()->sessn_id)
+            ->delete();
     }
 
     public function report_chart($feedback_criteria_id)
@@ -249,8 +249,7 @@ class AjaxController extends Controller
                 ]);
                 $sa->save();
             }
-        }
-        else if ($notification->type == "allotment") {
+        } else if ($notification->type == "allotment") {
             $allotments = \App\Models\Allotment::where('notification_id', $notification->id)->orderBy('sl')->orderBy('id')->get();
             $sl = 1;
             foreach ($allotments as $allot) {
@@ -280,12 +279,14 @@ class AjaxController extends Controller
         return ['message' => "Success", "id" => $next[0]->id];
     }
 
-    public function requirementDelete($id){
+    public function requirementDelete($id)
+    {
         \App\Models\Requirement::destroy($id);
         return "Success";
     }
 
-    public function createAllotHostel($id){
+    public function createAllotHostel($id)
+    {
         // return $id;
         $allotment = \App\Models\Allotment::findOrFail($id);
         $seat = \App\Models\Seat::findOrFail(request()->seat);
@@ -324,16 +325,16 @@ class AjaxController extends Controller
         );
     }
 
-    public function createAdmission($id){
+    public function createAdmission($id)
+    {
 
         $allotment = \App\Models\Allotment::findOrFail($id);
 
 
-        if($allotment->valid_allot_hostel()){
-            if($allotment->start_sessn_id == request()->sessn_id){
+        if ($allotment->valid_allot_hostel()) {
+            if ($allotment->start_sessn_id == request()->sessn_id) {
                 $detail = "New admission payment";
-            }
-            else{
+            } else {
                 $detail = "Semester admission payment";
             }
             \App\Models\Admission::updateOrCreate(
@@ -359,32 +360,27 @@ class AjaxController extends Controller
             ]);
             $allotment->save();
             return "Successful";
-
-        }
-        else{
+        } else {
             return "Valid allotment of seat is required";
         }
-
-
-
-
     }
 
-    public function getApplication($allotment_id){
+    public function getApplication($allotment_id)
+    {
         // return "Here: " . $allotment_id;
         $allotment = \App\Models\Allotment::find($allotment_id);
-        if($allotment->application){
+        if ($allotment->application) {
             return ['remark' => $allotment->application->remark];
-        }
-        else{
+        } else {
             return ['remark' => ''];
         }
     }
 
-    public function declineAllotment($allotment_id){
+    public function declineAllotment($allotment_id)
+    {
         $allotment = \App\Models\Allotment::find($allotment_id);
         $application = $allotment->application;
-        if($application){
+        if ($application) {
             $application->update([
                 'remark' => request()->remark,
                 'valid' => 0,
@@ -407,7 +403,7 @@ class AjaxController extends Controller
 
         $allot_hostels = $allotment->allot_hostels;
 
-        if(count($allot_hostels) > 0){
+        if (count($allot_hostels) > 0) {
             \App\Models\AllotSeat::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->delete();
         }
 
@@ -421,11 +417,20 @@ class AjaxController extends Controller
         return "Successfully declined";
     }
 
-    public function getNotifications($noti_master_id){
-        return \App\Models\Notification::where('noti_master_id', $noti_master_id)->where('status','active')->get();
+    public function getNotifications($noti_master_id)
+    {
+        return \App\Models\Notification::where('noti_master_id', $noti_master_id)->where('status', 'active')->get();
     }
 
-    public function addToNotiMaster(){
-        return "Hello";
+    public function addToNotiMaster()
+    {
+        $notification_ids = request()->input('notification_ids');
+        return var_dump($notification_ids);
+        $notifications = \App\Models\Notification::whereIn('id', request()->input('notification_ids'))->get();
+        $str = "";
+        foreach ($notifications as $notif) {
+            $str .= $notif->no . ",";
+        }
+        return $str;
     }
 }

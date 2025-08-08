@@ -13,7 +13,7 @@ class NotiMasterController extends Controller
      */
     public function index()
     {
-        if(auth()->user() && auth()->user()->can('views', Notification::class)){
+        if (auth()->user() && auth()->user()->can('views', Notification::class)) {
             $noti_masters = NotiMaster::orderBy('dt')->get();
             return view('common.notiMaster.index', ['noti_masters' => $noti_masters]);
         }
@@ -25,7 +25,7 @@ class NotiMasterController extends Controller
      */
     public function create()
     {
-        if(auth()->user() && auth()->user()->can('manages', Notification::class)){
+        if (auth()->user() && auth()->user()->can('manages', Notification::class)) {
             return view('common.notiMaster.create');
         }
         return redirect()->back()->with(['message' => ['type' => 'warning', 'text' => 'Unauthorised']]);
@@ -50,7 +50,7 @@ class NotiMasterController extends Controller
      */
     public function show(NotiMaster $notiMaster)
     {
-        if(auth()->user() && auth()->user()->can('views', Notification::class)){
+        if (auth()->user() && auth()->user()->can('views', Notification::class)) {
             $notifications = Notification::where('noti_master_id', $notiMaster->id)->orderBy('no')->get();
             return view('common.notiMaster.show', ['noti_master' => $notiMaster, 'notifications' => $notifications]);
         }
@@ -62,7 +62,7 @@ class NotiMasterController extends Controller
      */
     public function edit(NotiMaster $notiMaster)
     {
-        if(auth()->user() && auth()->user()->can('manages', Notification::class)){
+        if (auth()->user() && auth()->user()->can('manages', Notification::class)) {
             $notifications = Notification::where('noti_master_id', $notiMaster->id)->orderBy('no')->get();
             return view('common.notiMaster.edit', ['noti_master' => $notiMaster, 'notifications' => $notifications]);
         }
@@ -90,5 +90,17 @@ class NotiMasterController extends Controller
     public function destroy(NotiMaster $notiMaster)
     {
         //
+    }
+
+    public function addToNotiMaster()
+    {
+        if (request()->has('notification_ids')) {
+            $notification_ids = request()->input('notification_ids');
+            $notifications = \App\Models\Notification::whereIn('id', request()->input('notification_ids'))->get();
+            Notification::whereIn('id', request()->input('notification_ids'))->update([
+                'noti_master_id' => request()->noti_master_id
+            ]);
+        }
+        return redirect()->back()->with(['message' => ['type' => 'info', 'text' => 'Notification updated']]);
     }
 }

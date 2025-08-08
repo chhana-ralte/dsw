@@ -80,6 +80,7 @@ Route::get('/application/summary', [ApplicationController::class, 'summary'])->m
 Route::get('/application/summary-hostel', [ApplicationController::class, 'summary_hostel'])->middleware('auth');
 Route::get('/application/priority-list', [ApplicationController::class, 'priority_list'])->middleware('auth');
 Route::post('/application/navigate', [ApplicationController::class, 'navigate'])->middleware('auth');
+Route::post('/notiMaster/addToNotiMaster', [NotiMasterController::class, 'addToNotiMaster'])->middleware('auth');
 // Route::post('/application/navigate', function(){
 //     return "Hello";
 // })->middleware('auth');
