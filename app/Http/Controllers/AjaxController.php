@@ -421,16 +421,4 @@ class AjaxController extends Controller
     {
         return \App\Models\Notification::where('noti_master_id', $noti_master_id)->where('status', 'active')->get();
     }
-
-    public function addToNotiMaster()
-    {
-        $notification_ids = request()->input('notification_ids');
-        return var_dump($notification_ids);
-        $notifications = \App\Models\Notification::whereIn('id', request()->input('notification_ids'))->get();
-        $str = "";
-        foreach ($notifications as $notif) {
-            $str .= $notif->no . ",";
-        }
-        return $str;
-    }
 }

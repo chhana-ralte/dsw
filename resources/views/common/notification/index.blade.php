@@ -64,32 +64,32 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form mthod="post" action="/notiMaster/addToNotiMaster">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th colspan=2>
-                                        Move these files to...
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <th>File no</th>
-                                    <th>Type</th>
-                                <tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+
+                    {{-- <table class="table">
+                        <thead>
+                            <tr>
+                                <th colspan=2>
+                                    Move these files to...
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>File no</th>
+                                <th>Type</th>
+                            <tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table> --}}
 
 
-                        <div class="mb-3">
-                            <label for="notifMaster" class="col-form-label">notification Master:</label>
-                            <select class="form-control" name="notiMaster_id">
-                                @foreach (App\Models\NotiMaster::all() as $nm)
-                                    <option value="{{ $nm->id }}">{{ $nm->no }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                    <div class="mb-3">
+                        <label for="notifMaster" class="col-form-label">notification Master:</label>
+                        <select class="form-control" name="notiMaster_id">
+                            @foreach (App\Models\NotiMaster::all() as $nm)
+                                <option value="{{ $nm->id }}">{{ $nm->no }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
                 </div>
                 <div class="modal-footer">

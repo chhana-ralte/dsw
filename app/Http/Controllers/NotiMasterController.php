@@ -95,7 +95,6 @@ class NotiMasterController extends Controller
     public function addToNotiMaster()
     {
         if (request()->has('notification_ids')) {
-            $notification_ids = request()->input('notification_ids');
             $notifications = \App\Models\Notification::whereIn('id', request()->input('notification_ids'))->get();
             Notification::whereIn('id', request()->input('notification_ids'))->update([
                 'noti_master_id' => request()->noti_master_id
