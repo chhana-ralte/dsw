@@ -40,6 +40,7 @@ use App\Http\Controllers\ApplicationManageController;
 use App\Http\Controllers\RequirementController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\SemAllotController;
+use App\Http\Controllers\CourseController;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
@@ -171,6 +172,8 @@ Route::controller(RequirementController::class)->group(function () {
     Route::post('/requirement/list', 'listUpdate');
     Route::get('/requirement/{id}/duplicate', 'duplicate');
 });
+
+Route::resource('department.course', CourseController::class)->shallow()->middleware('auth');
 
 Route::controller(App\Http\Controllers\AjaxController::class)->group(function () {
     Route::get('/ajaxroom/{id}/seat', 'getSeats');

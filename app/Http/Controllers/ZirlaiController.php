@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Course;
-use App\Models\Department;
+use App\Models\Zirlai;
 use Illuminate\Http\Request;
 
-class CourseController extends Controller
+class ZirlaiController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Department $department)
+    public function index()
     {
-        $courses = $department->courses;
-        return view('diktei.course.index', ['courses' => $courses]);
+        //
     }
 
     /**
@@ -36,15 +34,15 @@ class CourseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Course $course)
+    public function show(Zirlai $zirlai)
     {
-        return view('diktei.course.show', ['course' => $course]);
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Course $course)
+    public function edit(Zirlai $zirlai)
     {
         //
     }
@@ -52,7 +50,7 @@ class CourseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Course $course)
+    public function update(Request $request, Zirlai $zirlai)
     {
         //
     }
@@ -60,7 +58,7 @@ class CourseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Course $course)
+    public function destroy(Zirlai $zirlai)
     {
         //
     }
