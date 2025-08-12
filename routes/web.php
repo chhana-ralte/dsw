@@ -139,7 +139,7 @@ Route::resource('feedbackCriteria', FeedbackCriteriaController::class)->except([
 Route::resource('feedbackCriteria.option', FeedbackOptionController::class)->shallow()->only(['index', 'create', 'store'])->middleware(['auth']);
 // Route::resource('feedbackMaster.criteria', FeedbackCriteriaController::class)->shallow()->middleware(['auth']);
 Route::resource('feedback', FeedbackController::class)->middleware(['auth']);
-
+Route::resource('department.course', CourseController::class)->shallow()->middleware('auth');
 
 Route::resource('sessn', SessnController::class)->middleware(['auth']);
 
@@ -173,7 +173,7 @@ Route::controller(RequirementController::class)->group(function () {
     Route::get('/requirement/{id}/duplicate', 'duplicate');
 });
 
-Route::resource('department.course', CourseController::class)->shallow()->middleware('auth');
+
 
 Route::controller(App\Http\Controllers\AjaxController::class)->group(function () {
     Route::get('/ajaxroom/{id}/seat', 'getSeats');
@@ -200,6 +200,14 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::get('/ajax/allotment/{id}/application', 'getApplication');
     Route::post('/ajax/allotment/{id}/decline', 'declineAllotment');
     Route::get('/ajax/notiMaster/{id}/getNotifications', 'getNotifications');
+
+    Route::post('/ajax/course/{id}/addStudent', 'addStudent');
+    Route::get('/ajax/zirlai/{id}/getZirlai', 'getZirlai');
+    Route::post('/ajax/zirlai/{id}/delete', 'deleteZirlai');
+
+    Route::post('/ajax/course/{id}/addSubject', 'addSubject');
+    Route::get('/ajax/subject/{id}/getSubject', 'getSubject');
+    Route::post('/ajax/subject/{id}/delete', 'deleteSubject');
 })->middleware('auth');
 
 

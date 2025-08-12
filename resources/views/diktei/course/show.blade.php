@@ -2,381 +2,160 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                Applications status: {{ $application->status }} {{ $application->valid ? '' : ' (Declined)' }}
+                Course : {{ $course->name }}
+            </x-slot>
+        </x-block>
+        <x-block>
+            <x-slot name="heading">
+                List of students
                 <p>
-                    @can('manage', $application)
-                        <a href="/application/list" class="btn btn-secondary btn-sm">Back</a>
-                    @endcan
-                    <a href="/application/{{ $application->id }}/edit?mzuid={{ $application->mzuid }}"
-                        class="btn btn-secondary btn-sm">Edit</a>
-                    @if (auth()->user() && (auth()->user()->isDsw() || auth()->user()->isAdmin()))
-                        <button class="btn btn-danger btn-delete btn-sm" value="{{ $application->id }}">Delete</button>
-                    @endif
+                    <button class="btn btn-primary" id="btn-show-add-student">Add student</button>
                 </p>
-                <form name="frm-navigate" method="post" action="/application/navigate">
-                    @csrf
-                    <input type="hidden" name="navigation" value="">
-                    @can('manages', App\Models\Application::class)
-                        <div class="btn-group">
-
-                            <?php
-                            if ($prev) {
-                                $str_prev = 'href=/application/' . $prev->id . '?mzuid=' . $prev->mzuid;
-                            }
-                            if ($next) {
-                                $str_next = 'href=/application/' . $next->id . '?mzuid=' . $next->mzuid;
-                            }
-                            ?>
-                            @if ($prev)
-                                <a class="btn btn-primary btn-navigate"
-                                    href="/application/{{ $prev->id }}?mzuid={{ $prev->mzuid }}">&lt;&lt;Prev</a>
-                            @else
-                                <button class="btn btn-primary btn-navigate" disabled>&lt;&lt;Prev</button>
-                            @endif
-
-                            <input type=text style="text-align: center" size="3" name="application_id"
-                                value="{{ $application->id }}">
-
-                            @if ($next)
-                                <a class="btn btn-primary btn-navigate"
-                                    href="/application/{{ $next->id }}?mzuid={{ $next->mzuid }}">Next&gt;&gt;</a>
-                            @else
-                                <button class="btn btn-primary btn-navigate" disabled>Next&gt;&gt;</button>
-                            @endif
-                        </div>
-                    @endcan
-                </form>
             </x-slot>
-        </x-block>
-        <x-block>
-            <x-slot name="heading">
-                Personal information
-            </x-slot>
-            <div style="width: 100%; overflow-x:auto">
-                <table class="table table-auto">
-                    <tr>
-                        <th>Name</th>
-                        <td>{{ $application->name }}</td>
-                        <td rowspan=7><img width="200px" src="{{ $application->photo }}" alt=""
-                                srcset=""></td>
-                    </tr>
-                    <tr>
-                        <th>Father/Guardian's name</th>
-                        <td>{{ $application->father }}</td>
-                    </tr>
+            @if(count($course->zirlais) > 0)
+                <div style="width: 100%; overflow-x:auto">
 
-                    <tr>
-                        <th>Date of birth</th>
-                        <td>{{ date_format(date_create($application->dob), 'd-m-Y') }}</td>
-                    </tr>
-                    <tr>
-                        <th>Marital status</th>
-                        <td>{{ $application->married ? 'Married' : 'Single/Divorced' }}</td>
-                    </tr>
-                    <tr>
-                        <th>Gender</th>
-                        <td>{{ $application->gender }}</td>
-                    </tr>
-                    <tr>
-                        <th>Mobile</th>
-                        <td>{{ $application->mobile }}</td>
-                    </tr>
-                    <tr>
-                        <th>Email</th>
-                        <td>{{ $application->email }}</td>
-                    </tr>
-                    <tr>
-                        <th>Category</th>
-                        <td>{{ $application->category }}</td>
-                    </tr>
-                    <tr>
-                        <th>Person with disability?</th>
-                        <td>{{ $application->PWD ? 'Yes' : 'No' }}</td>
-                    </tr>
-                    <tr>
-                        <th>State/UT</th>
-                        <td>{{ $application->state }}</td>
-                    </tr>
-                    <tr>
-                        <th>Address</th>
-                        <td>{!! nl2br($application->address) !!}</td>
-                    </tr>
-                    <tr>
-                        <th>Whether in Aizawl Municipality Area?</th>
-                        <td>{{ $application->AMC ? 'Yes' : 'No' }}</td>
-                    </tr>
-                </table>
-            </div>
-        </x-block>
-        <x-block>
-            <x-slot name="heading">
-                Students' information
-            </x-slot>
-            <table class="table table-auto">
-                <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
-                    <td>Rollno</td>
-                    <td>{{ $application->rollno == '' ? 'Not set' : $application->rollno }}</td>
-                </tr>
-                <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
-                    <td>Course name</td>
-                    <td>{{ $application->course }}</td>
-                </tr>
-                <tr>
-                    <td>Department</td>
-                    <td>{{ $application->department }}</td>
-                </tr>
-                <tr>
-                    <td>Semester</td>
-                    <td>{{ $application->semester }}</td>
-                </tr>
-                </tr>
-                <td>MZU ID</td>
-                <td>{{ $application->mzuid }}</td>
-                </tr>
-                <tr>
-                    <td>Last percentage</td>
-                    <td>{{ $application->percent }}</td>
-                </tr>
-            </table>
-        </x-block>
-
-        <x-block>
-            <x-slot name="heading">
-                Application information
-            </x-slot>
-            <table class="table table-auto">
-                <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
-                    <td>Application ID</td>
-                    <td>{{ $application->id }}</td>
-                </tr>
-                <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
-                    <td>Submission date</td>
-                    <td>{{ $application->dt }}</td>
-                </tr>
-                <tr>
-                    <td>Status</td>
-                    <td>{{ $application->status }}</td>
-                </tr>
-                @if ($application->hostel)
-                    <tr>
-                        <td>Hostel allotted</td>
-                        <td>{{ $application->hostel->name }}</td>
-                    </tr>
-                    <tr>
-                        <td>Room type</td>
-                        <td>{{ App\Models\Room::room_type($application->roomtype) }}</td>
-                    </tr>
-                    @if ($application->valid_allotment())
+                    <table class="table table-auto">
                         <tr>
-                            <td>Allotment reference</td>
-                            <td>
-                                <a href="/allotment/{{ $application->valid_allotment()->id }}">
-                                    {{ $application->valid_allotment()->notification->id }}/{{ $application->valid_allotment()->rand }}/{{ $application->valid_allotment()->sl }}
-                                </a>
-                            </td>
-                        </tr>
-                        @if (
-                            $application->valid_allotment()->valid_allot_hostel() &&
-                                $application->valid_allotment()->valid_allot_hostel()->valid_allot_seat())
-                            <tr>
-                                <td>Room/Seat allotted</td>
-                                <td>{{ $application->valid_allotment()->valid_allot_hostel()->valid_allot_seat()->seat->room->roomno }}
-                                </td>
-                            </tr>
-                        @endif
-                        <tr>
-                            <td>Admission confirmation</td>
-                            @if ($application->valid_allotment()->confirmed == 1)
-                                <td>Confirmed</td>
-                            @else
-                                <td>Not Confirmed</td>
-                            @endif
-                        </tr>
-
-
-                    @endif
-                @endif
-                </tr>
-                <td>Whether valid?</td>
-                <td>{{ $application->valid ? 'Yes' : 'No' }}</td>
-                </tr>
-                </tr>
-                <td>Reason for hostel requirement</td>
-                <td>{!! nl2br($application->reason) !!}</td>
-                </tr>
-                @if ($application->remark)
-                    </tr>
-                    <td>Remark</td>
-                    <td>{!! nl2br($application->remark) !!}</td>
-                    </tr>
-                @endif
-                @can('manage', $application)
-                    </tr>
-                    <td></td>
-                    <td>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#remarkModal"
-                            data-bs-whatever="Remark">Add/Edit remark</button>
-                    </td>
-                    </tr>
-                @endcan
-
-
-            </table>
-        </x-block>
-        @if (auth()->user() && auth()->user()->max_role_level() >= 3 && count($application->existing_allotments()) > 0)
-            <x-block>
-                <x-slot name="heading">
-                    <span class="text-danger">The following existing allotment(s) are found</span>
-                </x-slot>
-                <div style="width:100%; overflow-x:auto">
-                    <table class="table">
-                        <tr>
-                            <th>Alltment ID</th>
+                            <th>MZU ID</th>
+                            <th>Roll No.</th>
                             <th>Name</th>
-                            <th>Course</th>
-                            <th>Department</th>
-                            <th>Current hostel</th>
+                            <th>Action</th>
                         </tr>
-                        @foreach ($application->existing_allotments() as $allotment)
+                        @foreach($course->zirlais as $zl)
                             <tr>
+                                <td>{{ $zl->mzuid }}</td>
+                                <td>{{ $zl->rollno }}</td>
+                                <td>{{ $zl->name }}</td>
                                 <td>
-                                    <a href="/allotment/{{ $allotment->id }}">{{ $allotment->id }}</a>
+                                    <div class="btn-group">
+                                        <button class="btn btn-secondary btn-sm btn-edit-student" value="{{ $zl->id }}">Edit</button>
+                                        <button class="btn btn-danger btn-sm btn-delete-student" value="{{ $zl->id }}">Delete</button>
+                                    </div>
                                 </td>
-                                <td>
-                                    {{ $allotment->person->name }}
-                                </td>
-                                @if ($allotment->person->student())
-                                    <td>
-                                        {{ $allotment->person->student()->course }}
-                                    </td>
-                                    <td>
-                                        {{ $allotment->person->student()->department }}
-                                    </td>
-                                @else
-                                    <td colspan=2>
-                                        Not a student
-                                    </td>
-                                @endif
-                                @if ($allotment->valid_allot_hostel())
-                                    <td>
-                                        {{ $allotment->valid_allot_hostel()->hostel->name }}
-                                    </td>
-                                @else
-                                    <td colspan=2>
-                                        No valid hostel
-                                    </td>
-                                @endif
-
                             </tr>
                         @endforeach
                     </table>
                 </div>
-            </x-block>
-        @endif
+            @endif
+        </x-block>
 
-        @can('manage', $application)
-            <x-block>
-                <x-slot name="heading">
-                    Decision:
-                </x-slot>
-                @if ($application->valid)
-                    <div>
-                        <button class="btn btn-danger btn-status" value="decline">Decline</button>
-                        <button class="btn btn-warning btn-status" value="pending">Pending</button>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#hostelModal"
-                            data-bs-whatever="Remark">Approve</button>
-                        @if (auth()->user() && (auth()->user()->isAdmin() || auth()->user()->isDsw()))
-                            <a class="btn btn-warning btn-existing" href="/application/{{ $application->id }}/existing">Add
-                                as existing</a>
-                        @endif
-                    </div>
-                    <form type="hidden" action="/application/{{ $application->id }}/statusUpdate" method="post"
-                        name="frm_submit">
-                        @csrf
-                        @method('PUT')
-                        <input type="hidden" name="application_id" value="{{ $application->id }}">
-                        <input type="hidden" name="status" value="">
-                        <input type="hidden" name="hostel_id">
-                        <input type="hidden" name="roomtype">
-                    </form>
-                @else
-                    <h3 class="text-danger">Application already declined</h3>
-                @endif
-            </x-block>
-        @endcan
+        <x-block>
+            <x-slot name="heading">
+                List of courses
+                <p>
+                    <button class="btn btn-primary" id="btn-show-add-subject">Add course</button>
+                </p>
+            </x-slot>
+            @if(count($course->subjects) > 0)
+                <div style="width: 100%; overflow-x:auto">
+
+                    <table class="table table-auto">
+                        <tr>
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Action</th>
+                        </tr>
+                        @foreach($course->subjects as $sj)
+                            <tr>
+                                <td>{{ $sj->code }}</td>
+                                <td>{{ $sj->name }}</td>
+                                <td>{{ $sj->type }}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-secondary btn-sm btn-edit-subject" value="{{ $sj->id }}">Edit</button>
+                                        <button class="btn btn-danger btn-sm btn-delete-subject" value="{{ $sj->id }}">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </table>
+                </div>
+            @endif
+        </x-block>
+
     </x-container>
 
-    {{-- Modal for remarks --}}
-    <div class="modal fade" id="remarkModal" tabindex="-1" aria-labelledby="remarkModalLabel" aria-hidden="true">
+    {{-- Modal for add student --}}
+    <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="remarkModalLabel">Add/ Edit remark</h5>
+                    <h5 class="modal-title" id="addStudentModalLabel">Add Student</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form id="frmZirlai">
+                        <input type="hidden" name="course_id" value="{{ $course->id }}">
+                        <input type="hidden" name="zirlai_id">
+
                         <div class="mb-3">
-                            <label for="remark" class="col-form-label">Remark:</label>
-                            <textarea class="form-control" id="remark" name="remark">{{ old('remark', $application->remark) }}</textarea>
+                            <label for="mzuid" class="col-form-label">MZU ID</label>
+                            <input class="form-control" name="mzuid">
                         </div>
+
+                        <div class="mb-3">
+                            <label for="rollno" class="col-form-label">Roll no.</label>
+                            <input class="form-control" name="rollno">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="name" class="col-form-label">Name</label>
+                            <input class="form-control" name="name">
+                        </div>
+
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-save">Save</button>
+                    <button type="button" class="btn btn-primary btn-add-student">Save</button>
                 </div>
             </div>
         </div>
     </div>
-    {{-- End Modal for remarks --}}
+    {{-- End Modal for add student --}}
 
-    {{-- Modal for hostel allotment --}}
-    <div class="modal fade" id="hostelModal" tabindex="-1" aria-labelledby="hostelModalLabel" aria-hidden="true">
+    {{-- Modal for add subject --}}
+    <div class="modal fade" id="addSubjectModal" tabindex="-1" aria-labelledby="addSubjectModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="hostelModalLabel">Assign Hostel</h5>
+                    <h5 class="modal-title" id="addSubjectModalLabel">Add Subject</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form>
-                        <div class="mb-3">
-                            <label for="hostel" class="col-form-label">Hostel</label>
-                            <select id="hostel" name="hostel" class="form-control">
-                                <option value="" disabled selected>Select hostel</option>
+                    <form id="frmSubject">
+                        <input type="hidden" name="course_id" value="{{ $course->id }}">
+                        <input type="hidden" name="subject_id">
 
-                                @foreach ($hostels as $h)
-                                    @if (auth()->user() && auth()->user()->isWardenOf($h->id))
-                                        <option value="{{ $h->id }}" selected>{{ $h->name }}</option>
-                                    @else
-                                        <option value="{{ $h->id }}">{{ $h->name }}</option>
-                                    @endif
-                                @endforeach
-
-                            </select>
-                        </div>
                         <div class="mb-3">
-                            <label for="type" class="col-form-label">Room type:</label>
-                            <select id="type" name="type" class="form-control">
-                                <option value="1">Single</option>
-                                <option value="2" selected>Double</option>
-                                <option value="3">Triple</option>
-                                <option value="4">Dorm</option>
-                            </select>
+                            <label for="code" class="col-form-label">Subject Code</label>
+                            <input class="form-control" name="code">
                         </div>
+
+                        <div class="mb-3">
+                            <label for="name" class="col-form-label">Name of Subject</label>
+                            <input class="form-control" name="name">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="type" class="col-form-label">Type</label>
+                            <input class="form-control" name="type" value="IMJ">
+                        </div>
+
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-status" value="approve">Just approve</button>
-                    <button type="button" class="btn btn-primary btn-status" value="approve-hostel">Approve
-                        hostel</button>
+                    <button type="button" class="btn btn-primary btn-add-subject">Save</button>
                 </div>
             </div>
         </div>
     </div>
-    {{-- End Modal for hostel allotment --}}
+    {{-- End Modal for add subject --}}
+
+
     <script>
         $(document).ready(function() {
             $.ajaxSetup({
@@ -385,17 +164,149 @@
                 }
             });
 
-            $("button.btn-status").click(function() {
-                if ($(this).val() == 'approve-hostel') {
-                    $("input[name='status']").val($(this).val());
-                    $("input[name='hostel_id']").val($("select#hostel").val());
-                    $("input[name='roomtype']").val($("select#type").val());
-                    $("form[name='frm_submit']").submit();
-                } else {
-                    $("input[name='status']").val($(this).val());
-                    $("form[name='frm_submit']").submit();
+            $("button#btn-show-add-subject").click(function() {
+                $("form#frmSubject input[name='code']").val("");
+                $("form#frmSubject input[name='name']").val("");
+                $("form#frmSubject input[name='subject_id']").val(0);
+                $("div#addSubjectModal").modal("show");
+                $("div#addSubjectModal").modal("show");
+            });
+
+            $("button.btn-edit-subject").click(function(){
+                $.ajax({
+                    url : '/ajax/subject/' + $(this).val() + '/getSubject',
+                    type : 'get',
+                    success : function(data, status){
+                        $("form#frmSubject input[name='code']").val(data.code);
+                        $("form#frmSubject input[name='name']").val(data.name);
+                        $("form#frmSubject input[name='type']").val(data.type);
+                        $("form#frmSubject input[name='subject_id']").val(data.id);
+                        $("div#addSubjectModal").modal("show");
+
+                    },
+                    error : function(){
+                        alert("Error");
+                    },
+                });
+
+            });
+
+            $("button.btn-add-subject").click(function(){
+                $.ajax({
+                    url : '/ajax/course/' + $("input[name='course_id']").val() + '/addSubject',
+                    type : 'post',
+                    data : {
+                        code : $("form#frmSubject input[name='code']").val(),
+                        name : $("form#frmSubject input[name='name']").val(),
+                        type : $("form#frmSubject input[name='type']").val(),
+                        course_id : $("form#frmSubject input[name='course_id']").val(),
+                        subject_id : $("form#frmSubject input[name='subject_id']").val(),
+                    },
+                    success : function(data, status){
+                        location.reload();
+                    },
+                    error : function(){
+                        alert('error');
+                    }
+                });
+            });
+            $("button.btn-delete-subject").click(function(){
+                if (confirm("Are you sure you want to delete this subject?")) {
+                    $.ajax({
+                        url : '/ajax/subject/' + $(this).val() + '/delete',
+                        type : 'post',
+                        success : function(){
+                            location.reload();
+                        },
+                        error : function(){
+                            alert("Error");
+                        },
+                    });
                 }
             });
+
+            $("button#btn-show-add-student").click(function() {
+                $("form#frmZirlai input[name='mzuid']").val("");
+                $("form#frmZirlai input[name='rollno']").val("");
+                $("form#frmZirlai input[name='name']").val("");
+                $("form#frmZirlai input[name='zirlai_id']").val(0);
+                $("div#addStudentModal").modal("show");
+                $("div#addStudentModal").modal("show");
+            });
+
+            $("button.btn-edit-student").click(function(){
+                $.ajax({
+                    url : '/ajax/zirlai/' + $(this).val() + '/getZirlai',
+                    type : 'get',
+                    success : function(data, status){
+                        $("form#frmZirlai input[name='mzuid']").val(data.mzuid);
+                        $("form#frmZirlai input[name='rollno']").val(data.rollno);
+                        $("form#frmZirlai input[name='name']").val(data.name);
+                        $("form#frmZirlai input[name='zirlai_id']").val(data.id);
+                        $("div#addStudentModal").modal("show");
+
+                    },
+                    error : function(){
+                        alert("Error");
+                    },
+                });
+
+            });
+            $("button.btn-add-student").click(function(){
+                $.ajax({
+                    url : '/ajax/course/' + $("input[name='course_id']").val() + '/addStudent',
+                    type : 'post',
+                    data : {
+                        name : $("form#frmZirlai input[name='name']").val(),
+                        rollno : $("form#frmZirlai input[name='rollno']").val(),
+                        mzuid : $("form#frmZirlai input[name='mzuid']").val(),
+                        course_id : $("form#frmZirlai input[name='course_id']").val(),
+                        zirlai_id : $("form#frmZirlai input[name='zirlai_id']").val(),
+                    },
+                    success : function(data, status){
+                        location.reload();
+                    },
+                    error : function(){
+                        alert('error');
+                    }
+                });
+            });
+
+            $("button.btn-delete-student").click(function(){
+                if (confirm("Are you sure you want to delete this student?")) {
+                    $.ajax({
+                        url : '/ajax/zirlai/' + $(this).val() + '/delete',
+                        type : 'post',
+                        success : function(){
+                            location.reload();
+                        },
+                        error : function(){
+                            alert("Error");
+                        },
+                    });
+                }
+            });
+
+
+            // $("button.btn-edit-student").click(function(){
+            //     $.ajax({
+            //         url : '/ajax/course/' + $("input[name='course_id']").val() + '/addStudent',
+            //         type : 'post',
+            //         data : {
+            //             zirlai_id : $(this).val(),
+            //             name : $("input[name='name']").val(),
+            //             rollno : $("input[name='rollno']").val(),
+            //             course_id : $("input[name='course_id']").val(),
+            //             type : 'edit'
+            //         },
+            //         success : function(data, status){
+            //             alert(data);
+            //         },
+            //         error : function(){
+            //             alert('error');
+            //         }
+            //     });
+            // });
 
             $("button.btn-approve").click(function() {
                 alert($(this).val());
@@ -413,62 +324,6 @@
 
             });
 
-            $("button.btn-delete").click(function() {
-                if (confirm("Are you sure you want to delete this application?")) {
-                    $.ajax({
-                        type: "post",
-                        url: "/ajax/application/" + $(this).val() + "/delete",
-                        success: function(data, status) {
-                            alert("Application deleted successfully.");
-                            {{-- alert(data.id) --}}
-                            location.replace("/application/" + data.id);
-                            {{-- location.reload(); --}}
-                        },
-                        error: function(xhr, status, error) {
-                            alert("Error deleting application: " + xhr.responseText);
-                        }
-                    });
-                }
-            });
-
-            {{-- $("button.btn-approve").click(function() {
-                if (confirm("Are you sure you want to approve this application?")) {
-                    $.ajax({
-                        type: "post",
-                        url: "/ajax/application/" + $(this).val() + "/accept",
-                        success: function(data, status) {
-                            alert("Application accepted successfully.");
-                            location.reload();
-                        },
-                        error: function(xhr, status, error) {
-                            alert("Error accepting application: " + xhr.responseText);
-                        }
-                    });
-                }
-            }); --}}
-            $("button.btn-save").click(function() {
-
-                $.ajax({
-                    type: "post",
-                    url: "/ajax/application/" + $("input[name='application_id']").val() + "/remark",
-                    data: {
-                        remark: $("#remark").val()
-                    },
-                    success: function(data, status) {
-                        {{-- alert("Remark saved successfully."); --}}
-                        location.reload();
-                    },
-                    error: function(xhr, status, error) {
-                        alert("Error saving remark: " + xhr.responseText);
-                    }
-                });
-
-            });
-
-            $("button.btn-navigate").click(function() {
-                $("input[name='navigation']").val($(this).val());
-                $("form[name='frm-navigate']").submit();
-            });
 
         });
     </script>

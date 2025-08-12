@@ -16,8 +16,10 @@ return new class extends Migration
             $table->id();
             $table->string('name', 50);
             $table->string('rollno', 20);
+            $table->string('mzuid', 20)->nullable();
             $table->foreignIdFor(Course::class)->constrained();
-            $table->integer('semester')->default(3);
+            $table->integer('semester')->default(0);
+            $table->integer('start_yr')->default(2025);
             $table->timestamps();
         });
     }

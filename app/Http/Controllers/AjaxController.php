@@ -421,4 +421,66 @@ class AjaxController extends Controller
     {
         return \App\Models\Notification::where('noti_master_id', $noti_master_id)->where('status', 'active')->get();
     }
+
+    public function addStudent($course_id){
+        if(request()->zirlai_id == 0){
+            \App\Models\Zirlai::create([
+                'mzuid' => request()->mzuid,
+                'rollno' => request()->rollno,
+                'name' => request()->name,
+                'course_id' => $course_id,
+
+            ]);
+        }
+        else{
+            \App\Models\Zirlai::where('id', request()->zirlai_id)
+                ->update([
+                'name' => request()->name,
+                'rollno' => request()->rollno,
+                'mzuid' => request()->mzuid,
+                'course_id' => $course_id,
+            ]);
+        }
+        return "Successful";
+    }
+
+
+
+    public function getZirlai($zirlai_id){
+        return \App\Models\Zirlai::find($zirlai_id);
+    }
+
+    public function deleteZirlai($zirlai_id){
+        \App\Models\Zirlai::find($zirlai_id)->delete();
+        return "Deleted";
+    }
+
+    public function addSubject($course_id){
+        if(request()->subject_id == 0){
+            \App\Models\Subject::create([
+                'code' => request()->code,
+                'type' => request()->type,
+                'name' => request()->name,
+                'course_id' => $course_id,
+
+            ]);
+        }
+        else{
+            \App\Models\Subject::where('id', request()->subject_id)
+                ->update([
+                'name' => request()->name,
+                'code' => request()->code,
+                'type' => request()->type,
+                'course_id' => $course_id,
+            ]);
+        }
+        return "Successful";
+    }
+    public function getSubject($subject_id){
+        return \App\Models\Subject::find($subject_id);
+    }
+    public function deleteSubject($subject_id){
+        \App\Models\Subject::find($subject_id)->delete();
+        return "Deleted";
+    }
 }

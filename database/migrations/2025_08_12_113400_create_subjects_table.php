@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('code', 20);
             $table->string('name', 100);
             $table->string('type')->default('IMJ');
+            $table->integer('semester')->default(0);
             $table->foreignIdFor(Course::class)->constrained();
             $table->timestamps();
         });
