@@ -139,7 +139,7 @@ Route::resource('feedbackCriteria', FeedbackCriteriaController::class)->except([
 Route::resource('feedbackCriteria.option', FeedbackOptionController::class)->shallow()->only(['index', 'create', 'store'])->middleware(['auth']);
 // Route::resource('feedbackMaster.criteria', FeedbackCriteriaController::class)->shallow()->middleware(['auth']);
 Route::resource('feedback', FeedbackController::class)->middleware(['auth']);
-Route::resource('department.course', CourseController::class)->shallow()->middleware('auth');
+Route::resource('course', CourseController::class)->middleware('auth');
 
 Route::resource('sessn', SessnController::class)->middleware(['auth']);
 

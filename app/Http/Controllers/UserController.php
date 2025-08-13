@@ -96,6 +96,7 @@ class UserController extends Controller
         }
 
         $user = User::create([
+            'person_id' => 0,
             'name' => request()->name,
             'username' => request()->username,
             'password' => Hash::make(request()->password),
@@ -294,9 +295,9 @@ class UserController extends Controller
             //     return redirect('/department/' . auth()->user()->department_id);
             // }
             // //return auth()->user()->name;
-            // if(auth()->user()->name == 'Diktei'){
-            //     return redirect('/diktei');
-            // }
+            if (auth()->user()->name == 'Diktei') {
+                return redirect('/course');
+            }
             return redirect('/');
         } else {
             return redirect('/login')->with(['message' => ['type' => 'danger', 'text' => 'Login Failed...']])->withInput();

@@ -4,6 +4,9 @@
             <x-slot name="heading">
                 Course : {{ $course->name }}
             </x-slot>
+            <p>
+                <a class="btn btn-secondary btn-sm" href="/course">Back</a>
+            </p>
         </x-block>
         <x-block>
             <x-slot name="heading">
@@ -12,7 +15,7 @@
                     <button class="btn btn-primary" id="btn-show-add-student">Add student</button>
                 </p>
             </x-slot>
-            @if(count($course->zirlais) > 0)
+            @if (count($course->zirlais) > 0)
                 <div style="width: 100%; overflow-x:auto">
 
                     <table class="table table-auto">
@@ -22,15 +25,17 @@
                             <th>Name</th>
                             <th>Action</th>
                         </tr>
-                        @foreach($course->zirlais as $zl)
+                        @foreach ($course->zirlais as $zl)
                             <tr>
                                 <td>{{ $zl->mzuid }}</td>
                                 <td>{{ $zl->rollno }}</td>
                                 <td>{{ $zl->name }}</td>
                                 <td>
                                     <div class="btn-group">
-                                        <button class="btn btn-secondary btn-sm btn-edit-student" value="{{ $zl->id }}">Edit</button>
-                                        <button class="btn btn-danger btn-sm btn-delete-student" value="{{ $zl->id }}">Delete</button>
+                                        <button class="btn btn-secondary btn-sm btn-edit-student"
+                                            value="{{ $zl->id }}">Edit</button>
+                                        <button class="btn btn-danger btn-sm btn-delete-student"
+                                            value="{{ $zl->id }}">Delete</button>
                                     </div>
                                 </td>
                             </tr>
@@ -47,7 +52,7 @@
                     <button class="btn btn-primary" id="btn-show-add-subject">Add course</button>
                 </p>
             </x-slot>
-            @if(count($course->subjects) > 0)
+            @if (count($course->subjects) > 0)
                 <div style="width: 100%; overflow-x:auto">
 
                     <table class="table table-auto">
@@ -57,15 +62,17 @@
                             <th>Type</th>
                             <th>Action</th>
                         </tr>
-                        @foreach($course->subjects as $sj)
+                        @foreach ($course->subjects as $sj)
                             <tr>
                                 <td>{{ $sj->code }}</td>
                                 <td>{{ $sj->name }}</td>
                                 <td>{{ $sj->type }}</td>
                                 <td>
                                     <div class="btn-group">
-                                        <button class="btn btn-secondary btn-sm btn-edit-subject" value="{{ $sj->id }}">Edit</button>
-                                        <button class="btn btn-danger btn-sm btn-delete-subject" value="{{ $sj->id }}">Delete</button>
+                                        <button class="btn btn-secondary btn-sm btn-edit-subject"
+                                            value="{{ $sj->id }}">Edit</button>
+                                        <button class="btn btn-danger btn-sm btn-delete-subject"
+                                            value="{{ $sj->id }}">Delete</button>
                                     </div>
                                 </td>
                             </tr>
@@ -78,7 +85,8 @@
     </x-container>
 
     {{-- Modal for add student --}}
-    <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -117,7 +125,8 @@
     {{-- End Modal for add student --}}
 
     {{-- Modal for add subject --}}
-    <div class="modal fade" id="addSubjectModal" tabindex="-1" aria-labelledby="addSubjectModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addSubjectModal" tabindex="-1" aria-labelledby="addSubjectModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -172,11 +181,11 @@
                 $("div#addSubjectModal").modal("show");
             });
 
-            $("button.btn-edit-subject").click(function(){
+            $("button.btn-edit-subject").click(function() {
                 $.ajax({
-                    url : '/ajax/subject/' + $(this).val() + '/getSubject',
-                    type : 'get',
-                    success : function(data, status){
+                    url: '/ajax/subject/' + $(this).val() + '/getSubject',
+                    type: 'get',
+                    success: function(data, status) {
                         $("form#frmSubject input[name='code']").val(data.code);
                         $("form#frmSubject input[name='name']").val(data.name);
                         $("form#frmSubject input[name='type']").val(data.type);
@@ -184,41 +193,41 @@
                         $("div#addSubjectModal").modal("show");
 
                     },
-                    error : function(){
+                    error: function() {
                         alert("Error");
                     },
                 });
 
             });
 
-            $("button.btn-add-subject").click(function(){
+            $("button.btn-add-subject").click(function() {
                 $.ajax({
-                    url : '/ajax/course/' + $("input[name='course_id']").val() + '/addSubject',
-                    type : 'post',
-                    data : {
-                        code : $("form#frmSubject input[name='code']").val(),
-                        name : $("form#frmSubject input[name='name']").val(),
-                        type : $("form#frmSubject input[name='type']").val(),
-                        course_id : $("form#frmSubject input[name='course_id']").val(),
-                        subject_id : $("form#frmSubject input[name='subject_id']").val(),
+                    url: '/ajax/course/' + $("input[name='course_id']").val() + '/addSubject',
+                    type: 'post',
+                    data: {
+                        code: $("form#frmSubject input[name='code']").val(),
+                        name: $("form#frmSubject input[name='name']").val(),
+                        type: $("form#frmSubject input[name='type']").val(),
+                        course_id: $("form#frmSubject input[name='course_id']").val(),
+                        subject_id: $("form#frmSubject input[name='subject_id']").val(),
                     },
-                    success : function(data, status){
+                    success: function(data, status) {
                         location.reload();
                     },
-                    error : function(){
+                    error: function() {
                         alert('error');
                     }
                 });
             });
-            $("button.btn-delete-subject").click(function(){
+            $("button.btn-delete-subject").click(function() {
                 if (confirm("Are you sure you want to delete this subject?")) {
                     $.ajax({
-                        url : '/ajax/subject/' + $(this).val() + '/delete',
-                        type : 'post',
-                        success : function(){
+                        url: '/ajax/subject/' + $(this).val() + '/delete',
+                        type: 'post',
+                        success: function() {
                             location.reload();
                         },
-                        error : function(){
+                        error: function() {
                             alert("Error");
                         },
                     });
@@ -234,11 +243,11 @@
                 $("div#addStudentModal").modal("show");
             });
 
-            $("button.btn-edit-student").click(function(){
+            $("button.btn-edit-student").click(function() {
                 $.ajax({
-                    url : '/ajax/zirlai/' + $(this).val() + '/getZirlai',
-                    type : 'get',
-                    success : function(data, status){
+                    url: '/ajax/zirlai/' + $(this).val() + '/getZirlai',
+                    type: 'get',
+                    success: function(data, status) {
                         $("form#frmZirlai input[name='mzuid']").val(data.mzuid);
                         $("form#frmZirlai input[name='rollno']").val(data.rollno);
                         $("form#frmZirlai input[name='name']").val(data.name);
@@ -246,41 +255,41 @@
                         $("div#addStudentModal").modal("show");
 
                     },
-                    error : function(){
+                    error: function() {
                         alert("Error");
                     },
                 });
 
             });
-            $("button.btn-add-student").click(function(){
+            $("button.btn-add-student").click(function() {
                 $.ajax({
-                    url : '/ajax/course/' + $("input[name='course_id']").val() + '/addStudent',
-                    type : 'post',
-                    data : {
-                        name : $("form#frmZirlai input[name='name']").val(),
-                        rollno : $("form#frmZirlai input[name='rollno']").val(),
-                        mzuid : $("form#frmZirlai input[name='mzuid']").val(),
-                        course_id : $("form#frmZirlai input[name='course_id']").val(),
-                        zirlai_id : $("form#frmZirlai input[name='zirlai_id']").val(),
+                    url: '/ajax/course/' + $("input[name='course_id']").val() + '/addStudent',
+                    type: 'post',
+                    data: {
+                        name: $("form#frmZirlai input[name='name']").val(),
+                        rollno: $("form#frmZirlai input[name='rollno']").val(),
+                        mzuid: $("form#frmZirlai input[name='mzuid']").val(),
+                        course_id: $("form#frmZirlai input[name='course_id']").val(),
+                        zirlai_id: $("form#frmZirlai input[name='zirlai_id']").val(),
                     },
-                    success : function(data, status){
+                    success: function(data, status) {
                         location.reload();
                     },
-                    error : function(){
+                    error: function() {
                         alert('error');
                     }
                 });
             });
 
-            $("button.btn-delete-student").click(function(){
+            $("button.btn-delete-student").click(function() {
                 if (confirm("Are you sure you want to delete this student?")) {
                     $.ajax({
-                        url : '/ajax/zirlai/' + $(this).val() + '/delete',
-                        type : 'post',
-                        success : function(){
+                        url: '/ajax/zirlai/' + $(this).val() + '/delete',
+                        type: 'post',
+                        success: function() {
                             location.reload();
                         },
-                        error : function(){
+                        error: function() {
                             alert("Error");
                         },
                     });
