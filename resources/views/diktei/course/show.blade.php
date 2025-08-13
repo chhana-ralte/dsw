@@ -60,6 +60,7 @@
                             <th>Code</th>
                             <th>Name</th>
                             <th>Type</th>
+                            <th>Capacity</th>
                             <th>Action</th>
                         </tr>
                         @foreach ($course->subjects as $sj)
@@ -67,6 +68,7 @@
                                 <td>{{ $sj->code }}</td>
                                 <td>{{ $sj->name }}</td>
                                 <td>{{ $sj->type }}</td>
+                                <td>{{ $sj->capacity }}</td>
                                 <td>
                                     <div class="btn-group">
                                         <button class="btn btn-secondary btn-sm btn-edit-subject"
@@ -153,6 +155,11 @@
                             <input class="form-control" name="type" value="IMJ">
                         </div>
 
+                        <div class="mb-3">
+                            <label for="capacity" class="col-form-label">Capacity</label>
+                            <input class="form-control" name="capacity">
+                        </div>
+
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -189,6 +196,7 @@
                         $("form#frmSubject input[name='code']").val(data.code);
                         $("form#frmSubject input[name='name']").val(data.name);
                         $("form#frmSubject input[name='type']").val(data.type);
+                        $("form#frmSubject input[name='capacity']").val(data.capacity);
                         $("form#frmSubject input[name='subject_id']").val(data.id);
                         $("div#addSubjectModal").modal("show");
 
@@ -208,6 +216,7 @@
                         code: $("form#frmSubject input[name='code']").val(),
                         name: $("form#frmSubject input[name='name']").val(),
                         type: $("form#frmSubject input[name='type']").val(),
+                        capacity: $("form#frmSubject input[name='capacity']").val(),
                         course_id: $("form#frmSubject input[name='course_id']").val(),
                         subject_id: $("form#frmSubject input[name='subject_id']").val(),
                     },

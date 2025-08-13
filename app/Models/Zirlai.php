@@ -12,4 +12,8 @@ class Zirlai extends Model
     public function course(){
         return $this->belongsTo(Course::class);
     }
+
+    public function dikteis(){
+        return $this->hasMany(Diktei::class);
+    }
 }

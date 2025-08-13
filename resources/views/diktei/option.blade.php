@@ -13,13 +13,39 @@
                     <a href="/diktei/entry" class="btn btn-secondary btn-sm">Enter again</a>
                 </p>
             </x-block>
-        @else
+        @elseif ($status == 'submitted')
+            <x-block>
+                <span class="text-danger">MZU ID {{ $zirlai->id }} with name {{ $zirlai->name }} submitted the following options.</span>
+                <p>
+                    <a href="/diktei/entry" class="btn btn-secondary btn-sm">Submit as another student.</a>
+                </p>
+            </x-block>
+            <div>
+                <table class="table">
+                    <tr>
+                        <th>Option sl.</th>
+                        <th>Course Code</th>
+                        <th>Course Name</th>
+                        <th>Department</th>
+                    </tr>
+                    @foreach($dikteis as $dt)
+                        <tr>
+                            <td>{{ $dt->serial }}</td>
+                            <td>{{ $dt->subject->code }}</td>
+                            <td>{{ $dt->subject->name }}</td>
+                            <td>{{ $dt->subject->course->department->name }}</td>
+                        </tr>
+                    @endforeach
+                </table>
+            </div>
+        @else {{-- if not yet submitted --}}
             <x-block>
                 <x-slot name="heading">
                     Name: {{ $zirlai->name }}
                 </x-slot>
                 <form id="frmEntry" method="post" action="/diktei/submit">
                     @csrf
+                    <input type="hidden" name="zirlai_id" value="{{ $zirlai->id }}">
                     @for ($i = 1; $i <= 5; $i++)
                         <div class="pt-2 form-group row" id="sjrow_{{ $i - 1 }}">
                             <div class="col-md-3">
@@ -42,7 +68,7 @@
                     @endfor
 
 
-                    <button class="submit-btn btn btn-primary">Submit</button>
+                    <button type="button" class="btn btn-primary btn-submit">Submit</button>
                 </form>
 
             </x-block>
@@ -84,7 +110,7 @@
                             s = "<option value='0'>None</option>"
                             for (i = 0; i < data.length; i++) {
                                 s += "<option value='" + data[i].id + "'>" + data[i].code +
-                                    ": " + data[i].title + "</option>";
+                                    ": " + data[i].name + "</option>";
                             }
                             $("select[name='" + next_name + "']").html(s);
                             $("#sjrow_" + next_id).show();
@@ -103,6 +129,24 @@
                         $("#sjrow_" + i).hide();
                     }
                 }
+            });
+
+            $("button.btn-submit").click(function(){
+                for(i=0; i<5; i++){
+                    if($("select[name='subject["+ i +"]']").val() == 0){
+                        break;
+                    }
+                }
+                if(i == 5){
+                    if(confirm("Are you sure you want to submit?")){
+                        $("form#frmEntry").submit();
+                    }
+                }
+                else{
+                    alert("Select 5 courses.")
+                    exit();
+                }
+                // alert("asdasdas");
             });
 
         });

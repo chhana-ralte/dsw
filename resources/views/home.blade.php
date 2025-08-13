@@ -17,18 +17,13 @@
             </ul>
         </x-block>
 
-        {{-- <x-block>
-            <x-slot name="heading">
-                Portal for submission of IMJ for first semester PG students
-            </x-slot>
-            Read the followings before submission:
-            <ul>
-                <li>Use your MZU ID in the form of MZU0000xxxx to proceed</li>
-                <li>Make sure the ID is typed correctly. In case of incorrect entry, please contact the administrator.
-                </li>
-                <li>Once successfully done, you may select the maximum of 5 courses, in order of your preference.</li>
-                <li>Click <a href="/diktei">here</a> to proceed</li>
-            </ul>
-        </x-block> --}}
+        @if(App\Models\Manage::where('name', 'diktei')->where('status', 'open')->exists())
+            <x-block>
+                <x-slot name="heading">
+                    Portal for submission of IMJ for first semester PG students
+                </x-slot>
+                <a class="btn btn-primary btn-large" href="/diktei">Go to Interdisciplinary Course selection</a>
+            </x-block>
+        @endif
     </x-container>
 </x-layout>

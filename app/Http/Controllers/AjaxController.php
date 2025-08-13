@@ -464,6 +464,7 @@ class AjaxController extends Controller
                 'code' => request()->code,
                 'type' => request()->type,
                 'name' => request()->name,
+                'capacity' => request()->capacity,
                 'course_id' => $course_id,
 
             ]);
@@ -473,6 +474,7 @@ class AjaxController extends Controller
                     'name' => request()->name,
                     'code' => request()->code,
                     'type' => request()->type,
+                    'capacity' => request()->capacity,
                     'course_id' => $course_id,
                 ]);
         }

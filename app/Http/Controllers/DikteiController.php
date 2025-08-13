@@ -30,10 +30,21 @@ class DikteiController extends Controller
     {
         $mzuid = request()->mzuid;
         if (\App\Models\Zirlai::where('mzuid', $mzuid)->exists()) {
-            $data = [
-                'status' => 'success',
-                'zirlai' => \App\Models\Zirlai::where('mzuid', $mzuid)->first(),
-            ];
+            $zirlai = \App\Models\Zirlai::where('mzuid', $mzuid)->first();
+            if(count($zirlai->dikteis) > 0){
+                $data = [
+                    'status' => 'submitted',
+                    'zirlai' => $zirlai,
+                    'dikteis' => \App\Models\Diktei::where('zirlai_id', $zirlai->id)->orderBy('serial')->get(),
+                ];
+            }
+            else{
+                $data = [
+                    'status' => 'success',
+                    'zirlai' => $zirlai,
+                ];
+            }
+
         } else {
             $data = [
                 'status' => 'failure',
@@ -45,6 +56,18 @@ class DikteiController extends Controller
 
     public function submit()
     {
-        return view('diktei.submit');
+        // return request()->all();
+
+        foreach(request()->subject as $key => $val){
+            \App\Models\Diktei::updateOrCreate([
+                'zirlai_id' => request()->zirlai_id,
+                'serial' => $key+1,
+            ],[
+                'zirlai_id' => request()->zirlai_id,
+                'serial' => $key+1,
+                'subject_id' => $val,
+            ]);
+        }
+        //return view('diktei.submit');
     }
 }
