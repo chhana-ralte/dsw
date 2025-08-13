@@ -18,13 +18,13 @@
     <br>
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/course">IMN & IMJ</a>
+            <a class="navbar-brand" href="/diktei">IMN & IMJ</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="mynavbar">
                 <ul class="navbar-nav me-auto">
-                    <a class="nav-link" href="/course">Courses</a>
+                    <a class="nav-link" href="/diktei/course">Courses</a>
                     </li>
                     {{-- <li class="nav-item">
           <a class="nav-link" href="/diktei">Entry</a>

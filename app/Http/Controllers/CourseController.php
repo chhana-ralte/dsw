@@ -11,11 +11,7 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Department $department)
-    {
-        $courses = $department->courses;
-        return view('diktei.course.index', ['courses' => $courses]);
-    }
+    public function index(Department $department) {}
 
     /**
      * Show the form for creating a new resource.

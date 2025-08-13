@@ -20,7 +20,7 @@
                     @foreach (App\Models\Course::where('type', 'PG')->orderBy('name')->get() as $course)
                         <tr>
                             <td>{{ $sl++ }}</td>
-                            <td><a href="/course/{{ $course->id }}">{{ $course->code }}</a></td>
+                            <td><a href="/diktei/course/{{ $course->id }}">{{ $course->code }}</a></td>
                             <td>{{ $course->name }}</td>
                             <td>{{ $course->department->name }}</td>
                             <td>{{ $course->zirlais->count() }}</td>

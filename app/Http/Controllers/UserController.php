@@ -296,7 +296,7 @@ class UserController extends Controller
             // }
             // //return auth()->user()->name;
             if (auth()->user()->name == 'Diktei') {
-                return redirect('/course');
+                return redirect('/diktei/course');
             }
             return redirect('/');
         } else {

@@ -139,7 +139,7 @@ Route::resource('feedbackCriteria', FeedbackCriteriaController::class)->except([
 Route::resource('feedbackCriteria.option', FeedbackOptionController::class)->shallow()->only(['index', 'create', 'store'])->middleware(['auth']);
 // Route::resource('feedbackMaster.criteria', FeedbackCriteriaController::class)->shallow()->middleware(['auth']);
 Route::resource('feedback', FeedbackController::class)->middleware(['auth']);
-Route::resource('course', CourseController::class)->middleware('auth');
+// Route::resource('course', CourseController::class)->middleware('auth');
 
 Route::resource('sessn', SessnController::class)->middleware(['auth']);
 
@@ -208,11 +208,19 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::post('/ajax/course/{id}/addSubject', 'addSubject');
     Route::get('/ajax/subject/{id}/getSubject', 'getSubject');
     Route::post('/ajax/subject/{id}/delete', 'deleteSubject');
+    Route::get('/ajax/diktei/subjects', 'getSubjects');
 })->middleware('auth');
 
 
 
-
+Route::controller(App\Http\Controllers\DikteiController::class)->group(function () {
+    Route::get('/diktei/', 'index');
+    Route::get('/diktei/course', 'course');
+    Route::get('/diktei/course/{id}', 'course_show');
+    Route::get('/diktei/entry', 'entry');
+    Route::post('/diktei/option', 'option');
+    Route::post('/diktei/submit', 'submit');
+});
 
 
 

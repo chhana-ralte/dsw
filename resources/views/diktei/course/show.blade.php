@@ -5,7 +5,7 @@
                 Course : {{ $course->name }}
             </x-slot>
             <p>
-                <a class="btn btn-secondary btn-sm" href="/course">Back</a>
+                <a class="btn btn-secondary btn-sm" href="/diktei/course">Back</a>
             </p>
         </x-block>
         <x-block>
