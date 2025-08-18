@@ -1,0 +1,85 @@
+<x-diktei>
+    <x-container>
+        <x-block>
+            <x-slot name="heading">
+                @if($subject)
+                    Course : {{ $subject->code }} : {{ $subject->name }}
+                @else
+                    Select the course to view list of allotted students.
+                @endif
+            </x-slot>
+            <p>
+                <a class="btn btn-secondary btn-sm" href="/diktei/course">Back</a>
+            </p>
+            Select the course:
+            <select name="subject_id">
+                <option value="0" disabled selected>Select Subject</option>
+                @foreach($subjects as $sj)
+                    <option value="{{ $sj->id }}" {{ $sj->id==($subject?$subject->id:0)?' selected ':''}}>{{ $sj->code }}: {{ $sj->name }}</option>
+                @endforeach
+            </select>
+            @auth
+
+                <form method="post" id="frmSubmit" action="/diktei/dtallot">
+                    @csrf
+                    <button type="button" class="btn btn-primary btn-submit">Rerun algorithm</button>
+                </form>
+            @endauth
+        </x-block>
+        @if($subject)
+            <x-block>
+                <x-slot name="heading">
+                    Courses selected under {{ $subject->code}} : {{ $subject->name }}
+                </x-slot>
+                @if (count($dtallots) > 0)
+                    <div style="width: 100%; overflow-x:auto">
+
+                        <table class="table table-auto">
+                            <tr>
+                                <th>MZU ID</th>
+                                <th>Roll No.</th>
+                                <th>Name</th>
+                                <th>Course</th>
+                            </tr>
+                            @foreach ($dtallots as $dta)
+                                <tr>
+                                    <td>{{ $dta->zirlai->mzuid }}</td>
+                                    <td>{{ $dta->zirlai->rollno }}</td>
+                                    <td>{{ $dta->zirlai->name }}</td>
+                                    <td>{{ $dta->zirlai->course->code }}</td>
+
+                                </tr>
+                            @endforeach
+                        </table>
+                    </div>
+                @endif
+            </x-block>
+        @endif
+
+    </x-container>
+
+
+    <script>
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
+                }
+            });
+
+            $("select[name='subject_id']").change(function(){
+                location.replace("/diktei/dtallot?subject_id=" + $(this).val());
+                exit();
+            });
+
+            $("button.btn-submit").click(function(){
+                if(confirm("Re-running this will erase previous allotments, are you sure?")){
+                    $("form#frmSubmit").submit();
+                    exit();
+                }
+
+            });
+
+        });
+    </script>
+</x-diktei>

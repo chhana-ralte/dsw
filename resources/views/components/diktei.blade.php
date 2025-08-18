@@ -25,14 +25,16 @@
             <div class="collapse navbar-collapse" id="mynavbar">
                 <ul class="navbar-nav me-auto">
                     <a class="nav-link" href="/diktei/course">Courses</a>
-                    </li>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/diktei/dtallot">Subject allotments</a>
+                </li>
                     {{-- <li class="nav-item">
           <a class="nav-link" href="/diktei">Entry</a>
         </li>
 
-        <li class="nav-item">
-          <a class="nav-link" href="/dtcourse">Courses</a>
-        </li>
+
         <li class="nav-item">
           <a class="nav-link" href="/diktei/students">Students</a>
         </li>

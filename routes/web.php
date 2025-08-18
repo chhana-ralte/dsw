@@ -40,6 +40,8 @@ use App\Http\Controllers\ApplicationManageController;
 use App\Http\Controllers\RequirementController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\SemAllotController;
+use App\Http\Controllers\diktei\ZirlaiController;
+
 use App\Http\Controllers\CourseController;
 
 use Illuminate\Support\Facades\DB;
@@ -215,12 +217,17 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
 
 Route::controller(App\Http\Controllers\DikteiController::class)->group(function () {
     Route::get('/diktei/', 'index');
-    Route::get('/diktei/course', 'course');
+    Route::get('/diktei/course', 'course')->middleware(['auth']);
     Route::get('/diktei/course/{id}', 'course_show');
     Route::get('/diktei/entry', 'entry');
-    Route::post('/diktei/option', 'option');
+    Route::get('/diktei/option', 'option');
     Route::post('/diktei/submit', 'submit');
+    Route::get('/diktei/dtallot', 'subject_allotments');
+    Route::post('/diktei/dtallot', 'allot_subjects');
+    Route::post('/diktei/clearOptions', 'clear_options');
 });
+
+Route::resource('zirlai', ZirlaiController::class)->middleware('auth')->shallow();
 
 
 

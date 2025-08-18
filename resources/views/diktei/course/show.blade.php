@@ -23,13 +23,21 @@
                             <th>MZU ID</th>
                             <th>Roll No.</th>
                             <th>Name</th>
+                            <th>Submitted?</th>
                             <th>Action</th>
                         </tr>
                         @foreach ($course->zirlais as $zl)
                             <tr>
-                                <td>{{ $zl->mzuid }}</td>
+                                <td><a href="/zirlai/{{$zl->id}}">{{ $zl->mzuid }}</a></td>
                                 <td>{{ $zl->rollno }}</td>
                                 <td>{{ $zl->name }}</td>
+                                <td>
+                                    @if($zl->dikteis->count() > 0)
+                                    Yes
+                                    @else
+                                    No
+                                    @endif
+                                </td>
                                 <td>
                                     <div class="btn-group">
                                         <button class="btn btn-secondary btn-sm btn-edit-student"

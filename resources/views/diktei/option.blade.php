@@ -6,14 +6,8 @@
             </x-slot>
 
         </x-block>
-        @if ($status == 'failure')
-            <x-block>
-                <span class="text-danger">Your MZU ID (Application Form Number) is not found.</span>
-                <p>
-                    <a href="/diktei/entry" class="btn btn-secondary btn-sm">Enter again</a>
-                </p>
-            </x-block>
-        @elseif ($status == 'submitted')
+
+        @if ($status == 'submitted')
             <x-block>
                 <span class="text-danger">MZU ID {{ $zirlai->id }} with name {{ $zirlai->name }} submitted the following options.</span>
                 <p>
