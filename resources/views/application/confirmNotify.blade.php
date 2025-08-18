@@ -6,7 +6,7 @@
                 Select students and select the file.
 
                 <p>
-                    <a class="btn btn-secondary btn-sm" href="{{ url()->previous()}}">
+                    <a class="btn btn-secondary btn-sm" href="{{ url()->previous() }}">
                         Back
                     </a>
                 </p>

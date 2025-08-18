@@ -229,6 +229,7 @@ class RequirementController extends Controller
             // return request()->all();
             if (request()->file == 0) {
                 $notification = \App\Models\Notification::create([
+                    'noti_master_id' => request()->filemaster,
                     'no' => request()->no,
                     'dt' => request()->dt,
                     'type' => 'sem_allot',
