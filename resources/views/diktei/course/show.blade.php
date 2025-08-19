@@ -28,14 +28,14 @@
                         </tr>
                         @foreach ($course->zirlais as $zl)
                             <tr>
-                                <td><a href="/zirlai/{{$zl->id}}">{{ $zl->mzuid }}</a></td>
-                                <td>{{ $zl->rollno }}</td>
+                                <td><a href="/zirlai/{{ $zl->id }}">{{ $zl->mzuid }}</a></td>
+                                <td><a href="/zirlai/{{ $zl->id }}">{{ $zl->rollno }}</a></td>
                                 <td>{{ $zl->name }}</td>
                                 <td>
-                                    @if($zl->dikteis->count() > 0)
-                                    Yes
+                                    @if ($zl->dikteis->count() > 0)
+                                        Yes
                                     @else
-                                    No
+                                        No
                                     @endif
                                 </td>
                                 <td>
