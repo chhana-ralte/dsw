@@ -39,7 +39,8 @@
                                 <td>{{ $sl++ }}</td>
                                 <td class="name">
 
-                                    <a href="/allotment/{{ $allotment->id }}?back_link=/hostel/{{$hostel->id}}/admission?sessn={{$sessn->id}}&adm_type=new">{{ $allotment->person->name }}</a>
+                                    <a
+                                        href="/allotment/{{ $allotment->id }}?back_link=/hostel/{{ $hostel->id }}/admission?sessn={{ $sessn->id }}&adm_type=new">{{ $allotment->person->name }}</a>
 
 
                                     @if ($allotment->valid_allot_hostel() && $allotment->valid_allot_hostel()->hostel->id != $allotment->hostel->id)
@@ -113,8 +114,14 @@
                                                 <button class="btn btn-secondary btn-sm btn-admission"
                                                     value="{{ $allotment->id }}" disabled>Admit</button>
                                             @endif
-                                            <button class="btn btn-danger btn-sm btn-decline"
-                                                value="{{ $allotment->id }}">Decline</button>
+
+                                            @if ($allotment->confirmed == 0)
+                                                <button class="btn btn-danger btn-sm btn-decline"
+                                                    value="{{ $allotment->id }}">Decline</button>
+                                            @else
+                                                <button class="btn btn-danger btn-sm btn-decline"
+                                                    value="0">Decline</button>
+                                            @endif
                                         @else
                                             Invalid
                                         @endif
@@ -278,7 +285,8 @@
     {{-- Modal for admission --}}
 
 
-    <div class="modal fade" id="admissionModal" tabindex="-1" aria-labelledby="admissionModalLabel" aria-hidden="true">
+    <div class="modal fade" id="admissionModal" tabindex="-1" aria-labelledby="admissionModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -498,19 +506,25 @@
 
             $("button.btn-decline").click(function() {
                 // alert($(this).val());
-                $("input#allotment_id").val($(this).val());
-                $.ajax({
-                    type: "get",
-                    url: "/ajax/allotment/" + $(this).val() + "/application",
-                    success: function(data, status) {
-                        $("textarea[name='remark']").val(data.remark);
-                        // alert(data.application_id);
-                    },
-                    error: function() {
-                        alert("Error");
-                    }
-                });
-                $("#declineModal").modal("show");
+                if ($(this).val() == 0) {
+                    alert(
+                        "Once students done admission, please cancel seat using proper seat cancellation."
+                    );
+                } else {
+                    $("input#allotment_id").val($(this).val());
+                    $.ajax({
+                        type: "get",
+                        url: "/ajax/allotment/" + $(this).val() + "/application",
+                        success: function(data, status) {
+                            $("textarea[name='remark']").val(data.remark);
+                            // alert(data.application_id);
+                        },
+                        error: function() {
+                            alert("Error");
+                        }
+                    });
+                    $("#declineModal").modal("show");
+                }
             });
 
             $("button.btn-confirm-decline").click(function() {
