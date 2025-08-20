@@ -19,7 +19,7 @@ class PersonRemarkController extends Controller
         } else {
             $allotment = $person->valid_allotment();
             if ($allotment) {
-                $allotment = $person->alotments->first();
+                $allotment = $person->allotments->first();
             }
             $back_link = '/allotment/' . $allotment->id;
         }
