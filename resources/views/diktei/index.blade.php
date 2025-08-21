@@ -9,8 +9,9 @@
         <x-block>
             Please read the followings carefully before submission:
             <ul>
-                <li>Make sure you have valid MZU ID number with the format <b>MZU0000xxxx</b> </li>
-                <li>Once entered, you may click 'proceed' and select the maximum of 5 courses, in order of your
+                <li>Make sure you have valid MZU Application number/ Roll number with the format <b>MZU0000xxxx</b> or
+                    <b>25/BOT/xx</b> </li>
+                <li>Once entered, you may click 'proceed' and select the 5 courses, in order of your
                     preference.</li>
                 <li>Options once submitted can not be revised or edited, so extra care should be taken before
                     finalization.</li>
