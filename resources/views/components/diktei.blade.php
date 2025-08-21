@@ -22,14 +22,19 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="mynavbar">
-                <ul class="navbar-nav me-auto">
-                    <a class="nav-link" href="/diktei/course">Courses</a>
-                </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="/diktei/dtallot">Subject allotments</a>
-                </li>
+            <div class="collapse navbar-collapse" id="mynavbar">
+
+                <ul class="navbar-nav me-auto">
+                    @auth
+                        <li>
+                            <a class="nav-link" href="/diktei/course">Courses</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/diktei/dtallot">Subject allotments</a>
+                        </li>
+                    @endauth
                     {{-- <li class="nav-item">
           <a class="nav-link" href="/diktei">Entry</a>
         </li>

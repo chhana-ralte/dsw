@@ -508,8 +508,9 @@
                 // alert($(this).val());
                 if ($(this).val() == 0) {
                     alert(
-                        "Once students done admission, please cancel seat using proper seat cancellation."
+                        "Once students done admission, please cancel seat using proper seat cancellation procedure."
                     );
+                    exit();
                 } else {
                     $("input#allotment_id").val($(this).val());
                     $.ajax({
