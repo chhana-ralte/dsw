@@ -54,10 +54,15 @@ class DikteiController extends Controller
     public function option()
     {
         $zirlai = Zirlai::findOrFail(request()->get('zirlai_id'));
-
-        if (count($zirlai->dikteis) > 0) {
+        if (count($zirlai->dikteis) == 5) {
             $data = [
                 'status' => 'submitted',
+                'zirlai' => $zirlai,
+                'dikteis' => Diktei::where('zirlai_id', $zirlai->id)->orderBy('serial')->get(),
+            ];
+        } else if (count($zirlai->dikteis) > 0) {
+            $data = [
+                'status' => 'resubmit',
                 'zirlai' => $zirlai,
                 'dikteis' => Diktei::where('zirlai_id', $zirlai->id)->orderBy('serial')->get(),
             ];
@@ -74,18 +79,21 @@ class DikteiController extends Controller
     public function submit()
     {
         // return request()->all();
-
-        foreach (request()->subject as $key => $val) {
-            Diktei::updateOrCreate([
-                'zirlai_id' => request()->zirlai_id,
-                'serial' => $key + 1,
-            ], [
-                'zirlai_id' => request()->zirlai_id,
-                'serial' => $key + 1,
-                'subject_id' => $val,
-            ]);
+        if (count(request()->subject) != 5) {
+            return redirect()->back()->with(['message' => ['type' => 'error', 'text' => "Please select all 5 courses"]]);
+        } else {
+            foreach (request()->subject as $key => $val) {
+                Diktei::updateOrCreate([
+                    'zirlai_id' => request()->zirlai_id,
+                    'serial' => $key + 1,
+                ], [
+                    'zirlai_id' => request()->zirlai_id,
+                    'serial' => $key + 1,
+                    'subject_id' => $val,
+                ]);
+            }
+            return redirect('/diktei/option?zirlai_id=' . request()->zirlai_id);
         }
-        return redirect('/diktei/option?zirlai_id=' . request()->zirlai_id);
     }
 
     public function subject_allotments()
