@@ -494,6 +494,7 @@ class AjaxController extends Controller
     {
         // return request()->str;
         $arr = explode(',', request()->str);
-        return \App\Models\Subject::whereNotIn('id', $arr)->orderBy('code')->get();
+        $zirlai = \App\Models\Zirlai::find(request()->zirlai_id);
+        return \App\Models\Subject::whereNotIn('id', $arr)->where('course_id','<>',$zirlai->course_id)->orderBy('code')->get();
     }
 }

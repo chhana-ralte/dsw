@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Zirlai;
 use App\Models\Subject;
@@ -29,20 +30,44 @@ class DikteiController extends Controller
     public function entry()
     {
         if (request()->get('mzuid')) {
-            $zirlais = Zirlai::where('mzuid', request()->get('mzuid'))->get();
-            if (count($zirlais) == 1) {
-                return redirect('/diktei/option?zirlai_id=' . $zirlais->first()->id . '&mzuid=' . $zirlais->first()->mzuid);
-            } else {
-                $zirlais = Zirlai::where('rollno', request()->get('mzuid'))->get();
+            $zirlais = Zirlai::where('mzuid', request()->get('mzuid'))
+                ->get();
+
+            if (count($zirlais) > 0) {
                 if (count($zirlais) == 1) {
-                    return redirect('/diktei/option?zirlai_id=' . $zirlais->first()->id . '&mzuid=' . $zirlais->first()->rollno);
+                    return redirect('/diktei/option?zirlai_id=' . $zirlais->first()->id . '&mzuid=' . $zirlais->first()->mzuid);
                 }
-                $data = [
-                    'mzuid' => request()->get('mzuid'),
-                    'zirlais' => $zirlais,
-                ];
+                else{
+                    $data = [
+                        'mzuid' => request()->get('mzuid'),
+                        'zirlais' => $zirlais,
+                    ];
+                }
             }
-        } else {
+            else {
+                $zirlais = Zirlai::where('rollno', request()->get('mzuid'))
+                    ->get();
+
+                if (count($zirlais) > 0) {
+                    if (count($zirlais) == 1) {
+                        return redirect('/diktei/option?zirlai_id=' . $zirlais->first()->id . '&mzuid=' . $zirlais->first()->rollno);
+                    }
+                    else{
+                        $data = [
+                            'mzuid' => request()->get('mzuid'),
+                            'zirlais' => $zirlais,
+                        ];
+                    }
+                }
+                else{
+                    $data = [
+                        'mzuid' => request()->get('mzuid'),
+                        'zirlais' => [],
+                    ];
+                }
+            }
+        }
+        else{
             $data = [
                 'mzuid' => '',
                 'zirlais' => [],
@@ -142,5 +167,35 @@ class DikteiController extends Controller
         Diktei::where('zirlai_id', $zirlai->id)->delete();
         Dtallot::where('zirlai_id', $zirlai->id)->delete();
         return redirect()->back()->with(['message' => ['type' => 'info', 'text' => "Cleared"]]);
+    }
+
+    public function reshuffledata(){
+        $zirlais = DB::select("select zirlais.id,courses.code,rollno,mzuid,serial,subjects.code,subject_id
+            from dikteis join zirlais on dikteis.zirlai_id=zirlais.id
+            join subjects on dikteis.subject_id=subjects.id
+            join courses on zirlais.course_id=courses.id
+            where courses.id=subjects.course_id;");
+        $str = "(";
+        $zirlais = (object)$zirlais;
+        foreach($zirlais as $zl){
+            $zirlai = Zirlai::find($zl->id);
+            $dikteis = Diktei::where('zirlai_id', $zl->id)->orderBy('serial')->get();
+            $sl = 1;
+            foreach($dikteis as $dt){
+                if($dt->serial < $zl->serial){
+                    continue;
+                }
+                else if($dt->serial == $zl->serial){
+                    $dt->delete();
+                    $sl = $zl->serial;
+                }
+                else{
+                    $dt->update(['serial' => $sl]);
+                    $dt->save();
+                    $sl++;
+                }
+            }
+        }
+        return "Done";
     }
 }

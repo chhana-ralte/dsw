@@ -51,6 +51,8 @@ Route::get('/testing', function () {
     return \App\Models\Lib::rand(5);
 });
 
+Route::get('/reshuffledata', [App\Http\Controllers\DikteiController::class, 'reshuffledata']);
+
 Route::get('/test', [App\Http\Controllers\PdfController::class, 'download']);
 
 

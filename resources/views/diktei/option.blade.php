@@ -53,9 +53,8 @@
                                 <select name="subject[{{ $i - 1 }}]" class="form-control subject-select">
                                     <option value='0' disabled selected>Select Course</option>
                                     @if ($i == 1)
-                                        @foreach (App\Models\Subject::orderBy('code')->get() as $subject)
-                                            <option value="{{ $subject->id }}"
-                                                {{ isset(old('subject')[$i - 1]) && old('subject')[$i - 1] > 0 && old('subject')[$i - 1] == $subject->id ? ' selected ' : '' }}>
+                                        @foreach (App\Models\Subject::where('course_id','<>',$zirlai->course_id)->orderBy('code')->get() as $subject)
+                                            <option value="{{ $subject->id }}">
                                                 {{ $subject->code }}: {{ $subject->name }}
                                             </option>
                                         @endforeach
@@ -158,7 +157,7 @@
                         str += "," + $("select[name='" + nm + "']").val();
                     }
                     $.ajax({
-                        url: "/ajax/diktei/subjects?str=" + str,
+                        url: "/ajax/diktei/subjects?str=" + str + "&zirlai_id=" + {{ $zirlai->id }},
                         type: "GET",
                         success: function(data, status) {
                             s = "<option value='0'>None</option>"
