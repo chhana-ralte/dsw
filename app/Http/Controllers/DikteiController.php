@@ -15,12 +15,20 @@ class DikteiController extends Controller
 {
     public function course()
     {
-        return view('diktei.course.index');
+        if (auth()->user() && (auth()->user()->max_role_level() >= 3) || (auth()->user()->username == 'diktei')) {
+            return view('diktei.course.index');
+        } else {
+            return redirect()->back()->with(['message' => ['type' => 'error', 'text' => "You don't have permission to access this page"]]);
+        }
     }
     public function course_show($course_id)
     {
-        $course = Course::findOrFail($course_id);
-        return view('diktei.course.show', ['course' => $course]);
+        if (auth()->user() && (auth()->user()->max_role_level() >= 3) || (auth()->user()->username == 'diktei')) {
+            $course = Course::findOrFail($course_id);
+            return view('diktei.course.show', ['course' => $course]);
+        } else {
+            return redirect()->back()->with(['message' => ['type' => 'error', 'text' => "You don't have permission to access this page"]]);
+        }
     }
     public function index()
     {
@@ -36,38 +44,33 @@ class DikteiController extends Controller
             if (count($zirlais) > 0) {
                 if (count($zirlais) == 1) {
                     return redirect('/diktei/option?zirlai_id=' . $zirlais->first()->id . '&mzuid=' . $zirlais->first()->mzuid);
-                }
-                else{
+                } else {
                     $data = [
                         'mzuid' => request()->get('mzuid'),
                         'zirlais' => $zirlais,
                     ];
                 }
-            }
-            else {
+            } else {
                 $zirlais = Zirlai::where('rollno', request()->get('mzuid'))
                     ->get();
 
                 if (count($zirlais) > 0) {
                     if (count($zirlais) == 1) {
                         return redirect('/diktei/option?zirlai_id=' . $zirlais->first()->id . '&mzuid=' . $zirlais->first()->rollno);
-                    }
-                    else{
+                    } else {
                         $data = [
                             'mzuid' => request()->get('mzuid'),
                             'zirlais' => $zirlais,
                         ];
                     }
-                }
-                else{
+                } else {
                     $data = [
                         'mzuid' => request()->get('mzuid'),
                         'zirlais' => [],
                     ];
                 }
             }
-        }
-        else{
+        } else {
             $data = [
                 'mzuid' => '',
                 'zirlais' => [],
@@ -169,7 +172,8 @@ class DikteiController extends Controller
         return redirect()->back()->with(['message' => ['type' => 'info', 'text' => "Cleared"]]);
     }
 
-    public function reshuffledata(){
+    public function reshuffledata()
+    {
         $zirlais = DB::select("select zirlais.id,courses.code,rollno,mzuid,serial,subjects.code,subject_id
             from dikteis join zirlais on dikteis.zirlai_id=zirlais.id
             join subjects on dikteis.subject_id=subjects.id
@@ -177,19 +181,17 @@ class DikteiController extends Controller
             where courses.id=subjects.course_id;");
         $str = "(";
         $zirlais = (object)$zirlais;
-        foreach($zirlais as $zl){
+        foreach ($zirlais as $zl) {
             $zirlai = Zirlai::find($zl->id);
             $dikteis = Diktei::where('zirlai_id', $zl->id)->orderBy('serial')->get();
             $sl = 1;
-            foreach($dikteis as $dt){
-                if($dt->serial < $zl->serial){
+            foreach ($dikteis as $dt) {
+                if ($dt->serial < $zl->serial) {
                     continue;
-                }
-                else if($dt->serial == $zl->serial){
+                } else if ($dt->serial == $zl->serial) {
                     $dt->delete();
                     $sl = $zl->serial;
-                }
-                else{
+                } else {
                     $dt->update(['serial' => $sl]);
                     $dt->save();
                     $sl++;

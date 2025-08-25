@@ -279,6 +279,7 @@
 
             });
             $("button.btn-add-student").click(function() {
+
                 $.ajax({
                     url: '/ajax/course/' + $("input[name='course_id']").val() + '/addStudent',
                     type: 'post',

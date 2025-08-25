@@ -426,19 +426,22 @@ class AjaxController extends Controller
     {
         if (request()->zirlai_id == 0) {
             \App\Models\Zirlai::create([
-                'mzuid' => request()->mzuid,
-                'rollno' => request()->rollno,
+                'mzuid' => request()->mzuid ? request()->mzuid : '',
+                'rollno' => request()->rollno ? request()->rollno : '',
                 'name' => request()->name,
                 'course_id' => $course_id,
-
+                'semester' => 1,
+                'start_yr' => 2025
             ]);
         } else {
             \App\Models\Zirlai::where('id', request()->zirlai_id)
                 ->update([
                     'name' => request()->name,
-                    'rollno' => request()->rollno,
-                    'mzuid' => request()->mzuid,
+                    'rollno' => request()->rollno ? request()->rollno : '',
+                    'mzuid' => request()->mzuid ? request()->mzuid : '',
                     'course_id' => $course_id,
+                    'semester' => 1,
+                    'start_yr' => 2025
                 ]);
         }
         return "Successful";
@@ -495,6 +498,6 @@ class AjaxController extends Controller
         // return request()->str;
         $arr = explode(',', request()->str);
         $zirlai = \App\Models\Zirlai::find(request()->zirlai_id);
-        return \App\Models\Subject::whereNotIn('id', $arr)->where('course_id','<>',$zirlai->course_id)->orderBy('code')->get();
+        return \App\Models\Subject::whereNotIn('id', $arr)->where('course_id', '<>', $zirlai->course_id)->orderBy('code')->get();
     }
 }
