@@ -26,7 +26,7 @@
             <div class="collapse navbar-collapse" id="mynavbar">
 
                 <ul class="navbar-nav me-auto">
-                    @if (auth()->user()->username == 'diktei' || auth()->user()->max_role_level() >= 3)
+                    @if (auth()->user() && (auth()->user()->username == 'diktei' || auth()->user()->max_role_level() >= 3))
                         <li>
                             <a class="nav-link" href="/diktei/course">Courses</a>
                         </li>
