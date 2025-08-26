@@ -15,19 +15,19 @@ class DikteiController extends Controller
 {
     public function course()
     {
-        if (auth()->user() && (auth()->user()->max_role_level() >= 3) || (auth()->user()->username == 'diktei')) {
+        if (auth()->user() && (auth()->user()->max_role_level() >= 3 || (auth()->user()->username == 'diktei'))) {
             return view('diktei.course.index');
         } else {
-            return redirect()->back()->with(['message' => ['type' => 'error', 'text' => "You don't have permission to access this page"]]);
+            return view('diktei.course.index')->with(['message' => ['type' => 'error', 'text' => "You don't have permission to access this page"]]);
         }
     }
     public function course_show($course_id)
     {
-        if (auth()->user() && (auth()->user()->max_role_level() >= 3) || (auth()->user()->username == 'diktei')) {
+        if (auth()->user() && (auth()->user()->max_role_level() >= 3 || (auth()->user()->username == 'diktei'))) {
             $course = Course::findOrFail($course_id);
             return view('diktei.course.show', ['course' => $course]);
         } else {
-            return redirect()->back()->with(['message' => ['type' => 'error', 'text' => "You don't have permission to access this page"]]);
+            return view('diktei.course.index')->with(['message' => ['type' => 'error', 'text' => "You don't have permission to access this page"]]);
         }
     }
     public function index()
