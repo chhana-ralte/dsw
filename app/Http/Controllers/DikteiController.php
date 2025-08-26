@@ -18,7 +18,7 @@ class DikteiController extends Controller
         if (auth()->user() && (auth()->user()->max_role_level() >= 3 || (auth()->user()->username == 'diktei'))) {
             return view('diktei.course.index');
         } else {
-            return view('diktei.course.index')->with(['message' => ['type' => 'error', 'text' => "You don't have permission to access this page"]]);
+            return redirect()->back()->with(['message' => ['type' => 'error', 'text' => "You don't have permission to access this page"]]);
         }
     }
     public function course_show($course_id)
@@ -27,7 +27,7 @@ class DikteiController extends Controller
             $course = Course::findOrFail($course_id);
             return view('diktei.course.show', ['course' => $course]);
         } else {
-            return view('diktei.course.index')->with(['message' => ['type' => 'error', 'text' => "You don't have permission to access this page"]]);
+            return redirect()->back()->with(['message' => ['type' => 'error', 'text' => "You don't have permission to access this page"]]);
         }
     }
     public function index()
