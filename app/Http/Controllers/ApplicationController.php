@@ -608,6 +608,7 @@ class ApplicationController extends Controller
         $gender = DB::select("SELECT gender, count(*) AS cnt FROM applications GROUP BY gender ORDER BY gender");
         $state = DB::select("SELECT state, count(*) AS cnt FROM applications GROUP BY state ORDER BY state");
         $course = DB::select("SELECT course,gender, count(*) AS cnt FROM applications GROUP BY department,course,gender ORDER BY department,course,gender");
+        $status = DB::select("SELECT status,gender, count(*) AS cnt FROM applications GROUP BY status,gender ORDER BY status,gender");
         // return
 
         $data = [
@@ -615,6 +616,7 @@ class ApplicationController extends Controller
             'gender' => $gender,
             'state' => $state,
             'course' => $course,
+            'status' => $status
         ];
 
         // return $data;

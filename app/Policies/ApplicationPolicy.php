@@ -26,6 +26,12 @@ class ApplicationPolicy
         return $user->max_role_level() >= 2;
     }
 
+    public function view_status(User $user, Application $application): bool
+    {
+        // return false;
+        return $user->max_role_level() >= 3;
+    }
+
     public function manage(User $user, Application $application): bool
     {
         // return $user->isDsw() || $user->isAdmin();

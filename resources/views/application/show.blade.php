@@ -2,7 +2,11 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                Applications status: {{ $application->status }} {{ $application->valid ? '' : ' (Declined)' }}
+                @can('view_status', $application)
+                    Applications status: {{ $application->status }} {{ $application->valid ? '' : ' (Declined)' }}
+                @else
+                    Application details
+                @endif
                 <p>
                     @can('manage', $application)
                         <a href="/application/list" class="btn btn-secondary btn-sm">Back</a>
@@ -153,50 +157,52 @@
                     <td>Submission date</td>
                     <td>{{ $application->dt }}</td>
                 </tr>
-                <tr>
-                    <td>Status</td>
-                    <td>{{ $application->status }}</td>
-                </tr>
-                @if ($application->hostel)
+                @can('view_status', $application)
                     <tr>
-                        <td>Hostel allotted</td>
-                        <td>{{ $application->hostel->name }}</td>
+                        <td>Status</td>
+                        <td>{{ $application->status }}</td>
                     </tr>
-                    <tr>
-                        <td>Room type</td>
-                        <td>{{ App\Models\Room::room_type($application->roomtype) }}</td>
-                    </tr>
-                    @if ($application->valid_allotment())
+                    @if ($application->hostel)
                         <tr>
-                            <td>Allotment reference</td>
-                            <td>
-                                <a href="/allotment/{{ $application->valid_allotment()->id }}">
-                                    {{ $application->valid_allotment()->notification->id }}/{{ $application->valid_allotment()->rand }}/{{ $application->valid_allotment()->sl }}
-                                </a>
-                            </td>
+                            <td>Hostel allotted</td>
+                            <td>{{ $application->hostel->name }}</td>
                         </tr>
-                        @if (
-                            $application->valid_allotment()->valid_allot_hostel() &&
-                                $application->valid_allotment()->valid_allot_hostel()->valid_allot_seat())
+                        <tr>
+                            <td>Room type</td>
+                            <td>{{ App\Models\Room::room_type($application->roomtype) }}</td>
+                        </tr>
+                        @if ($application->valid_allotment())
                             <tr>
-                                <td>Room/Seat allotted</td>
-                                <td>{{ $application->valid_allotment()->valid_allot_hostel()->valid_allot_seat()->seat->room->roomno }}
+                                <td>Allotment reference</td>
+                                <td>
+                                    <a href="/allotment/{{ $application->valid_allotment()->id }}">
+                                        {{ $application->valid_allotment()->notification->id }}/{{ $application->valid_allotment()->rand }}/{{ $application->valid_allotment()->sl }}
+                                    </a>
                                 </td>
                             </tr>
-                        @endif
-                        <tr>
-                            <td>Admission confirmation</td>
-                            @if ($application->valid_allotment()->confirmed == 1)
-                                <td>Confirmed</td>
-                            @else
-                                <td>Not Confirmed</td>
+                            @if (
+                                $application->valid_allotment()->valid_allot_hostel() &&
+                                    $application->valid_allotment()->valid_allot_hostel()->valid_allot_seat())
+                                <tr>
+                                    <td>Room/Seat allotted</td>
+                                    <td>{{ $application->valid_allotment()->valid_allot_hostel()->valid_allot_seat()->seat->room->roomno }}
+                                    </td>
+                                </tr>
                             @endif
-                        </tr>
+                            <tr>
+                                <td>Admission confirmation</td>
+                                @if ($application->valid_allotment()->confirmed == 1)
+                                    <td>Confirmed</td>
+                                @else
+                                    <td>Not Confirmed</td>
+                                @endif
+                            </tr>
 
 
+                        @endif
                     @endif
-                @endif
-                </tr>
+                    </tr>
+                @endcan
                 <td>Whether valid?</td>
                 <td>{{ $application->valid ? 'Yes' : 'No' }}</td>
                 </tr>

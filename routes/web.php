@@ -50,6 +50,9 @@ use Illuminate\Support\Facades\View;
 Route::get('/testing', function () {
     return \App\Models\Lib::rand(5);
 });
+Route::get('/welcome', function(){
+    return view('welcome');
+});
 
 Route::get('/reshuffledata', [App\Http\Controllers\DikteiController::class, 'reshuffledata']);
 

@@ -9,7 +9,7 @@
             </x-slot>
             <div style="width: 100%; overflow-x:auto">
                 <table class="table table-auto table-hover">
-                    <thead>
+
                         {{-- <tr>
                             <th>Total applications</th>
                             <th>{{ $total }}</th>
@@ -24,50 +24,63 @@
                                 <th>{{ $st->cnt }}</th>
                             </tr>
                         @endforeach --}}
+                    <tr>
+                        <th colspan=3 style="text-align: center">Based on Status</th>
+                    </tr>
+                    @foreach($status as $st)
                         <tr>
-                            <th colspan=2 style="text-align: center">Aizawl Municipal Area?</th>
+                            <th>{{ $st->status }}</th>
+                            <th>{{ $st->gender }}</th>
+                            <th>{{ $st->cnt }}</th>
                         </tr>
-                        @foreach($amc as $a)
-                            <tr>
-                                <th>{{ $a->amc }}</th>
-                                <th>{{ $a->cnt }}</th>
-                            </tr>
-                        @endforeach
-
+                    @endforeach
+                </table>
+                <table class="table table-auto table-hover">
+                    <tr>
+                        <th colspan=2 style="text-align: center">Aizawl Municipal Area?</th>
+                    </tr>
+                    @foreach($amc as $a)
                         <tr>
-                            <th colspan=2 style="text-align: center">Gender</th>
+                            <th>{{ $a->amc }}</th>
+                            <th>{{ $a->cnt }}</th>
                         </tr>
-                        @foreach($gender as $g)
-                            <tr>
-                                <th>{{ $g->gender }}</th>
-                                <th>{{ $g->cnt }}</th>
-                            </tr>
-                        @endforeach
-
+                    @endforeach
+                </table>
+                <table class="table table-auto table-hover">
+                    <tr>
+                        <th colspan=2 style="text-align: center">Gender</th>
+                    </tr>
+                    @foreach($gender as $g)
                         <tr>
-                            <th colspan=2 style="text-align: center">Statewise</th>
+                            <th>{{ $g->gender }}</th>
+                            <th>{{ $g->cnt }}</th>
                         </tr>
-                        @foreach($state as $st)
-                            <tr>
-                                <th>{{ $st->state }}</th>
-                                <th>{{ $st->cnt }}</th>
-                            </tr>
-                        @endforeach
-
+                    @endforeach
+                </table>
+                <table class="table table-auto table-hover">
+                    <tr>
+                        <th colspan=2 style="text-align: center">Statewise</th>
+                    </tr>
+                    @foreach($state as $st)
                         <tr>
-                            <th colspan=2 style="text-align: center">Course-wise</th>
+                            <th>{{ $st->state }}</th>
+                            <th>{{ $st->cnt }}</th>
                         </tr>
-                        @foreach($course as $cr)
-                            <tr>
-                                <th>{{ $cr->course }}</th>
-                                <th>{{ $cr->gender }}</th>
-                                <th>{{ $cr->cnt }}</th>
-                            </tr>
-                        @endforeach
-                    </thead>
-                    <tbody>
+                    @endforeach
+                </table>
+                <table class="table table-auto table-hover">
+                    <tr>
+                        <th colspan=3 style="text-align: center">Course-wise</th>
+                    </tr>
+                    @foreach($course as $cr)
+                        <tr>
+                            <th>{{ $cr->course }}</th>
+                            <th>{{ $cr->gender }}</th>
+                            <th>{{ $cr->cnt }}</th>
+                        </tr>
+                    @endforeach
 
-                    </tbody>
+
                 </table>
 
             </div>

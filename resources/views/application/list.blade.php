@@ -53,8 +53,9 @@
                 </p>
             @endif
             <div style="width: 100%; overflow-x:auto">
-                <table class="table table-auto table-hover">
+                <table class="table table-auto">
                     <thead>
+
                         <tr>
                             <th>Application ID</th>
                             <th>Name</th>
@@ -70,8 +71,14 @@
                         </thead>
                         <tbody>
                             @foreach ($applications as $application)
+
                                 <tr>
-                                    <td>{{ $application->id }}</td>
+
+                                @if($application->gender == 'Male')
+                                    <td style="background-color: blue">{{ $application->id }}</td>
+                                @else
+                                    <td style="background-color: pink">{{ $application->id }}</td>
+                                @endif
                                     <td>
                                         <a
                                             href="/application/{{ $application->id }}?mzuid={{ $application->mzuid }}">{{ $application->name }}</a>
