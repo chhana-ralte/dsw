@@ -9,7 +9,8 @@ use App\Models\Diktei;
 
 class ZirlaiController extends Controller
 {
-    public function show(Zirlai $zirlai){
+    public function show(Zirlai $zirlai)
+    {
         $dikteis = Diktei::where('zirlai_id', $zirlai->id)->orderBy('serial')->get();
         $data = [
             'dikteis' => $dikteis,
