@@ -145,14 +145,20 @@ class DikteiController extends Controller
     }
     public function allot_subjects()
     {
-        $zirlais = Zirlai::select('zirlais.*')->join('dikteis', 'dikteis.zirlai_id', 'zirlais.id')->where('dikteis.serial', 1)->orderBy('created_at')->get();
+        $zirlais = Zirlai::select('zirlais.*')->join('dikteis', 'dikteis.zirlai_id', 'zirlais.id')
+            ->where('dikteis.serial', 1)
+            ->orderBy('dikteis.created_at')
+            ->get();
+        // $zirlais = Zirlai::hydrate($zirlais);
         // return $zirlais;
         Dtallot::truncate();
+        // return $zirlais;
+        // return count($zirlais);
         $str = "";
         foreach ($zirlais as $zl) {
             foreach (Diktei::where('zirlai_id', $zl->id)->orderBy('serial')->get() as $dt) {
                 $subject = $dt->subject;
-                if ($subject->capacity > Diktei::where('subject_id', $subject->id)->count()) {
+                if ($subject->capacity > Dtallot::where('subject_id', $subject->id)->count()) {
 
                     Dtallot::create([
                         'zirlai_id' => $zl->id,
@@ -163,7 +169,7 @@ class DikteiController extends Controller
                     break;
                 }
             }
-            $str .= $str . "<br><br>";
+            $str .= "<br><br>";
         }
         return $str;
         return redirect('/diktei/dtallot')->with(['message' => ['type' => 'info', 'text' => "Successful"]]);
