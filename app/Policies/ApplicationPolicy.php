@@ -28,6 +28,7 @@ class ApplicationPolicy
 
     public function view_status(User $user, Application $application): bool
     {
+        return true;
         // return false;
         return $user->max_role_level() >= 3;
     }
