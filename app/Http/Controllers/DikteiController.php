@@ -212,4 +212,22 @@ class DikteiController extends Controller
         }
         return "Done";
     }
+
+    public function no_submission(){
+        $zirlais = DB::select("SELECT * FROM zirlais WHERE id NOT IN (SELECT zirlai_id FROM dikteis) ORDER BY course_id");
+        return view('diktei.no-submission', ['zirlais' => Zirlai::hydrate($zirlais)]);
+        return $zirlais;
+    }
+
+    public function partial_submission(){
+        $zirlais = DB::select("SELECT zl.id, zl.name, zl.rollno, zl.mzuid, c.code, count(*) AS `cnt`
+            FROM zirlais zl JOIN dikteis dt ON zl.id=dt.zirlai_id
+            JOIN courses c ON c.id=zl.course_id
+            GROUP BY zl.id, zl.name , zl.rollno , zl.mzuid , c.code
+            HAVING count(*) < 5
+            ORDER BY c.code, zl.name
+
+            ");
+        return view('diktei.partial-submission',['zirlais' => $zirlais]);
+    }
 }

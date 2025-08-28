@@ -34,6 +34,12 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/diktei/dtallot">Subject allotments</a>
                         </li>
+                        <li>
+                            <a class="nav-link" href="/diktei/no-submission">No submission</a>
+                        </li>
+                        <li>
+                            <a class="nav-link" href="/diktei/partial-submission">Partial submission</a>
+                        </li>
                     @endif
                     {{-- <li class="nav-item">
           <a class="nav-link" href="/diktei">Entry</a>
