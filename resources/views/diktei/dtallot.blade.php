@@ -3,7 +3,9 @@
         <x-block>
             <x-slot name="heading">
                 @if($subject)
-                    Course : {{ $subject->code }} : {{ $subject->name }}
+                    Course : {{ $subject->code }} : {{ $subject->name }} <br>
+                    <small>Capacity: {{ $subject->capacity }}</small><br>
+                    <small>Department: {{ $subject->course->department->name }}</small>
                 @else
                     Select the course to view list of allotted students.
                 @endif
@@ -36,13 +38,16 @@
 
                         <table class="table table-auto">
                             <tr>
+                                <th>Sl.</th>
                                 <th>MZU ID</th>
                                 <th>Roll No.</th>
                                 <th>Name</th>
                                 <th>Course</th>
                             </tr>
+                            <?php $sl=1 ?>
                             @foreach ($dtallots as $dta)
                                 <tr>
+                                    <td>{{ $sl++ }}</td>
                                     <td>{{ $dta->zirlai->mzuid }}</td>
                                     <td>{{ $dta->zirlai->rollno }}</td>
                                     <td>{{ $dta->zirlai->name }}</td>
