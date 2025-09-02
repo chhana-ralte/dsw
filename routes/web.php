@@ -50,7 +50,7 @@ use Illuminate\Support\Facades\View;
 Route::get('/testing', function () {
     return \App\Models\Lib::rand(5);
 });
-Route::get('/welcome', function(){
+Route::get('/welcome', function () {
     return view('welcome');
 });
 
@@ -228,6 +228,7 @@ Route::controller(App\Http\Controllers\DikteiController::class)->group(function 
     Route::get('/diktei/option', 'option');
     Route::get('/diktei/no-submission', 'no_submission');
     Route::get('/diktei/partial-submission', 'partial_submission');
+
     Route::post('/diktei/submit', 'submit');
     Route::get('/diktei/dtallot', 'subject_allotments');
     Route::post('/diktei/dtallot', 'allot_subjects');

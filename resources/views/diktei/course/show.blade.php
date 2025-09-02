@@ -24,6 +24,7 @@
                             <th>Roll No.</th>
                             <th>Name</th>
                             <th>Submitted?</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                         @foreach ($course->zirlais as $zl)
@@ -38,6 +39,12 @@
                                         No
                                     @endif
                                 </td>
+                                <td>
+                                    @if ($zl->dtallot)
+                                        Allotted : {{ $zl->dtallot->subject->code }}
+                                    @else
+                                        <span class="text-warning">Not Allotted</span>
+                                    @endif
                                 <td>
                                     <div class="btn-group">
                                         <button class="btn btn-secondary btn-sm btn-edit-student"

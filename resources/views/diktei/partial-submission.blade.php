@@ -2,7 +2,7 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                List of PG Courses
+                Partial / Incomplete submission
             </x-slot>
 
             <div style="width: 100%; overflow-x:auto">
@@ -15,16 +15,25 @@
                         <th>MZU ID</th>
                         <th>Programme</th>
                         <th>Options submitted</th>
+                        <th>Status</th>
                     </tr>
                     <?php $sl = 1; ?>
                     @foreach ($zirlais as $zl)
                         <tr>
                             <td>{{ $sl++ }}</td>
-                            <td><a href="/diktei/zirlai/{{ $zl->id }}">{{ $zl->name }}</a></td>
+                            <td><a href="/zirlai/{{ $zl->id }}">{{ $zl->name }}</a></td>
                             <td>{{ $zl->rollno }}</td>
                             <td>{{ $zl->mzuid }}</td>
                             <td>{{ $zl->code }}</td>
                             <td>{{ $zl->cnt }}</td>
+                            <td>
+                                @if ($zl->dtallot)
+                                    Allotted : {{ $zl->dtallot->subject->code }}
+                                @else
+                                    <span class="text-warning">Not Allotted</span>
+                                @endif
+
+                            </td>
                         </tr>
                     @endforeach
                 </table>

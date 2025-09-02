@@ -2,7 +2,7 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                List of PG Courses
+                List of students not submitting their options
             </x-slot>
 
             <div style="width: 100%; overflow-x:auto">
