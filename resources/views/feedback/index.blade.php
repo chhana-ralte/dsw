@@ -23,7 +23,10 @@
             <p>
                 Only those who experience the mess during the aforesaid may give the feedback.
             </p>
+            <p>
 
+                <a class="btn btn-primary" href="/feedbackMaster/{{ $feedback_master->id }}/feedback/create">Proceed>></a>
+            </p>
         </x-block>
     </x-container>
 </x-layout>
