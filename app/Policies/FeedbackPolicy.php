@@ -17,7 +17,7 @@ class FeedbackPolicy
 
     public function gives(User $user):bool
     {
-        return $user->max_role_level >= 3;
+        return $user->max_role_level() >= 3;
 
         $users = DB::select("SELECT users.*
             FROM users JOIN role_user ON users.id = role_user.user_id AND role_user.type = 'allotment'
