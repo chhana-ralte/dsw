@@ -36,6 +36,6 @@ class FeedbackPolicy
 
     public function manages(User $user):bool
     {
-        return auth()->user()->max_role_level() >= 4;
+        return auth()->user()->max_role_level() >= 3;
     }
 }
