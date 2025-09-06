@@ -52,7 +52,9 @@
                 </form>
             </x-slot>
         </x-block>
-        <x-block>
+    </x-container>
+    <x-container>
+        <x-block class="col-md-6">
             <x-slot name="heading">
                 Personal information
             </x-slot>
@@ -112,7 +114,8 @@
                 </table>
             </div>
         </x-block>
-        <x-block>
+
+        <x-block class="col-md-6">
             <x-slot name="heading">
                 Students' information
             </x-slot>
@@ -143,7 +146,8 @@
                 </tr>
             </table>
         </x-block>
-
+    </x-container>
+    <x-container>
         <x-block>
             <x-slot name="heading">
                 Application information
@@ -229,7 +233,11 @@
 
             </table>
         </x-block>
-        @if (auth()->user() && auth()->user()->max_role_level() >= 3 && count($application->existing_allotments()) > 0)
+    </x-container>
+
+    @if (auth()->user() && auth()->user()->max_role_level() >= 3 && count($application->existing_allotments()) > 0)
+        <x-container>
+
             <x-block>
                 <x-slot name="heading">
                     <span class="text-danger">The following existing allotment(s) are found</span>
@@ -278,9 +286,13 @@
                     </table>
                 </div>
             </x-block>
-        @endif
+        </x-container>
 
-        @can('manage', $application)
+    @endif
+
+    @can('manage', $application)
+
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     Decision:
@@ -309,8 +321,10 @@
                     <h3 class="text-danger">Application already declined</h3>
                 @endif
             </x-block>
-        @endcan
-    </x-container>
+        </x-container>
+
+    @endcan
+
 
     {{-- Modal for remarks --}}
     <div class="modal fade" id="remarkModal" tabindex="-1" aria-labelledby="remarkModalLabel" aria-hidden="true">

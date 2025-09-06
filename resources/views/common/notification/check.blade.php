@@ -24,8 +24,9 @@
                 </div>
             </form>
         </x-block>
-
-        @if(isset($sem_allot))
+    </x-container>
+    @if(isset($sem_allot))
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     Notification reference details : Semester allotment
@@ -76,7 +77,9 @@
                 </div>
 
             </x-block>
-        @elseif(isset($allotment))
+        </x-container>
+    @elseif(isset($allotment))
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     Notification reference details: New allotment
@@ -127,12 +130,13 @@
                 </div>
 
             </x-block>
-        @elseif($str != '')
-            <span class="text-danger">No application found.</span>
-        @endif
+        </x-container>
+    @elseif($str != '')
+        <span class="text-danger">No application found.</span>
+    @endif
 
 
-    </x-container>
+
     <script>
         $(document).ready(function() {
             $.ajaxSetup({

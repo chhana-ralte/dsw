@@ -8,6 +8,8 @@
                 </p>
             </x-slot>
         </x-block>
+    </x-container>
+    <x-container>
         <x-block>
             <x-slot name="heading">
                 Editing personal details
@@ -120,7 +122,7 @@
                         <input type="file" class="form-control" name="photo">
                     </div>
                 </div>
-                
+
                 <div class="mb-3 form-group row">
                     <div class="col col-md-3"></div>
                     <div class="col col-md-4">

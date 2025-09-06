@@ -62,7 +62,8 @@
                 </div>
             </form>
         </x-block>
-
+    </x-container>
+    <x-container>
         <x-block>
             <x-slot name="heading">
                 Sub-categories under this notification.

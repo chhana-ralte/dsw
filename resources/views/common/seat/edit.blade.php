@@ -8,6 +8,8 @@
                 </p>
             </x-slot>
         </x-block>
+    </x-container>
+    <x-container>
         <x-block>
             <x-slot name="heading">
                 Edit
@@ -34,7 +36,7 @@
 
                 <div class="form-group row mb-3">
                     <div class="col col-md-4">
-                        
+
                     </div>
                     <div class="col col-md-4">
                         <button type="submit" class="btn btn-primary update">Update</button>

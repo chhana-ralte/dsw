@@ -23,8 +23,8 @@
                 </p>
             </x-slot>
         </x-block>
-
-
+    </x-container>
+    <x-container>
         <x-block>
             <x-slot name="heading">
                 Current occupants
@@ -101,8 +101,9 @@
                 </table>
             </div>
         </x-block>
-
-        @if (count($room->invalid_allot_seats()) > 0)
+    </x-container>
+    @if (count($room->invalid_allot_seats()) > 0)
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     Ex-Occupants
@@ -134,9 +135,11 @@
                     </table>
                 </div>
             </x-block>
-        @endif
+        </x-container>
+    @endif
 
-        @if (count($room->remarks) > 0)
+    @if (count($room->remarks) > 0)
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     Remarks about the room
@@ -158,9 +161,10 @@
                     </table>
                 </div>
             </x-block>
-        @endif
+        </x-container>
+    @endif
 
-    </x-container>
+
     <script>
         $(document).ready(function() {
             $.ajaxSetup({

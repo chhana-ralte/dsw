@@ -8,6 +8,8 @@
                 </p>
             </x-slot>
         </x-block>
+    </x-container>
+    <x-container>
         <x-block>
             <x-slot name="heading">
                 Details

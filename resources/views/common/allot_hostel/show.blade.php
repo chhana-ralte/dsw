@@ -6,7 +6,7 @@
                 @auth()
                     @can('update',$allot_hostel->hostel)
                         <a class="btn btn-secondary btn-sm" href="/person/{{ $allot_hostel->allotment->person->id }}/edit?back_link=/allot_hostel/{{ $allot_hostel->id }}">Edit</a>
-                        
+
                     @endcan
                     <a class="btn btn-secondary btn-sm" href="/person/{{ $allot_hostel->allotment->person->id }}/person_remark?back_link=/allot_hostel/{{ $allot_hostel->id }}">Remarks about the person</a>
 
@@ -49,8 +49,10 @@
                 </tr>
             </table>
         </x-block>
+    </x-container>
 
-        @if($allot_hostel->allotment->person->student())
+    @if($allot_hostel->allotment->person->student())
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     Student Information
@@ -59,7 +61,7 @@
                             <a class="btn btn-secondary btn-sm" href="/student/{{ $allot_hostel->allotment->person->student()->id }}/edit?back_link=/allot_hostel/{{ $allot_hostel->id }}">Edit</a>
                         @endcan
                     @endauth
-                </x-slot>                
+                </x-slot>
                 <table class="table table-hover table-auto">
                     <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
                         <td>Rollno</td>
@@ -75,24 +77,30 @@
                     </tr>
                     </tr>
                         <td>MZU ID</td>
-                        <td>{{ $allot_hostel->allotment->person->student()->mzuid }}</td>                    
+                        <td>{{ $allot_hostel->allotment->person->student()->mzuid }}</td>
                     </tr>
                 </table>
             </x-block>
-        @elseif($allot_hostel->allotment->person->other())
+        </x-container>
+
+    @elseif($allot_hostel->allotment->person->other())
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     Other information
-                </x-slot>                
+                </x-slot>
                 <table class="table table-hover table-auto table-striped">
                     <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
                         <td>{{ $allot_hostel->allotment->person->other()->remark }}</td>
                     </tr>
                 </table>
             </x-block>
-        @else
-            @auth
-                @can('update',$allot_hostel->hostel)
+        </x-container>
+
+    @else
+        @auth
+            @can('update',$allot_hostel->hostel)
+                <x-container>
                     <x-block>
                         <x-slot name="heading">
                             Whether a student or not??
@@ -102,10 +110,12 @@
                             <a href="/person/{{ $allot_hostel->allotment->person->id }}/other/create?back_link=/allot_hostel/{{ $allot_hostel->id }}" class="btn btn-primary">Not a student</a>
                         </div>
                     </x-block>
-                @endcan
-            @endauth
-        @endif
+                </x-container>
 
+            @endcan
+        @endauth
+    @endif
+    <x-container>
         <x-block>
             <x-slot name="heading">
                 Seat Allotment Information
@@ -127,12 +137,15 @@
                 @endauth
             @endif
         </x-block>
+    </x-container>
 
-        @if(count($allot_hostel->allotment->person->person_remarks) > 0)
+    @if(count($allot_hostel->allotment->person->person_remarks) > 0)
+
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     Remark(s) about student
-                </x-slot>                
+                </x-slot>
                 <table class="table table-hover table-auto">
                     <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
                         <th>Date of incident</th>
@@ -153,6 +166,7 @@
                     @endforeach
                 </table>
             </x-block>
-        @endif
-    </x-container>
+        </x-container>
+    @endif
+
 </x-layout>

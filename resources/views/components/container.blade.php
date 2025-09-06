@@ -1,5 +1,4 @@
-<div class="">
-    <div>
-        {{ $slot }}
-    </div>
+<div class="row justify-content-center">
+    {{ $slot }}
 </div>
+

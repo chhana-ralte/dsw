@@ -5,11 +5,13 @@
                 Feedback for {{ $feedbackMaster->title }}
                 <p>
                     <a class="btn btn-secondary btn-sm" href="/feedbackMaster/">Back</a>
-                    <a class="btn btn-primary btn-sm" href="/feedbackMaster/{{ $feedbackMaster->id }}/report">Report</a>
-                    <a class="btn btn-primary btn-sm"
-                        href="/feedbackMaster/{{ $feedbackMaster->id }}/criteria">Criteria</a>
-                    <a class="btn btn-primary btn-sm"
-                        href="/feedbackMaster/{{ $feedbackMaster->id }}/feedback">Feedback</a>
+                    @can('manages', App\Models\Feedback::class)
+                        <a class="btn btn-primary btn-sm" href="/feedbackMaster/{{ $feedbackMaster->id }}/report">Report</a>
+                        <a class="btn btn-primary btn-sm"
+                            href="/feedbackMaster/{{ $feedbackMaster->id }}/criteria">Criteria</a>
+                        <a class="btn btn-primary btn-sm"
+                            href="/feedbackMaster/{{ $feedbackMaster->id }}/feedback">Feedback</a>
+                    @endcan
                 </p>
             </x-slot>
             <div>
@@ -76,7 +78,7 @@
                     </div>
                     <div class="col-md-4">
                         <x-button type="a" href="/feedbackMaster">Back</x-button>
-                        <x-button type="submit">Submit</x-button>
+
                     </div>
                 </div>
                 </form>

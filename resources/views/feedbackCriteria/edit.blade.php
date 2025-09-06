@@ -46,6 +46,8 @@
                         <select type="select" class="form-control" name="type" value="{{ old('type') }}">
                             <option value="Short answer"
                                 {{ $feedback_criteria->type == 'Short answer' ? 'selected' : '' }}>Short answer</option>
+                            <option value="Text"
+                                {{ $feedback_criteria->type == 'Text' ? 'selected' : '' }}>Text</option>
                             <option value="Rating" {{ $feedback_criteria->type == 'Rating' ? 'selected' : '' }}>Rating
                             </option>
                             <option value="Multiple choice"

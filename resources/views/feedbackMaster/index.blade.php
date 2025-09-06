@@ -3,9 +3,11 @@
         <x-block>
             <x-slot name="heading">
                 Feedback Master
-                <p>
-                    <a class="btn btn-primary btn-sm" href="/feedbackMaster/create">Create new</a>
-                </p>
+                @can('manages', App\Models\Feedback::class)
+                    <p>
+                        <a class="btn btn-primary btn-sm" href="/feedbackMaster/create">Create new</a>
+                    </p>
+                @endcan
             </x-slot>
             <div>
                 <table class="table">
@@ -14,7 +16,9 @@
                         <th>Title</th>
                         <th>Remark</th>
                         <th>Opened?</th>
-                        <th>Manage</th>
+                        @can('manages', App\Models\Feedback::class)
+                            <th>Manage</th>
+                        @endcan
                     </tr>
                     <?php $sl = 1; ?>
                     @foreach ($feedback_masters as $fm)
@@ -23,12 +27,14 @@
                             <td><a href="/feedbackMaster/{{ $fm->id }}">{{ $fm->title }}</a></td>
                             <td>{{ $fm->remark }}</td>
                             <td>{{ $fm->open ? 'Opened' : 'Closed' }}</td>
-                            <td>
-                                <div class="btn-group">
-                                    <a class="btn btn-secondary" href="/feedbackMaster/{{ $fm->id }}/edit">Edit</a>
-                                    <button class="btn btn-danger btn-delete" value="{{ $fm->id }}">Delete</button>
-                                </div>
-                            </td>
+                            @can('manages', App\Models\Feedback::class)
+                                <td>
+                                    <div class="btn-group">
+                                        <a class="btn btn-secondary" href="/feedbackMaster/{{ $fm->id }}/edit">Edit</a>
+                                        <button class="btn btn-danger btn-delete" value="{{ $fm->id }}">Delete</button>
+                                    </div>
+                                </td>
+                            @endcan
                         </tr>
                     @endforeach
                     <form id="delete-form" method="POST">

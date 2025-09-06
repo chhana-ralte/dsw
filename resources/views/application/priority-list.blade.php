@@ -8,6 +8,8 @@
                 </p>
             </x-slot>
         </x-block>
+    </x-container>
+    <x-container>
         <x-block>
             <x-slot name="heading">
                 Applications arranged in dept-wise, and then percentage, excluding AMC
@@ -35,56 +37,56 @@
                             @can('manages', App\Models\Application::class)
                                 <th>Action</th>
                                 @endif
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($applications as $application)
-                                <tr>
-                                    <td>{{ $application->id }}</td>
-                                    <td>
-                                        <a
-                                            href="/application/{{ $application->id }}?mzuid={{ $application->mzuid }}">{{ $application->name }}</a>
-                                        @if (count($application->duplicates()) > 0)
-                                            <br><button type="button" class="btn badge bg-warning btn-duplicate"
-                                                value="{{ $application->id }}">Possible duplicate</button>
-                                        @endif
-
-                                    </td>
-                                    <td>{{ $application->gender }}</td>
-                                    <td>{{ $application->course }}</td>
-                                    <td>{{ $application->address }}</td>
-                                    @if ($application->hostel)
-                                        <td>{{ $application->hostel->name }}</td>
-                                    @else
-                                        <td>{{ $application->status }}</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($applications as $application)
+                            <tr>
+                                <td>{{ $application->id }}</td>
+                                <td>
+                                    <a
+                                        href="/application/{{ $application->id }}?mzuid={{ $application->mzuid }}">{{ $application->name }}</a>
+                                    @if (count($application->duplicates()) > 0)
+                                        <br><button type="button" class="btn badge bg-warning btn-duplicate"
+                                            value="{{ $application->id }}">Possible duplicate</button>
                                     @endif
 
-                                    @can('manage', $application)
-                                        <td>
-                                            <div class="btn-group">
-                                                <a href="/application/{{ $application->id }}/edit?mzuid={{ $application->mzuid }}"
-                                                    class="btn btn-primary btn-sm">Edit</a>
-                                                <button value="{{ $application->id }}"
-                                                    class="btn btn-danger btn-sm btn-delete">Delete</button>
-                                            </div>
-                                        </td>
-                                    @endcan
-                                </tr>
-                            @endforeach
-                            <form name="frm-delete" method="post">
-                                @csrf
-                                @method('delete')
-                            </form>
-                        </tbody>
-                    </table>
-                    @if (!$department)
-                        <div class="d-flex justify-content-center">
-                            {{ $applications->links() }}
-                        </div>
-                    @endif
-                </div>
-            </x-block>
-        </x-container>
+                                </td>
+                                <td>{{ $application->gender }}</td>
+                                <td>{{ $application->course }}</td>
+                                <td>{{ $application->address }}</td>
+                                @if ($application->hostel)
+                                    <td>{{ $application->hostel->name }}</td>
+                                @else
+                                    <td>{{ $application->status }}</td>
+                                @endif
+
+                                @can('manage', $application)
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="/application/{{ $application->id }}/edit?mzuid={{ $application->mzuid }}"
+                                                class="btn btn-primary btn-sm">Edit</a>
+                                            <button value="{{ $application->id }}"
+                                                class="btn btn-danger btn-sm btn-delete">Delete</button>
+                                        </div>
+                                    </td>
+                                @endcan
+                            </tr>
+                        @endforeach
+                        <form name="frm-delete" method="post">
+                            @csrf
+                            @method('delete')
+                        </form>
+                    </tbody>
+                </table>
+                @if (!$department)
+                    <div class="d-flex justify-content-center">
+                        {{ $applications->links() }}
+                    </div>
+                @endif
+            </div>
+        </x-block>
+    </x-container>
         {{-- Modal for duplicate requirement --}}
 
         <div class="modal fade" id="duplicateModal" tabindex="-1" aria-labelledby="duplicateModalLabel" aria-hidden="true">

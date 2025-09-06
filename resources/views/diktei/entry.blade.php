@@ -6,6 +6,8 @@
             </x-slot>
 
         </x-block>
+    </x-container>
+    <x-container>
         <x-block>
             <form id="frmEntry" method="get" action="/diktei/entry">
                 <div class="mb-3">
@@ -17,7 +19,9 @@
                 <button type="submit" class="submit-btn btn btn-primary">Proceed</button>
             </form>
         </x-block>
-        @if (count($zirlais) > 0)
+    </x-container>
+    @if (count($zirlais) > 0)
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     The following MZU IDs/ Roll nos. are found. Click the matching data to proceed
@@ -46,12 +50,15 @@
                     </table>
                 </div>
             </x-block>
-        @elseif($mzuid != '')
+        </x-container>
+    @elseif($mzuid != '')
+        <x-container>
             <x-block>
                 <span class="text-danger">MZU ID/ Roll number is not found</span>
             </x-block>
-        @endif
-    </x-container>
+        </x-container>
+    @endif
+
 
 
 

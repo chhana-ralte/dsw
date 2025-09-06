@@ -26,8 +26,9 @@
                 </div>
             </form>
         </x-block>
-
-        @if(isset($allotment))
+    </x-container>
+    @if(isset($allotment))
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     Allotment status of {{ $allotment->person->name }}
@@ -39,6 +40,7 @@
                     </tr>
                 </table>
             </x-block>
-        @endif
-    </x-container>
+        </x-container>
+    @endif
+
 </x-layout>

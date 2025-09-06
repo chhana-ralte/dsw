@@ -16,7 +16,7 @@
                                     href="/person/{{ $allotment->person->id }}/person_remark?back_link=/allotment/{{ $allotment->id }}">Remarks
                                     about the person</a>
                             @endcan
-                            
+
                             @if (auth()->user()->isAdmin())
                                 <a class="btn btn-danger btn-sm"
                                     href="/person/{{ $allotment->person->id }}/confirm_delete?back_link=/allotment/{{ $allotment->id }}">Delete
@@ -88,8 +88,9 @@
                 </tr>
             </table>
         </x-block>
-
-        @if ($allotment->person->student())
+    </x-container>
+    @if ($allotment->person->student())
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     Student Information
@@ -129,7 +130,9 @@
                     </tr>
                 </table>
             </x-block>
-        @elseif($allotment->person->other())
+        </x-container>
+    @elseif($allotment->person->other())
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     Other informations
@@ -155,9 +158,11 @@
                     </tr>
                 </table>
             </x-block>
-        @else
-            @auth
-                @can('edit', $allotment)
+        </x-container>
+    @else
+        @auth
+            @can('edit', $allotment)
+                <x-container>
                     <x-block>
                         <x-slot name="heading">
                             Whether a student or not??
@@ -169,10 +174,11 @@
                                 class="btn btn-primary">Not a student</a>
                         </div>
                     </x-block>
-                @endcan
-            @endauth
-        @endif
-
+                </x-container>
+            @endcan
+        @endauth
+    @endif
+    <x-container>
         <x-block>
             <x-slot name="heading">
                 Hostel allotment information
@@ -234,7 +240,8 @@
 
             </table>
         </x-block>
-
+    </x-container>
+    <x-container>
         <x-block>
             <x-slot name="heading">
                 Seat Allotment Information
@@ -280,8 +287,9 @@
             @endauth
 
         </x-block>
-
-        @can('manage',$allotment)
+    </x-container>
+    @can('manage',$allotment)
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     User information about the student
@@ -302,9 +310,11 @@
                     User not available
                 @endif
             </x-block>
-        @endcan
+        </x-container>
+    @endcan
 
-        @if ($allotment->cancel_seat)
+    @if ($allotment->cancel_seat)
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     Seat cancelled...
@@ -352,9 +362,11 @@
                     </tr>
                 </table>
             </x-block>
-        @endif
+        </x-container>
+    @endif
 
-        @if (count($allotment->person->person_remarks) > 0)
+    @if (count($allotment->person->person_remarks) > 0)
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     Remark(s) about student
@@ -380,6 +392,6 @@
                     @endforeach
                 </table>
             </x-block>
-        @endif
-    </x-container>
+        </x-container>
+    @endif
 </x-layout>

@@ -8,6 +8,8 @@
                 <a class="btn btn-secondary btn-sm" href="/diktei/course">Back</a>
             </p>
         </x-block>
+    </x-container>
+    <x-container>
         <x-block>
             <x-slot name="heading">
                 List of students
@@ -59,7 +61,8 @@
                 </div>
             @endif
         </x-block>
-
+    </x-container>
+    <x-container>
         <x-block>
             <x-slot name="heading">
                 List of courses

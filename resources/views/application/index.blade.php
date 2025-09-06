@@ -5,6 +5,8 @@
                 Application for Hostel.
             </x-slot>
         </x-block>
+    </x-container>
+    <x-container>
         <x-block>
             <x-slot name="heading">
                 Required information for applicants:
@@ -24,8 +26,11 @@
                 <li><b>The existing boarders should apply through their login credentials in the portal. Only new applicants should apply through this online application form.</b></li>
             </ul>
         </x-block>
+    </x-container>
+    <x-container>
         @can('manages',\App\Models\Application::class)
-            <x-block>
+
+            <x-block class="col-md-6">
                 <x-slot name='heading'>
                     Links
                 </x-slot>
@@ -35,10 +40,12 @@
                 <p>Click <a href="/application/summary-hostel">here</a> to view the hostel/department-wise allotment.</p>
                 <p>Click <a href="/application/priority-list">here</a> to view the priority list.</p>
             </x-block>
+
         @endcan
 
         @if(auth()->user() && (auth()->user()->isDsw() || auth()->user()->isAdmin()))
-            <x-block>
+
+            <x-block class="col-md-6">
                 <x-slot name='heading'>
                     Actions
                 </x-slot>
@@ -46,9 +53,10 @@
                 Change status to: <button class=" btn btn-primary btn-status" type="button" value="open">Open</button>
                 <button class=" btn btn-primary btn-status" type="button" value="closed">Close</button>
             </x-block>
-        @endif
 
+        @endif
     </x-container>
+
     <script>
         $(document).ready(function() {
             $.ajaxSetup({

@@ -28,7 +28,9 @@
                 </form>
             @endauth
         </x-block>
-        @if($subject)
+    </x-container>
+    @if($subject)
+        </x-container>
             <x-block>
                 <x-slot name="heading">
                     Courses selected under {{ $subject->code}} : {{ $subject->name }}
@@ -59,9 +61,10 @@
                     </div>
                 @endif
             </x-block>
-        @endif
+        </x-container>
+    @endif
 
-    </x-container>
+
 
 
     <script>

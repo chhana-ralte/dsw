@@ -9,7 +9,10 @@
             </x-slot>
 
         </x-block>
-        @if($zirlai->dikteis->count() > 0)
+    </x-container>
+
+    @if($zirlai->dikteis->count() > 0)
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     List of Options
@@ -40,16 +43,17 @@
                     </form>
                 </div>
             </x-block>
-        @else
+        </x-container>
+    @else
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     Options not submitted yet
                 </x-slot>
             </x-block>
-        @endif
+        </x-container>
+    @endif
 
-
-    </x-container>
 
     <script>
         $(document).ready(function() {

@@ -53,7 +53,9 @@ Route::get('/testing', function () {
 Route::get('/welcome', function () {
     return view('welcome');
 });
-
+Route::get('/bt', function () {
+    return view('test.bt');
+});
 Route::get('/reshuffledata', [App\Http\Controllers\DikteiController::class, 'reshuffledata']);
 
 Route::get('/test', [App\Http\Controllers\PdfController::class, 'download']);
@@ -69,8 +71,8 @@ Route::get('/search', [SearchController::class, 'index'])->middleware(['auth']);
 Route::get('/consolidate', [ConsolidateController::class, 'index'])->middleware(['dsw']);
 Route::get('/consolidateDetail', [ConsolidateController::class, 'detail'])->middleware(['dsw']);
 Route::post('/consolidate', [ConsolidateController::class, 'store'])->middleware(['dsw']);
-Route::get('/admissioncheck', [AdmissionCheckController::class, 'check']);
-Route::post('/admissioncheck', [AdmissionCheckController::class, 'checkStore']);
+// Route::get('/admissioncheck', [AdmissionCheckController::class, 'check']);
+// Route::post('/admissioncheck', [AdmissionCheckController::class, 'checkStore']);
 Route::post('/allotment/{id}/admission_decline', [AdmissionController::class, 'admission_decline']);
 // Route::get('/allotment/{id}/admission', [AdmissionCheckController::class, 'index']);
 Route::get('/feedbackMaster/{id}/report', [FeedbackMasterController::class, 'report'])->middleware(['auth']);

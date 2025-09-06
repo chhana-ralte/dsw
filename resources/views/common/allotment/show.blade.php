@@ -10,64 +10,94 @@
         <x-block>
             @include('common.allotment.partials.personal')
         </x-block>
+    </x-container>
 
 
-        @if ($allotment->person->student())
+    @if ($allotment->person->student())
+        <x-container>
             <x-block>
                 @include('common.allotment.partials.student')
             </x-block>
-        @elseif($allotment->person->other())
+        </x-container>
+
+    @elseif($allotment->person->other())
+        <x-container>
             <x-block>
                 @include('common.allotment.partials.other')
             </x-block>
-        @else
-            @auth
-                @can('edit', $allotment)
+        </x-container>
+
+    @else
+        @auth
+            @can('edit', $allotment)
+                <x-container>
                     <x-block>
                         @include('common.allotment.partials.choice')
                     </x-block>
-                @endcan
-            @endauth
-        @endif
-
+                </x-container>
+            @endcan
+        @endauth
+    @endif
+    <x-container>
         <x-block>
             @include('common.allotment.partials.allotment')
         </x-block>
-
+    </x-container>
+    <x-container>
         <x-block>
             @include('common.allotment.partials.seat')
 
         </x-block>
+    </x-container>
 
-        @can('manage', $allotment)
+    @can('manage', $allotment)
+
+        <x-container>
             <x-block>
                 @include('common.allotment.partials.user')
             </x-block>
-        @endcan
+        </x-container>
 
-        @if ($allotment->cancel_seat)
+    @endcan
+
+    @if ($allotment->cancel_seat)
+
+        <x-container>
             <x-block>
                 @include('common.allotment.partials.cancel')
             </x-block>
-        @endif
+        </x-container>
 
-        @if (count($allotment->person->person_remarks) > 0)
+    @endif
+
+    @if (count($allotment->person->person_remarks) > 0)
+
+        <x-container>
             <x-block>
                 @include('common.allotment.partials.remark')
             </x-block>
-        @endif
+        </x-container>
 
-        @if ($allotment->start_sessn())
+    @endif
+
+    @if ($allotment->start_sessn())
+
+        <x-container>
             <x-block>
                 @include('common.allotment.partials.admission')
             </x-block>
-        @endif
+        </x-container>
 
-        @if ($allotment->application)
+    @endif
+
+    @if ($allotment->application)
+
+        <x-container>
             <x-block>
-                @include('common.allotment.partials.application')
-            </x-block>
-        @endif
+                    @include('common.allotment.partials.application')
+                </x-block>
+        </x-container>
+    @endif
 
-    </x-container>
+
 </x-layout>

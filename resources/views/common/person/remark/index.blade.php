@@ -13,8 +13,10 @@
                 </p>
             </x-slot>
         </x-block>
-        @if(count($person_remarks) > 0)
-            <x-block>             
+    </x-container>
+    @if(count($person_remarks) > 0)
+        <x-container>
+            <x-block>
                 <table class="table table-hover table-auto">
                     <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
                         <th>Date of incident</th>
@@ -50,7 +52,7 @@
                                                 href="/person_remark/{{ $pr->id }}/person_remark_detail/create">Add detail</a></li>
                                         <li><button class="dropdown-item delete_remark" type="button" value="{{ $pr->id }}">Delete remark</button></li>
                                         <li><a class="dropdown-item" href="/person_remark/{{ $pr->id }}/edit">Edit remark</button></li>
-                                        
+
                                     </ul>
                                 </div>
                             @endif
@@ -67,14 +69,17 @@
                     </form>
                 </table>
             </x-block>
-        @else
+        <x-container>
+    @else
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     No remark available
-                </x-slot>  
+                </x-slot>
             </x-block>
-        @endif
-    </x-container>
+        </x-container>
+    @endif
+
 <script>
 $(document).ready(function(){
     $("button.delete_remark").click(function(){

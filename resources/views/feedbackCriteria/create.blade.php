@@ -42,6 +42,7 @@
                     <div class="col-md-4">
                         <select type="select" class="form-control" name="type" value="{{ old('type') }}">
                             <option value="Short answer">Short answer</option>
+                            <option value="Text">Text</option>
                             <option value="Rating">Rating</option>
                             <option value="Multiple choice">Multiple choice</option>
                         </select>

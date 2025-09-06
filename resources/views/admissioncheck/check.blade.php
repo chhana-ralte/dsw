@@ -4,7 +4,7 @@
             <x-slot name="heading">
                 Check your admission status
             </x-slot>
-            
+
             <form method="post" action="/admissioncheck">
                 @csrf
                 <div class="form-group row mb-3">
@@ -37,7 +37,9 @@
                 </div>
             </form>
         </x-block>
-        @if(isset($allotment))
+    </x-container>
+    @if(isset($allotment))
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     Admission status of {{ $allotment->person->name }}
@@ -59,6 +61,7 @@
                     <h4>No hostel admission record available</h4>
                 @endif
             </x-block>
-        @endif
-    </x-container>
+        </x-container>
+    @endif
+
 </x-layout>

@@ -6,6 +6,8 @@
             </x-slot>
 
         </x-block>
+    </x-container>
+    <x-container>
         <x-block>
             Please read the followings carefully before submission:
             <ul>

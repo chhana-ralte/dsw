@@ -8,6 +8,8 @@
                 </p>
             </x-slot>
         </x-block>
+    </x-container>
+    <x-container>
         <x-block>
             <x-slot name="heading">
                 Similar MZU IDs
@@ -36,7 +38,8 @@
                 </table>
             </div>
         </x-block>
-
+    </x-container>
+    <x-container>
         <x-block>
             <x-slot name="heading">
                 Similar Mobile numbers
@@ -65,7 +68,8 @@
                 </table>
             </div>
         </x-block>
-
+    </x-container>
+    <x-container>
         <x-block>
             <x-slot name="heading">
                 Similar emails
@@ -94,7 +98,8 @@
                 </table>
             </div>
         </x-block>
-
+    </x-container>
+    <x-container>
         <x-block>
             <x-slot name="heading">
                 Similar Names

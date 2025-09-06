@@ -177,7 +177,7 @@ class AjaxController extends Controller
     {
         $feedback_criteria = \App\Models\FeedbackCriteria::findOrFail($feedback_criteria_id);
         if ($feedback_criteria->type == 'Rating') {
-            $labels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            $labels = [1, 2, 3, 4, 5];
             $data = [];
             foreach ($labels as $label) {
                 array_push($data, \App\Models\FeedbackDetail::where('feedback_criteria_id', $feedback_criteria->id)->where('value', $label)->count());

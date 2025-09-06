@@ -74,7 +74,7 @@
             for(i=0;i<canvases.length;i++){
                 // const ctx = document.getElementById('myChart').getContext('2d');
                 const ctx = canvases[i];
-                alert(ctx.id);
+                // alert(ctx.id);
                 $.ajax({
                     type : "get",
                     url : "/ajax/feedback_criteria/" + ctx.id + "/report_chart",

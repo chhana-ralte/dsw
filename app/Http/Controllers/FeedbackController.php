@@ -23,17 +23,29 @@ class FeedbackController extends Controller
 
     public function create(FeedbackMaster $feedbackMaster)
     {
-        $data = [
-            'feedback_master' => $feedbackMaster,
-            'feedback_criteria' => FeedbackCriteria::where('feedback_master_id', $feedbackMaster->id)->orderBy('serial')->get(),
-        ];
-        return view('feedback.create', $data);
+        if(auth()->user() && auth()->user()->can('gives', App\Models\Feedback::class))
+        {
+            $data = [
+                'feedback_master' => $feedbackMaster,
+                'feedback_criteria' => FeedbackCriteria::where('feedback_master_id', $feedbackMaster->id)->orderBy('serial')->get(),
+            ];
+            return view('feedback.create', $data);
+        }
+        else{
+            return redirect()->back()->with(['message' => ['type' => 'warning', 'text' => 'Unauthorised']]);
+        }
     }
 
     public function store(FeedbackMaster $feedbackMaster, Request $request)
     {
-        $feedback = Feedback::create([
+        // return $request;
+        $feedback = Feedback::updateOrCreate([
             'feedback_master_id' => $feedbackMaster->id,
+            'user_id' => auth()->user()->id,
+        ]
+        ,[
+            'feedback_master_id' => $feedbackMaster->id,
+            'user_id' => auth()->user()->id,
             'feedback_dt' => date('Y-m-d H:i:s'),
             'done' => 0,
         ]);
@@ -43,18 +55,45 @@ class FeedbackController extends Controller
             if ($arr[0] == 'criteria') {
                 $criteria = FeedbackCriteria::find($arr[1]);
                 if ($criteria->type == 'Rating' || $criteria->type == 'Multiple choice') {
-                    FeedbackDetail::create([
+                    FeedbackDetail::updateOrCreate([
+                        'feedback_id' => $feedback->id,
+                        'feedback_criteria_id' => $criteria->id,
+                    ],[
                         'feedback_id' => $feedback->id,
                         'feedback_criteria_id' => $criteria->id,
                         'value' => $val,
                     ]);
                 } else if ($criteria->type == 'Short answer') {
-                    $feedback_detail = FeedbackDetail::create([
+                    $feedback_detail = FeedbackDetail::updateOrCreate([
+                        'feedback_id' => $feedback->id,
+                        'feedback_criteria_id' => $criteria->id,
+                    ],[
                         'feedback_id' => $feedback->id,
                         'feedback_criteria_id' => $criteria->id,
                         'value' => '0',
                     ]);
-                    $feedback_string = FeedbackString::create([
+                    $feedback_string = FeedbackString::updateOrCreate([
+                        'feedback_detail_id' => $feedback_detail->id,
+                    ],[
+                        'feedback_detail_id' => $feedback_detail->id,
+                        'string' => $val,
+                    ]);
+                    $feedback_detail->update([
+                        'value' => $feedback_string->id,
+                    ]);
+                }
+                else if ($criteria->type == 'Text') {
+                    $feedback_detail = FeedbackDetail::updateOrCreate([
+                        'feedback_id' => $feedback->id,
+                        'feedback_criteria_id' => $criteria->id,
+                    ],[
+                        'feedback_id' => $feedback->id,
+                        'feedback_criteria_id' => $criteria->id,
+                        'value' => '0',
+                    ]);
+                    $feedback_string = FeedbackString::updateOrCreate([
+                        'feedback_detail_id' => $feedback_detail->id,
+                    ],[
                         'feedback_detail_id' => $feedback_detail->id,
                         'string' => $val,
                     ]);
@@ -69,6 +108,8 @@ class FeedbackController extends Controller
         $feedback->update([
             'done' => 1,
         ]);
+        $feedback->save();
+
         FeedbackMaster_User::updateOrCreate([
             'feedback_master_id' => $feedbackMaster->id,
             'user_id' => auth()->user()->id,

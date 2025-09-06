@@ -6,8 +6,9 @@
             </x-slot>
 
         </x-block>
-
-        @if ($status == 'submitted')
+    </x-container>
+    @if ($status == 'submitted')
+        <x-container>
             <x-block>
                 <span class="text-danger">MZU ID: {{ $zirlai->mzuid }}, Roll no.: {{ $zirlai->rollno }} with name
                     {{ $zirlai->name }} submitted the
@@ -15,27 +16,30 @@
                 <p>
                     <a href="/diktei/entry" class="btn btn-secondary btn-sm">Submit as another student.</a>
                 </p>
-            </x-block>
-            <div>
-                <table class="table">
-                    <tr>
-                        <th>Option sl.</th>
-                        <th>Course Code</th>
-                        <th>Course Name</th>
-                        <th>Department</th>
-                    </tr>
-                    @foreach ($dikteis as $dt)
+
+                <div>
+                    <table class="table">
                         <tr>
-                            <td>{{ $dt->serial }}</td>
-                            <td>{{ $dt->subject->code }}</td>
-                            <td>{{ $dt->subject->name }}</td>
-                            <td>{{ $dt->subject->course->department->name }}</td>
+                            <th>Option sl.</th>
+                            <th>Course Code</th>
+                            <th>Course Name</th>
+                            <th>Department</th>
                         </tr>
-                    @endforeach
-                </table>
-            </div>
-        @elseif($status == 'success')
+                        @foreach ($dikteis as $dt)
+                            <tr>
+                                <td>{{ $dt->serial }}</td>
+                                <td>{{ $dt->subject->code }}</td>
+                                <td>{{ $dt->subject->name }}</td>
+                                <td>{{ $dt->subject->course->department->name }}</td>
+                            </tr>
+                        @endforeach
+                    </table>
+                </div>
+            </x-block>
+        </x-container>
+    @elseif($status == 'success')
             {{-- if not yet submitted --}}
+        </x-container>
             <x-block>
                 <x-slot name="heading">
                     Name: {{ $zirlai->name }} (Fresh submission)
@@ -69,7 +73,9 @@
                 </form>
 
             </x-block>
-        @else
+        </x-container>
+    @else
+        <x-container>
             {{-- Resubmission required --}}
             <x-block>
                 <x-slot name="heading">
@@ -125,9 +131,8 @@
                 </form>
 
             </x-block>
-        @endif
-
-    </x-container>
+        </x-container>
+    @endif
 
 
 

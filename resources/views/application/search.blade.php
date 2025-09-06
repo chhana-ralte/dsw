@@ -65,8 +65,11 @@
                 </div>
             </form>
         </x-block>
+    </x-container>
 
-        @can('manages', App\Models\Application::class)
+    @can('manages', App\Models\Application::class)
+
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     Application search
@@ -90,9 +93,12 @@
                     </div>
                 </form>
             </x-block>
-        @endcan
+        </x-container>
 
-        @if(isset($application))
+    @endcan
+
+    @if(isset($application))
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     Application details
@@ -154,11 +160,15 @@
                     </div>
                 </div>
             </x-block>
-        @elseif($mzuid != '')
-            <span class="text-danger">No application found.</span>
-        @endif
+        </x-container>
 
-        @if(isset($applications))
+    @elseif($mzuid != '')
+        <span class="text-danger">No application found.</span>
+    @endif
+
+    @if(isset($applications))
+
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     Application details
@@ -197,13 +207,15 @@
                     </table>
                 </div>
             </x-block>
-        @elseif(isset($str) && $str != '')
-            <span class="text-danger">No application found.</span>
-        @endif
+        </x-container>
+
+    @elseif(isset($str) && $str != '')
+        <span class="text-danger">No application found.</span>
+    @endif
 
 
 
-    </x-container>
+
     <script>
         $(document).ready(function() {
 

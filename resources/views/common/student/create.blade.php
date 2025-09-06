@@ -8,6 +8,8 @@
                 </p>
             </x-slot>
         </x-block>
+    </x-container>
+    <x-container>
         <x-block>
             <x-slot name="heading">
                 Student's details
@@ -36,7 +38,7 @@
                     </div>
                 </div>
 
-                
+
                 <div class="form-group row mb-3">
                     <label for="mzuid" class="col col-md-3">MZU ID</label>
                     <div class="col col-md-4">
@@ -65,13 +67,13 @@ $(document).ready(function(){
     $("button#unavailable").click(function(){
         $("form#unavailabl").submit();
     });
-    
+
     $("a.deallocate").click(function(){
         if(confirm("Are you sure you want to deallocate this student from the existing seat?")){
             $.ajax({
                 type : "post",
                 url : "/ajax/seat/" + $(this).attr("id") + "/deallocate",
-                
+
                 success : function(data,status){
                     if(data == "Success"){
                         alert("Deallocation successful");

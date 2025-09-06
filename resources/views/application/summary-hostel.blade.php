@@ -61,7 +61,8 @@
 
             </div>
         </x-block>
-
+    </x-container>
+    <x-container>
         <x-block>
             <x-slot name="heading">
                 Hostel-wise allotment of newly admitted students

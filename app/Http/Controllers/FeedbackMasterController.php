@@ -18,7 +18,10 @@ class FeedbackMasterController extends Controller
 
     public function create()
     {
-        return view('feedbackMaster.create');
+        if(auth()->user() && auth()->user()->can('manages', App\Models\Feedback::class)){
+            return view('feedbackMaster.create');
+        }
+
     }
 
     public function store()
@@ -38,10 +41,12 @@ class FeedbackMasterController extends Controller
     }
     public function edit(FeedbackMaster $feedbackMaster)
     {
-        $data = [
-            'feedbackMaster' => $feedbackMaster
-        ];
-        return view('feedbackMaster.edit', $data);
+        if(auth()->user() && auth()->user()->can('manages', App\Models\Feedback::class)){
+            $data = [
+                'feedbackMaster' => $feedbackMaster
+            ];
+            return view('feedbackMaster.edit', $data);
+        }
     }
 
     public function show(FeedbackMaster $feedbackMaster)
@@ -77,15 +82,17 @@ class FeedbackMasterController extends Controller
     public function report($feedback_master_id)
     {
         // return $feedbackMaster;
-        $feedback_master = FeedbackMaster::findOrFail($feedback_master_id);
-        $data = [
-            'report' => $feedback_master->report(),
-            'feedback_master' => $feedback_master,
-            'feedback_criteria' => \App\Models\FeedbackCriteria::where('feedback_master_id',$feedback_master->id)->orderBy('serial')->get(),
-        ];
-        return view('feedbackMaster.report',$data);
-        // $feedback_master = FeedbackMaster::with(['feedback_criteria', 'feedback_criteria.feedback_details', 'feedback_criteria.feedback_details.feedback_string'])->findOrFail($feedback_master_id);
-        return $feedback_master;
-        return $feedback_master;
+        if(auth()->user() && auth()->user()->can('manages', App\Models\Feedback::class)){
+            $feedback_master = FeedbackMaster::findOrFail($feedback_master_id);
+            $data = [
+                'report' => $feedback_master->report(),
+                'feedback_master' => $feedback_master,
+                'feedback_criteria' => \App\Models\FeedbackCriteria::where('feedback_master_id',$feedback_master->id)->orderBy('serial')->get(),
+            ];
+            return view('feedbackMaster.report',$data);
+            // $feedback_master = FeedbackMaster::with(['feedback_criteria', 'feedback_criteria.feedback_details', 'feedback_criteria.feedback_details.feedback_string'])->findOrFail($feedback_master_id);
+            return $feedback_master;
+            return $feedback_master;
+        }
     }
 }

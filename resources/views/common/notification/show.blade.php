@@ -72,7 +72,9 @@
                 </div>
             </form>
         </x-block>
-        @if (count($notification->allotments) > 0)
+    </x-container>
+    @if (count($notification->allotments) > 0)
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     New hostel allotments
@@ -116,9 +118,11 @@
                     </table>
                 </div>
             </x-block>
-        @endif
+        </x-container>
+    @endif
 
-        @if (count($notification->sem_allots) > 0)
+    @if (count($notification->sem_allots) > 0)
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     Existing students continuing hostel allotments
@@ -162,8 +166,9 @@
                     </table>
                 </div>
             </x-block>
-        @endif
-    </x-container>
+        </x-container>
+    @endif
+
     <script>
         $(document).ready(function() {
             $("input[name='start_yr']").keyup(function() {

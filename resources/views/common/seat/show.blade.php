@@ -11,6 +11,8 @@
                 </p>
             </x-slot>
         </x-block>
+    </x-container>
+    <x-container>
         <x-block>
             <x-slot name="heading">
                 Current status
@@ -19,10 +21,11 @@
                 <label class="col col-md-4">Whether available?</label>
                 <div class="col col-md-4">{{ $seat->available? 'Yes':'No' }}</div>
             </div>
-            
-        </x-block>
 
-        @if(count($seat->remarks))
+        </x-block>
+    </x-container>
+    @if(count($seat->remarks))
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     Seat Remarks
@@ -34,10 +37,11 @@
                         @endforeach
                     </ul>
                 </div>
-                
+
             </x-block>
-        @endif
-    </x-container>
+        </x-container>
+    @endif
+
 <script>
 $(document).ready(function(){
     $.ajaxSetup({
@@ -52,7 +56,7 @@ $(document).ready(function(){
                 url : "/seat/{{ $seat->id }}",
                 type : "delete",
                 success : function(data,status){
-                    
+
                     alert("Deleted");
                     location.replace("/room/{{ $seat->room->id }}/seat");
                 },
