@@ -5,7 +5,8 @@
                 Search
             </x-slot>
         </x-block>
-
+    </x-container>
+    <x-container>
         <x-block>
             <form method="get" action="/search">
                 <div class="form-group row">
@@ -26,8 +27,9 @@
                 </div>
             </form>
         </x-block>
-
-        @if (isset($search_results) && count($search_results) > 0)
+    </x-container>
+    @if (isset($search_results) && count($search_results) > 0)
+        <x-container>
             <x-block>
                 <x-slot name="heading">
                     Persons
@@ -73,11 +75,11 @@
                     </table>
                 </div>
             </x-block>
-        @endif
+        </x-container>
+    @endif
 
 
 
-    </x-container>
     <script>
         $(document).ready(function() {
             $.ajaxSetup({

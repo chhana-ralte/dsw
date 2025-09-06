@@ -1,12 +1,14 @@
 <x-layout>
+
+
+    @if ($allotment->valid_allot_hostel() && $allotment->start_sessn_id != App\Models\Sessn::current()->id && $allotment->confirmed == 1)
+        <x-container>
+            <x-block>
+                @include('common.allotment.partials.requirement')
+            </x-block>
+        </x-container>
+    @endif
     <x-container>
-
-            @if ($allotment->valid_allot_hostel() && $allotment->start_sessn_id != App\Models\Sessn::current()->id && $allotment->confirmed == 1)
-                <x-block>
-                    @include('common.allotment.partials.requirement')
-                </x-block>
-            @endif
-
         <x-block>
             @include('common.allotment.partials.personal')
         </x-block>
