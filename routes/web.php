@@ -65,6 +65,11 @@ Route::get('/', function () {
     return view('home');
 });
 
+Route::post('/fb/temp/action', [FeedbackController::class, 'action']);
+// Route::controller(App\Models\FeedbackController::class)->group(function(){
+//     Route::post('/fb/temp/action', 'action')->middleware(['auth']);
+// });
+
 Route::get('/message', [MessageController::class, 'index']);
 Route::get('/warden', [WardenController::class, 'list']);
 Route::get('/search', [SearchController::class, 'index'])->middleware(['auth']);
@@ -235,6 +240,10 @@ Route::controller(App\Http\Controllers\DikteiController::class)->group(function 
     Route::get('/diktei/dtallot', 'subject_allotments');
     Route::post('/diktei/dtallot', 'allot_subjects');
     Route::post('/diktei/clearOptions', 'clear_options');
+});
+
+Route::controller(App\Models\FeedbackController::class)->group(function(){
+    Route::post('/feedback/temp/action', 'action')->middleware(['auth']);
 });
 
 Route::resource('zirlai', ZirlaiController::class)->middleware('auth')->shallow();

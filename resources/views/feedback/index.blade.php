@@ -1,4 +1,15 @@
 <x-layout>
+    @if(auth()->user())
+        @cannot('gives', App\Models\Feedback::class)
+            <x-container>
+                <x-block>
+                    <x-slot name="heading">
+                        You are not authorised to give feedback.
+                    </x-slot>
+                </x-block>
+            </x-container>
+        @endcannot
+    @endif
     <x-container>
         <x-block class="col-md-6">
             <x-slot name="heading">
@@ -29,4 +40,42 @@
             </p>
         </x-block>
     </x-container>
+    @if(auth()->user() && auth()->user()->isAdmin())
+        <x-container>
+            <x-block class="col-md-6">
+                <x-slot name="heading">
+                    Actions
+                </x-slot>
+
+                <div class="btn-group justify-content-center">
+                    <button class="btn btn-primary btn-action" id="open" value="open">Open</button>
+                    <button class="btn btn-primary btn-action" id="close" value="close">Close</button>
+                    <button class="btn btn-danger btn-action" id="clear" value="clear">Clear feedback</button>
+                </div>
+
+                <form method="post" name="frmAction" action="/fb/temp/action">
+                    <input type="hidden" name="action">
+                    @csrf
+                </form>
+            </x-block>
+        </x-container>
+    @endif
+
+    <script>
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
+                }
+            });
+
+            $("button.btn-action").click(function(){
+                if(confirm("Are you sure you want to change the feedback status")){
+                    $("input[name='action']").val($(this).val());
+                    $("form[name='frmAction']").submit();
+                    exit();
+                }
+            });
+        });
+    </script>
 </x-layout>

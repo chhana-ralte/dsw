@@ -23,9 +23,11 @@
             <td>{{ $ssn->name() }}</td>
             <td>
                 @if($allotment->admission($ssn->id))
-                    <h4>Done</h4>
+
+                    <span class="text-success">Admission amount: {{ $allotment->admission($ssn->id)->amount }}</span><br>
+                    <span class="text-success">Payment date: {{ $allotment->admission($ssn->id)->payment_dt }}</span>
                 @else
-                    <h4>Not Done</h4>
+                    <span class="text-warning">Not Done</span>
                 @endif
             </td>
         </tr>

@@ -1,5 +1,6 @@
 @props(['type'=>'info'])
 
 <div class="alert alert-{{$type}}">
-    <strong align="center">{{$slot}}</strong>
+    <p class="h4 text-center">{{ $slot }}</p>
+    {{-- <strong align="center">{{$slot}}</strong> --}}
 </div>

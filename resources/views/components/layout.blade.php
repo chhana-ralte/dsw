@@ -101,6 +101,18 @@
                                 </li>
                             @endcan
                         @endauth
+                        @if(auth()->user() && auth()->user()->isAdmin())
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Admin
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    <li><a class="dropdown-item" href="/application/search">Appl search</a></li>
+                                    <li><a class="dropdown-item" href="/feedbackMaster">Feedback</a></li>
+
+                                </ul>
+                            </li>
+                        @endif
                     </ul>
                     <!--      <ul class="navbar-nav me-auto"> -->
                     @auth

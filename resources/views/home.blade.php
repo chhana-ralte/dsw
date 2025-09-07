@@ -1,25 +1,26 @@
 <x-layout>
-    <x-container>
-        <x-block class="col-md-6">
-            <h3>
-                Welcome to the Halls of Residence, Mizoram University
-            </h3>
-            <p>
-                Important notifications:
-                <ul>
-                    <li>Application for accommodation to the Mizoram University Halls of Residence is opened.
-                        To apply for the 2025-26 academic session, click <a href="/application">here</a> to go to application
-                        portal.</li>
-                    <li>All residents who are willing to stay in the next semester should register themselves in the portal
-                        and apply for seat through the portal.</a>
-                    <li>Hostel residents who are about to leave the University should apply for 'Clearance Certificate'
-                        using the format without which clearance shall not be issued. Students who left without the
-                        clearance shall not have their results declared.</li>
-                </ul>
-            </p>
-
-        </x-block>
-    </x-container>
+    @if(App\Models\Manage::where('name', 'application')->where('status', 'open')->exists())
+        <x-container>
+            <x-block class="col-md-6">
+                <h3>
+                    Welcome to the Halls of Residence, Mizoram University
+                </h3>
+                <p>
+                    Important notifications:
+                    <ul>
+                        <li>Application for accommodation to the Mizoram University Halls of Residence is opened.
+                            To apply for the 2025-26 academic session, click <a href="/application">here</a> to go to application
+                            portal.</li>
+                        <li>All residents who are willing to stay in the next semester should register themselves in the portal
+                            and apply for seat through the portal.</a>
+                        <li>Hostel residents who are about to leave the University should apply for 'Clearance Certificate'
+                            using the format without which clearance shall not be issued. Students who left without the
+                            clearance shall not have their results declared.</li>
+                    </ul>
+                </p>
+            </x-block>
+        </x-container>
+    @endif
     {{-- @if(App\Models\Manage::where('name', 'diktei')->where('status', 'open')->exists())
         <x-block>
             <x-slot name="heading">
@@ -32,15 +33,9 @@
     @can('gives', App\Models\Feedback::class)
 
         @if(App\Models\Feedback::feedback_done(auth()->user()->id))
-            <x-container>
-                <x-block class="col-md-6">
-                    <x-slot name="heading">
-                        Feedback on mess quality is already done. Thank you
-                    </x-slot>
-
-                </x-block>
-            </x-container>
-
+            <div class="mt-5 mb-3 container ">
+                <x-alert type="success">Feedback already done. Thank you</x-alert>
+            </div>
         @else
             <x-container>
                 <x-block class="col-md-6">

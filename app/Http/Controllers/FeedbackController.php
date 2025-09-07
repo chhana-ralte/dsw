@@ -25,6 +25,9 @@ class FeedbackController extends Controller
     {
         if(auth()->user() && auth()->user()->can('gives', App\Models\Feedback::class))
         {
+            if(Feedback::where('user_id', auth()->user()->id)->exists()){
+                return redirect()->back()->with(['message' => ['type' => 'warning', 'text' => 'Feedback already done.']]);
+            }
             $data = [
                 'feedback_master' => $feedbackMaster,
                 'feedback_criteria' => FeedbackCriteria::where('feedback_master_id', $feedbackMaster->id)->orderBy('serial')->get(),
@@ -32,7 +35,7 @@ class FeedbackController extends Controller
             return view('feedback.create', $data);
         }
         else{
-            return redirect()->back()->with(['message' => ['type' => 'warning', 'text' => 'Unauthorised']]);
+            return redirect()->back()->with(['message' => ['type' => 'warning', 'text' => 'Unauthorised to give feedback']]);
         }
     }
 
@@ -119,6 +122,25 @@ class FeedbackController extends Controller
             'feedback_dt' => date('Y-m-d H:i:s'),
             'done' => 1,
         ]);
-        return redirect("/feedbackMaster/" . $feedbackMaster->id . "/feedback")->with(['message' => ['type' => 'info', 'text' => 'Feedback completed']]);
+        return redirect("/")->with(['message' => ['type' => 'info', 'text' => 'Feedback completed']]);
+    }
+
+    public function action(){
+        if(request()->action == 'open'){
+            \App\Models\Manage::where('name','feedback')->update(['status'=>'open']);
+
+        }
+        else if(request()->action == 'close'){
+            \App\Models\Manage::where('name','feedback')->update(['status'=>'closed']);
+
+        }
+        if(request()->action == 'clear'){
+            \App\Models\FeedbackDetail::truncate();
+            \App\Models\FeedbackString::truncate();
+            \App\Models\FeedbackMaster_User::truncate();
+            \App\Models\Feedback::truncate();
+
+        }
+        return redirect()->back()->with(['message' => ['type' => 'info', 'text' => 'Feedback updated successfully']]);
     }
 }
