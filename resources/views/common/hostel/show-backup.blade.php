@@ -1,5 +1,58 @@
 <x-layout>
     <x-container>
+
+
+
+
+        {{--
+            <x-block>
+            <x-slot name="heading">
+                Menu
+            </x-slot>
+
+            <section id="Menu">
+                <div class="container">
+                    <div class="mb-4 row">
+                        <a class="col-sm-3 bg-primary" href="/hostel/{{ $hostel->id }}/room">
+                            <div class="mx-auto col col-md-4 bg-primary">
+                                <span class="btn btn-primary">
+                                    <h4>Rooms</h4>
+                                </span>
+                            </div>
+                        </a>
+                        <a class="col-sm-3 bg-secondary" href="/hostel/{{ $hostel->id }}/occupants?allot_seats=1">
+                            <div class="mx-auto col col-md-4">
+                                <span class="btn btn-secondary">
+                                    <h4>Occupants</h4>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="mb-4 row">
+                        <a class="col-sm-3 bg-primary" href="/hostel/{{ $hostel->id }}/room?status=vacant">
+                            <div class="mx-auto col col-md-4 bg-primary">
+                                <span class="btn btn-primary">
+                                    <h4>Vacant Rooms</h4>
+                                </span>
+                            </div>
+                        </a>
+                        <a class="col-sm-3 bg-secondary" href="/hostel/{{ $hostel->id }}/occupants?allot_seats=0">
+                            <div class="mx-auto col col-md-4">
+                                <span class="btn btn-secondary">
+                                    <h4>Students having no room</h4>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </x-block>
+        --}}
+
+
+
+
         <x-block>
             <x-slot name="heading">
                 {{ $hostel->name }} Hall of Residence
@@ -14,87 +67,6 @@
                     @endauth
                 </p>
             </x-slot>
-        </x-block>
-    </x-container>
-    <x-container>
-        <x-block class="col-sm-12 col-md-5 col-lg-3">
-            <h3 class="text-center">Rooms</h3>
-            <p>Number of rooms: {{$no_rooms }}</p>
-            <p>Number of seats: {{$no_seats }}</p>
-            <p>Number of available seats: {{$no_available_seats }}</p>
-            @auth
-                <div class="text-center">
-                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/room">View</a>
-                </div>
-            @endauth
-        </x-block>
-
-
-
-        <x-block class="col-sm-12 col-md-5 col-lg-3">
-            <h3 class="text-center">Allotted</h3>
-            <p>Number of students allotted: {{$no_allotted_seats }}</p>
-            @auth
-                <div class="text-center">
-                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/occupants" type="button"
-                                        class="btn btn-primary btn-sm">View</a>
-                </div>
-            @endauth
-        </x-block>
-
-        <x-block class="col-sm-12 col-md-5 col-lg-3">
-            <h3 class="text-center">Vacancy</h3>
-            <p>Number of seats vacant: {{$no_vacant_seats }}</p>
-            @auth
-                <div class="text-center">
-                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/room?status=vacant">View</a>
-                </div>
-            @endauth
-        </x-block>
-
-        <x-block class="col-sm-12 col-md-5 col-lg-3">
-            <h3 class="text-center">No Seat</h3>
-            <p>No. of students who are not allotted seat/room: {{$no_unallotted }}</p>
-            @auth
-                <div class="text-center">
-                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/occupants?allot_seats=0">View</a>
-                </div>
-                @endauth
-        </x-block>
-
-        <x-block class="col-sm-12 col-md-5 col-lg-3">
-            <h3 class="text-center">Newly allotted</h3>
-            <p>Students who are newly allotted to this hostel: {{$no_new_allotted }}</p>
-            @auth
-                <div class="text-center">
-                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/admission?sessn={{ $sessn->id }}&adm_type=new">View</a>
-                </div>
-            @endauth
-        </x-block>
-
-        <x-block class="col-sm-12 col-md-5 col-lg-3">
-            <h3 class="text-center">Cancelled</h3>
-            <p>Students whose seats are cancelled: {{$no_seat_cancelled }}</p>
-            @auth
-                <div class="text-center">
-                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/cancelHostel">View</a>
-                </div>
-            @endauth
-        </x-block>
-
-        <x-block class="col-sm-12 col-md-5 col-lg-3">
-            <h3 class="text-center">Requirements</h3>
-            <p>Students whose submitted requirement for next semester: {{$no_requirement }}</p>
-            @auth
-                <div class="text-center">
-                    <a class="btn btn-primary btn-sm" href="/requirement/list?hostel_id={{ $hostel->id }}">View</a>
-                </div>
-            @endauth
-        </x-block>
-
-    </x-container>
-    <x-container>
-        <x-block>
             Summary
             <table class="table table-hover table-striped">
                 <tbody>

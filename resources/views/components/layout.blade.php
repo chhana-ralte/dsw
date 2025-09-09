@@ -137,7 +137,7 @@
             </div>
         </nav>
 
-        <div class="mt-5 mb-3 container ">
+        <div class="mt-5 mb-3 container-xl">
             @if (Session::has('message'))
                 <x-alert type="{{ session('message')['type'] }}">{{ session('message')['text'] }}</x-alert>
             @endif
