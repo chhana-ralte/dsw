@@ -88,4 +88,17 @@ class FeedbackCriteriaController extends Controller
     {
         return $feedbackCriterion;
     }
+
+    public function report_string($feedbackCriterion_id)
+    {
+        $feedbackCriterion = FeedbackCriteria::findOrFail($feedbackCriterion_id);
+        // return $feedbackCriterion_id;
+        $strings = $feedbackCriterion->strings();
+        $data = [
+            'strings' => $strings->paginate(),
+            'feedbackCriterion' => $feedbackCriterion,
+        ];
+        // return $data;
+        return view('feedbackCriteria.report_string', $data);
+    }
 }

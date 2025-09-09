@@ -6,7 +6,6 @@
             </x-slot>
 
             <div style="width: 100%; overflow-x:auto">
-
                 <table class="table table-auto">
                     <tr>
                         <th>Sl.</th>
@@ -38,11 +37,8 @@
                     @endforeach
                 </table>
             </div>
-
         </x-block>
-
     </x-container>
-
     <script>
         $(document).ready(function() {
             $.ajaxSetup({
@@ -50,7 +46,6 @@
                     'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
                 }
             });
-
         });
     </script>
 </x-diktei>

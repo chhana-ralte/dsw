@@ -19,17 +19,20 @@ class FeedbackCriteria extends Model
         return $this->belongsTo(FeedbackMaster::class);
     }
 
-    public function strings(){ // For string feedback
-        $feedback_details = FeedbackDetail::where('feedback_criteria_id',$this->id);
-        $feedback_strings = FeedbackString::whereIn('feedback_detail_id',$feedback_details->pluck('id'));
-        return $feedback_strings->get();
+    public function strings()
+    { // For string feedback
+        $feedback_details = FeedbackDetail::where('feedback_criteria_id', $this->id);
+        $feedback_strings = FeedbackString::whereIn('feedback_detail_id', $feedback_details->pluck('id'));
+        return $feedback_strings;
     }
 
-    public function average(){ // for rating feedback
-        return FeedbackDetail::where('feedback_criteria_id',$this->id)->average('value');
+    public function average()
+    { // for rating feedback
+        return FeedbackDetail::where('feedback_criteria_id', $this->id)->average('value');
     }
 
-    public function options(){
-        $options = FeedbackOption::where('feedback_criteria_id',$this->id);
+    public function options()
+    {
+        $options = FeedbackOption::where('feedback_criteria_id', $this->id);
     }
 }

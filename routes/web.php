@@ -81,6 +81,7 @@ Route::post('/consolidate', [ConsolidateController::class, 'store'])->middleware
 Route::post('/allotment/{id}/admission_decline', [AdmissionController::class, 'admission_decline']);
 // Route::get('/allotment/{id}/admission', [AdmissionCheckController::class, 'index']);
 Route::get('/feedbackMaster/{id}/report', [FeedbackMasterController::class, 'report'])->middleware(['auth']);
+Route::get('/feedbackCriteria/{id}/report-string', [FeedbackCriteriaController::class, 'report_string'])->middleware(['auth']);
 Route::get('/clearance/search', [ClearanceController::class, 'search']);
 Route::get('/clearance/{id}/view', [ClearanceController::class, 'show']);
 Route::get('/clearance/{id}/download', [ClearanceController::class, 'download']);
@@ -242,7 +243,7 @@ Route::controller(App\Http\Controllers\DikteiController::class)->group(function 
     Route::post('/diktei/clearOptions', 'clear_options');
 });
 
-Route::controller(App\Models\FeedbackController::class)->group(function(){
+Route::controller(App\Models\FeedbackController::class)->group(function () {
     Route::post('/feedback/temp/action', 'action')->middleware(['auth']);
 });
 
