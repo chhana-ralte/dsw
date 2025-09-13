@@ -9,10 +9,10 @@
                 </p>
             </x-slot>
 
-            <h4>{{ $feedbackCriterion->criteria }}</h4>
+            <h4 class="px-3 py-1">{{ $feedbackCriterion->criteria }}</h4>
             @foreach ($strings as $str)
                 @if ($str->string != '')
-                    <div class="mx-3 my-2 border corner text-muted">
+                    <div class="mx-3 my-2 p-2 border rounded-3 text-muted">
                         {!! nl2br($str->string) !!}
                     </div>
                 @endif

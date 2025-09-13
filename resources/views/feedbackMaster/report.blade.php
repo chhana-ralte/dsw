@@ -31,7 +31,7 @@
                 <h4>{{ $fc->serial }}. {{ $fc->criteria }}</h4>
                 <div>
                     @if ($fc->type == 'Rating')
-                        {{ $fc->average() }}
+                        Average scode : <b>{{ $fc->average() }}</b>
                         <canvas id="{{ $fc->id }}" name="chart"></canvas>
                     @elseif($fc->type == 'Multiple choice')
                         <ul>
