@@ -20,23 +20,32 @@
         <br>
         <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
             <div class="container-fluid">
-                <a class="navbar-brand" href="/">Dean Students' Welfare</a>
+                <a class="navbar-brand" href="/">DSW</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="mynavbar">
                     <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/clearance/search">Clearance</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="utilities" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Utilities
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="utilities">
+                                <li class="nav-item">
+                                    <a class="dropdown-item" href="/clearance/search">Clearance</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="dropdown-item" href="/notification/check">Reference checking</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="dropdown-item" href="/studentRegistration">Student user registration</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="dropdown-item" href="/SoPs">Standard Operating Procedures</a>
+                                </li>
+                            </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/notification/check">Reference checking</a>
-                        </li>
-                        @guest
-                            <li class="nav-item">
-                                <a class="nav-link" href="/studentRegistration">Student user registration</a>
-                            </li>
-                        @endguest
+
                         @if (auth()->user() && auth()->user()->max_role_level() >= 2)
                             <li class="nav-item">
                                 <a class="nav-link" href="/hostel">Hostels</a>

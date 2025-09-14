@@ -41,9 +41,12 @@ class FeedbackPolicy
         else{
             return true;
         }
+    }
 
 
-
+    public function views(User $user):bool
+    {
+        return $user->max_role_level() >= 3;
     }
 
     public function manages(User $user):bool

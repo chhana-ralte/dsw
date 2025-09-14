@@ -36,6 +36,7 @@
             <div class="mt-5 mb-3 container ">
                 <x-alert type="success">Feedback already done. Thank you</x-alert>
             </div>
+
         @else
             <x-container>
                 <x-block class="col-md-6">
@@ -54,7 +55,14 @@
                     </p>
                 </x-block>
             </x-container>
-        @endif`
-    @endcan
+        @endif
 
+    @endcan
+    @can('views', App\Models\Feedback::class)
+        <x-container>
+            <x-block class="col-md-6">
+                Click <a href="/feedbackMaster/1/report/">here</a> to view the feedback responses
+            </x-block>
+        </x-container>
+    @endcan
 </x-layout>
