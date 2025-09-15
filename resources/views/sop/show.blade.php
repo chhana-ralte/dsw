@@ -1,11 +1,14 @@
 <x-layout>
     <x-container>
-        <x-block class="col-md-6">
+        <x-block class="col-md-8">
             <x-slot name="heading">
                 Standard Operating Procedure
+                <p>
+                    <a class="btn btn-secondary btn-sm" href="/sop">Back</a>
+                </p>
             </x-slot>
             <div>
-                <div class="form-group row mb-2">
+                <div class="mb-2 form-group row">
                     <label for="title" class="col-md-4">
                         Title
                     </label>
@@ -14,15 +17,27 @@
                     </div>
                 </div>
 
-                <div class="form-group row mb-2">
+                <div class="mb-2 form-group row">
                     <label for="title" class="col-md-4">
                         Content
                     </label>
                     <div class="col-md-8">
-                        {{ $sop->content }}
+                        {!! $sop->content !!}
                     </div>
                 </div>
+                <div class="col-md-3">
+                    <div class="btn-group">
+                        <a class="btn btn-secondary btn-sm" href="/sop/{{ $sop->id }}/edit">Edit</a>
+                        <button class="btn btn-danger btn-sm btn-delete" value="{{ $sop->id }}">Delete</button>
 
+                    </div>
+                    <form method="post" name="delete_sop" action="/sop/{{ $sop->id }}">
+                        @csrf
+                        @method('delete')
+                        <input type="hidden" name="sop_id">
+                    </form>
+
+                </div>
 
             </div>
 
@@ -30,21 +45,22 @@
         </x-block>
     </x-container>
     <x-container>
-        <x-block class="col-md-6">
+        <x-block class="col-md-8">
             <x-slot name="heading">
                 Files in the SOP
 
             </x-slot>
             <div>
-                @foreach($filelinks as $fl)
+                @foreach ($filelinks as $fl)
                     <a class="btn btn-primary" href="{{ $fl->file->path }}">{{ $fl->tagname }}</a>
                 @endforeach
             </div>
             <button class="btn btn-primary addfile">Add file</button>
         </x-block>
     </x-container>
-{{-- Modal for file uploading --}}
-    <div class="modal fade" id="fileUploadModal" tabindex="-1" aria-labelledby="fileUploadModalLabel" aria-hidden="true">
+    {{-- Modal for file uploading --}}
+    <div class="modal fade" id="fileUploadModal" tabindex="-1" aria-labelledby="fileUploadModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -76,17 +92,25 @@
             </div>
         </div>
     </div>
-{{-- End Modal for file uploading --}}
-<script>
-    $(document).ready(function(){
-        $("button.addfile").click(function(){
-            $("div#fileUploadModal").modal("show");
-        });
+    {{-- End Modal for file uploading --}}
+    <script>
+        $(document).ready(function() {
+            $("button.addfile").click(function() {
+                $("div#fileUploadModal").modal("show");
+            });
 
-        $("button.btn-upload").click(function(){
-            $("form[name='frmFileUpload']").submit();
-        });
+            $("button.btn-upload").click(function() {
+                $("form[name='frmFileUpload']").submit();
+            });
 
-    });
-</script>
+            $("button.btn-delete").click(function() {
+                if (confirm("Are you sure you want to delete this SOP?")) {
+                    $("input[name='sop_id']").val($(this).val());
+                    $("form[name='delete_sop']").attr('action', '/sop/' + $(this).val());
+                    $("form[name='delete_sop']").submit();
+                }
+            });
+
+        });
+    </script>
 </x-layout>

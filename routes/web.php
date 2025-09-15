@@ -246,7 +246,7 @@ Route::controller(App\Http\Controllers\DikteiController::class)->group(function 
     Route::post('/diktei/clearOptions', 'clear_options');
 });
 
-Route::controller(App\Models\FeedbackController::class)->group(function () {
+Route::controller(FeedbackController::class)->group(function () {
     Route::post('/feedback/temp/action', 'action')->middleware(['auth']);
 });
 

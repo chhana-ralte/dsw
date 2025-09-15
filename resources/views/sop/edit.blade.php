@@ -1,17 +1,18 @@
 <x-layout>
     <x-container>
-        <x-block class="col-md-6">
+        <x-block class="col-md-8">
             <x-slot name="heading">
                 Create new Standard Operating Procedure
             </x-slot>
-            <form method="post" action="/sop">
+            <form method="post" action="/sop/{{ $sop->id }}">
                 @csrf
+                @method('PUT')
                 <div class="mb-2 form-group row">
                     <label for="title" class="col-md-4">
                         Title
                     </label>
                     <div class="col-md-8">
-                        <input class="form-control" name='title'>
+                        <input class="form-control" name='title' value="{{ $sop->title }}">
                     </div>
                 </div>
 
@@ -20,7 +21,7 @@
                         Content
                     </label>
                     <div class="col-md-8">
-                        <textarea class="form-control" name='content'></textarea>
+                        <textarea class="form-control" name='content' height="50">{{ $sop->content }}</textarea>
                     </div>
                 </div>
 
@@ -35,7 +36,7 @@
             </form>
         </x-block>
     </x-container>
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+
     <script>
         $(document).ready(function() {
             $("textarea[name='content']").summernote();
