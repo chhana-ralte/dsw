@@ -7,5 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Filelink extends Model
 {
-    use HasFactory;
+    protected $guarded = [];
+
+    public function file(){
+        return $this->belongsTo(File::class);
+    }
+
+    public function sop(){
+        return $this->belongsTo(Sop::class);
+    }
+
 }

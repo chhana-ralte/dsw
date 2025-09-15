@@ -40,6 +40,7 @@ use App\Http\Controllers\ApplicationManageController;
 use App\Http\Controllers\RequirementController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\SemAllotController;
+use App\Http\Controllers\SopController;
 use App\Http\Controllers\diktei\ZirlaiController;
 
 use App\Http\Controllers\CourseController;
@@ -97,6 +98,7 @@ Route::get('/application/summary-hostel', [ApplicationController::class, 'summar
 Route::get('/application/priority-list', [ApplicationController::class, 'priority_list'])->middleware('auth');
 Route::post('/application/navigate', [ApplicationController::class, 'navigate'])->middleware('auth');
 Route::post('/notiMaster/addToNotiMaster', [NotiMasterController::class, 'addToNotiMaster'])->middleware('auth');
+Route::post('/sop/fileupload', [SopController::class, 'fileupload']);
 // Route::post('/application/navigate', function(){
 //     return "Hello";
 // })->middleware('auth');
@@ -146,6 +148,7 @@ Route::resource('allotment.allot_hostel', AllotHostelController::class)->shallow
 Route::resource('allotment.cancelSeat', CancelSeatController::class)->shallow()->middleware('auth');
 Route::resource('allotment.requirement', RequirementController::class)->shallow()->only(['index', 'create', 'store'])->middleware('auth');
 Route::resource('user', UserController::class)->middleware(['auth']);
+Route::resource('sop', SopController::class)->middleware(['auth']);
 
 Route::resource('feedbackMaster', FeedbackMasterController::class)->middleware(['auth']);
 Route::resource('feedbackMaster.criteria', FeedbackCriteriaController::class)->shallow()->only(['index', 'create', 'store'])->middleware(['auth']);
