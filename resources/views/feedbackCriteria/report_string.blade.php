@@ -14,10 +14,7 @@
                 @if ($str->string != '')
                     <div class="p-2 mx-3 my-2 border rounded-3 text-muted">
                         {!! nl2br($str->string) !!}
-                        <div class="small text-danger">
-                            -
-                            {{ $str->feedback_detail->feedback->user->allotment()->valid_allot_hostel()->hostel->name }}
-                        </div>
+
                     </div>
                 @endif
             @endforeach
