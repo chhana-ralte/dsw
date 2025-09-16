@@ -22,7 +22,7 @@ class FeedbackCriteria extends Model
     public function strings()
     { // For string feedback
         $feedback_details = FeedbackDetail::where('feedback_criteria_id', $this->id);
-        $feedback_strings = FeedbackString::whereIn('feedback_detail_id', $feedback_details->pluck('id'));
+        $feedback_strings = FeedbackString::whereIn('feedback_detail_id', $feedback_details->pluck('id'))->where('string', '<>', '');
         return $feedback_strings;
     }
 
