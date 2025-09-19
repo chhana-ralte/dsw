@@ -42,11 +42,11 @@
                             <li class="nav-item">
                                 <a class="dropdown-item" href="/studentRegistration">Student user registration</a>
                             </li>
-                            @if (auth()->user() && auth()->user()->isAdmin())
-                                <li class="nav-item">
-                                    <a class="dropdown-item" href="/sop">Standard Operating Procedures</a>
-                                </li>
-                            @endif
+                            
+                            <li class="nav-item">
+                                <a class="dropdown-item" href="/sop">Standard Operating Procedures</a>
+                            </li>
+                        
                         </ul>
                     </li>
 
