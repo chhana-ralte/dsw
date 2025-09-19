@@ -26,17 +26,18 @@
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="btn-group">
-                        <a class="btn btn-secondary btn-sm" href="/sop/{{ $sop->id }}/edit">Edit</a>
-                        <button class="btn btn-danger btn-sm btn-delete" value="{{ $sop->id }}">Delete</button>
+                    @can('manages', App\Models\Sop::class)
+                        <div class="btn-group">
+                            <a class="btn btn-secondary btn-sm" href="/sop/{{ $sop->id }}/edit">Edit</a>
+                            <button class="btn btn-danger btn-sm btn-delete" value="{{ $sop->id }}">Delete</button>
 
-                    </div>
-                    <form method="post" name="delete_sop" action="/sop/{{ $sop->id }}">
-                        @csrf
-                        @method('delete')
-                        <input type="hidden" name="sop_id">
-                    </form>
-
+                        </div>
+                        <form method="post" name="delete_sop" action="/sop/{{ $sop->id }}">
+                            @csrf
+                            @method('delete')
+                            <input type="hidden" name="sop_id">
+                        </form>
+                    @endcan
                 </div>
 
             </div>
@@ -47,15 +48,21 @@
     <x-container>
         <x-block class="col-md-8">
             <x-slot name="heading">
-                Files in the SOP
+                Related files in the SOP
 
             </x-slot>
-            <div>
+            <div class="mb-3">
                 @foreach ($filelinks as $fl)
-                    <a class="btn btn-primary" href="{{ $fl->file->path }}">{{ $fl->tagname }}</a>
+                    <a href="{{ $fl->file->path }}" target="_blank">
+                        <span class="badge rounded-pill bg-primary">
+                            {{ $fl->tagname }}
+                        </span>
+                    </a>
                 @endforeach
             </div>
-            <button class="btn btn-primary addfile">Add file</button>
+            @can('manages', App\Models\Sop::class)
+                <button class="btn btn-primary addfile">Add file</button>
+            @endcan
         </x-block>
     </x-container>
     {{-- Modal for file uploading --}}

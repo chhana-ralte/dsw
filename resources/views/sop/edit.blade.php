@@ -12,7 +12,7 @@
                         Title
                     </label>
                     <div class="col-md-8">
-                        <input class="form-control" name='title' value="{{ $sop->title }}">
+                        <input class="form-control" name='title' value="{{ $sop->title }}"  maxlength="50">
                     </div>
                 </div>
 

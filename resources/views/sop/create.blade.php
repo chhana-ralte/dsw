@@ -11,7 +11,7 @@
                         Title
                     </label>
                     <div class="col-md-8">
-                        <input class="form-control" name='title'>
+                        <input class="form-control" name='title' maxlength="50">
                     </div>
                 </div>
 
