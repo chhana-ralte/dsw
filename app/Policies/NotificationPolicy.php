@@ -3,6 +3,8 @@
 namespace App\Policies;
 
 use App\Models\User;
+use App\Models\NotiMaster;
+use App\Models\Notification;
 
 class NotificationPolicy
 {
@@ -14,11 +16,26 @@ class NotificationPolicy
         //
     }
 
-    public function manages(User $user){
+    public function manages(User $user)
+    {
         return $user->isDsw() || $user->isAdmin();
     }
 
-    public function views(User $user){
+    public function view(User $user, NotiMaster $noti_master)
+    {
+        if ($noti_master->type == 'notification') {
+            return true;
+        } else {
+            return $user->max_role_level() >= 3;
+        }
+    }
+    public function views(User $user)
+    {
         return $user->max_role_level() >= 3;
+    }
+
+    public function view_noti(User $user)
+    {
+        return true;
     }
 }

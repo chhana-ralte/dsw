@@ -42,6 +42,10 @@
                             <li class="nav-item">
                                 <a class="dropdown-item" href="/studentRegistration">Student user registration</a>
                             </li>
+
+                            <li class="nav-item">
+                                <a class="dropdown-item" href="/notiMaster/">Notifications</a>
+                            </li>
                             
                             <li class="nav-item">
                                 <a class="dropdown-item" href="/sop">Standard Operating Procedures</a>
@@ -89,9 +93,7 @@
                                 <a class="nav-link" href="/user">Users</a>
                             </li>
                             @if (auth()->user()->isAdmin() || auth()->user()->isDsw())
-                                <li class="nav-item">
-                                    <a class="nav-link" href="/notiMaster/">Notifications</a>
-                                </li>
+                                
                                 <li class="nav-item">
                                     <a class="nav-link" href="/application/">Applications</a>
                                 </li>

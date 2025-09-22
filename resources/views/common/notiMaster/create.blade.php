@@ -35,8 +35,9 @@
                         </div>
                         <div class="col col-md-4">
                             <select name="type" class="form-control">
-                                <option value="allotment">New allotments</option>
-                                <option value="sem_allot">Semester-wise allotments</option>
+                                @foreach(App\Models\NotiMaster::types() as $key => $type)
+                                    <option value="{{ $key }}">{{ $type }}</option>
+                                @endforeach
                             </select>
 
                         </div>

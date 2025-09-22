@@ -51,8 +51,14 @@ class NotiMasterController extends Controller
     public function show(NotiMaster $notiMaster)
     {
         if (auth()->user() && auth()->user()->can('views', Notification::class)) {
+            $filelinks = \App\Models\Filelink::where('type', 'noti_master')->where('foreign_id', $notiMaster->id)->get();
             $notifications = Notification::where('noti_master_id', $notiMaster->id)->orderBy('no')->get();
-            return view('common.notiMaster.show', ['noti_master' => $notiMaster, 'notifications' => $notifications]);
+            $data = [
+                'noti_master' => $notiMaster,
+                'notifications' => $notifications,
+                'filelinks' => $filelinks,
+            ];
+            return view('common.notiMaster.show', $data);
         }
         return redirect('/notiMaster')->with(['message' => ['type' => 'info', 'text' => 'Notification created']]);
     }
@@ -101,5 +107,24 @@ class NotiMasterController extends Controller
             ]);
         }
         return redirect()->back()->with(['message' => ['type' => 'info', 'text' => 'Notification updated']]);
+    }
+
+    public function fileupload()
+    {
+        // return request()->all();
+        // return request()->file('file')->store('uploads', 'public');
+        $newfile = \App\Models\File::upload(request()->file('file'), [
+            'type' => 'document',
+            'name' => request()->filename,
+            'remark' => 'remark'
+        ]);
+
+        $filelink = \App\Models\Filelink::create([
+            'file_id' => $newfile->id,
+            'type' => 'noti_master',
+            'foreign_id' => request()->noti_master_id,
+            'tagname' => request()->tagname,
+        ]);
+        return redirect('/noti_master/' . request()->noti_master_id)->with(['message' => ['type' => 'info', 'text' => 'File update successfully']]);
     }
 }

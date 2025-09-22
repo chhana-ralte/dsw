@@ -13,7 +13,7 @@
                         Title
                     </label>
                     <div class="col-md-8">
-                        {{ $sop->title }}
+                        <strong>{{ $sop->title }}</strong>
                     </div>
                 </div>
 

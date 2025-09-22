@@ -3,9 +3,11 @@
         <x-block>
             <x-slot name="heading">
                 Notifications
-                <p>
-                    <a class="btn btn-primary btn-sm" href="/notiMaster/create">Create new</a>
-                </p>
+                @can('manages', App\Models\Notification::class)
+                    <p>
+                        <a class="btn btn-primary btn-sm" href="/notiMaster/create">Create new</a>
+                    </p>
+                @endcan
             </x-slot>
             <div style="width: 100%; overflow-x:auto">
                 <table class="table table-auto table-hover">
@@ -22,14 +24,16 @@
                     <tbody>
                         <?php $sl = 1; ?>
                         @foreach ($noti_masters as $nm)
-                            <tr class="table-white">
-                                <td>{{ $sl++ }}</td>
-                                <td><a href="/notiMaster/{{ $nm->id }}">{{ $nm->no }}</td>
-                                <td>{{ $nm->dt }}</td>
-                                <td>{{ $nm->type }}</td>
-                                <td>{{ $nm->content }}</td>
+                            @can('view', $nm)
+                                <tr class="table-white">
+                                    <td>{{ $sl++ }}</td>
+                                    <td><a href="/notiMaster/{{ $nm->id }}">{{ $nm->no }}</td>
+                                    <td>{{ $nm->dt }}</td>
+                                    <td>{{ $nm->type }}</td>
+                                    <td>{{ $nm->content }}</td>
 
-                            </tr>
+                                </tr>
+                            @endcan
                         @endforeach
                     </tbody>
                 </table>

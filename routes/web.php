@@ -99,6 +99,7 @@ Route::get('/application/priority-list', [ApplicationController::class, 'priorit
 Route::post('/application/navigate', [ApplicationController::class, 'navigate'])->middleware('auth');
 Route::post('/notiMaster/addToNotiMaster', [NotiMasterController::class, 'addToNotiMaster'])->middleware('auth');
 Route::post('/sop/fileupload', [SopController::class, 'fileupload']);
+Route::post('/noti_master/fileupload', [NotiMasterController::class, 'fileupload']);
 // Route::post('/application/navigate', function(){
 //     return "Hello";
 // })->middleware('auth');
