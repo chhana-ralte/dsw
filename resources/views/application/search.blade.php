@@ -163,7 +163,14 @@
         </x-container>
 
     @elseif($mzuid != '')
-        <span class="text-danger">No application found.</span>
+        <x-container>
+            <x-block>
+                <x-slot name="heading">
+                    <h3 class="text-danger">No application found.</h3>
+                </x-slot>
+            </x-block>
+        </x-container>
+        
     @endif
 
     @if(isset($applications))
@@ -177,6 +184,7 @@
                     <table class="table table-auto">
                         <tr>
                             <th>Name</th>
+                            <th>Programme</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -188,6 +196,9 @@
 
                                 </td>
                                 <td>
+                                    {{  $app->course }}
+                                </td>
+                                <td>
                                     @if($app->status)
                                         {{ $app->status }}
                                     @else
@@ -195,12 +206,14 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @can('manage', $app)
-                                        <a href="/application/{{ $app->id }}/edit?mzuid={{ $app->mzuid }}" class="btn btn-primary">Edit</a>
-                                    @endcan
-                                    @can('delete', $app)
-                                        <a href="/application/{{ $app->id }}/delete" class="btn btn-danger">Delete</a>
-                                    @endcan
+                                    <div class="btn-group">
+                                        @can('manage', $app)
+                                            <a href="/application/{{ $app->id }}/edit?mzuid={{ $app->mzuid }}" class="btn btn-primary">Edit</a>
+                                        @endcan
+                                        @can('delete', $app)
+                                            <a href="/application/{{ $app->id }}/delete" class="btn btn-danger">Delete</a>
+                                        @endcan
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -210,7 +223,13 @@
         </x-container>
 
     @elseif(isset($str) && $str != '')
-        <span class="text-danger">No application found.</span>
+        <x-container>
+            <x-block>
+                <x-slot name="heading">
+                    <h3 class="text-danger">No application found.</h3>
+                </x-slot>
+            </x-block>
+        </x-container>
     @endif
 
 

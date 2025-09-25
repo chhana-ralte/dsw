@@ -8,37 +8,27 @@
                 </p>
             </x-slot>
             <div>
-                <div class="mb-2 form-group row">
-                    <label for="title" class="col-md-4">
-                        Title
-                    </label>
-                    <div class="col-md-8">
-                        <strong>{{ $sop->title }}</strong>
-                    </div>
-                </div>
+                <p class="text-center h3 strong">
+                    {{ $sop->title }}
+                </p>
+                <hr>
+                <p>
+                    {!! $sop->content !!}
+                </p>
+                    
+                @can('manages', App\Models\Sop::class)
+                    <div class="btn-group">
+                        <a class="btn btn-secondary btn-sm" href="/sop/{{ $sop->id }}/edit">Edit</a>
+                        <button class="btn btn-danger btn-sm btn-delete" value="{{ $sop->id }}">Delete</button>
 
-                <div class="mb-2 form-group row">
-                    <label for="title" class="col-md-4">
-                        Content
-                    </label>
-                    <div class="col-md-8">
-                        {!! $sop->content !!}
                     </div>
-                </div>
-                <div class="col-md-3">
-                    @can('manages', App\Models\Sop::class)
-                        <div class="btn-group">
-                            <a class="btn btn-secondary btn-sm" href="/sop/{{ $sop->id }}/edit">Edit</a>
-                            <button class="btn btn-danger btn-sm btn-delete" value="{{ $sop->id }}">Delete</button>
-
-                        </div>
-                        <form method="post" name="delete_sop" action="/sop/{{ $sop->id }}">
-                            @csrf
-                            @method('delete')
-                            <input type="hidden" name="sop_id">
-                        </form>
-                    @endcan
-                </div>
+                    <form method="post" name="delete_sop" action="/sop/{{ $sop->id }}">
+                        @csrf
+                        @method('delete')
+                        <input type="hidden" name="sop_id">
+                    </form>
+                @endcan
+                
 
             </div>
 
