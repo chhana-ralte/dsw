@@ -14,7 +14,8 @@ class NotiMasterController extends Controller
     public function index()
     {
         if (auth()->user() && auth()->user()->can('views', Notification::class)) {
-            $noti_masters = NotiMaster::orderBy('dt')->get();
+            $noti_masters = NotiMaster::all(); //orderBy('dt')->get();
+            // return $noti_masters;
             return view('common.notiMaster.index', ['noti_masters' => $noti_masters]);
         }
         return redirect()->back()->with(['message' => ['type' => 'warning', 'text' => 'Unauthorised']]);

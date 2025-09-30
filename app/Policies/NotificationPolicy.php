@@ -21,14 +21,7 @@ class NotificationPolicy
         return $user->isDsw() || $user->isAdmin();
     }
 
-    public function view(User $user, NotiMaster $noti_master)
-    {
-        if ($noti_master->type == 'notification') {
-            return true;
-        } else {
-            return $user->max_role_level() >= 3;
-        }
-    }
+
     public function views(User $user)
     {
         return $user->max_role_level() >= 3;
