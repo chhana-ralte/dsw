@@ -67,22 +67,20 @@ class User extends Authenticatable
             return true;
         } else {
             $warden = Warden::where('hostel_id', $hostel_id)->where('valid', 1)->first();
-            if($warden){
+            if ($warden) {
                 return Role_User::where('user_id', $this->id)->where('role_id', $role->id)->where('type', 'warden')->where('foreign_id', $warden->id)->exists();
-            }
-            else{
+            } else {
                 return false;
             }
-
         }
     }
 
     public function isWardensOf()
     {
-        $role_users = Role_User::where('type', 'warden')->where('user_id',$this->id);
-        $wardens = Warden::whereIn('id',$role_users->pluck('foreign_id'));
-        return Hostel::whereIn('id',$wardens->pluck('hostel_id'))->get();
-        return ['hostels' => Hostel::whereIn('id',$wardens->pluck('hostel_id'))->get()];
+        $role_users = Role_User::where('type', 'warden')->where('user_id', $this->id);
+        $wardens = Warden::whereIn('id', $role_users->pluck('foreign_id'));
+        return Hostel::whereIn('id', $wardens->pluck('hostel_id'))->get();
+        return ['hostels' => Hostel::whereIn('id', $wardens->pluck('hostel_id'))->get()];
     }
 
     public function isPrefectOf($hostel_id)
@@ -168,5 +166,10 @@ class User extends Authenticatable
         $role = Role::where('role', 'Warden')->first();
         // return $role;
         return Role_User::where('user_id', $this->id)->where('role_id', $role->id)->where('type', 'hostel')->where('foreign_id', $hostel_id)->exists();
+    }
+
+    public function antirag()
+    {
+        return Antirag::where('user_id', $this->id)->first();
     }
 }

@@ -1,4 +1,17 @@
 <x-layout>
+    @can('given', App\Models\Antirag::class)
+        <x-container>
+            <x-block class="col-md-6">
+                You have already given Undertaking for Anti-Ragging. Thank you.
+            </x-block>
+        </x-container>
+    @elsecan('gives', App\Models\Antirag::class)
+        <x-container>
+            <x-block class="col-md-6">
+                You haven't sign the Undertaking for Anti-ragging. Click <a href="/antirag/">here</a> to go to the instruction page.
+            </x-block>
+        </x-container>
+    @endcan
     @if(App\Models\Manage::where('name', 'application')->where('status', 'open')->exists())
         <x-container>
             <x-block class="col-md-6">
@@ -65,4 +78,6 @@
             </x-block>
         </x-container>
     @endcan
+
+    
 </x-layout>
