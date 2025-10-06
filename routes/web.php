@@ -53,7 +53,7 @@ Route::get('/testing', function () {
     return \App\Models\Lib::rand(5);
 });
 Route::get('/welcome', function () {
-    return view('welcome');
+    return view('welcome2');
 });
 Route::get('/bt', function () {
     return view('test.bt');
@@ -141,7 +141,7 @@ Route::resource('hostel.warden', WardenController::class)->shallow()->middleware
 Route::resource('hostel.admission', HostelAdmissionController::class)->only(['index'])->shallow()->middleware('auth');
 
 Route::resource('room.seat', SeatController::class)->shallow()->middleware('auth');
-Route::resource('notiMaster', NotiMasterController::class)->middleware('auth');
+Route::resource('notiMaster', NotiMasterController::class);
 Route::resource('notiMaster.notification', NotificationController::class)->middleware('auth')->shallow();
 Route::resource('notification.allotment', AllotmentController::class)->shallow()->middleware('auth');
 Route::resource('notification.sem_allot', SemAllotController::class)->shallow()->middleware('auth');
