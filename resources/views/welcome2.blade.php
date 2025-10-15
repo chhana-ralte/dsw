@@ -20,6 +20,9 @@
     </head>
 
     <body class='bg-info'>
+        <div style="background-image: url('{{ asset('images/mzu_logo.png') }}'); height: 200px; width: 400px;">
+            Hello world
+        </div>
         <div class="container">
             <div class="row justify-content-start">
                 <div class="col">

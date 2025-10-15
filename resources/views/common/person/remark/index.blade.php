@@ -69,7 +69,7 @@
                     </form>
                 </table>
             </x-block>
-        <x-container>
+        </x-container>
     @else
         <x-container>
             <x-block>
