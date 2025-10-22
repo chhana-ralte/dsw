@@ -3,7 +3,13 @@
         <x-block>
             <x-slot name="heading">
                 @can('view_status', $application)
-                    Applications status: {{ $application->status }} {{ $application->valid ? '' : ' (Declined)' }}
+                    Applications status: 
+                    @if($application->status == 'Notified')
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#financeModal"
+                            data-bs-whatever="Remark">Notified</button>
+                    @else
+                        {{ $application->status }} {{ $application->valid ? '' : ' (Declined)' }}
+                    @endif
                 @else
                     Application details
                 @endif
@@ -397,6 +403,78 @@
         </div>
     </div>
     {{-- End Modal for hostel allotment --}}
+
+
+    {{-- Modal for finance printing --}}
+    <div class="modal fade" id="financeModal" tabindex="-1" aria-labelledby="financeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="financeModalLabel">Brief allotment information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div style="width: 100%; overflow-x:auto">
+                        <table class="table">
+                            <tr>
+                                <th>Name</th>
+                                <td>{{ $application->name }}</td>
+                            </tr>
+                            <tr>
+                                <th>email</th>
+                                <td>{{ $application->email }}</td>
+                            </tr>
+                            <tr>
+                                <th>Mobile</th>
+                                <td>{{ $application->mobile }}</td>
+                            </tr>
+                            <tr>
+                                <th>Course</th>
+                                <td>{{ $application->course }}</td>
+                            </tr>
+                            <tr>
+                                <th>Semester</th>
+                                <td>{{ $application->semester }}</td>
+                            </tr>
+                            <tr>
+                                <th>MZU ID</th>
+                                <td>{{ $application->mzuid }}</td>
+                            </tr>
+                            <tr>
+                                <th>Hostel</th>
+                                <td>{{ $application->hostel->name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Room type</th>
+                                <td>{{ App\Models\Room::room_type($application->roomtype) }}</td>
+                            </tr>
+                            
+                        </table>
+                    </div>
+                        {{-- <div class="mb-3">
+                            <label for="hostel" class="col-form-label">Hostel</label>
+                            
+                        </div>
+                        <div class="mb-3">
+                            <label for="type" class="col-form-label">Room type:</label>
+                            <select id="type" name="type" class="form-control">
+                                <option value="1">Single</option>
+                                <option value="2" selected>Double</option>
+                                <option value="3">Triple</option>
+                                <option value="4">Dorm</option>
+                            </select>
+                        </div> --}}
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- End Modal for finance printing --}}
+
+
     <script>
         $(document).ready(function() {
             $.ajaxSetup({
