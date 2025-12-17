@@ -43,6 +43,7 @@ use App\Http\Controllers\SemAllotController;
 use App\Http\Controllers\SopController;
 use App\Http\Controllers\diktei\ZirlaiController;
 use App\Http\Controllers\AntiragController;
+use App\Http\Controllers\SectionController;
 
 use App\Http\Controllers\CourseController;
 
@@ -161,6 +162,7 @@ Route::resource('feedbackCriteria.option', FeedbackOptionController::class)->sha
 Route::resource('feedback', FeedbackController::class)->middleware(['auth']);
 // Route::resource('course', CourseController::class)->middleware('auth');
 Route::resource('antirag', AntiragController::class)->middleware('auth');
+Route::resource('section', SectionController::class);
 
 Route::resource('sessn', SessnController::class)->middleware(['auth']);
 
