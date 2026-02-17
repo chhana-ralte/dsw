@@ -251,6 +251,10 @@ Route::controller(App\Http\Controllers\DikteiController::class)->group(function 
     Route::post('/diktei/clearOptions', 'clear_options');
 });
 
+Route::controller(\App\Http\Controllers\SemfeeController::class)->group(function(){
+    Route::get('/semfee/', 'index')->middleware(['auth']);
+});
+
 Route::controller(FeedbackController::class)->group(function () {
     Route::post('/feedback/temp/action', 'action')->middleware(['auth']);
 });
