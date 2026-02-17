@@ -43,11 +43,16 @@ class AllotHostel extends Model
         return Admission::where('sessn_id', $sessn_id)->where('allot_hostel_id', $this->id)->first();
     }
 
-    public function semfees(){
+    public function semfees()
+    {
         return $this->hasMany(Semfee::class);
     }
 
-    public function semfee(){
-
+    public function semfee($sessn_id = 0)
+    {
+        if ($sessn_id == 0) {
+            $sessn_id = Sessn::current()->id;
+        }
+        return Semfee::where('sessn_id', $sessn_id)->first();
     }
 }

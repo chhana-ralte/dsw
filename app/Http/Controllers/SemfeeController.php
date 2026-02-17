@@ -12,14 +12,15 @@ class SemfeeController extends Controller
      */
     public function index()
     {
-        if(isset(request()->hostel_id))
-        {
+        if (isset(request()->hostel_id)) {
+            $allot_hostel = \App\Models\AllotHostel::find(3);
             $hostel = \App\Models\Hostel::find(request()->hostel_id);
-            if($hostel){
+            if ($hostel) {
+                return view('semfee.index', ['allot_hostels' => $hostel->valid_allot_hostels()]);
                 return $hostel->valid_allot_hostels();
             }
         }
-        return request()->hostel_id;;
+        return request()->hostel_id;
     }
 
     /**
