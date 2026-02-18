@@ -350,7 +350,10 @@ class ApplicationController extends Controller
             $hostel = null;
         }
         // $applications = Application::where('status', 'Approved')->where('hostel_id', '<>', 0)->orderBy('hostel_id')->orderBy('name');
-        $applications = Application::approved()->orderBy('hostel_id')->orderBy('name');
+        $applications = Application::where('status', 'Approved')->get();
+        // return $applications;
+        $hostels = \App\Models\Hostel::whereIn('id', $applications->pluck('hostel_id'))->orderBy('name')->get();
+
         if ($hostel_id != 0) {
             $applications = Application::where('status', 'Approved')
                 ->where('hostel_id', $hostel->id)
@@ -365,11 +368,13 @@ class ApplicationController extends Controller
                 ->orderBy('name')
                 ->paginate();
         }
+
         $data = [
             'hostel_id' => $hostel_id,
             'hostel' => $hostel,
             'applications' => $applications,
-            'status' => 'approved'
+            'status' => 'approved',
+            'hostels' => $hostels
         ];
         return view('application.approved', $data);
     }
@@ -400,9 +405,10 @@ class ApplicationController extends Controller
                 $notification = \App\Models\Notification::create([
                     'noti_master_id' => request()->filemaster,
                     'no' => request()->no,
-                    'dt' => request()->dt,
+                    // 'dt' => request()->dt,
+                    'dt' => date('Y-m-d'),
                     'type' => 'allotment',
-                    'content' => request()->subject,
+                    'content' => request()->no,
                 ]);
             } else {
                 $notification = \App\Models\Notification::findOrFail(request()->file);

@@ -21,7 +21,8 @@
                 Select the hostel:
                 <select name="hostel" id="hostel">
                     <option value="0" selected disabled>Select Hostel</option>
-                    @foreach (App\Models\Hostel::orderBy('gender')->orderBy('name')->get() as $ht)
+                    {{-- @foreach (App\Models\Hostel::orderBy('gender')->orderBy('name')->get() as $ht) --}}
+                    @foreach($hostels as $ht)
                         <option value="{{ $ht->id }}" {{ $ht->id == $hostel_id ? 'selected' : '' }}>
                             {{ $ht->name }}</option>
                     @endforeach

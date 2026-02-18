@@ -53,6 +53,14 @@ class AllotHostel extends Model
         if ($sessn_id == 0) {
             $sessn_id = Sessn::current()->id;
         }
-        return Semfee::where('sessn_id', $sessn_id)->first();
+        return Semfee::where('allot_hostel_id', $this->id)->where('sessn_id', $sessn_id)->first();
+    }
+
+    public function valid_semfee($sessn_id = 0)
+    {
+        if ($sessn_id == 0) {
+            $sessn_id = Sessn::current()->id;
+        }
+        return Semfee::where('allot_hostel_id', $this->id)->where('sessn_id', $sessn_id)->where('valid',1)->first();
     }
 }

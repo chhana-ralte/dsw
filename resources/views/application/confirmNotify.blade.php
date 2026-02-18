@@ -45,7 +45,7 @@
                                 <input type="text" class="form-control" name="no">
                             </div>
                         </div>
-                        <div class="mb-3 form-group row">
+                        {{-- <div class="mb-3 form-group row">
                             <label class="col-md-5">Enter file date</label>
                             <div class="col md-7">
                                 <input type="date" class="form-control" name="dt">
@@ -56,7 +56,7 @@
                             <div class="col md-7">
                                 <input type="text" class="form-control" name="subject">
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     <table class="table table-auto">
                         <thead>
@@ -222,13 +222,17 @@
             $("select[name='file']").change(function(){
                 if($(this).val() == 0){
                     $("input[name='no']").prop('disabled',false);
+                    /*
                     $("input[name='dt']").prop('disabled',false);
                     $("input[name='subject']").prop('disabled',false);
+                    */
                 }
                 else{
                     $("input[name='no']").prop('disabled',true);
+                    /*
                     $("input[name='dt']").prop('disabled',true);
                     $("input[name='subject']").prop('disabled',true);
+                    */
                 }
             })
 
