@@ -25,11 +25,19 @@
                     @foreach($allot_hostels as $ah)
                         <tr>
                             <td>
-                                <input type="checkbox" name="allot_hostel_id[]" value="{{ $ah->id }}">
+                                @if($ah->allotment->person->email)
+                                    <input type="checkbox" name="allot_hostel_id[]" value="{{ $ah->id }}">
+                                @else
+                                    <input type="checkbox" name="allot_hostel_id[]" value="{{ $ah->id }}" disabled>
+                                @endif
                             </td>
                             <td>{{ $sl++ }}</td>
                             <td>
-                                <a href="/allot_hostel/{{ $ah->id }}/semfee/create?sessn_id={{ $sessn->id }}">{{ $ah->allotment->person->name }}<a>
+                                @if($ah->allotment->person->email)
+                                    <a href="/allot_hostel/{{ $ah->id }}/semfee/create?sessn_id={{ $sessn->id }}">{{ $ah->allotment->person->name }}<a>
+                                @else
+                                    {{ $ah->allotment->person->name }}
+                                @endif
 
                             </td>
                             <td>
@@ -39,7 +47,11 @@
                                 {{ \App\Models\Room::room_type($ah->room_capacity()) }}
                             </td>
                             <td>
-                                {{ $ah->semfee($sessn->id)? $ah->semfee($sessn->id)->status : 'Nothing' }}
+                                @if(!$ah->allotment->person->email)
+                                    <span class="text-danger">No Email</span>
+                                @else
+                                    {{ $ah->semfee($sessn->id)? $ah->semfee($sessn->id)->status : 'Null' }}
+                                @endif
                                 @if(auth()->user() && auth()->user()->isFinance() && $ah->semfee($sessn->id) && $ah->semfee($sessn->id)->status == 'Created')
                                     <a href="#" class="btn btn-sm btn-primary">
                                         Detail
@@ -76,7 +88,10 @@
 
         $("input#all").click(function(){
             $("input[name='allot_hostel_id[]']").each(function(){
-                $(this).prop('checked',$("input#all").prop("checked"));
+                if($(this).prop('disabled') == false){
+                    $(this).prop('checked',$("input#all").prop("checked"));
+                }
+
             });
         });
 
