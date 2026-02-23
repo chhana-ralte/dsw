@@ -46,11 +46,11 @@
                             <li class="nav-item">
                                 <a class="dropdown-item" href="/notiMaster/">Notifications</a>
                             </li>
-                            
+
                             <li class="nav-item">
                                 <a class="dropdown-item" href="/sop">Standard Operating Procedures</a>
                             </li>
-                        
+
                         </ul>
                     </li>
 
@@ -59,11 +59,27 @@
                             <a class="nav-link" href="/hostel">Hostels</a>
                         </li>
                     @endif
-                    @can('viewList', App\Models\Requirement::class)
+
+                    @if (auth()->user() && auth()->user()->isFinance())
+                        <li class="nav-item">
+                            <a class="nav-link" href="/finance">Finance</a>
+                        </li>
+                    @endif
+
+                    {{-- @can('viewList', App\Models\Requirement::class)
                         <li class="nav-item">
                             <a class="nav-link" href="/requirement/list">Requirements</a>
                         </li>
-                    @endcan
+                    @endcan --}}
+                    @if(auth()->user())
+                        <li class="nav-item">
+                            @if(auth()->user()->isWarden() || auth()->user()->isDsw())
+                                <a class="nav-link" href="/semfee">Semester Fees</a>
+                            @elseif(auth()->user()->isInmate())
+                                <a class="nav-link" href="/semfee">Seme Fees</a>
+                            @endif
+                        </li>
+                    @endif
                     {{-- <li class="nav-item">
                             <a class="nav-link" href="/admissioncheck">Check admission status</a>
                         </li> --}}
@@ -93,7 +109,7 @@
                                 <a class="nav-link" href="/user">Users</a>
                             </li>
                             @if (auth()->user()->isAdmin() || auth()->user()->isDsw())
-                                
+
                                 <li class="nav-item">
                                     <a class="nav-link" href="/application/">Applications</a>
                                 </li>

@@ -92,7 +92,7 @@
 
 
 
-                
+
                 <div class="form-group row pt-2">
                     <div class="col-md-3">
                     </div>
@@ -113,7 +113,7 @@ $(document).ready(function(){
     });
     $("button.btn-delete").click(function(){
         if(confirm('Are you sure you want to delete?')){
-            
+
         }
     });
 })

@@ -3,18 +3,18 @@
         <x-block>
             <x-slot name='heading'>
                 List of students in the Hostel in the {{ $sessn->name() }}
-                {{-- <p>
-                    <a class="btn btn-primary btn-sm" href="/section/create">
-                        asdasd
-                    </a>
-                </p> --}}
+                <p>
+                    <button class="btn btn-secondary btn-sm" onclick="history.back()">
+                        back
+                    </button>
+                </p>
             </x-slot>
-            <form method="post" action="/hostel/{{ $hostel->id }}/semfee/approveall">
+            <form method="post" action="/hostel/{{ $hostel->id }}/semfee/confirmall">
                 @csrf
-                <input type='hidden' name="sessn_id" value="{{ $sessn->id }}">
+                <input type="hidden" name="sessn_id" value="{{ $sessn->id }}">
+                <input type="hidden" name="hostel_id" value="{{ $hostel->id }}">
                 <table class="table">
                     <tr>
-                        <th><input type="checkbox" id="all"></th>
                         <th>Sl</th>
                         <th>Name</th>
                         <th>Room</th>
@@ -24,9 +24,6 @@
                     <?php $sl=1 ?>
                     @foreach($allot_hostels as $ah)
                         <tr>
-                            <td>
-                                <input type="checkbox" name="allot_hostel_id[]" value="{{ $ah->id }}">
-                            </td>
                             <td>{{ $sl++ }}</td>
                             <td>
                                 <a href="/allot_hostel/{{ $ah->id }}/semfee/create?sessn_id={{ $sessn->id }}">{{ $ah->allotment->person->name }}<a>
@@ -36,22 +33,24 @@
                                 {{ $ah->valid_room() }}
                             </td>
                             <td>
-                                {{ \App\Models\Room::room_type($ah->room_capacity()) }}
+                                <select name="capacity_{{ $ah->id }}">
+                                    <option disables readonly>Select room capacity</option>
+                                    <option value="1" {{ $ah->room_capacity() == 1?' selected ':'' }}>Single</option>
+                                    <option value="2" {{ $ah->room_capacity() == 2?' selected ':'' }}>Double</option>
+                                    <option value="3" {{ $ah->room_capacity() == 3?' selected ':'' }}>Triple</option>
+                                    <option value="4" {{ $ah->room_capacity() == 4?' selected ':'' }}>Dorm</option>
+                                </option>
+
                             </td>
                             <td>
                                 {{ $ah->semfee($sessn->id)? $ah->semfee($sessn->id)->status : 'Nothing' }}
-                                @if(auth()->user() && auth()->user()->isFinance() && $ah->semfee($sessn->id) && $ah->semfee($sessn->id)->status == 'Created')
-                                    <a href="#" class="btn btn-sm btn-primary">
-                                        Detail
-                                    </a>
-                                @endif
                             </td>
                         </tr>
                     @endforeach
                     @can('manage_semfee', $ah)
                     <tr>
                         <td colspan=4>
-                            <button class="btn btn-primary">Submit all</button>
+                            <button type="submit" class="btn btn-primary btn-submit">Confirm</button>
                         </td>
                     </tr>
                     @endcan
@@ -79,6 +78,11 @@
                 $(this).prop('checked',$("input#all").prop("checked"));
             });
         });
+
+        $("button.btn-submit").click(function(){
+
+        });
+
 
 
     });

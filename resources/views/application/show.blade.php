@@ -3,7 +3,7 @@
         <x-block>
             <x-slot name="heading">
                 @can('view_status', $application)
-                    Applications status: 
+                    Applications status:
                     @if($application->status == 'Notified')
                         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#financeModal"
                             data-bs-whatever="Remark">Notified</button>
@@ -241,6 +241,66 @@
         </x-block>
     </x-container>
 
+    @if (count($application->allotments) > 0)
+        <x-container>
+
+            <x-block>
+                <x-slot name="heading">
+                    <span class="text-danger">The following allotment(s) are found for this application</span>
+                </x-slot>
+                <div style="width:100%; overflow-x:auto">
+                    <table class="table">
+                        <tr>
+                            <th>Allotment ID</th>
+                            <th>Name</th>
+                            <th>Course</th>
+                            <th>Department</th>
+                            <th>Current hostel</th>
+                            <th>Status</th>
+                        </tr>
+                        @foreach ($application->allotments as $allotment)
+                            <tr>
+                                <td>
+                                    <a href="/allotment/{{ $allotment->id }}">{{ $allotment->id }}</a>
+                                </td>
+                                <td>
+                                    {{ $allotment->person->name }}
+                                </td>
+                                @if ($allotment->person->student())
+                                    <td>
+                                        {{ $allotment->person->student()->course }}
+                                    </td>
+                                    <td>
+                                        {{ $allotment->person->student()->department }}
+                                    </td>
+                                @else
+                                    <td colspan=2>
+                                        Not a student
+                                    </td>
+                                @endif
+                                @if ($allotment->valid_allot_hostel())
+                                    <td>
+                                        {{ $allotment->valid_allot_hostel()->hostel->name }}
+                                    </td>
+                                @else
+                                    <td>
+                                        No valid hostel
+                                    </td>
+                                @endif
+                                <td>
+                                    {{ $allotment->valid? 'Valid': 'Invalid' }}
+                                </td>
+
+                            </tr>
+                        @endforeach
+                    </table>
+                </div>
+            </x-block>
+        </x-container>
+
+    @endif
+
+
     @if (auth()->user() && auth()->user()->max_role_level() >= 3 && count($application->existing_allotments()) > 0)
         <x-container>
 
@@ -251,7 +311,7 @@
                 <div style="width:100%; overflow-x:auto">
                     <table class="table">
                         <tr>
-                            <th>Alltment ID</th>
+                            <th>Allotment ID</th>
                             <th>Name</th>
                             <th>Course</th>
                             <th>Department</th>
@@ -449,12 +509,12 @@
                                     <th>Room type</th>
                                     <td>{{ App\Models\Room::room_type($application->roomtype) }}</td>
                                 </tr>
-                                
+
                             </table>
                         </div>
                             {{-- <div class="mb-3">
                                 <label for="hostel" class="col-form-label">Hostel</label>
-                                
+
                             </div>
                             <div class="mb-3">
                                 <label for="type" class="col-form-label">Room type:</label>
@@ -465,7 +525,7 @@
                                     <option value="4">Dorm</option>
                                 </select>
                             </div> --}}
-                        
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

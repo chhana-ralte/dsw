@@ -23,7 +23,7 @@ class UserController extends Controller
         // return $level;
         // return auth()->user()->max_role_level();
         if (auth()->user() && (auth()->user()->isDsw() || auth()->user()->isAdmin())) {
-            $roles = Role::whereIn('role', ['DSW', 'Warden', 'Prefect', 'Mess Secretary']);
+            $roles = Role::whereIn('role', ['DSW', 'Warden', 'Prefect', 'Mess Secretary', 'Finance']);
             $role_users = Role_User::whereIn('role_id', $roles->pluck('id'));
             $users = User::whereIn('id', $role_users->pluck('user_id'))->get();
         } else if (auth()->user()->isWarden()) {
@@ -298,7 +298,13 @@ class UserController extends Controller
             if (auth()->user()->name == 'Diktei') {
                 return redirect('/diktei/course');
             }
-            return redirect('/');
+            else if(auth()->user()->isFinance()){
+                return redirect('/finance');
+            }
+            else{
+                return redirect('/');
+            }
+
         } else {
             return redirect('/login')->with(['message' => ['type' => 'danger', 'text' => 'Login Failed...']])->withInput();
         }

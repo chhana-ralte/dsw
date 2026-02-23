@@ -64,6 +64,18 @@ class Application extends Model
         return Allotment::hydrate($existing_allotments);
     }
 
+    public function allotments(){
+        return $this->hasMany(Allotment::class);
+    }
+
+    public function valid_allotments(){
+        return Allotment::where('application_id', $this->id)->where('valid', 1)->get();
+    }
+
+    public function invalid_allotments(){
+        return Allotment::where('application_id', $this->id)->where('valid', 0)->get();
+    }
+
     public static function status()
     {
         $manage = Manage::where('name', 'application')->first();

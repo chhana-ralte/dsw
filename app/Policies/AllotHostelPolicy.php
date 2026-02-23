@@ -16,6 +16,18 @@ class AllotHostelPolicy
         //
     }
 
+    public function manage_semfee(User $user, AllotHostel $allot_hostel){
+        if($user->max_role_level() > 3){
+            return true;
+        }
+        else if($user->isWardenOf($allot_hostel->hostel_id)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
     /**
      * Determine whether the user can view the model.
      */

@@ -130,6 +130,12 @@ class User extends Authenticatable
         return Role_User::where('user_id', $this->id)->where('role_id', $role->id)->exists();
     }
 
+    public function isFinance()
+    {
+        $role = Role::where('role', 'Finance')->first();
+        return Role_User::where('user_id', $this->id)->where('role_id', $role->id)->exists();
+    }
+
     public function isInmate()
     {
         $role = Role::where('role', 'Inmate')->first();

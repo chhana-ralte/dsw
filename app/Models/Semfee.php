@@ -13,6 +13,10 @@ class Semfee extends Model
         return $this->belongsTo(Allotment::class);
     }
 
+    public function allot_hostel(){
+        return $this->belongsTo(AllotHostel::class);
+    }
+
     public function user(){
         return $this->belongsTo(User::class);
     }

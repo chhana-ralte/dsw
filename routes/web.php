@@ -253,6 +253,15 @@ Route::controller(App\Http\Controllers\DikteiController::class)->group(function 
 
 Route::controller(\App\Http\Controllers\SemfeeController::class)->group(function(){
     Route::get('/semfee/', 'index')->middleware(['auth']);
+    Route::post('/hostel/{id}/semfee/approveall', 'approveAll')->middleware(['auth']);
+    Route::post('/hostel/{id}/semfee/confirmall', 'confirmAll')->middleware(['auth']);
+    Route::get('/allot_hostel/{id}/semfee/create', 'create')->middleware(['auth']);
+    Route::post('/allot_hostel/{id}/semfee', 'store')->middleware(['auth']);
+});
+
+Route::controller(\App\Http\Controllers\FinanceController::class)->group(function(){
+    Route::get('/finance/', 'index')->middleware(['auth']);
+
 });
 
 Route::controller(FeedbackController::class)->group(function () {
