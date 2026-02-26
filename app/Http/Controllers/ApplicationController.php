@@ -206,24 +206,29 @@ class ApplicationController extends Controller
             if ($application->status == 'Notified') {
                 // If already notified, previous allotment records are to be invalidated/Deleted //
                 $allotments = \App\Models\Allotment::where('application_id', $application->id)->get();
-                $allot_hostels = \App\Models\AllotHostel::where('allotment_id', $allotments->pluck('id'))->get();
-                $allot_seats = \App\Models\AllotSeat::where('allot_hostel_id', $allot_hostels->pluck('id'))->get();
-                // $people = \App\Models\Person::whereIn('id', $allotments->pluck('person_id'))->get();
-                // \App\Models\Student::whereIn('person_id', $people->pluck('id'))->delete();
-                // \App\Models\Other::whereIn('person_id', $people->pluck('id'))->delete();
-                // \App\Models\Person::whereIn('id', $allotments->pluck('person_id'))->delete();
-                // \App\Models\AllotSeat::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->delete();
-                // \App\Models\AllotHostel::whereIn('id', $allot_hostels->pluck('id'))->delete();
-                // \App\Models\Allotment::where('application_id', $application->id)->delete();
-                \App\Models\Allotment::where('application_id', $application->id)->update([
+                $allot_hostels = \App\Models\AllotHostel::whereIn('allotment_id', $allotments->pluck('id'))->get();
+                $allot_seats = \App\Models\AllotSeat::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->get();
+                if(count($allot_hostels) == 0)
+                {
+                    $people = \App\Models\Person::whereIn('id', $allotments->pluck('person_id'))->get();
+                    \App\Models\Student::whereIn('person_id', $people->pluck('id'))->delete();
+                    \App\Models\Other::whereIn('person_id', $people->pluck('id'))->delete();
+                    \App\Models\Person::whereIn('id', $allotments->pluck('person_id'))->delete();
+                    \App\Models\AllotSeat::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->delete();
+                    \App\Models\AllotHostel::whereIn('id', $allot_hostels->pluck('id'))->delete();
+                    \App\Models\Allotment::where('application_id', $application->id)->delete();
+                }
+                else{
+                    \App\Models\Allotment::where('application_id', $application->id)->update([
+                            'valid' => 0
+                    ]);
+                    \App\Models\AllotHostel::where('allotment_id', $allotments->pluck('id'))->update([
                         'valid' => 0
-                ]);
-                \App\Models\AllotHostel::where('allotment_id', $allotments->pluck('id'))->update([
-                    'valid' => 0
-                ]);
-                \App\Models\AllotSeat::where('allot_hostel_id', $allot_hostels->pluck('id'))->update([
-                    'valid' => 0
-                ]);
+                    ]);
+                    \App\Models\AllotSeat::where('allot_hostel_id', $allot_hostels->pluck('id'))->update([
+                        'valid' => 0
+                    ]);
+                }
             }
 
             if ($request->status == 'approve') {
