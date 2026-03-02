@@ -281,7 +281,7 @@ Route::resource('zirlai', ZirlaiController::class)->middleware('auth')->shallow(
 
 
 Route::get('/generateRooms', function () {
-    return view('generateRooms');
+    // return view('generateRooms');
 });
 
 Route::post('/generateRooms', function () {
@@ -468,11 +468,12 @@ Route::get('/generateSeats', function () {
 
 Route::post('/generateSeats', function () {
     if (request()->password == "mzudsw") {
-        App\Models\Seat::truncate();
-        App\Models\SeatRemark::truncate();
+        // App\Models\Seat::truncate();
+        // App\Models\SeatRemark::truncate();
 
         // $hostels = Hostel::all();
-        $rooms = Room::all();
+        $hostel = Hostel::where('name', 'Transit')->first();
+        $rooms = $hostel->rooms;
 
         foreach ($rooms as $r) {
             for ($i = 0; $i < $r->capacity; $i++) {
