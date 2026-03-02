@@ -463,7 +463,7 @@ Route::post('/generateRooms2', function () {
 });
 
 Route::get('/generateSeats', function () {
-    return view('generateSeats');
+    // return view('generateSeats');
 });
 
 Route::post('/generateSeats', function () {
@@ -488,7 +488,7 @@ Route::post('/generateSeats', function () {
 });
 
 Route::get('/massAllot', function () {
-    return view('massAllot');
+    // return view('massAllot');
 });
 Route::post('/massAllot', function () {
     if (request()->password == "mzudsw") {
