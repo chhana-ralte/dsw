@@ -500,4 +500,18 @@ class AjaxController extends Controller
         $zirlai = \App\Models\Zirlai::find(request()->zirlai_id);
         return \App\Models\Subject::whereNotIn('id', $arr)->where('course_id', '<>', $zirlai->course_id)->orderBy('code')->get();
     }
+
+    public function getEmail($person_id){
+        return \App\Models\Person::find($person_id)->email;
+    }
+
+    public function updateEmail($person_id, Request $request){
+        // return $request->email;
+        $person = \App\Models\Person::find($person_id);
+        $person->update([
+            'email' => $request->email
+        ]);
+        return "Success";
+    }
+
 }

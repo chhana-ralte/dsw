@@ -2,7 +2,7 @@
     <x-container>
         <x-block>
             <x-slot name='heading'>
-                List of students in the Hostel in the {{ $sessn->name() }}
+                Select the room type and then click Confirm
                 <p>
                     <button class="btn btn-secondary btn-sm" onclick="history.back()">
                         back
@@ -19,14 +19,13 @@
                         <th>Name</th>
                         <th>Room</th>
                         <th>Type</th>
-                        <th>Status</th>
                     </tr>
                     <?php $sl=1 ?>
                     @foreach($allot_hostels as $ah)
                         <tr>
                             <td>{{ $sl++ }}</td>
                             <td>
-                                <a href="/allot_hostel/{{ $ah->id }}/semfee/create?sessn_id={{ $sessn->id }}">{{ $ah->allotment->person->name }}<a>
+                                {{ $ah->allotment->person->name }}
 
                             </td>
                             <td>
@@ -42,9 +41,7 @@
                                 </option>
 
                             </td>
-                            <td>
-                                {{ $ah->semfee($sessn->id)? $ah->semfee($sessn->id)->status : 'Nothing' }}
-                            </td>
+
                         </tr>
                     @endforeach
                     @can('manage_semfee', $ah)

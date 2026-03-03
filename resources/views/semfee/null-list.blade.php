@@ -3,11 +3,26 @@
         <x-block>
             <x-slot name='heading'>
                 List of students in the Hostel in the {{ $sessn->name() }}
-                {{-- <p>
-                    <a class="btn btn-primary btn-sm" href="/section/create">
-                        asdasd
+                <p>
+                    <a class="btn btn-secondary btn-sm" href="/semfee/list/hostel">
+                        Back
                     </a>
-                </p> --}}
+                    <a class="btn btn-primary btn-sm" href="/semfee/list/hostel/{{ $hostel->id }}/Null">
+                        Null
+                    </a>
+                    <a class="btn btn-primary btn-sm" href="/semfee/list/hostel/{{ $hostel->id }}/Forwarded">
+                        Forwarded
+                    </a>
+                    <a class="btn btn-primary btn-sm" href="/semfee/list/hostel/{{ $hostel->id }}/Sent">
+                        Sent
+                    </a>
+                    <a class="btn btn-primary btn-sm" href="/semfee/list/hostel/{{ $hostel->id }}/Paid">
+                        Paid
+                    </a>
+                    <a class="btn btn-primary btn-sm" href="/semfee/list/hostel/{{ $hostel->id }}/Cancelled">
+                        Cancelled
+                    </a>
+                </p>
             </x-slot>
             <form method="post" action="/hostel/{{ $hostel->id }}/semfee/approveall">
                 @csrf

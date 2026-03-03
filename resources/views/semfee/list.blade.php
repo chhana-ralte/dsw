@@ -3,11 +3,26 @@
         <x-block>
             <x-slot name='heading'>
                 List of students in the Hostel in the {{ $sessn->name() }}
-                {{-- <p>
-                    <a class="btn btn-primary btn-sm" href="/section/create">
-                        asdasd
+                <p>
+                    <a class="btn btn-secondary btn-sm" href="/semfee/list/hostel">
+                        Back
                     </a>
-                </p> --}}
+                    <a class="btn btn-primary btn-sm" href="/semfee/list/hostel/{{ $hostel->id }}/Null">
+                        Null
+                    </a>
+                    <a class="btn btn-primary btn-sm" href="/semfee/list/hostel/{{ $hostel->id }}/Forwarded">
+                        Forwarded
+                    </a>
+                    <a class="btn btn-primary btn-sm" href="/semfee/list/hostel/{{ $hostel->id }}/Sent">
+                        Sent
+                    </a>
+                    <a class="btn btn-primary btn-sm" href="/semfee/list/hostel/{{ $hostel->id }}/Paid">
+                        Paid
+                    </a>
+                    <a class="btn btn-primary btn-sm" href="/semfee/list/hostel/{{ $hostel->id }}/Cancelled">
+                        Cancelled
+                    </a>
+                </p>
             </x-slot>
             <form method="post" action="/hostel/{{ $hostel->id }}/semfee/approveall">
                 @csrf
@@ -22,39 +37,39 @@
                         <th>Status</th>
                     </tr>
                     <?php $sl=1 ?>
-                    @foreach($allot_hostels as $ah)
+                    @foreach($semfees as $sf)
                         <tr>
                             <td>
-                                @if($ah->allotment->person->email)
-                                    <input type="checkbox" name="allot_hostel_id[]" value="{{ $ah->id }}">
+                                @if($sf->allot_hostel->allotment->person->email)
+                                    <input type="checkbox" name="allot_hostel_id[]" value="{{ $sf->allot_hostel->id }}">
                                 @else
-                                    <input type="checkbox" name="allot_hostel_id[]" value="{{ $ah->id }}" disabled>
+                                    <input type="checkbox" name="allot_hostel_id[]" value="{{ $sf->allot_hostel->id }}" disabled>
                                 @endif
                             </td>
                             <td>{{ $sl++ }}</td>
                             <td>
-                                @if($ah->allotment->person->email)
-                                    <a href="/allot_hostel/{{ $ah->id }}/semfee/create?sessn_id={{ $sessn->id }}">{{ $ah->allotment->person->name }}<a>
+                                @if($sf->allot_hostel->allotment->person->email)
+                                    <a href="/allot_hostel/{{ $sf->allot_hostel->id }}/semfee/create?sessn_id={{ $sessn->id }}">{{ $sf->allot_hostel->allotment->person->name }}<a>
                                 @else
-                                    {{ $ah->allotment->person->name }}
+                                    {{ $sf->allot_hostel->allotment->person->name }}
                                 @endif
 
                             </td>
                             <td>
-                                {{ $ah->valid_room() }}
+                                {{ $sf->allot_hostel->valid_room() }}
                             </td>
                             <td>
-                                {{ \App\Models\Room::room_type($ah->room_capacity()) }}
+                                {{ \App\Models\Room::room_type($sf->allot_hostel->room_capacity()) }}
                             </td>
                             <td>
-                                @if(!$ah->allotment->person->email)
-                                    <button type="button" class="email-update" value="{{ $ah->allotment->person->id }}">
-                                        <span class="text-danger">No Email</span>
+                                @if(auth()->user() && auth()->user()->isFinance())
+                                    <button type="button" class="email-update" value="{{ $sf->id }}">
+                                        <span class="text-danger">{{ $sf->status }}</span>
                                     </button>
                                 @else
-                                    {{ $ah->semfee($sessn->id)? $ah->semfee($sessn->id)->status : 'Null' }}
+                                    {{ $sf->status }}
                                 @endif
-                                @if(auth()->user() && auth()->user()->isFinance() && $ah->semfee($sessn->id) && $ah->semfee($sessn->id)->status == 'Created')
+                                @if(auth()->user() && auth()->user()->isFinance() && $sf->allot_hostel->semfee($sessn->id) && $sf->allot_hostel->semfee($sessn->id)->status == 'Created')
                                     <a href="#" class="btn btn-sm btn-primary">
                                         Detail
                                     </a>
@@ -62,13 +77,7 @@
                             </td>
                         </tr>
                     @endforeach
-                    @can('manage_semfee', $ah)
-                    <tr>
-                        <td colspan=4>
-                            <button class="btn btn-primary">Submit all</button>
-                        </td>
-                    </tr>
-                    @endcan
+
                 </table>
             </form>
         </x-block>

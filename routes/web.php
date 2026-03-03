@@ -232,6 +232,9 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::get('/ajax/subject/{id}/getSubject', 'getSubject');
     Route::post('/ajax/subject/{id}/delete', 'deleteSubject');
     Route::get('/ajax/diktei/subjects', 'getSubjects');
+
+    Route::get('/ajax/person/{id}/getEmail', 'getEmail');
+    Route::post('/ajax/person/{id}/updateEmail', 'updateEmail');
 })->middleware('auth');
 
 
@@ -257,6 +260,7 @@ Route::controller(\App\Http\Controllers\SemfeeController::class)->group(function
     Route::post('/hostel/{id}/semfee/confirmall', 'confirmAll')->middleware(['auth']);
     Route::get('/allot_hostel/{id}/semfee/create', 'create')->middleware(['auth']);
     Route::post('/allot_hostel/{id}/semfee', 'store')->middleware(['auth']);
+    Route::get('/semfee/list/hostel/{id?}/{status?}', 'list')->middleware(['auth']);
 });
 
 Route::controller(\App\Http\Controllers\FinanceController::class)->group(function(){

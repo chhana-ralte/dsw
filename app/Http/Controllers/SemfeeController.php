@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Semfee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SemfeeController extends Controller
 {
@@ -184,5 +185,49 @@ class SemfeeController extends Controller
         return view('semfee.confirmall', $data);
 
 
+    }
+
+    public function list(?int $hostel_id = 0, ?string $status = "forwarded"){
+        if(isset(request()->sessn_id)){
+            $sessn = \App\Models\Sessn::find(request()->sessn_id);
+        }
+        else{
+            $sessn = \App\Models\Sessn::current();
+        }
+        if($hostel_id){
+            $hostel = \App\Models\Hostel::find($hostel_id);
+            $allot_hostels = $hostel->valid_allot_hostels();
+            if($status == 'Null'){
+                $data = [
+                    'hostel' => $hostel,
+                    'allot_hostels' => $allot_hostels,
+                    'sessn' => $sessn
+                ];
+                return view('semfee.null-list', $data);
+            }
+            else{
+                $semfees = Semfee::whereIn('allot_hostel_id',$allot_hostels->pluck('id'))->where('status', $status)->get();
+                $data = [
+                    'semfees' => $semfees,
+                    'hostel' => $hostel,
+                    'allot_hostels' => $allot_hostels,
+                    'sessn' => $sessn
+                ];
+                return view('semfee.list', $data);
+            }
+        }
+        else{
+            $sql = "SELECT hostels.id, hostels.name, hostels.gender, count(allot_hostels.id) - count(semfees.id) AS 'Null',
+                count(if(semfees.status = 'Forwarded',1,null)) AS 'Forwarded',
+                count(if(semfees.status = 'Sent',1,null)) AS 'Sent',
+                count(if(semfees.status = 'Paid',1,null)) AS 'Paid',
+                count(if(semfees.status = 'Cancelled',1,null)) AS 'Cancelled'
+                FROM hostels JOIN allot_hostels ON hostels.id=allot_hostels.hostel_id AND allot_hostels.valid = 1
+                LEFT JOIN semfees ON allot_hostels.id = semfees.allot_hostel_id
+                GROUP BY hostels.id,hostels.name, hostels.gender
+                ORDER BY hostels.gender, hostels.name";
+            $semfees = DB::select($sql);
+            return view('semfee.index-none',['semfees' => $semfees]);
+        }
     }
 }
