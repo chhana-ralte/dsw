@@ -127,13 +127,28 @@ class User extends Authenticatable
     public function isDsw()
     {
         $role = Role::where('role', 'DSW')->first();
-        return Role_User::where('user_id', $this->id)->where('role_id', $role->id)->exists();
+        if($role)
+            return Role_User::where('user_id', $this->id)->where('role_id', $role->id)->exists();
+        else{
+            return false;
+        }
     }
 
     public function isFinance()
     {
         $role = Role::where('role', 'Finance')->first();
-        return Role_User::where('user_id', $this->id)->where('role_id', $role->id)->exists();
+        if($role){
+
+            return Role_User::where('user_id', $this->id)->where('role_id', $role->id)->exists();
+        }
+
+        else{
+            $role = Role::create([
+                'role' => 'Finance',
+                'level' => 0
+            ]);
+            return false;
+        }
     }
 
     public function isInmate()
