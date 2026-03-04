@@ -552,4 +552,15 @@ class AjaxController extends Controller
         ]);
         return "Successful";
     }
+
+    public function updateSemfeePayment($semfee_id, Request $request)
+    {
+        return $semfee_id;
+        return $request->payment_dt;
+        $semfee = \App\Models\Semfee::find($semfee_id);
+        $semfee->update([
+            'status' => $request->status
+        ]);
+        return "Successful";
+    }
 }

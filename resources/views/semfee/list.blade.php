@@ -98,14 +98,15 @@
                 <div class="modal-body">
                     <form>
                         <input type="hidden" name="semfee_id" value="">
-                        <div class="row mb-3">
+                        <div class="mb-3">
                             <label for="payment_amt" class="col-form-label">Payment amount:</label>
                             <input class="form-control" type="text" name="payment_amt">
                         </div>
-                        <div class="row mb-3">
+                        <div class="mb-3">
                             <label for="payment_dt" class="col-form-label">Payment date:</label>
                             <input class="form-control" type="date" name="payment_dt">
                         </div>
+
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -300,8 +301,26 @@
         });
 
         $(".btn-confirm-payment").click(function(){
-            // alert("asdasdsad");
+            $("input[name='semfee_id']").val($(this).val());
+
             $("#addPaymentModal").modal("show");
+        });
+
+        $(".btn-update").click(function(){
+            $.ajax({
+                type : 'post',
+                url : '/ajax/semfee/' + $("input[name='semfee_id']").val() + '/updatePayment',
+                data : {
+                    payment_amt : $("input[name='payment_amt']").val(),
+                    payment_dt : $("input[name='payment_dt']").val()
+                },
+                success : function(data, status){
+                    alert(data);
+                },
+                error : function(){
+                    alert("Error")
+                }
+            });
         });
 
 

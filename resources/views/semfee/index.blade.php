@@ -89,6 +89,10 @@
                             <label for="email" class="col-form-label">Email:</label>
                             <input class="form-control" type="email" name="email">{{ old('email') }}</input>
                         </div>
+                        <div class="mb-3">
+                            <label for="email" class="col-form-label">Email:</label>
+                            <input class="form-control" type="email" name="email">{{ old('email') }}</input>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
