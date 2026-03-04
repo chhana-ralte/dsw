@@ -69,10 +69,10 @@
                                 @else
                                     {{ $sf->status }}
                                 @endif
-                                @if(auth()->user() && auth()->user()->isFinance() && $sf->allot_hostel->semfee($sessn->id) && $sf->allot_hostel->semfee($sessn->id)->status == 'Created')
-                                    <a href="#" class="btn btn-sm btn-primary">
+                                @if(auth()->user() && auth()->user()->isFinance() && $sf->allot_hostel->semfee($sessn->id) && $sf->allot_hostel->semfee($sessn->id)->status == 'Forwarded')
+                                    <button type="button" class="btn btn-sm btn-primary detail" value="{{ $sf->id }}">
                                         Detail
-                                    </a>
+                                    </button>
                                 @endif
                             </td>
                         </tr>
@@ -83,20 +83,22 @@
         </x-block>
 
     </x-container>
-{{-- Modal for email update --}}
-    <div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
+{{-- Modal for status update --}}
+    <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="emailModalLabel">Add email</h5>
+                    <h5 class="modal-title" id="statusModalLabel">Add status</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form>
-                        <input type="hidden" name="person_id" value="">
+                        <input type="hidden" name="semfee_id" value="">
                         <div class="mb-3">
-                            <label for="email" class="col-form-label">Email:</label>
-                            <input class="form-control" type="email" name="email">{{ old('email') }}</input>
+                            <label for="status" class="col-form-label">Change status to :</label>
+                            <input class="form-control mb-3" type="status" name="status">{{ old('status') }}</input>
+                            <button class="btn btn-primary mb-3" name="status">Click here to change status to "Sent"</button>
+                            <button class="btn btn-primary mb-3" name="status">asdasdasdad asda sda</button>
                         </div>
                     </form>
                 </div>
@@ -107,7 +109,90 @@
             </div>
         </div>
     </div>
-    {{-- End Modal for email update --}}
+    {{-- End Modal for status update --}}
+
+
+    {{-- Modal for finance printing --}}
+
+    <div class="modal fade" id="financeModal" tabindex="-1" aria-labelledby="financeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="financeModalLabel">Brief allotment information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div style="width: 100%; overflow-x:auto">
+                        <table class="table">
+                            <tr>
+                                <th>Name</th>
+                                <td>
+                                    <span id="name"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>email</th>
+                                <td>
+                                    <span id="email"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Mobile</th>
+                                <td>
+                                    <span id="mobile"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Course</th>
+                                <td>
+                                    <span id="course"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Semester</th>
+                                <td>
+                                    <span id="semester"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>MZU ID</th>
+                                <td>
+                                    <span id="mzuid"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Hostel</th>
+                                <td>
+                                    <span id="hostel"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Room type</th>
+                                <td>
+                                    <span id="room_type">dfsfsf</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Status</th>
+                                <td>
+                                    <span id="status">dfsfsf</span>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- End Modal for finance printing --}}
+
+
+
 <script>
     $(document).ready(function() {
 
@@ -117,11 +202,11 @@
             }
         });
 
-        $('.table tr').click(function(event) {
-            if (event.target.type !== 'checkbox') {
-                $(':checkbox', this).trigger('click');
-            }
-        });
+        // $('.table tr').click(function(event) {
+        //     if (event.target.type !== 'checkbox') {
+        //         $(':checkbox', this).trigger('click');
+        //     }
+        // });
 
         $("input#all").click(function(){
             $("input[name='allot_hostel_id[]']").each(function(){
@@ -132,20 +217,42 @@
             });
         });
 
-        $(".email-update").click(function(){
-            $("input[name='person_id']").val($(this).val());
-            // alert($("input[name='person_id']").val());
+        $("button.detail").click(function(){
+            // alert($(this).val());
             $.ajax({
                 type : 'get',
-                url : '/ajax/person/' + $(this).val() + '/getEmail',
+                url : '/ajax/semfee/' + $(this).val() + '/getDetail',
                 success : function(data, status){
-                    $("input[name='email']").val(data);
+                    $("span#name").text(data.name);
+                    $("span#email").text(data.email);
+                    $("span#mobile").text(data.mobile);
+                    $("span#course").text(data.course);
+                    $("span#mzuid").text(data.mzuid);
+                    $("span#hostel").text(data.hostel);
+                    $("span#room_type").text(data.room_type);
+                    $("span#status").text(data.status);
+                    $("#financeModal").modal("show");
+
+                    //alert(data);
                 },
-                error: function(){
-                    alert('Error');
+                error : function(){
+                    alert("Error");
                 }
-            });
-            $("#emailModal").modal("show");
+            })
+
+            // $("input[name='person_id']").val($(this).val());
+            // // alert($("input[name='person_id']").val());
+            // $.ajax({
+            //     type : 'get',
+            //     url : '/ajax/person/' + $(this).val() + '/getEmail',
+            //     success : function(data, status){
+            //         $("input[name='email']").val(data);
+            //     },
+            //     error: function(){
+            //         alert('Error');
+            //     }
+            // });
+            // $("#emailModal").modal("show");
         });
 
         $(".btn-update").click(function(){

@@ -235,6 +235,8 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
 
     Route::get('/ajax/person/{id}/getEmail', 'getEmail');
     Route::post('/ajax/person/{id}/updateEmail', 'updateEmail');
+
+    Route::get('/ajax/semfee/{id}/getDetail', 'getSemfeeDetail');
 })->middleware('auth');
 
 

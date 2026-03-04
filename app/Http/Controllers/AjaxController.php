@@ -514,4 +514,34 @@ class AjaxController extends Controller
         return "Success";
     }
 
+    public function getSemfeeDetail($semfee_id){
+        $semfee = \App\Models\Semfee::find($semfee_id);
+        if($semfee){
+            $person = $semfee->allot_hostel->allotment->person;
+            if($person->student()){
+                $data =[
+                    'name' => $person->name,
+                    'email' => $person->email,
+                    'mobile' => $person->mobile,
+                    'course' => $person->student()->course,
+
+                    'mzuid' => $person->student()->mzuid,
+                    'hostel' => $semfee->allot_hostel->hostel->name,
+                    'room_type' => $semfee->roomcapacity == 1?'Single':($semfee->roomcapacity == 2?'Double':($semfee->roomcapacity == '3'?'Triple':'Dorm')),
+                    'status' => $semfee->status,
+                ];
+                return $data;
+                // return json_encode($data);
+            }
+            else{
+                return false;
+            }
+
+
+        }
+        else{
+            return false;
+        }
+    }
+
 }

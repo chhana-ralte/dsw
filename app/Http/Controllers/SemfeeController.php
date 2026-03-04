@@ -33,6 +33,7 @@ class SemfeeController extends Controller
             }
         }
         else{
+            return redirect('/semfee/list/hostel');
             return view('semfee.index-none');
         }
 
@@ -86,7 +87,7 @@ class SemfeeController extends Controller
             'roomcapacity' => $request->capacity,
             'user_id' => auth()->user()->id,
             'valid' => 1,
-            'status' => 'Created',
+            'status' => 'Forwarded',
         ]);
         return redirect('/allot_hostel/' . $allot_hostel_id . '/semfee/create')->with(['message' => ['type'=>'success', 'text'=> 'Successfully done.']]);
         return $semfee;
@@ -157,7 +158,7 @@ class SemfeeController extends Controller
                     'roomcapacity' => $capacity,
                     'user_id' => auth()->user()->id,
                     'valid' => 1,
-                    'status' => 'Created',
+                    'status' => 'Forwarded',
 
                 ]);
             }

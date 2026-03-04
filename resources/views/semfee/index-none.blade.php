@@ -3,11 +3,11 @@
         <x-block>
             <x-slot name='heading'>
                 Select the Hostel
-                <p>
+                {{-- <p>
                     <a class="btn btn-primary btn-sm" href="/section/create">
                         asdasd
                     </a>
-                </p>
+                </p> --}}
             </x-slot>
             <table class="table">
                 <tr>
