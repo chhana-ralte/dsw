@@ -2,7 +2,7 @@
     <x-container>
         <x-block>
             <x-slot name='heading'>
-                List of students in the Hostel in the {{ $sessn->name() }}
+                List of {{ $status }} students in the  {{ $hostel->name }} Hostel in the {{ $sessn->name() }}
                 <p>
                     <a class="btn btn-secondary btn-sm" href="/semfee/list/hostel">
                         Back
@@ -63,16 +63,20 @@
                             </td>
                             <td>
                                 @if(auth()->user() && auth()->user()->isFinance())
-                                    <button type="button" class="email-update" value="{{ $sf->id }}">
-                                        <span class="text-danger">{{ $sf->status }}</span>
-                                    </button>
+                                    <span class="text-danger">{{ $sf->status }}</span>
                                 @else
                                     {{ $sf->status }}
                                 @endif
-                                @if(auth()->user() && auth()->user()->isFinance() && $sf->allot_hostel->semfee($sessn->id) && $sf->allot_hostel->semfee($sessn->id)->status == 'Forwarded')
-                                    <button type="button" class="btn btn-sm btn-primary detail" value="{{ $sf->id }}">
-                                        Detail
-                                    </button>
+                                @if(auth()->user() && auth()->user()->isFinance() && $sf->allot_hostel->semfee($sessn->id))
+                                    @if($sf->status == 'Forwarded')
+                                        <button type="button" class="btn btn-sm btn-primary detail" value="{{ $sf->id }}">
+                                            Detail
+                                        </button>
+                                    @elseif($sf->status == 'Sent')
+                                        <button type="button" class="btn btn-sm btn-primary btn-confirm-payment" value="{{ $sf->id }}">
+                                            Confirm Payment
+                                        </button>
+                                    @endif
                                 @endif
                             </td>
                         </tr>
@@ -83,22 +87,24 @@
         </x-block>
 
     </x-container>
-{{-- Modal for status update --}}
-    <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+{{-- Modal for payment update --}}
+    <div class="modal fade" id="addPaymentModal" tabindex="-1" aria-labelledby="addPaymentModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="statusModalLabel">Add status</h5>
+                    <h5 class="modal-title" id="addPaymentModalLabel">Add Payment</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form>
                         <input type="hidden" name="semfee_id" value="">
-                        <div class="mb-3">
-                            <label for="status" class="col-form-label">Change status to :</label>
-                            <input class="form-control mb-3" type="status" name="status">{{ old('status') }}</input>
-                            <button class="btn btn-primary mb-3" name="status">Click here to change status to "Sent"</button>
-                            <button class="btn btn-primary mb-3" name="status">asdasdasdad asda sda</button>
+                        <div class="row mb-3">
+                            <label for="payment_amt" class="col-form-label">Payment amount:</label>
+                            <input class="form-control" type="text" name="payment_amt">
+                        </div>
+                        <div class="row mb-3">
+                            <label for="payment_dt" class="col-form-label">Payment date:</label>
+                            <input class="form-control" type="date" name="payment_dt">
                         </div>
                     </form>
                 </div>
@@ -109,7 +115,7 @@
             </div>
         </div>
     </div>
-    {{-- End Modal for status update --}}
+    {{-- End Modal for payment update --}}
 
 
     {{-- Modal for finance printing --}}
@@ -123,63 +129,82 @@
                 </div>
                 <div class="modal-body">
                     <div style="width: 100%; overflow-x:auto">
-                        <table class="table">
-                            <tr>
-                                <th>Name</th>
-                                <td>
-                                    <span id="name"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>email</th>
-                                <td>
-                                    <span id="email"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Mobile</th>
-                                <td>
-                                    <span id="mobile"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Course</th>
-                                <td>
-                                    <span id="course"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Semester</th>
-                                <td>
-                                    <span id="semester"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>MZU ID</th>
-                                <td>
-                                    <span id="mzuid"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Hostel</th>
-                                <td>
-                                    <span id="hostel"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Room type</th>
-                                <td>
-                                    <span id="room_type">dfsfsf</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Status</th>
-                                <td>
-                                    <span id="status">dfsfsf</span>
-                                </td>
-                            </tr>
-
-                        </table>
+                        <form>
+                            <input type="hidden" name="semfee_id">
+                            <table class="table">
+                                <tr>
+                                    <th>Name</th>
+                                    <td>
+                                        <span id="name"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>email</th>
+                                    <td>
+                                        <span id="email"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Mobile</th>
+                                    <td>
+                                        <span id="mobile"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Course</th>
+                                    <td>
+                                        <span id="course"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Semester</th>
+                                    <td>
+                                        <span id="semester"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>MZU ID</th>
+                                    <td>
+                                        <span id="mzuid"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Hostel</th>
+                                    <td>
+                                        <span id="hostel"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Room type</th>
+                                    <td>
+                                        <span id="room_type">dfsfsf</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td>
+                                        <span id="status">dfsfsf</span>
+                                    </td>
+                                </tr>
+                                @if(auth()->user()->isFinance() && $status == "Forwarded")
+                                <tr>
+                                    <td colspan=2>
+                                        <button type="button" class="btn btn-primary btn-changeStatus" value="Sent">
+                                            Update status to 'Sent'
+                                        </button>
+                                    </td>
+                                </tr>
+                                {{-- @elseif(auth()->user()->isFinance() && $status == "Sent")
+                                <tr>
+                                    <td colspan=2>
+                                        <button type="button" class="btn btn-primary btn-add-payment" value="{{ Paid }}">
+                                            Update status to 'Paid'
+                                        </button>
+                                    </td>
+                                </tr> --}}
+                                @endif
+                            </table>
+                        </form>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -223,6 +248,7 @@
                 type : 'get',
                 url : '/ajax/semfee/' + $(this).val() + '/getDetail',
                 success : function(data, status){
+                    $("input[name='semfee_id']").val(data.id);
                     $("span#name").text(data.name);
                     $("span#email").text(data.email);
                     $("span#mobile").text(data.mobile);
@@ -255,12 +281,13 @@
             // $("#emailModal").modal("show");
         });
 
-        $(".btn-update").click(function(){
+        $(".btn-changeStatus").click(function(){
+            // alert($("input[name='semfee_id']").val());
             $.ajax({
                 type : 'post',
-                url : '/ajax/person/' + $("input[name='person_id']").val() + '/updateEmail',
+                url : '/ajax/semfee/' + $("input[name='semfee_id']").val() + '/updateStatus',
                 data : {
-                    email : $("input[name='email']").val()
+                    status : $(this).val()
                 },
                 success : function(data, status){
                     alert("Successful");
@@ -270,6 +297,11 @@
                     alert('Error');
                 }
             });
+        });
+
+        $(".btn-confirm-payment").click(function(){
+            // alert("asdasdsad");
+            $("#addPaymentModal").modal("show");
         });
 
 

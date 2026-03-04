@@ -237,6 +237,7 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::post('/ajax/person/{id}/updateEmail', 'updateEmail');
 
     Route::get('/ajax/semfee/{id}/getDetail', 'getSemfeeDetail');
+    Route::post('/ajax/semfee/{id}/updateStatus', 'updateSemfeeStatus');
 })->middleware('auth');
 
 
@@ -256,7 +257,7 @@ Route::controller(App\Http\Controllers\DikteiController::class)->group(function 
     Route::post('/diktei/clearOptions', 'clear_options');
 });
 
-Route::controller(\App\Http\Controllers\SemfeeController::class)->group(function(){
+Route::controller(\App\Http\Controllers\SemfeeController::class)->group(function () {
     Route::get('/semfee/', 'index')->middleware(['auth']);
     Route::post('/hostel/{id}/semfee/approveall', 'approveAll')->middleware(['auth']);
     Route::post('/hostel/{id}/semfee/confirmall', 'confirmAll')->middleware(['auth']);
@@ -265,9 +266,8 @@ Route::controller(\App\Http\Controllers\SemfeeController::class)->group(function
     Route::get('/semfee/list/hostel/{id?}/{status?}', 'list')->middleware(['auth']);
 });
 
-Route::controller(\App\Http\Controllers\FinanceController::class)->group(function(){
+Route::controller(\App\Http\Controllers\FinanceController::class)->group(function () {
     Route::get('/finance/', 'index')->middleware(['auth']);
-
 });
 
 Route::controller(FeedbackController::class)->group(function () {

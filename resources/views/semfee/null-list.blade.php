@@ -2,7 +2,7 @@
     <x-container>
         <x-block>
             <x-slot name='heading'>
-                List of students in the Hostel in the {{ $sessn->name() }}
+                List of {{ $status }} students in the {{ $hostel->name }} Hostel in the {{ $sessn->name() }}
                 <p>
                     <a class="btn btn-secondary btn-sm" href="/semfee/list/hostel">
                         Back

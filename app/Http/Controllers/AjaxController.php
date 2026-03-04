@@ -501,11 +501,13 @@ class AjaxController extends Controller
         return \App\Models\Subject::whereNotIn('id', $arr)->where('course_id', '<>', $zirlai->course_id)->orderBy('code')->get();
     }
 
-    public function getEmail($person_id){
+    public function getEmail($person_id)
+    {
         return \App\Models\Person::find($person_id)->email;
     }
 
-    public function updateEmail($person_id, Request $request){
+    public function updateEmail($person_id, Request $request)
+    {
         // return $request->email;
         $person = \App\Models\Person::find($person_id);
         $person->update([
@@ -514,12 +516,14 @@ class AjaxController extends Controller
         return "Success";
     }
 
-    public function getSemfeeDetail($semfee_id){
+    public function getSemfeeDetail($semfee_id)
+    {
         $semfee = \App\Models\Semfee::find($semfee_id);
-        if($semfee){
+        if ($semfee) {
             $person = $semfee->allot_hostel->allotment->person;
-            if($person->student()){
-                $data =[
+            if ($person->student()) {
+                $data = [
+                    'id' => $semfee->id,
                     'name' => $person->name,
                     'email' => $person->email,
                     'mobile' => $person->mobile,
@@ -527,21 +531,25 @@ class AjaxController extends Controller
 
                     'mzuid' => $person->student()->mzuid,
                     'hostel' => $semfee->allot_hostel->hostel->name,
-                    'room_type' => $semfee->roomcapacity == 1?'Single':($semfee->roomcapacity == 2?'Double':($semfee->roomcapacity == '3'?'Triple':'Dorm')),
+                    'room_type' => $semfee->roomcapacity == 1 ? 'Single' : ($semfee->roomcapacity == 2 ? 'Double' : ($semfee->roomcapacity == '3' ? 'Triple' : 'Dorm')),
                     'status' => $semfee->status,
                 ];
                 return $data;
                 // return json_encode($data);
-            }
-            else{
+            } else {
                 return false;
             }
-
-
-        }
-        else{
+        } else {
             return false;
         }
     }
-
+    public function updateSemfeeStatus($semfee_id, Request $request)
+    {
+        // return $request->status;
+        $semfee = \App\Models\Semfee::find($semfee_id);
+        $semfee->update([
+            'status' => $request->status
+        ]);
+        return "Successful";
+    }
 }
