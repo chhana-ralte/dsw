@@ -227,7 +227,22 @@ class SemfeeController extends Controller
         }
     }
 
-    public function paymentUpdate($semfee_id){
-        return $semfee_id;
+    public function paymentUpdate($semfee_id, Request $request){
+        $semfee = Semfee::find($semfee_id);
+        \App\Models\Admission::updateOrCreate([
+            'sessn_id' => $semfee->sessn_id,
+            'allotment_id' => $semfee->allot_hostel->allotment_id,
+        ],[
+            'sessn_id' => $semfee->sessn_id,
+            'allot_hostel_id' => $semfee->allot_hostel_id,
+            'allotment_id' => $semfee->allot_hostel->allotment_id,
+            'detail' => 'Semester Fee',
+            'amount' => $request->payment_amt,
+            'payment_dt' => $request->payment_dt,
+        ]);
+        $semfee->update([
+            'status' => 'Paid'
+        ]);
+        return redirect()->back()->with(['message' => ['type' => 'info', 'text' => 'Payment recorded']]);
     }
 }
