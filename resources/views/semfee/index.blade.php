@@ -2,14 +2,14 @@
     <x-container>
         <x-block>
             <x-slot name='heading'>
-                List of students in the Hostel in the {{ $sessn->name() }}
+                List of students currently in the Hostel in the {{ $sessn->name() }}
                 {{-- <p>
                     <a class="btn btn-primary btn-sm" href="/section/create">
                         asdasd
                     </a>
                 </p> --}}
             </x-slot>
-            <form method="post" action="/hostel/{{ $hostel->id }}/semfee/approveall">
+            <form name='frmMain' method="post" action="/hostel/{{ $hostel->id }}/semfee/approveall">
                 @csrf
                 <input type='hidden' name="sessn_id" value="{{ $sessn->id }}">
                 <table class="table">
@@ -65,7 +65,7 @@
                     @can('manage_semfee', $ah)
                     <tr>
                         <td colspan=4>
-                            <button class="btn btn-primary">Submit all</button>
+                            <button type="button" class="btn btn-primary btn-submit-all">Submit all</button>
                         </td>
                     </tr>
                     @endcan
@@ -125,6 +125,16 @@
                 }
 
             });
+        });
+
+        $(".btn-submit-all").click(function(){
+            if($("input[name='allot_hostel_id[]']:checked").length == 0)
+            {
+                alert("Select the list of students...");
+            }
+            else{
+                $("form[name='frmMain']").submit();
+            }
         });
 
         $(".email-update").click(function(){
