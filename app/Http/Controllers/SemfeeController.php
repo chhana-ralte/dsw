@@ -226,4 +226,8 @@ class SemfeeController extends Controller
             return view('semfee.index-none', ['semfees' => $semfees]);
         }
     }
+
+    public function paymentUpdate($semfee_id){
+        return $semfee_id;
+    }
 }

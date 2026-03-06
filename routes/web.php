@@ -265,6 +265,7 @@ Route::controller(\App\Http\Controllers\SemfeeController::class)->group(function
     Route::get('/allot_hostel/{id}/semfee/create', 'create')->middleware(['auth']);
     Route::post('/allot_hostel/{id}/semfee', 'store')->middleware(['auth']);
     Route::get('/semfee/list/hostel/{id?}/{status?}', 'list')->middleware(['auth']);
+    Route::post('/semfee/{id}/paymentUpdate', 'paymentUpdate')->middleware(['auth']);
 });
 
 Route::controller(\App\Http\Controllers\FinanceController::class)->group(function () {

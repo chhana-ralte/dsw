@@ -95,24 +95,27 @@
                     <h5 class="modal-title" id="addPaymentModalLabel">Add Payment</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <form>
+                <form method="post" name='frmPayment'>
+                    <div class="modal-body">
+
+                        @csrf
                         <input type="hidden" name="semfee_id" value="">
                         <div class="mb-3">
                             <label for="payment_amt" class="col-form-label">Payment amount:</label>
-                            <input class="form-control" type="text" name="payment_amt">
+                            <input class="form-control" type="number" name="payment_amt" required>
                         </div>
                         <div class="mb-3">
                             <label for="payment_dt" class="col-form-label">Payment date:</label>
-                            <input class="form-control" type="date" name="payment_dt">
+                            <input class="form-control" type="date" name="payment_dt" required>
                         </div>
 
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary btn-update">Update</button>
-                </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary btn-update">Update</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -302,25 +305,35 @@
 
         $(".btn-confirm-payment").click(function(){
             $("input[name='semfee_id']").val($(this).val());
-
+            $("form[name='frmPayment']").attr('action', '/semfee/' + $(this).val() +'/paymentUpdate');
             $("#addPaymentModal").modal("show");
         });
 
-        $(".btn-update").click(function(){
-            $.ajax({
-                type : 'post',
-                url : '/ajax/semfee/' + $("input[name='semfee_id']").val() + '/updatePayment',
-                data : {
-                    payment_amt : $("input[name='payment_amt']").val(),
-                    payment_dt : $("input[name='payment_dt']").val()
-                },
-                success : function(data, status){
-                    alert(data);
-                },
-                error : function(){
-                    alert("Error")
-                }
-            });
+        $(".btn-updatexxx").click(function(){
+            var payment_amt = $("input[name='payment_amt']").val();
+            var payment_dt = $("input[name='payment_dt']").val();
+            if(Number.isFinite(+payment_amt)){
+                alert("Payment amount is numeric");
+            }
+            else{
+                alert("Payment amount is not number");
+            }
+            alert(payment_amt);
+
+            // $.ajax({
+            //     type : 'post',
+            //     url : '/ajax/semfee/' + $("input[name='semfee_id']").val() + '/updatePayment',
+            //     data : {
+            //         payment_amt : $("input[name='payment_amt']").val(),
+            //         payment_dt : $("input[name='payment_dt']").val()
+            //     },
+            //     success : function(data, status){
+            //         alert(data);
+            //     },
+            //     error : function(){
+            //         alert("Error")
+            //     }
+            // });
         });
 
 
