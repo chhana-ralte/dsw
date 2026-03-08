@@ -23,44 +23,46 @@
                     </tr>
                     <?php $sl=1 ?>
                     @foreach($allot_hostels as $ah)
-                        <tr>
-                            <td>
-                                @if($ah->allotment->person->email)
-                                    <input type="checkbox" name="allot_hostel_id[]" value="{{ $ah->id }}">
-                                @else
-                                    <input type="checkbox" name="allot_hostel_id[]" value="{{ $ah->id }}" disabled>
-                                @endif
-                            </td>
-                            <td>{{ $sl++ }}</td>
-                            <td>
-                                @if($ah->allotment->person->email)
-                                    <a href="/allot_hostel/{{ $ah->id }}/semfee/create?sessn_id={{ $sessn->id }}">{{ $ah->allotment->person->name }}<a>
-                                @else
-                                    {{ $ah->allotment->person->name }}
-                                @endif
+                        @if($ah->allotment->sessn_id != $sessn->id)
+                            <tr>
+                                <td>
+                                    @if($ah->allotment->person->email)
+                                        <input type="checkbox" name="allot_hostel_id[]" value="{{ $ah->id }}">
+                                    @else
+                                        <input type="checkbox" name="allot_hostel_id[]" value="{{ $ah->id }}" disabled>
+                                    @endif
+                                </td>
+                                <td>{{ $sl++ }}</td>
+                                <td>
+                                    @if($ah->allotment->person->email)
+                                        <a href="/allot_hostel/{{ $ah->id }}/semfee/create?sessn_id={{ $sessn->id }}">{{ $ah->allotment->person->name }}<a>
+                                    @else
+                                        {{ $ah->allotment->person->name }}
+                                    @endif
 
-                            </td>
-                            <td>
-                                {{ $ah->valid_room() }}
-                            </td>
-                            <td>
-                                {{ \App\Models\Room::room_type($ah->room_capacity()) }}
-                            </td>
-                            <td>
-                                @if(!$ah->allotment->person->email)
-                                    <button type="button" class="email-update" value="{{ $ah->allotment->person->id }}">
-                                        <span class="text-danger">No Email</span>
-                                    </button>
-                                @else
-                                    {{ $ah->semfee($sessn->id)? $ah->semfee($sessn->id)->status : 'Null' }}
-                                @endif
-                                @if(auth()->user() && auth()->user()->isFinance() && $ah->semfee($sessn->id) && $ah->semfee($sessn->id)->status == 'Created')
-                                    <a href="#" class="btn btn-sm btn-primary">
-                                        Detail
-                                    </a>
-                                @endif
-                            </td>
-                        </tr>
+                                </td>
+                                <td>
+                                    {{ $ah->valid_room() }}
+                                </td>
+                                <td>
+                                    {{ \App\Models\Room::room_type($ah->room_capacity()) }}
+                                </td>
+                                <td>
+                                    @if(!$ah->allotment->person->email)
+                                        <button type="button" class="email-update" value="{{ $ah->allotment->person->id }}">
+                                            <span class="text-danger">No Email</span>
+                                        </button>
+                                    @else
+                                        {{ $ah->semfee($sessn->id)? $ah->semfee($sessn->id)->status : 'Null' }}
+                                    @endif
+                                    @if(auth()->user() && auth()->user()->isFinance() && $ah->semfee($sessn->id) && $ah->semfee($sessn->id)->status == 'Created')
+                                        <a href="#" class="btn btn-sm btn-primary">
+                                            Detail
+                                        </a>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endif
                     @endforeach
                     @can('manage_semfee', $ah)
                     <tr>
@@ -83,15 +85,15 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form id="updateForm">
                         <input type="hidden" name="person_id" value="">
                         <div class="mb-3">
                             <label for="email" class="col-form-label">Email:</label>
-                            <input class="form-control" type="email" name="email">{{ old('email') }}</input>
+                            <input class="form-control" type="email" name="email" id="email" required>{{ old('email') }}</input>
                         </div>
                         <div class="mb-3">
-                            <label for="email" class="col-form-label">Email:</label>
-                            <input class="form-control" type="email" name="email">{{ old('email') }}</input>
+                            <label for="mobile" class="col-form-label">Mobile:</label>
+                            <input class="form-control" type="number" name="mobile" id="mobile" required>{{ old('mobile') }}</input>
                         </div>
                     </form>
                 </div>
@@ -109,6 +111,27 @@
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
+            }
+        });
+
+        $.validator.addMethod("mobileRU", function(value, element) {
+            return this.optional(element) || /^[0-9]{10}$/.test(value);
+        }, "Please enter a valid 10-digit mobile number");
+
+        $("#updateForm").validate({
+            rules: {
+                email: {
+                    required: true,
+                    email: true // Built-in email validation [2]
+                },
+                mobile: {
+                    required: true,
+                    mobileRU: true // Custom mobile validation
+                }
+            },
+            messages: {
+                email: "Please enter a valid email address",
+                mobile: "Please enter a valid 10-digit phone number"
             }
         });
 
@@ -144,7 +167,8 @@
                 type : 'get',
                 url : '/ajax/person/' + $(this).val() + '/getEmail',
                 success : function(data, status){
-                    $("input[name='email']").val(data);
+                    $("input[name='email']").val(data.email);
+                    $("input[name='mobile']").val(data.mobile);
                 },
                 error: function(){
                     alert('Error');
@@ -154,20 +178,26 @@
         });
 
         $(".btn-update").click(function(){
-            $.ajax({
-                type : 'post',
-                url : '/ajax/person/' + $("input[name='person_id']").val() + '/updateEmail',
-                data : {
-                    email : $("input[name='email']").val()
-                },
-                success : function(data, status){
-                    alert("Successful");
-                    location.reload();
-                },
-                error: function(){
-                    alert('Error');
-                }
-            });
+            if($("#updateForm").valid()){
+
+
+                $.ajax({
+                    type : 'post',
+                    url : '/ajax/person/' + $("input[name='person_id']").val() + '/updateEmail',
+                    data : {
+                        email : $("input[name='email']").val(),
+                        mobile : $("input[name='mobile']").val()
+
+                    },
+                    success : function(data, status){
+                        alert("Successful");
+                        location.reload();
+                    },
+                    error: function(){
+                        alert('Error');
+                    }
+                });
+            }
         });
 
 

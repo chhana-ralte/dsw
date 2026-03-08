@@ -503,7 +503,12 @@ class AjaxController extends Controller
 
     public function getEmail($person_id)
     {
-        return \App\Models\Person::find($person_id)->email;
+        $person = \App\Models\Person::find($person_id);
+        $data = [
+            'email' => $person->email,
+            'mobile' => $person->mobile,
+        ];
+        return $data;
     }
 
     public function updateEmail($person_id, Request $request)
@@ -511,7 +516,8 @@ class AjaxController extends Controller
         // return $request->email;
         $person = \App\Models\Person::find($person_id);
         $person->update([
-            'email' => $request->email
+            'email' => $request->email,
+            'mobile' => $request->mobile,
         ]);
         return "Success";
     }
