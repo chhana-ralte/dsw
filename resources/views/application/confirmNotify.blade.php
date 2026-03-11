@@ -23,7 +23,7 @@
                         <div class="mb-3 form-group row">
                             <label class="col-md-5">File number</label>
                             <div class="col md-7">
-                                <select name="filemaster" class="form-control">
+                                <select name="filemaster" class="form-control" required>
                                     <option value="0" selected disabled>Select the file</option>
                                     @foreach(App\Models\NotiMaster::where('type', 'allotment')->get() as $nm)
                                         <option value="{{ $nm->id }}">{{ $nm->no }}:{{ $nm->dt }}: {{ $nm->content }}</option>
@@ -183,8 +183,12 @@
                     alert("Please select the students.");
                     exit();
                 }
-
-                if($("select[name='file']").val() == 0 && ($("input[name='no']").val() == '' || $("input[name='dt']").val() == '' || $("input[name='subject']").val() == '')){
+                if(!$("select[name='filemaster']").val()){
+                    alert("Enter file number, date and subject to proceed.");
+                    exit();
+                }
+                
+                else if($("select[name='file']").val() == 0 && ($("input[name='no']").val() == '' || $("input[name='dt']").val() == '' || $("input[name='subject']").val() == '')){
                     alert("Enter file number, date and subject to proceed.");
                     exit();
                 }

@@ -24,66 +24,68 @@
                     </a>
                 </p>
             </x-slot>
-            <form method="post" action="/hostel/{{ $hostel->id }}/semfee/approveall">
-                @csrf
-                <input type='hidden' name="sessn_id" value="{{ $sessn->id }}">
-                <table class="table">
-                    <tr>
-                        <th><input type="checkbox" id="all"></th>
-                        <th>Sl</th>
-                        <th>Name</th>
-                        <th>Room</th>
-                        <th>Type</th>
-                        <th>Status</th>
-                    </tr>
-                    <?php $sl=1 ?>
-                    @foreach($semfees as $sf)
+            <div style="width: 100%; overflow-x:auto">
+                <form method="post" action="/hostel/{{ $hostel->id }}/semfee/approveall">
+                    @csrf
+                    <input type='hidden' name="sessn_id" value="{{ $sessn->id }}">
+                    <table class="table">
                         <tr>
-                            <td>
-                                @if($sf->allot_hostel->allotment->person->email)
-                                    <input type="checkbox" name="allot_hostel_id[]" value="{{ $sf->allot_hostel->id }}">
-                                @else
-                                    <input type="checkbox" name="allot_hostel_id[]" value="{{ $sf->allot_hostel->id }}" disabled>
-                                @endif
-                            </td>
-                            <td>{{ $sl++ }}</td>
-                            <td>
-                                @if($sf->allot_hostel->allotment->person->email)
-                                    <a href="/allot_hostel/{{ $sf->allot_hostel->id }}/semfee/create?sessn_id={{ $sessn->id }}">{{ $sf->allot_hostel->allotment->person->name }}<a>
-                                @else
-                                    {{ $sf->allot_hostel->allotment->person->name }}
-                                @endif
-
-                            </td>
-                            <td>
-                                {{ $sf->allot_hostel->valid_room() }}
-                            </td>
-                            <td>
-                                {{ \App\Models\Room::room_type($sf->allot_hostel->room_capacity()) }}
-                            </td>
-                            <td>
-                                @if(auth()->user() && auth()->user()->isFinance())
-                                    <span class="text-danger">{{ $sf->status }}</span>
-                                @else
-                                    {{ $sf->status }}
-                                @endif
-                                @if(auth()->user() && auth()->user()->isFinance() && $sf->allot_hostel->semfee($sessn->id))
-                                    @if($sf->status == 'Forwarded')
-                                        <button type="button" class="btn btn-sm btn-primary detail" value="{{ $sf->id }}">
-                                            Detail
-                                        </button>
-                                    @elseif($sf->status == 'Sent')
-                                        <button type="button" class="btn btn-sm btn-primary btn-confirm-payment" value="{{ $sf->id }}">
-                                            Confirm Payment
-                                        </button>
-                                    @endif
-                                @endif
-                            </td>
+                            <th><input type="checkbox" id="all"></th>
+                            <th>Sl</th>
+                            <th>Name</th>
+                            <th>Room</th>
+                            <th>Type</th>
+                            <th>Status</th>
                         </tr>
-                    @endforeach
+                        <?php $sl=1 ?>
+                        @foreach($semfees as $sf)
+                            <tr>
+                                <td>
+                                    @if($sf->allot_hostel->allotment->person->email)
+                                        <input type="checkbox" name="allot_hostel_id[]" value="{{ $sf->allot_hostel->id }}">
+                                    @else
+                                        <input type="checkbox" name="allot_hostel_id[]" value="{{ $sf->allot_hostel->id }}" disabled>
+                                    @endif
+                                </td>
+                                <td>{{ $sl++ }}</td>
+                                <td>
+                                    @if($sf->allot_hostel->allotment->person->email)
+                                        <a href="/allot_hostel/{{ $sf->allot_hostel->id }}/semfee/create?sessn_id={{ $sessn->id }}">{{ $sf->allot_hostel->allotment->person->name }}<a>
+                                    @else
+                                        {{ $sf->allot_hostel->allotment->person->name }}
+                                    @endif
 
-                </table>
-            </form>
+                                </td>
+                                <td>
+                                    {{ $sf->allot_hostel->valid_room() }}
+                                </td>
+                                <td>
+                                    {{ \App\Models\Room::room_type($sf->allot_hostel->room_capacity()) }}
+                                </td>
+                                <td>
+                                    @if(auth()->user() && auth()->user()->isFinance())
+                                        <span class="text-danger">{{ $sf->status }}</span>
+                                    @else
+                                        {{ $sf->status }}
+                                    @endif
+                                    @if(auth()->user() && auth()->user()->isFinance() && $sf->allot_hostel->semfee($sessn->id))
+                                        @if($sf->status == 'Forwarded')
+                                            <button type="button" class="btn btn-sm btn-primary detail" value="{{ $sf->id }}">
+                                                Detail
+                                            </button>
+                                        @elseif($sf->status == 'Sent')
+                                            <button type="button" class="btn btn-sm btn-primary btn-confirm-payment" value="{{ $sf->id }}">
+                                                Confirm Payment
+                                            </button>
+                                        @endif
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+
+                    </table>
+                </form>
+            </div>
         </x-block>
 
     </x-container>

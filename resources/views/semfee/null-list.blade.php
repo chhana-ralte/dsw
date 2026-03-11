@@ -24,68 +24,70 @@
                     </a>
                 </p>
             </x-slot>
-            <form method="post" action="/hostel/{{ $hostel->id }}/semfee/approveall">
-                @csrf
-                <input type='hidden' name="sessn_id" value="{{ $sessn->id }}">
-                <table class="table">
-                    <tr>
-                        <th><input type="checkbox" id="all"></th>
-                        <th>Sl</th>
-                        <th>Name</th>
-                        <th>Room</th>
-                        <th>Type</th>
-                        <th>Status</th>
-                    </tr>
-                    <?php $sl=1 ?>
-                    @foreach($allot_hostels as $ah)
+            <div style="width: 100%; overflow-x:auto">
+                <form method="post" action="/hostel/{{ $hostel->id }}/semfee/approveall">
+                    @csrf
+                    <input type='hidden' name="sessn_id" value="{{ $sessn->id }}">
+                    <table class="table">
                         <tr>
-                            <td>
-                                @if($ah->allotment->person->email)
-                                    <input type="checkbox" name="allot_hostel_id[]" value="{{ $ah->id }}">
-                                @else
-                                    <input type="checkbox" name="allot_hostel_id[]" value="{{ $ah->id }}" disabled>
-                                @endif
-                            </td>
-                            <td>{{ $sl++ }}</td>
-                            <td>
-                                @if($ah->allotment->person->email)
-                                    <a href="/allot_hostel/{{ $ah->id }}/semfee/create?sessn_id={{ $sessn->id }}">{{ $ah->allotment->person->name }}<a>
-                                @else
-                                    {{ $ah->allotment->person->name }}
-                                @endif
+                            <th><input type="checkbox" id="all"></th>
+                            <th>Sl</th>
+                            <th>Name</th>
+                            <th>Room</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                        </tr>
+                        <?php $sl=1 ?>
+                        @foreach($allot_hostels as $ah)
+                            <tr>
+                                <td>
+                                    @if($ah->allotment->person->email)
+                                        <input type="checkbox" name="allot_hostel_id[]" value="{{ $ah->id }}">
+                                    @else
+                                        <input type="checkbox" name="allot_hostel_id[]" value="{{ $ah->id }}" disabled>
+                                    @endif
+                                </td>
+                                <td>{{ $sl++ }}</td>
+                                <td>
+                                    @if($ah->allotment->person->email)
+                                        <a href="/allot_hostel/{{ $ah->id }}/semfee/create?sessn_id={{ $sessn->id }}">{{ $ah->allotment->person->name }}<a>
+                                    @else
+                                        {{ $ah->allotment->person->name }}
+                                    @endif
 
-                            </td>
-                            <td>
-                                {{ $ah->valid_room() }}
-                            </td>
-                            <td>
-                                {{ \App\Models\Room::room_type($ah->room_capacity()) }}
-                            </td>
-                            <td>
-                                @if(!$ah->allotment->person->email)
-                                    <button type="button" class="email-update" value="{{ $ah->allotment->person->id }}">
-                                        <span class="text-danger">No Email</span>
-                                    </button>
-                                @else
-                                    {{ $ah->semfee($sessn->id)? $ah->semfee($sessn->id)->status : 'Null' }}
-                                @endif
-                                @if(auth()->user() && auth()->user()->isFinance() && $ah->semfee($sessn->id) && $ah->semfee($sessn->id)->status == 'Created')
-                                    <a href="#" class="btn btn-sm btn-primary">
-                                        Detail
-                                    </a>
-                                @endif
+                                </td>
+                                <td>
+                                    {{ $ah->valid_room() }}
+                                </td>
+                                <td>
+                                    {{ \App\Models\Room::room_type($ah->room_capacity()) }}
+                                </td>
+                                <td>
+                                    @if(!$ah->allotment->person->email)
+                                        <button type="button" class="email-update" value="{{ $ah->allotment->person->id }}">
+                                            <span class="text-danger">No Email</span>
+                                        </button>
+                                    @else
+                                        {{ $ah->semfee($sessn->id)? $ah->semfee($sessn->id)->status : 'Null' }}
+                                    @endif
+                                    @if(auth()->user() && auth()->user()->isFinance() && $ah->semfee($sessn->id) && $ah->semfee($sessn->id)->status == 'Created')
+                                        <a href="#" class="btn btn-sm btn-primary">
+                                            Detail
+                                        </a>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                        @can('manage_semfee', $ah)
+                        <tr>
+                            <td colspan=4>
+                                <button class="btn btn-primary">Submit all</button>
                             </td>
                         </tr>
-                    @endforeach
-                    @can('manage_semfee', $ah)
-                    <tr>
-                        <td colspan=4>
-                            <button class="btn btn-primary">Submit all</button>
-                        </td>
-                    </tr>
-                    @endcan
-                </table>
-            </form>
+                        @endcan
+                    </table>
+                </form>
+            </div>
         </x-block>
 
     </x-container>
