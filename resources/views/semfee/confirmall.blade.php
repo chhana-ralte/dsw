@@ -9,7 +9,7 @@
                     </button>
                 </p>
             </x-slot>
-            <form method="post" action="/hostel/{{ $hostel->id }}/semfee/confirmall">
+            <form method="post" action="/hostel/{{ $hostel->id }}/semfee/confirmall" onsubmit="return validate();">
                 @csrf
                 <input type="hidden" name="sessn_id" value="{{ $sessn->id }}">
                 <input type="hidden" name="hostel_id" value="{{ $hostel->id }}">
@@ -32,12 +32,12 @@
                                 {{ $ah->valid_room() }}
                             </td>
                             <td>
-                                <select name="capacity_{{ $ah->id }}">
-                                    <option disables readonly>Select room capacity</option>
+                                <select name="capacity_{{ $ah->id }}" class="roomtype">
+                                    <option disabled readonly>Select room capacity</option>
                                     <option value="1" {{ $ah->room_capacity() == 1?' selected ':'' }}>Single</option>
                                     <option value="2" {{ $ah->room_capacity() == 2?' selected ':'' }}>Double</option>
                                     <option value="3" {{ $ah->room_capacity() == 3?' selected ':'' }}>Triple</option>
-                                    <option value="4" {{ $ah->room_capacity() == 4?' selected ':'' }}>Dorm</option>
+                                    <option value="4" {{ $ah->room_capacity() > 3?' selected ':'' }}>Dorm</option>
                                 </option>
 
                             </td>
@@ -56,6 +56,15 @@
         </x-block>
     </x-container>
 <script>
+    function validate(){
+        $("select.roomtype").each(function(){
+            if(!$(this).val()){
+                alert("Please select the room");
+                return false;
+            }
+        });
+        return true;
+    }
     $(document).ready(function() {
 
         $.ajaxSetup({

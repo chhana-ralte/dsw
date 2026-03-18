@@ -27,7 +27,7 @@
                             @if($ah->allotment->sessn_id != $sessn->id)
                                 <tr>
                                     <td>
-                                        @if($ah->allotment->person->email && !$ah->semfee($sessn->id))
+                                        @if($ah->allotment->person->email && !$ah->semfee($sessn->id) && $ah->valid_allot_seat())
                                             <input type="checkbox" name="allot_hostel_id[]" value="{{ $ah->id }}">
                                         @else
                                             <input type="checkbox" name="allot_hostel_id[]" value="{{ $ah->id }}" disabled>
@@ -35,19 +35,25 @@
                                     </td>
                                     <td>{{ $sl++ }}</td>
                                     <td>
-                                        @if($ah->allotment->person->email)
+                                        @if($ah->allotment->person->email && $ah->valid_allot_seat())
                                             <a href="/allot_hostel/{{ $ah->id }}/semfee/create?sessn_id={{ $sessn->id }}">{{ $ah->allotment->person->name }}<a>
                                         @else
                                             {{ $ah->allotment->person->name }}
                                         @endif
 
                                     </td>
-                                    <td>
-                                        {{ $ah->valid_room() }}
-                                    </td>
-                                    <td>
-                                        {{ \App\Models\Room::room_type($ah->room_capacity()) }}
-                                    </td>
+                                    @if($ah->valid_allot_seat())
+                                        <td>
+                                            {{ $ah->valid_room() }}
+                                        </td>
+                                        <td>
+                                            {{ \App\Models\Room::room_type($ah->room_capacity()) }}
+                                        </td>
+                                    @else
+                                        <td colspan="2">
+                                            <span class="text-warning">No valid room</span>
+                                        </td>
+                                    @endif
                                     <td>
                                         @if(!$ah->allotment->person->email)
                                             <button type="button" class="email-update" value="{{ $ah->allotment->person->id }}">
@@ -186,7 +192,6 @@
                     data : {
                         email : $("input[name='email']").val(),
                         mobile : $("input[name='mobile']").val()
-
                     },
                     success : function(data, status){
                         alert("Successful");
