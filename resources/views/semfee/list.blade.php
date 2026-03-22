@@ -25,9 +25,11 @@
                 </p>
             </x-slot>
             <div style="width: 100%; overflow-x:auto">
-                <form method="post" action="/hostel/{{ $hostel->id }}/semfee/approveall">
+                <form name='frmMain' method="post" action="/hostel/{{ $hostel->id }}/semfee/sendall">
                     @csrf
                     <input type='hidden' name="sessn_id" value="{{ $sessn->id }}">
+                    <input type='hidden' name="status" value="{{ $status }}">
+                    <input type='hidden' name="hostel_id" id='hostel_id' value="{{ $hostel->id }}">
                     <table class="table">
                         <tr>
                             <th><input type="checkbox" id="all"></th>
@@ -42,9 +44,9 @@
                             <tr>
                                 <td>
                                     @if($sf->allot_hostel->allotment->person->email)
-                                        <input type="checkbox" name="allot_hostel_id[]" value="{{ $sf->allot_hostel->id }}">
+                                        <input type="checkbox" name="semfee_id[]" value="{{ $sf->id }}">
                                     @else
-                                        <input type="checkbox" name="allot_hostel_id[]" value="{{ $sf->allot_hostel->id }}" disabled>
+                                        <input type="checkbox" name="semfee_id[]" value="{{ $sf->id }}" disabled>
                                     @endif
                                 </td>
                                 <td>{{ $sl++ }}</td>
@@ -82,7 +84,17 @@
                                 </td>
                             </tr>
                         @endforeach
-
+                        {{-- @can('manage_semfee', $ah) --}}
+                        @if(auth()->user()->isFinance())
+                        <tr>
+                            <td colspan=4>
+                                @if($status == 'Forwarded')
+                                    <button id='sendall' type='button' class="btn btn-primary">Update selected status to 'Sent'</button>
+                                @endif
+                            </td>
+                        </tr>
+                        @endif
+                        {{-- @endcan --}}
                     </table>
                 </form>
             </div>
@@ -163,6 +175,12 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <th>Department</th>
+                                    <td>
+                                        <span id="department"></span>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <th>Semester</th>
                                     <td>
                                         <span id="semester"></span>
@@ -240,7 +258,7 @@
         // });
 
         $("input#all").click(function(){
-            $("input[name='allot_hostel_id[]']").each(function(){
+            $("input[name='semfee_id[]']").each(function(){
                 if($(this).prop('disabled') == false){
                     $(this).prop('checked',$("input#all").prop("checked"));
                 }
@@ -259,6 +277,7 @@
                     $("span#email").text(data.email);
                     $("span#mobile").text(data.mobile);
                     $("span#course").text(data.course);
+                    $("span#department").text(data.department);
                     $("span#mzuid").text(data.mzuid);
                     $("span#hostel").text(data.hostel);
                     $("span#room_type").text(data.room_type);
@@ -285,6 +304,16 @@
             //     }
             // });
             // $("#emailModal").modal("show");
+        });
+
+        $("button#sendall").click(function(){
+            if($("input[name='semfee_id[]']:checked").length == 0){
+                alert("Select the students first");
+            }
+            else{
+                $("form[name='frmMain']").attr('action','/hostel/' + $("input#hostel_id").val() + '/semfee/sendall');
+                $("form[name='frmMain']").submit();
+            }
         });
 
         $(".btn-changeStatus").click(function(){

@@ -26,14 +26,20 @@
                         @foreach($allot_hostels as $ah)
                             @if($ah->allotment->sessn_id != $sessn->id)
                                 <tr>
-                                    <td>
+                                    <td class="check">
                                         @if($ah->allotment->person->email && !$ah->semfee($sessn->id) && $ah->valid_allot_seat())
                                             <input type="checkbox" name="allot_hostel_id[]" value="{{ $ah->id }}">
                                         @else
                                             <input type="checkbox" name="allot_hostel_id[]" value="{{ $ah->id }}" disabled>
                                         @endif
                                     </td>
-                                    <td>{{ $sl++ }}</td>
+                                    <td>
+                                        @if(auth()->user()->isDsw())
+                                            <a href="#">{{ $sl++ }}</a>
+                                        @else
+                                            {{ $sl++ }}
+                                        @endif
+                                    </td>
                                     <td>
                                         @if($ah->allotment->person->email && $ah->valid_allot_seat())
                                             <a href="/allot_hostel/{{ $ah->id }}/semfee/create?sessn_id={{ $sessn->id }}">{{ $ah->allotment->person->name }}<a>
@@ -143,7 +149,7 @@
             }
         });
 
-        $('.table tr').click(function(event) {
+        $('.table tr td.check').click(function(event) {
             if (event.target.type !== 'checkbox') {
                 $(':checkbox', this).trigger('click');
             }

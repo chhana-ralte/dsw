@@ -25,8 +25,8 @@
                             <td>
                                 @can('manage', $sf)
                                 <div class="btn-group">
-                                    <button class="btn btn-sm btn-secondary">Edit</button>
-                                    <button class="btn btn-sm btn-danger">Delete</button>
+                                    <button class="btn btn-sm btn-secondary btn-edit" value="{{ $sf->id }}">Edit</button>
+                                    <button class="btn btn-sm btn-danger btn-delete" value="{{ $sf->id }}">Delete</button>
                                 </div>
                                 @else
                                 <div class="btn-group">
@@ -80,6 +80,62 @@
         </x-block>
 
     </x-container>
+
+    {{-- Modal for payment update --}}
+
+    <div class="modal fade" id="editSemfeeModal" tabindex="-1" aria-labelledby="editSemfeeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editSemfeeModalLabel">Add Payment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" name='frmEdit'>
+                    <div class="modal-body">
+                        @csrf
+                        <input type="hidden" name="semfee_id" value="">
+                        <div class="mb-3">
+                            <label for="sessn_id" class="col-form-label">Session:</label>
+                            <select class="form-control" name="sessn_id">
+                                @foreach(\App\Models\Sessn::all() as $sessn)
+                                    <option id="sessn_{{ $sessn->id }}" value="{{ $sessn->id }}">{{ $sessn->name() }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="roomcapacity" class="col-form-label">Room type:</label>
+                            <select class="form-control" name="roomcapacity">
+                                <option id="room_1" value="1">Single</option>
+                                <option id="room_2" value="2">Double</option>
+                                <option id="room_3" value="3">Triple</option>
+                                <option id="room_4" value="4">Dorm</option>
+                            </select>
+
+                        </div>
+                        <div class="mb-3">
+                            <label for="status" class="col-form-label">Status:</label>
+                            <select class="form-control" name="status">
+                                <option id="None" value="None">None</option>
+                                <option id="Forwarded" value="Forwarded">Forwarded</option>
+                                <option id="Sent" value="Sent">Sent</option>
+                                <option id="Paid" value="Paid">Paid</option>
+                                <option id="Cancelled" value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary btn-update">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{-- End Modal for payment update --}}
+
+
     <script>
         function validate(){
 
@@ -104,6 +160,25 @@
                 headers: {
                     'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
                 }
+            });
+
+            $("button.btn-edit").click(function(){
+                $.ajax({
+                    type : 'get',
+                    url : '/ajax/semfee/' + $(this).val() + '/getDetail',
+                    success : function(data, status){
+                        // alert(data.id);
+                        $("select[name='sessn_id'] option#sessn_" + data.sessn_id).prop('selected','true');
+                        $("select[name='roomcapacity'] option#room_" + data.roomcapacity).prop('selected','true');
+                        $("select[name='status'] option#" + data.status).prop('selected','true');
+                        $("input[name='status']").val(data.status);
+                        $("#editSemfeeModal").modal("show");
+                    },
+                    error : function(){
+                        alert('error occured');
+                    }
+                })
+
             });
 
 

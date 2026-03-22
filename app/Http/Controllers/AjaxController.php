@@ -530,13 +530,15 @@ class AjaxController extends Controller
             if ($person->student()) {
                 $data = [
                     'id' => $semfee->id,
+                    'sessn_id' => $semfee->sessn_id,
                     'name' => $person->name,
                     'email' => $person->email,
                     'mobile' => $person->mobile,
                     'course' => $person->student()->course,
-
+                    'department' => $person->student()->department,
                     'mzuid' => $person->student()->mzuid,
                     'hostel' => $semfee->allot_hostel->hostel->name,
+                    'roomcapacity' => $semfee->roomcapacity,
                     'room_type' => $semfee->roomcapacity == 1 ? 'Single' : ($semfee->roomcapacity == 2 ? 'Double' : ($semfee->roomcapacity == '3' ? 'Triple' : 'Dorm')),
                     'status' => $semfee->status,
                 ];

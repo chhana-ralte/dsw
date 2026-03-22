@@ -135,6 +135,16 @@ class SemfeeController extends Controller
         return view('semfee.confirmall', $data);
     }
 
+    public function sendAll($hostel_id, Request $request){
+        // return $hostel_id;
+        $semfee_ids = $request->semfee_id;
+        $semfees = \App\Models\Semfee::whereIn('id', $semfee_ids)->update([
+            'status' => 'Sent'
+        ]);
+        return redirect()->back()->with(['message' => ['type' => 'info', 'text' => "Updated status to 'Sent'"]]);
+
+    }
+
     public function confirmAll($hostel_id, Request $request)
     {
         // return $request;
@@ -183,11 +193,14 @@ class SemfeeController extends Controller
         return view('semfee.confirmall', $data);
     }
 
-    public function list(?int $hostel_id = 0, ?string $status = "Forwarded")
+    public function list(?int $hostel_id = 0, ?string $status = "Forwarded", ?int $sessn_id = 0)
     {
         if (isset(request()->sessn_id)) {
             $sessn = \App\Models\Sessn::find(request()->sessn_id);
-        } else {
+        } else if($sessn_id){
+            $sessn = \App\Models\Sessn::find($sessn_id);
+        }
+        else {
             $sessn = \App\Models\Sessn::current();
         }
         if ($hostel_id) {
