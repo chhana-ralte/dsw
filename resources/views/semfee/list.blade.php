@@ -37,6 +37,8 @@
                             <th>Name</th>
                             <th>Room</th>
                             <th>Type</th>
+                            <th>MZU ID</th>
+                            <th>Course</th>
                             <th>Status</th>
                         </tr>
                         <?php $sl=1 ?>
@@ -61,8 +63,26 @@
                                 <td>
                                     {{ $sf->allot_hostel->valid_room() }}
                                 </td>
+
                                 <td>
                                     {{ \App\Models\Room::room_type($sf->allot_hostel->room_capacity()) }}
+                                </td>
+                                <td>
+                                    @if($sf->allotment->person->student())
+                                        {{ $sf->allotment->person->student()->mzuid }}
+                                    @else
+                                        <span class="text-warning">Invalid</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($sf->allotment->person->student())
+                                        {{ $sf->allotment->person->student()->course }}
+                                        @if($sf->allotment->person->student()->course == 'Ph.D')
+                                            ({{ $sf->allotment->person->student()->department }})
+                                        @endif
+                                    @else
+                                        <span class="text-warning">Invalid</span>
+                                    @endif
                                 </td>
                                 <td>
                                     @if(auth()->user() && auth()->user()->isFinance())
