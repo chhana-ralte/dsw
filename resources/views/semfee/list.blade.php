@@ -77,7 +77,10 @@
                                 <td>
                                     @if($sf->allotment->person->student())
                                         {{ $sf->allotment->person->student()->course }}
-                                        @if($sf->allotment->person->student()->course == 'Ph.D')
+                                        <?php
+                                        $course = $sf->allotment->person->student()->course;
+                                        ?>
+                                        @if($course == 'Ph.D.' || $course == 'Ph.D' || $course == 'M.A' || $course == 'M.Sc' || $course == 'B.Tech')
                                             ({{ $sf->allotment->person->student()->department }})
                                         @endif
                                     @else
@@ -98,6 +101,10 @@
                                         @elseif($sf->status == 'Sent')
                                             <button type="button" class="btn btn-sm btn-primary btn-confirm-payment" value="{{ $sf->id }}">
                                                 Confirm Payment
+                                            </button>
+                                        @elseif($sf->status == 'Paid')
+                                            <button type="button" class="btn btn-sm btn-primary btn-payment-detail" value="{{ $sf->id }}">
+                                                Detail
                                             </button>
                                         @endif
                                     @endif
@@ -134,6 +141,10 @@
 
                         @csrf
                         <input type="hidden" name="semfee_id" value="">
+                        <div class="mb-3">
+                            <label for="ref" class="col-form-label">Reference No.:</label>
+                            <input class="form-control" type="text" name="ref">
+                        </div>
                         <div class="mb-3">
                             <label for="payment_amt" class="col-form-label">Payment amount:</label>
                             <input class="form-control" type="number" name="payment_amt" required>
@@ -260,7 +271,50 @@
 
     {{-- End Modal for finance printing --}}
 
+{{-- Modal for payment detail --}}
 
+    <div class="modal fade" id="paymentDetailModal" tabindex="-1" aria-labelledby="paymentDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paymentDetailModalLabel">Payment detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div style="width: 100%; overflow-x:auto">
+                        <form>
+                            <input type="hidden" name="admission_id">
+                            <table class="table">
+                                <tr>
+                                    <th>Reference</th>
+                                    <td>
+                                        <span id="ref"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Payment amount</th>
+                                    <td>
+                                        <span id="payment_amt"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Payment date</th>
+                                    <td>
+                                        <span id="payment_dt"></span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- End Modal for payment detail --}}
 
 <script>
     $(document).ready(function() {
@@ -311,6 +365,7 @@
                 }
             })
 
+            
             // $("input[name='person_id']").val($(this).val());
             // // alert($("input[name='person_id']").val());
             // $.ajax({
@@ -326,6 +381,22 @@
             // $("#emailModal").modal("show");
         });
 
+        $("button.btn-payment-detail").click(function(){
+            $.ajax({
+                type : 'get',
+                url : '/ajax/semfee/' + $(this).val() + '/paymentDetail',
+                success : function(data, status){
+                    $("span#ref").text(data.ref);
+                    $("span#payment_dt").text(data.payment_dt);
+                    $("span#payment_amt").text(data.amount);
+                    $("#paymentDetailModal").modal("show");
+                },
+                error: function(){
+                    alert('Error');
+                }
+            });
+            
+        });
         $("button#sendall").click(function(){
             if($("input[name='semfee_id[]']:checked").length == 0){
                 alert("Select the students first");
@@ -361,6 +432,7 @@
         });
 
         $(".btn-updatexxx").click(function(){
+            var ref = $("input[name='ref']").val();
             var payment_amt = $("input[name='payment_amt']").val();
             var payment_dt = $("input[name='payment_dt']").val();
             if(Number.isFinite(+payment_amt)){

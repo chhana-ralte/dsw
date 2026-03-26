@@ -239,6 +239,7 @@ Route::controller(App\Http\Controllers\AjaxController::class)->group(function ()
     Route::get('/ajax/semfee/{id}/getDetail', 'getSemfeeDetail');
     Route::post('/ajax/semfee/{id}/updateStatus', 'updateSemfeeStatus');
     Route::post('/ajax/semfee/{id}/updatePayment', 'updateSemfeePayment');
+    Route::get('/ajax/semfee/{id}/paymentDetail', 'semfeePaymentDetail');
 })->middleware('auth');
 
 

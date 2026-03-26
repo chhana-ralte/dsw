@@ -135,14 +135,14 @@ class SemfeeController extends Controller
         return view('semfee.confirmall', $data);
     }
 
-    public function sendAll($hostel_id, Request $request){
+    public function sendAll($hostel_id, Request $request)
+    {
         // return $hostel_id;
         $semfee_ids = $request->semfee_id;
         $semfees = \App\Models\Semfee::whereIn('id', $semfee_ids)->update([
             'status' => 'Sent'
         ]);
         return redirect()->back()->with(['message' => ['type' => 'info', 'text' => "Updated status to 'Sent'"]]);
-
     }
 
     public function confirmAll($hostel_id, Request $request)
@@ -197,10 +197,9 @@ class SemfeeController extends Controller
     {
         if (isset(request()->sessn_id)) {
             $sessn = \App\Models\Sessn::find(request()->sessn_id);
-        } else if($sessn_id){
+        } else if ($sessn_id) {
             $sessn = \App\Models\Sessn::find($sessn_id);
-        }
-        else {
+        } else {
             $sessn = \App\Models\Sessn::current();
         }
         if ($hostel_id) {
@@ -240,16 +239,18 @@ class SemfeeController extends Controller
         }
     }
 
-    public function paymentUpdate($semfee_id, Request $request){
+    public function paymentUpdate($semfee_id, Request $request)
+    {
         $semfee = Semfee::find($semfee_id);
         \App\Models\Admission::updateOrCreate([
             'sessn_id' => $semfee->sessn_id,
             'allotment_id' => $semfee->allot_hostel->allotment_id,
-        ],[
+        ], [
             'sessn_id' => $semfee->sessn_id,
             'allot_hostel_id' => $semfee->allot_hostel_id,
             'allotment_id' => $semfee->allot_hostel->allotment_id,
             'detail' => 'Semester Fee',
+            'ref' => $request->ref,
             'amount' => $request->payment_amt,
             'payment_dt' => $request->payment_dt,
         ]);

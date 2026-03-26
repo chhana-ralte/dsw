@@ -571,4 +571,17 @@ class AjaxController extends Controller
         ]);
         return "Successful";
     }
+
+    public function semfeePaymentDetail($semfee_id)
+    {
+        $semfee = \App\Models\Semfee::find($semfee_id);
+        $admission = \App\Models\Admission::where('allotment_id', $semfee->allotment_id)
+            ->where('sessn_id', $semfee->sessn_id)
+            ->first();
+        if ($admission) {
+            return $admission;
+        } else {
+            return false;
+        }
+    }
 }
