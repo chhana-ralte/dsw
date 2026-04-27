@@ -113,7 +113,7 @@ class User extends Authenticatable
     {
         $role = Role::where('role', 'Warden')->first();
         $role_users = Role_User::where('role_id', $role->id)->where('user_id', $this->id)->where('type', 'warden')->get();
-        $wardens = Warden::whereIn('id', $role_users->pluck('foreign_id'));
+        $wardens = Warden::whereIn('id', $role_users->pluck('foreign_id'))->where('valid', 1);
         return $wardens->get();
     }
 
@@ -127,9 +127,9 @@ class User extends Authenticatable
     public function isDsw()
     {
         $role = Role::where('role', 'DSW')->first();
-        if($role)
+        if ($role)
             return Role_User::where('user_id', $this->id)->where('role_id', $role->id)->exists();
-        else{
+        else {
             return false;
         }
     }
@@ -137,12 +137,10 @@ class User extends Authenticatable
     public function isFinance()
     {
         $role = Role::where('role', 'Finance')->first();
-        if($role){
+        if ($role) {
 
             return Role_User::where('user_id', $this->id)->where('role_id', $role->id)->exists();
-        }
-
-        else{
+        } else {
             $role = Role::create([
                 'role' => 'Finance',
                 'level' => 0
