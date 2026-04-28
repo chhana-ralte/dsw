@@ -308,7 +308,12 @@
                             </select>
                         </div>
                     </div>
-
+                    <div  class="mb-3 form-group">
+                        <label for="ref" class="col">Reference</label>
+                        <div class="col">
+                            <input type="text" class="form-control" name="ref" value="">
+                        </div>
+                    </div>
                     <div class="mb-3 form-group">
                         <label for="amount" class="col">Payment amount</label>
                         <div class="col">
@@ -478,11 +483,11 @@
                     exit();
                 } else {
                     $.ajax({
-                        url: "/ajax/allotment/" + $("input#allotment_id").val() +
-                            "/admission/store",
+                        url: "/ajax/allotment/" + $("input#allotment_id").val() + "/admission/store",
                         type: "post",
                         data: {
                             sessn_id: $("select[name=sessn]").val(),
+                            ref: $("select[name=ref]").val(),
                             amount: $("input[name='amount']").val(),
                             payment_dt: $("input[name='dt']").val(),
                         },
