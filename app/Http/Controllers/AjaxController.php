@@ -346,6 +346,7 @@ class AjaxController extends Controller
                 [
                     'allotment_id' => $allotment->id,
                     'sessn_id' => request()->sessn_id,
+                    'ref' => request()->ref,
                     'allot_hostel_id' => $allotment->valid_allot_hostel()->id,
                     'amount' => request()->amount,
                     'payment_dt' => request()->payment_dt,
