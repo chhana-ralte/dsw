@@ -41,10 +41,11 @@ class Test extends Model
             $this->str = $request->str;
             $this->txt = $request->txt;
             $this->save();
+            return $this;
         }
         catch(Exception $e){
             return false;
         }
-        return $this;
+
     }
 }
