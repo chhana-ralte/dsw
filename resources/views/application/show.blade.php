@@ -367,8 +367,9 @@
                     <div>
                         <button class="btn btn-danger btn-status" value="decline">Decline</button>
                         <button class="btn btn-warning btn-status" value="pending">Pending</button>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#hostelModal"
-                            data-bs-whatever="Remark">Approve</button>
+                        {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#hostelModal"
+                            data-bs-whatever="Remark">Approve</button> --}}
+                        <button class="btn btn-warning btn-status" value="approve">Approve</button>
                         @if (auth()->user() && (auth()->user()->isAdmin() || auth()->user()->isDsw()))
                             <a class="btn btn-warning btn-existing" href="/application/{{ $application->id }}/existing">Add
                                 as existing</a>
@@ -546,11 +547,13 @@
             });
 
             $("button.btn-status").click(function() {
-                if ($(this).val() == 'approve-hostel') {
-                    $("input[name='status']").val($(this).val());
-                    $("input[name='hostel_id']").val($("select#hostel").val());
-                    $("input[name='roomtype']").val($("select#type").val());
-                    $("form[name='frm_submit']").submit();
+                alert("asdsadsad");
+                if ($(this).val() == 'approve') {
+                    $("#hostelModal").modal("show");
+                    // $("input[name='status']").val($(this).val());
+                    // $("input[name='hostel_id']").val($("select#hostel").val());
+                    // $("input[name='roomtype']").val($("select#type").val());
+                    // $("form[name='frm_submit']").submit();
                 } else {
                     $("input[name='status']").val($(this).val());
                     $("form[name='frm_submit']").submit();
