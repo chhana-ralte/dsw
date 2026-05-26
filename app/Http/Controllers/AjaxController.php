@@ -532,6 +532,7 @@ class AjaxController extends Controller
                 $data = [
                     'id' => $semfee->id,
                     'sessn_id' => $semfee->sessn_id,
+                    'sessn_name' => $semfee->sessn->name(),
                     'name' => $person->name,
                     'email' => $person->email,
                     'mobile' => $person->mobile,

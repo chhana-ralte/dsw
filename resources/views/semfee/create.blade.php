@@ -9,13 +9,14 @@
                 </p>
             </x-slot>
             @if(count($semfees) > 0)
-                <div>
+                <div style="width: 100%; overflo-x: auto">
                     <table class="table">
                         <tr>
                             <th>Session</th>
                             <th>Current room type</th>
                             <th>Status</th>
                             <th>Action</th>
+                            <th>Update payment</th>
                         </tr>
                     @foreach($semfees as $sf)
                         <tr>
@@ -33,6 +34,13 @@
                                     <button class="btn btn-sm btn-secondary" disabled>Edit</button>
                                     <button class="btn btn-sm btn-danger" disabled>Delete</button>
                                 </div>
+                                @endcan
+                            </td>
+                            <td>
+                                @can("update_payment", $sf)
+                                    @if($sf->status == "Sent")
+                                        <button class="btn btn-sm btn-primary btn-update-payment-modal" value="{{ $sf->id }}">Update payment</button>
+                                    @endif
                                 @endcan
                             </td>
                         </tr>
@@ -81,7 +89,7 @@
 
     </x-container>
 
-    {{-- Modal for payment update --}}
+    {{-- Modal for status update --}}
 
     <div class="modal fade" id="editSemfeeModal" tabindex="-1" aria-labelledby="editSemfeeModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -133,8 +141,52 @@
             </div>
         </div>
     </div>
-    {{-- End Modal for payment update --}}
+    {{-- End Modal for status update --}}
 
+    {{-- Modal for payment update --}}
+
+    <div class="modal fade" id="updatePaymentModal" tabindex="-1" aria-labelledby="updatePaymentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updatePaymentModalLabel">Update Payment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" name='frmUpdatePayment' id='frmUpdatePayment'>
+                    <div class="modal-body">
+                        @csrf
+                        <input type="hidden" name="semfee_id" value="">
+                        <div class="mb-3">
+                            <label for="sessn_id" class="col-form-label">Session:</label>
+                            <input name="sessn_id" class="form-control" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="roomcapacity" class="col-form-label">Room type:</label>
+                            <input name="roomcapacity" class="form-control" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ref" class="col-form-label">Reference no.:</label>
+                            <input type="text" name="ref" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="payment_amt" class="col-form-label">Payment amount:</label>
+                            <input type="number" name="payment_amt" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="payment_dt" class="col-form-label">Payment date:</label>
+                            <input type="date" name="payment_dt" class="form-control" required>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary btn-update-payment">Update Payment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{-- End Modal for payment update --}}
 
     <script>
         function validate(){
@@ -177,60 +229,35 @@
                     error : function(){
                         alert('error occured');
                     }
-                })
+                });
 
             });
 
-
-            $("button.submit").click(function(){
-                let first = parseInt($("input[name='first']").val());
-                let second = parseInt($("input[name='second']").val());
-                let result = first + second + 1;
-                if(result != parseInt($("input[name='result']").val())){
-                    alert("Fill the evaluation box correctly.");
-                    $("input[name='result']").focus();
-                    exit();
-                }
-                if(!$("input[name='terms']").prop('checked')){
-                    alert("Make sure you agreed to the terms and conditions.");
-                    $("input[name='terms']").focus();
-                    exit();
-                }
-                $("form[name='frm_submit']").submit();
-            });
-
-            $("select[name='department']").change(function(){
+            $("button.btn-update-payment-modal").click(function(){
                 $.ajax({
                     type : 'get',
-                    url : "/ajax/getCourses?department=" + $(this).val(),
-                    success : function(data,status){
-                        var s = "<option disabled selected>Select Course</option>";
-                            for (i = 0; i < data.length; i++) {
-                                s += "<option value='" + data[i].id + "'>" + data[i].name + "</option>";
-                            }
-                            $("select[name='course']").html(s);
-                    },
-                    error : function(){
-                        alert("Error");
-                    },
-                });
-            });
+                    url : '/ajax/semfee/' + $(this).val() + '/getDetail',
+                    success : function(data, status){
+                        // alert(data.id);
+                        $("input[name='semfee_id']").val(data.id);
+                        $("input[name='sessn_id']").val(data.sessn_name);
+                        $("input[name='roomcapacity']").val(data.room_type);
 
-            $("select[name='course']").change(function(){
-                $.ajax({
-                    type : 'get',
-                    url : "/ajax/getMaxSem?course=" + $(this).val(),
-                    success : function(data,status){
-                        var s = "<option disabled selected>Select Semester</option>";
-                            for (i = 1; i <= data.max_sem; i++) {
-                                s += "<option value='" + i + "'>" + i + "</option>";
-                            }
-                            $("select[name='semester']").html(s);
+                        $("#updatePaymentModal").modal("show");
                     },
                     error : function(){
-                        alert("Error");
-                    },
+                        alert('error occured');
+                    }
                 });
+                
+
+            });
+            $("button.btn-update-payment").click(function(){
+                // alert("asdadsada");
+                $("#frmUpdatePayment").attr('action', '/semfee/' + $("input[name='semfee_id']").val() + '/paymentUpdate');
+                $("#frmUpdatePayment").submit();
+                
+
             });
 
         });

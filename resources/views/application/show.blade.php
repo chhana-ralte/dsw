@@ -369,7 +369,7 @@
                         <button class="btn btn-warning btn-status" value="pending">Pending</button>
                         {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#hostelModal"
                             data-bs-whatever="Remark">Approve</button> --}}
-                        <button class="btn btn-warning btn-status" value="approve">Approve</button>
+                        <button class="btn btn-warning btn-status" value="approve-modal">Approve</button>
                         @if (auth()->user() && (auth()->user()->isAdmin() || auth()->user()->isDsw()))
                             <a class="btn btn-warning btn-existing" href="/application/{{ $application->id }}/existing">Add
                                 as existing</a>
@@ -457,8 +457,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary btn-status" value="approve">Just approve</button>
-                    <button type="button" class="btn btn-primary btn-status" value="approve-hostel">Approve
-                        hostel</button>
+                    <button type="button" class="btn btn-primary btn-status" value="approve-hostel">Approve hostel</button>
                 </div>
             </div>
         </div>
@@ -548,13 +547,25 @@
 
             $("button.btn-status").click(function() {
                 alert("asdsadsad");
-                if ($(this).val() == 'approve') {
+                if ($(this).val() == 'approve-modal') {
                     $("#hostelModal").modal("show");
                     // $("input[name='status']").val($(this).val());
                     // $("input[name='hostel_id']").val($("select#hostel").val());
                     // $("input[name='roomtype']").val($("select#type").val());
                     // $("form[name='frm_submit']").submit();
-                } else {
+                } 
+                else if ($(this).val() == 'approve-hostel'){
+                    if(!$("select#hostel").val()){
+                        alert("Select the hostel where student is to be allotted. Or click 'Just Approve' without hostel");
+                    }
+                    else{
+                        $("input[name='status']").val($(this).val());
+                        $("input[name='hostel_id']").val($("select#hostel").val());
+                        $("input[name='roomtype']").val($("select#type").val());
+                        $("form[name='frm_submit']").submit();
+                    }
+                }
+                else {
                     $("input[name='status']").val($(this).val());
                     $("form[name='frm_submit']").submit();
                 }
