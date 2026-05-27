@@ -66,7 +66,13 @@
                                                 <span class="text-danger">No Email</span>
                                             </button>
                                         @else
-                                            {{ $ah->semfee($sessn->id)? $ah->semfee($sessn->id)->status : 'Null' }}
+                                            @if($ah->semfee($sessn->id)->status == 'Paid')
+                                                <button type="button" class="btn-payment-detail" value="{{ $ah->semfee($sessn->id)->id }}">
+                                                    <span class="text-primary">Paid</span>
+                                                </button>
+                                            @else
+                                                {{ $ah->semfee($sessn->id)? $ah->semfee($sessn->id)->status : 'Null' }}
+                                            @endif
                                         @endif
                                         @if(auth()->user() && auth()->user()->isFinance() && $ah->semfee($sessn->id) && $ah->semfee($sessn->id)->status == 'Created')
                                             <a href="#" class="btn btn-sm btn-primary">
@@ -119,6 +125,51 @@
         </div>
     </div>
     {{-- End Modal for email update --}}
+
+    {{-- Modal for payment detail --}}
+
+    <div class="modal fade" id="paymentDetailModal" tabindex="-1" aria-labelledby="paymentDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paymentDetailModalLabel">Payment detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div style="width: 100%; overflow-x:auto">
+                        <form>
+                            <input type="hidden" name="admission_id">
+                            <table class="table">
+                                <tr>
+                                    <th>Reference</th>
+                                    <td>
+                                        <span id="ref"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Payment amount</th>
+                                    <td>
+                                        <span id="payment_amt"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Payment date</th>
+                                    <td>
+                                        <span id="payment_dt"></span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- End Modal for payment detail --}}
 <script>
     $(document).ready(function() {
 
@@ -208,6 +259,23 @@
                     }
                 });
             }
+        });
+
+        $(".btn-payment-detail").click(function(){
+            $.ajax({
+                type : 'get',
+                url : '/ajax/semfee/' + $(this).val() + '/paymentDetail',
+                success : function(data, status){
+                    $("span#ref").text(data.ref);
+                    $("span#payment_dt").text(data.payment_dt);
+                    $("span#payment_amt").text(data.amount);
+                    $("#paymentDetailModal").modal("show");
+                },
+                error: function(){
+                    alert('Error');
+                }
+            });
+            // alert($(this).val());
         });
     });
 
