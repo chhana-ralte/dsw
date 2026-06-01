@@ -87,7 +87,7 @@ class UserController extends Controller
     {
         request()->validate([
             'name' => 'required',
-            'username' => 'required|min:5',
+            'username' => 'required|min:4',
             'password' => 'required|min:6|confirmed'
         ]);
 
@@ -297,14 +297,11 @@ class UserController extends Controller
             // //return auth()->user()->name;
             if (auth()->user()->name == 'Diktei') {
                 return redirect('/diktei/course');
-            }
-            else if(auth()->user()->isFinance()){
+            } else if (auth()->user()->isFinance()) {
                 return redirect('/finance');
-            }
-            else{
+            } else {
                 return redirect('/');
             }
-
         } else {
             return redirect('/login')->with(['message' => ['type' => 'danger', 'text' => 'Login Failed...']])->withInput();
         }
