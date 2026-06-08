@@ -132,6 +132,18 @@ class UserController extends Controller
 
     public function update(User $user)
     {
+
+        if($user->person()){
+            $person = $user->person();
+        }
+        else{
+            $person = Person::create([
+                'name' => request()->name,
+                'mobile' => '',
+                'email' => ''
+            ]);
+        }
+
         if (request()->password) {
             request()->validate([
                 'name' => 'required|min:6',
@@ -146,6 +158,7 @@ class UserController extends Controller
             ]);
             $password = $user->password;
         }
+
 
         if (User::where('username', request()->username)->whereNot('id', $user->id)->exists()) {
             return redirect()->back()->withErrors(['username' => 'Username already exists'])->withInput();
@@ -164,46 +177,73 @@ class UserController extends Controller
             Role_User::where('user_id', $user->id)->where('role_id', '<>', $inmate_role->id)
                 ->whereNotIn('role_id', request()->roles)
                 ->delete();
+
             foreach (request()->roles as $role_id) {
                 $role = Role::find($role_id);
                 if ($role->role == 'Warden') {
-                    $wardens = Warden::whereIn('hostel_id', request()->hostel);
-                    Role_User::where('user_id', $user->id)->where('role_id', $role->id)->where('type', 'warden')->whereNotIn('foreign_id', $wardens->pluck('id'))->delete();
-                    foreach (request()->hostel as $hostel_id) {
-                        $person = \App\Models\Person::updateOrCreate([
-                            'name' => $user->name,
-                        ], [
-                            'name' => $user->name,
-                        ]);
-
-                        Warden::where('hostel_id', $hostel_id)->update([
-                            'valid' => 0,
-                        ]);
-
-                        $warden = Warden::updateOrCreate([
-                            'hostel_id' => $hostel_id,
-                            'person_id' => $person->id,
-                        ], [
-                            'hostel_id' => $hostel_id,
-                            'person_id' => $person->id,
-                            'valid' => 1
-                        ]);
-
-                        Role_User::updateOrCreate(
-                            [
-                                'user_id' => $user->id,
-                                'role_id' => $role->id,
-                                'type' => 'warden',
-                                'foreign_id' => $warden->id
-                            ],
-                            [
-                                'user_id' => $user->id,
-                                'role_id' => $role->id,
-                                'type' => 'warden',
-                                'foreign_id' => $warden->id
-                            ]
-                        );
+                    Role_User::updateOrCreate([
+                        'role_id' => $role->id,
+                        'user_id' => $user->id,
+                        'type' => 'warden'
+                    ],[
+                        'role_id' => $role->id,
+                        'user_id' => $user->id,
+                        'type' => 'warden'
+                    ]);
+                    if(request()->hostel){
+                        Warden::where('person_id', $person->id)->whereNotIn('hostel_id', request()->hostel)->update(['valid' => 0]);
+                        foreach(request()->hostel as $hostel_id){
+                            Warden::updateOrCreate([
+                                'person_id' => $person->id,
+                                'hostel_id' => $hostel_id
+                            ],[
+                                'person_id' => $person->id,
+                                'hostel_id' => $hostel_id,
+                                'valid' => 1
+                            ]);
+                        }
                     }
+                    else{
+                        Warden::where('person_id', $person->id)->update(['valid' => 0]);
+                    }
+
+                    // $wardens = Warden::whereIn('hostel_id', request()->hostel);
+                    // Role_User::where('user_id', $user->id)->where('role_id', $role->id)->where('type', 'warden')->whereNotIn('foreign_id', $wardens->pluck('id'))->delete();
+                    // foreach (request()->hostel as $hostel_id) {
+                    //     $person = \App\Models\Person::updateOrCreate([
+                    //         'name' => $user->name,
+                    //     ], [
+                    //         'name' => $user->name,
+                    //     ]);
+
+                    //     Warden::where('hostel_id', $hostel_id)->update([
+                    //         'valid' => 0,
+                    //     ]);
+
+                    //     $warden = Warden::updateOrCreate([
+                    //         'hostel_id' => $hostel_id,
+                    //         'person_id' => $person->id,
+                    //     ], [
+                    //         'hostel_id' => $hostel_id,
+                    //         'person_id' => $person->id,
+                    //         'valid' => 1
+                    //     ]);
+
+                    //     Role_User::updateOrCreate(
+                    //         [
+                    //             'user_id' => $user->id,
+                    //             'role_id' => $role->id,
+                    //             'type' => 'warden',
+                    //             'foreign_id' => $warden->id
+                    //         ],
+                    //         [
+                    //             'user_id' => $user->id,
+                    //             'role_id' => $role->id,
+                    //             'type' => 'warden',
+                    //             'foreign_id' => $warden->id
+                    //         ]
+                    //     );
+                    // }
                 } else if ($role->level == 2) { // Prefect or mess secreatry
                     if (!isset(request()->hostel)) {
                         return redirect()->back()->withErrors(['selectHostel' => 'Please Select the Hostel']);
@@ -244,7 +284,7 @@ class UserController extends Controller
             return redirect()->back()->withErrors(['roles' => 'Select at least one role']);
         }
         // $user->roles()->sync(request()->roles);
-        return redirect('/user')->with(['message' => ['type' => 'info', 'text' => 'User updated']]);
+        return redirect('/user/' . $user->id)->with(['message' => ['type' => 'info', 'text' => 'User updated']]);
     }
 
     public function changePassword($user_id)

@@ -21,15 +21,26 @@ class Warden extends Model
 
     public function user()
     {
-        if ($this->valid) {
-            $role_user = Role_User::where('type', 'warden')->where('foreign_id', $this->id)->first();
-            if ($role_user) {
-                return User::findOrFail($role_user->user_id);
-            } else {
-                return false;
-            }
+        // if ($this->valid) {
+        //     $role_user = Role_User::where('type', 'warden')->where('foreign_id', $this->id)->first();
+        //     if ($role_user) {
+        //         return "Yes";
+        //         // return User::findOrFail($role_user->user_id);
+        //     } else {
+        //         return "No";
+        //         // return false;
+        //     }
+        // } else {
+        //     return "Invalid";
+        //     return false;
+        // }
+
+        $role_user = Role_User::where('type', 'warden')->where('foreign_id', $this->id)->first();
+        if ($role_user) {
+            return User::findOrFail($role_user->user_id);
         } else {
             return false;
         }
+
     }
 }

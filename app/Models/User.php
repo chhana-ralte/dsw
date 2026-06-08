@@ -50,6 +50,10 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
+    public function person(){
+        return Person::where('id', $this->person_id)->first();
+    }
+
     public function user_roles()
     {
         return Role_User::where('user_id', $this->id)->get();
@@ -66,17 +70,27 @@ class User extends Authenticatable
         if (Role_User::where('user_id', $this->id)->where('role_id', $role->id)->where('type', 'hostel')->where('foreign_id', $hostel_id)->exists()) {
             return true;
         } else {
-            $warden = Warden::where('hostel_id', $hostel_id)->where('valid', 1)->first();
-            if ($warden) {
-                return Role_User::where('user_id', $this->id)->where('role_id', $role->id)->where('type', 'warden')->where('foreign_id', $warden->id)->exists();
-            } else {
+            if($this->person()){
+                return Warden::where('hostel_id', $hostel_id)->where('valid', 1)->where('person_id',$this->person()->id)->exists();
+            }
+            else{
                 return false;
             }
+            // $warden = Warden::where('hostel_id', $hostel_id)->where('valid', 1)->first();
+            // if ($warden) {
+            //     return Role_User::where('user_id', $this->id)->where('role_id', $role->id)->where('type', 'warden')->where('foreign_id', $warden->id)->exists();
+            // } else {
+            //     return false;
+            // }
         }
     }
 
     public function isWardensOf()
     {
+        if($this->person()){
+            $wardens = Warden::where('person_id', $this->person()->id)->where('valid',1)->get();
+            return Hostel::whereIn('id', $wardens->pluck('hostel_id'))->get();
+        }
         $role_users = Role_User::where('type', 'warden')->where('user_id', $this->id);
         $wardens = Warden::whereIn('id', $role_users->pluck('foreign_id'));
         return Hostel::whereIn('id', $wardens->pluck('hostel_id'))->get();

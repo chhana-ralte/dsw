@@ -75,4 +75,14 @@ class Person extends Model
             ->where('for_sessn_id', $sessn_id)
             ->first();
     }
+
+    public function user(){
+        $user = User::where('person_id', $this->id)->first();
+        if($user){
+            return $user;
+        }
+        else{
+            return false;
+        }
+    }
 }

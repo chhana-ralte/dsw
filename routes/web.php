@@ -246,3 +246,4 @@ require __DIR__ . '/mass.php';
 require __DIR__ . '/ajax.php';
 require __DIR__ . '/test.php';
 require __DIR__ . '/diktei.php';
+require __DIR__ . '/warden.php';

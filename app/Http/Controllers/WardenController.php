@@ -86,6 +86,11 @@ class WardenController extends Controller
         return redirect('/hostel/' . $hostel->id . '/warden');
     }
 
+    public function removeUser(Request $request){
+        $role_user = \App\Models\Role_User::where('type', 'warden')->where('foreign_id',$request->warden_id)->delete();
+        return "Success";
+    }
+
     /**
      * Display the specified resource.
      */

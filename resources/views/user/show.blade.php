@@ -4,7 +4,7 @@
             <x-slot name="heading">
                 User: {{ $user->name }}
             </x-slot>
-            
+
             <div class="form-group row pt-2">
                 <div class="col-md-3">
                     <label for="name">Name</label>
@@ -39,8 +39,12 @@
                 <div class="col-md-4">
                     @foreach($user->roles as $rl)
                         {{ $rl->role }}<br>
+                        @if($rl->role == 'Warden')
+                            @foreach($user->isWardensOf() as $hostel)
+                                <span class="btn btn-primary">{{ $hostel->name }}</span>
+                            @endforeach
+                        @endif
                     @endforeach
-
                 </div>
             </div>
             <div class="form-group row pt-2">
@@ -51,7 +55,7 @@
                     <x-button type="a" href="/user/{{ $user->id }}/edit">Edit</x-button>
                 </div>
             </div>
-            
+
         </x-block>
     </x-container>
 <script>
@@ -63,7 +67,7 @@ $(document).ready(function(){
     });
     $("button.btn-delete").click(function(){
         if(confirm('Are you sure you want to delete?')){
-            
+
         }
     });
 })
