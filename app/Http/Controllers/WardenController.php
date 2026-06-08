@@ -56,13 +56,20 @@ class WardenController extends Controller
             'hostel_id' => 'required',
         ]);
 
-        $person = Person::create([
+        $person = Person::updateOrCreate([
+            'mobile' => $validated->mobile,
+        ],[
             'name' => $validated->name,
             'mobile' => $validated->mobile,
             'email' => $validated->email,
         ]);
 
-        $warden = Warden::create([
+        $warden = Warden::updateOrCreate([
+            'person_id' => $person->id,
+            'hostel_id' => $validated->hostel_id,
+            'from_dt' => $validated->from_dt,
+            'to_dt' => $validated->to_dt,
+        ],[
             'person_id' => $person->id,
             'hostel_id' => $validated->hostel_id,
             'from_dt' => $validated->from_dt,
