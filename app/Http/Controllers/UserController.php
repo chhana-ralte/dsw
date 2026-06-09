@@ -175,7 +175,7 @@ class UserController extends Controller
         } else {
             request()->validate([
                 'name' => 'required|min:6',
-                'username' => 'required|min:5',
+                'username' => 'required|min:4',
             ]);
             $password = $user->password;
         }
