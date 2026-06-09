@@ -86,21 +86,43 @@ class UserController extends Controller
     public function store()
     {
         request()->validate([
-            'name' => 'required',
+            'name' => 'required|min:6',
             'username' => 'required|min:4',
             'password' => 'required|min:6|confirmed'
         ]);
 
         if (User::where('username', request()->username)->exists()) {
-            return redirect()->back()->withErrors(['username' => 'Username already exists'])->withInput();
+            if (isset(request()->use_existing)) {
+                $user = User::where('username', request()->username)->first();
+                $user->update([
+                    'name' => request()->name,
+                    'password' => Hash::make(request()->password),
+                ]);
+            } else {
+                return redirect()->back()->withErrors(['username' => 'Username already exists'])->withInput();
+            }
+        } else {
+            $user = User::create([
+                'person_id' => 0,
+                'name' => request()->name,
+                'username' => request()->username,
+                'password' => Hash::make(request()->password),
+            ]);
         }
 
-        $user = User::create([
-            'person_id' => 0,
-            'name' => request()->name,
-            'username' => request()->username,
-            'password' => Hash::make(request()->password),
-        ]);
+        if (isset(request()->warden_id)) {
+            $hostel = Hostel::where('name', request()->hostel)->first();
+            $warden = Warden::find(request()->warden_id);
+            $user->update([
+                'person_id' => $warden->person->id
+            ]);
+
+            Role_User::updateOrCreate([
+                'role_id' => Role::get_role("Warden")->id,
+                'user_id' => $user->id,
+                'type' => 'warden'
+            ]);
+        }
 
         // $role_user = Role_User::create([
         //     'user_id' => $user->id,
@@ -133,10 +155,9 @@ class UserController extends Controller
     public function update(User $user)
     {
 
-        if($user->person()){
+        if ($user->person()) {
             $person = $user->person();
-        }
-        else{
+        } else {
             $person = Person::create([
                 'name' => request()->name,
                 'mobile' => '',
@@ -147,7 +168,7 @@ class UserController extends Controller
         if (request()->password) {
             request()->validate([
                 'name' => 'required|min:6',
-                'username' => 'required|min:5',
+                'username' => 'required|min:4',
                 'password' => 'required|min:6',
             ]);
             $password = Hash::make(request()->password);
@@ -185,25 +206,24 @@ class UserController extends Controller
                         'role_id' => $role->id,
                         'user_id' => $user->id,
                         'type' => 'warden'
-                    ],[
+                    ], [
                         'role_id' => $role->id,
                         'user_id' => $user->id,
                         'type' => 'warden'
                     ]);
-                    if(request()->hostel){
+                    if (request()->hostel) {
                         Warden::where('person_id', $person->id)->whereNotIn('hostel_id', request()->hostel)->update(['valid' => 0]);
-                        foreach(request()->hostel as $hostel_id){
+                        foreach (request()->hostel as $hostel_id) {
                             Warden::updateOrCreate([
                                 'person_id' => $person->id,
                                 'hostel_id' => $hostel_id
-                            ],[
+                            ], [
                                 'person_id' => $person->id,
                                 'hostel_id' => $hostel_id,
                                 'valid' => 1
                             ]);
                         }
-                    }
-                    else{
+                    } else {
                         Warden::where('person_id', $person->id)->update(['valid' => 0]);
                     }
 

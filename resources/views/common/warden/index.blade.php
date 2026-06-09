@@ -19,7 +19,7 @@
                 @if($warden->person->user())
                     User: <a href="/user/{{ $warden->person->user()->id }}">{{ $warden->person->user()->username }}</a>
                 @else
-                    {{ __('Not a user') }}
+                    {{ __('Not a user') }} <a class="btn btn-sm btn-primary" href="/user/create?type=warden&id={{ $warden->id }}">Create User</a>
                 @endif
             @endif
 

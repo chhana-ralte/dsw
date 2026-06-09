@@ -31,6 +31,7 @@
                         </div>
                         <div class="col-md-4">
                             <input type="text" class="form-control" name="hostel"  value="{{ old('hostel',$type != ''?$warden->hostel->name:'') }}" {{ $type!=''?' readonly ':'' }}>
+                            <input type="hidden" name="warden_id" value="{{ $warden->id }}">
                             @error('hostel')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -60,6 +61,8 @@
                         <input type="text" class="form-control" name="username" value="{{ old('username') }}" required>
                         @error('username')
                             <span class="text-danger">{{ $message }}</span>
+                            <input type="checkbox" id="use_existing" name="use_existing" value="existing">
+                            <label for="use_existing">Use existing username</label>
                         @enderror
                     </div>
                 </div>
