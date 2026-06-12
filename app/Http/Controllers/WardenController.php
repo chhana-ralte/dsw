@@ -20,10 +20,16 @@ class WardenController extends Controller
 
     public function list()
     {
+        $hostels = Hostel::orderBy('gender')->orderBy('name')->get();
         $data = [
-            'wardens' => Warden::where('valid', 1)->get()
+            'hostels' => $hostels
         ];
         return view('common.warden.list', $data);
+        // return $hostels;
+        // $data = [
+        //     'wardens' => Warden::where('valid', 1)->get()
+        // ];
+        // return view('common.warden.list', $data);
     }
 
     public function index(Hostel $hostel)

@@ -327,7 +327,6 @@ class AjaxController extends Controller
 
     public function createAdmission($id)
     {
-
         $allotment = \App\Models\Allotment::findOrFail($id);
 
 

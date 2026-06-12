@@ -70,6 +70,7 @@ class AdmissionCheckController extends Controller
         $admission->update(
             [
                 'sessn_id' => request()->sessn,
+                'ref' => request()->ref,
                 'payment_dt' => request()->payment_dt,
                 'amount' => request()->amount,
             ]

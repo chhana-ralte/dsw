@@ -68,6 +68,11 @@ class Hostel extends Model
         return Warden::where('hostel_id', $this->id)->where('valid', 1)->first();
     }
 
+    public function valid_wardens()
+    {
+        return Warden::where('hostel_id', $this->id)->where('valid', 1)->get();
+    }
+
     public function valid_allot_hostels()
     {
         return AllotHostel::where('hostel_id', $this->id)->where('valid', 1)->get();

@@ -37,7 +37,7 @@
                                 @can('manages', App\Models\Admission::class)
                                     <td>
                                         <div class="btn-group">
-                                            <a class="btn btn-secondary btn-sm btn-edit" href="/admission/{{ $adm->id }}/edit?back_link={{ $back_link }}">Edit</a>
+                                            <a class="btn btn-secondary btn-sm btn-edit" href="/admission/{{ $adm->id }}/edit?back_link=/allotment/{{ $adm->allotment->id }}/admission?back_link={{ $back_link }}">Edit</a>
                                             <button class="btn btn-danger btn-sm btn-delete" value="{{ $adm->id }}">Delete</button>
                                         </div>
                                     </td>
@@ -64,7 +64,7 @@
             </div>
             <div class="modal-body">
                 <div class="form-group mb-3">
-                    <label for="sessn" class="col">Starting session (in the hostel)</label>
+                    <label for="sessn" class="col">Payment for session</label>
                     <div class="col">
 
                         <select class="form-control" name="sessn">
@@ -75,10 +75,15 @@
                     </div>
                 </div>
 
+                <div class="mb-3">
+                    <label for="ref" class="col-form-label">Reference No.:</label>
+                    <input class="form-control" type="text" name="ref">
+                </div>
+
                 <div class="form-group mb-3">
                     <label for="amount" class="col">Payment amount</label>
                     <div class="col">
-                        <input type="text" class="form-control" name="amount" value="">
+                        <input type="number" class="form-control" name="amount" value="" required>
                     </div>
                 </div>
 
@@ -95,7 +100,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary btn-add-admission" value="add-admission">Approve admission</button>
+                <button type="button" class="btn btn-primary btn-add-admission" value="add-admission">Add admission</button>
             </div>
         </div>
     </div>
@@ -130,6 +135,7 @@ $(document).ready(function(){
                 type : "post",
                 data : {
                     sessn_id : $("select[name=sessn]").val(),
+                    ref : $("input[name='ref']").val(),
                     amount : $("input[name='amount']").val(),
                     payment_dt : $("input[name='dt']").val(),
                 },

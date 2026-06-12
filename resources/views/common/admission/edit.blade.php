@@ -3,6 +3,9 @@
         <x-block>
             <x-slot name="heading">
                 Admission status update for {{ $allotment->person->name }}
+                <p>
+                    <a class="btn btn-secondary btn-sm" href="{{ $back_link }}">Back</a>
+                </p>
             </x-slot>
 
             <form method="post" action="/admission/{{ $admission->id }}">
@@ -28,6 +31,13 @@
                 </div>
 
                 <div class="form-group row mb-3">
+                    <label for="ref" class="col col-md-3">Payment reference</label>
+                    <div class="col col-md-4">
+                        <input type="text" class="form-control" name="ref" value="{{ old('ref',$admission->ref) }}">
+                    </div>
+                </div>
+
+                <div class="form-group row mb-3">
                     <label for="payment_dt" class="col col-md-3">Payment date</label>
                     <div class="col col-md-4">
                         <input type="date" class="form-control" name="payment_dt" value="{{ old('payment_dt',$admission->payment_dt) }}" required>
@@ -37,7 +47,7 @@
                 <div class="form-group row mb-3">
                     <label for="amount" class="col col-md-3">Amount</label>
                     <div class="col col-md-4">
-                        <input type="numeric" class="form-control" name="amount" value="{{ old('amount',$admission->amount) }}" required>
+                        <input type="number" class="form-control" name="amount" value="{{ old('amount',$admission->amount) }}" required>
                         @error('amount')
                             <span class="text-danger text-sm">{{ $message }}</span>
                         @enderror

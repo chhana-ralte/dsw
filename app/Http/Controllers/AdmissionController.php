@@ -143,6 +143,7 @@ class AdmissionController extends Controller
                     [
                         'allotment_id' => $allotment->id,
                         'sessn_id' => request()->sessn,
+                        'ref' => request()->ref,
                         'allot_hostel_id' => $allot_hostel->id,
                         'amount' => $request->amount,
                         'payment_dt' => $request->dt,
@@ -171,12 +172,13 @@ class AdmissionController extends Controller
             }
             Admission::updateOrCreate(
                 [
-                    'sessn_id' => request()->sessn,
+                    'ref' => request()->sessn,
                     'allotment_id' => $allotment->id,
                 ],
                 [
                     'sessn_id' => request()->sessn,
                     'allotment_id' => $allotment->id,
+                    'ref' => request()->ref,
                     'payment_dt' => request()->payment_dt,
                     'amount' => request()->amount,
                     'allot_hostel_id' => $allot_hostel_id,
@@ -210,6 +212,7 @@ class AdmissionController extends Controller
      */
     public function edit(Admission $admission)
     {
+        // return "Hello";
         if (!(auth()->user() && auth()->user()->can('manage', $admission->allotment))) {
             return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
@@ -234,6 +237,7 @@ class AdmissionController extends Controller
      */
     public function update(Admission $admission)
     {
+        // return "Hello";
         if (!(auth()->user() && auth()->user()->can('manage', $admission->allotment))) {
             return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
@@ -248,6 +252,7 @@ class AdmissionController extends Controller
         $admission->update(
             [
                 'sessn_id' => request()->sessn,
+                'ref' => request()->ref,
                 'payment_dt' => request()->payment_dt,
                 'amount' => request()->amount,
             ]
