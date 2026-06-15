@@ -19,15 +19,15 @@
             <div style="width: 100%; overflow-x:auto">
                 <table class="table table-hover table-auto">
                     <thead>
-                        
+
                         <tr>
                             <th>Seat No.</th>
                             <th>Name</th>
                             <th>Department</th>
                             <th>Status</td>
-                            
+
                             <th>Action</th>
-                            
+
                         </tr>
                     </thead>
                     <tbody>
@@ -48,14 +48,18 @@
                                 @endif
                                 <td>
                                     @if($ah->allotment->admission($sessn->id))
-                                        <label id="label_{{ $ah->id }}">Done</label>
+                                        @can('verify_admission', $ah->allotment->admission($sessn->id))
+                                            <label id="label_{{ $ah->id }}">Done</label>
+                                        @else
+                                            <label id="label_{{ $ah->id }}">Donee</label>
+                                        @endcan
                                     @else
                                         <label id="label_{{ $ah->id }}">Not done</label>
                                     @endif
                                 </td>
                                 <td>
                                     <div class="btn-group">
-                                        @can('manages',App\Models\Admission::class)
+                                        @can('verify-admission', $hostel)
                                             @if($ah->allotment->admission($sessn->id))
                                                 <button class="btn btn-danger btn-sm btn-undo" name="admit_{{ $ah->id }}" value="{{ $ah->allotment->admission($sessn->id)->id }}">Undo</button>
                                             @else
@@ -99,9 +103,16 @@
                 </div>
 
                 <div class="form-group mb-3">
+                    <label for="ref" class="col">Reference No.</label>
+                    <div class="col">
+                        <input type="text" class="form-control" name="ref" value="">
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
                     <label for="amount" class="col">Payment amount</label>
                     <div class="col">
-                        <input type="text" class="form-control" name="amount" value="">
+                        <input type="number" class="form-control" name="amount" value="" required>
                     </div>
                 </div>
 
@@ -150,12 +161,13 @@ $(document).ready(function(){
                 type : "post",
                 data : {
                     sessn_id : $("select[name=sessn]").val(),
+                    ref : $("input[name='ref']").val(),
                     amount : $("input[name='amount']").val(),
                     payment_dt : $("input[name='dt']").val(),
                 },
                 success : function(data,status){
-                    if(data == "Successful"){
-                        alert(data);
+                    if(data.status == true){
+                        alert(data.admission.id);
                         location.reload();
                     }
                     else{

@@ -7,6 +7,11 @@
                     <a class="btn btn-secondary btn-sm" href="/semfee/list/hostel">
                         Back
                     </a>
+                    @can('verify-admission', $hostel)
+                        Can verify
+                    @else
+                        Can not Verify
+                    @endif
                 </p>
             </x-slot>
             <div style="width: 100%; overflow-x:auto">
@@ -66,12 +71,14 @@
                                                 <span class="text-danger">No Email</span>
                                             </button>
                                         @else
-                                            @if($ah->semfee($sessn->id)->status == 'Paid')
+                                            @if(!$ah->semfee($sessn->id))
+                                                <span class="text-danger">{{ __('Null') }}</span>
+                                            @elseif($ah->semfee($sessn->id)->status == 'Paid')
                                                 <button type="button" class="btn-payment-detail" value="{{ $ah->semfee($sessn->id)->id }}">
                                                     <span class="text-primary">Paid</span>
                                                 </button>
                                             @else
-                                                {{ $ah->semfee($sessn->id)? $ah->semfee($sessn->id)->status : 'Null' }}
+                                                {{ $ah->semfee($sessn->id)->status }}
                                             @endif
                                         @endif
                                         @if(auth()->user() && auth()->user()->isFinance() && $ah->semfee($sessn->id) && $ah->semfee($sessn->id)->status == 'Created')

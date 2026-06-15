@@ -42,5 +42,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('admin-access', function (User $user) {
             return $user->isAdmin(); // Assuming you have an 'is_admin' column in your users table
         });
+
+        Gate::define('verify-admission', function(User $user, Hostel $hostel){
+            return $user->isWardenOf($hostel->id);
+        });
     }
 }

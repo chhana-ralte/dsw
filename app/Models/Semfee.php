@@ -24,4 +24,12 @@ class Semfee extends Model
     public function sessn(){
         return $this->belongsTo(Sessn::class);
     }
+
+    public function admission(){
+        return Admission::where('sessn_id', $this->sessn_id)->where('allotment_id', $this->allotment_id)->first();
+    }
+
+    public function admissions(){
+        return Admission::where('sessn_id', $this->sessn_id)->where('allotment_id', $this->allotment_id)->get();
+    }
 }
