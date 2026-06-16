@@ -76,11 +76,10 @@
             </div>
         </x-block>
     </x-container>
-{{-- Modal for admission --}}
 
-<form>
-    <input type="hidden" name="allotment_id" id="allotment_id">
-</form>
+    {{-- Modal for admission --}}
+
+
 
 <div class="modal fade" id="admissionModal" tabindex="-1" aria-labelledby="admissionModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -90,42 +89,45 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="form-group mb-3">
-                    <label for="sessn" class="col">Starting session (in the hostel)</label>
-                    <div class="col">
+                <form>
+                    <input type="hidden" name="allotment_id" id="allotment_id">
 
-                        <select class="form-control" name="sessn">
-                            @foreach(App\Models\Sessn::orderBy('start_yr')->orderBy('odd_even')->get() as $ssn)
-                                <option value="{{ $ssn->id }}" {{ App\Models\Sessn::current()->id == $ssn->id?' selected ':''}}>{{ $ssn->name() }}</option>
-                            @endforeach
-                        </select>
+                    <div class="form-group mb-3">
+                        <label for="sessn" class="col">Starting session (in the hostel)</label>
+                        <div class="col">
+
+                            <select class="form-control" name="sessn">
+                                @foreach(App\Models\Sessn::orderBy('start_yr')->orderBy('odd_even')->get() as $ssn)
+                                    <option value="{{ $ssn->id }}" {{ App\Models\Sessn::current()->id == $ssn->id?' selected ':''}}>{{ $ssn->name() }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group mb-3">
-                    <label for="ref" class="col">Reference No.</label>
-                    <div class="col">
-                        <input type="text" class="form-control" name="ref" value="">
+                    <div class="form-group mb-3">
+                        <label for="ref" class="col">Reference No.</label>
+                        <div class="col">
+                            <input type="text" class="form-control" name="ref" value="">
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group mb-3">
-                    <label for="amount" class="col">Payment amount</label>
-                    <div class="col">
-                        <input type="number" class="form-control" name="amount" value="" required>
+                    <div class="form-group mb-3">
+                        <label for="amount" class="col">Payment amount</label>
+                        <div class="col">
+                            <input type="number" class="form-control" name="amount" value="" required>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group mb-3">
-                    <label for="dt" class="col">Payment date</label>
-                    <div class="col">
-                        <input type="date" class="form-control" name="dt" value="{{ old('dt') }}" required>
-                        @error('dt')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
+                    <div class="form-group mb-3">
+                        <label for="dt" class="col">Payment date</label>
+                        <div class="col">
+                            <input type="date" class="form-control" name="dt" value="{{ old('dt') }}" required>
+                            @error('dt')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
                     </div>
-                </div>
-
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -167,11 +169,12 @@ $(document).ready(function(){
                 },
                 success : function(data,status){
                     if(data.status == true){
-                        alert(data.admission.id);
+                        alert("Successful");
                         location.reload();
                     }
                     else{
-                        alert(data);
+                        alert(status);
+                        location.reload();
                     }
 
                 },

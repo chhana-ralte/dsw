@@ -7,6 +7,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
 use App\Models\User;
 use App\Models\Hostel;
+use App\Models\Allotment;
 
 use App\Policies\HostelPolicy;
 use App\Policies\RoomPolicy;
@@ -43,8 +44,20 @@ class AppServiceProvider extends ServiceProvider
             return $user->isAdmin(); // Assuming you have an 'is_admin' column in your users table
         });
 
-        Gate::define('verify-admission', function(User $user, Hostel $hostel){
-            return $user->isWardenOf($hostel->id);
+        Gate::define('verify-admission', function (User $user, Hostel $hostel) {
+            return $user->isWardenOf($hostel->id) || $user->isDsw() || $user->isFinance();
+        });
+
+        Gate::define('update-admission', function (User $user, Allotment $allotment) {
+            if ($user->isDsw() || ($user->allotment() && $user->allotment()->id == $allotment->id)) {
+                return true;
+            } else {
+                if ($allotment->valid_allot_hostel()) {
+                    return $user->isWardenOf($allotment->valid_allot_hostel()->hostel_id);
+                } else {
+                    return false;
+                }
+            }
         });
     }
 }

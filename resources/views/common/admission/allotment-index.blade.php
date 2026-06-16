@@ -140,12 +140,14 @@ $(document).ready(function(){
                     payment_dt : $("input[name='dt']").val(),
                 },
                 success : function(data,status){
-                    if(data == "Successful"){
-                        alert(data);
+                    // alert(data);
+                    if(data.status == true){
+                        alert("Successful");
                         location.reload();
                     }
                     else{
                         alert(data);
+                        location.reload();
                     }
 
                 },

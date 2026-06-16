@@ -77,8 +77,12 @@
                         <li class="nav-item">
                             @if(auth()->user()->isWarden() || auth()->user()->isDsw())
                                 <a class="nav-link" href="/semfee">Semester Fees</a>
-                            @elseif(auth()->user()->isInmate())
-                                <a class="nav-link" href="/semfee">Seme Fees</a>
+                            @elseif(auth()->user()->allotment())
+                                @if(auth()->user()->allotment()->valid_allot_hostel())
+                                    <a class="nav-link" href="/allot_hostel/{{ auth()->user()->allotment()->valid_allot_hostel()->id }}/semfee/create">
+                                        My semester fees
+                                    </a>
+                                @endif
                             @endif
                         </li>
                     @endif
@@ -175,7 +179,7 @@
             @endif
             {{ $slot }}
         </div>
-        <script type="importmap">
+        {{-- <script type="importmap">
             {
                 "imports": {
                     "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5.js",
@@ -207,7 +211,7 @@
                 .catch(error => {
                     console.error(error);
                 });
-        </script>
+        </script> --}}
         <!-- A friendly reminder to run on a server, remove this during the integration. -->
         <script>
             window.onload = function() {

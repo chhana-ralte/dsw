@@ -24,7 +24,8 @@ class Admission extends Model
         return $this->belongsTo(AllotHostel::class);
     }
 
-    public function do_admission($request){
+    public static function do_admission($request)
+    {
         // return $request;
         $allotment = Allotment::findOrFail($request->allotment_id);
         if ($allotment->valid_allot_hostel()) {
@@ -34,11 +35,11 @@ class Admission extends Model
             } else {
                 $detail = "Semester admission payment";
             }
-            $admission = \App\Models\Admission::updateOrCreate(
+            // return $request;
+            $admission = Admission::updateOrCreate(
                 [
                     'allotment_id' => $allotment->id,
                     'sessn_id' => $request->sessn_id,
-                    'allot_hostel_id' => $allot_hostel->id,
                 ],
                 [
                     'allotment_id' => $allotment->id,
@@ -52,7 +53,7 @@ class Admission extends Model
                 ]
             );
 
-            if(auth()->user()->can('verify-admission', $allot_hostel->hostel)){
+            if (auth()->user()->can('verify-admission', $allot_hostel->hostel)) {
                 $admission->update([
                     'verified' => 1,
                     'verified_by' => auth()->user()->id,
@@ -68,22 +69,22 @@ class Admission extends Model
 
             $allotment->save();
             $semfee = \App\Models\Semfee::where('allotment_id', $allotment->id)->where('sessn_id', $admission->sessn_id)->first();
-            if($semfee){
+            if ($semfee) {
                 $semfee->update([
                     'status' => 'Paid'
                 ]);
             }
-            return ['status' => true, 'data' => ['admission' => $admission]];
-        }
-        else { // No valid hostel allotment
-            return ['status' => false, 'data' => ['reason' => 'No valid allotment']];
+            return (object)['status' => true, 'data' => ['admission' => $admission]];
+        } else { // No valid hostel allotment
+            return (object)['status' => false, 'data' => ['reason' => 'No valid allotment']];
         }
     }
 
-    public function remove_admission($request){
+    public function remove_admission($request)
+    {
         $admission = Admission::find($request->admission_id);
         $semfee = Semfee::where('allotment_id', $admission->allotment_id)->where('sessn_id', $admission->sessn_id)->first();
-        if($semfee && $semfee->status == 'Paid'){
+        if ($semfee && $semfee->status == 'Paid') {
             $semfee->update(['status' => 'Forwarded']);
         }
         $admission->delete();

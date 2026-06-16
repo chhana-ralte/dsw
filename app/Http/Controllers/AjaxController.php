@@ -327,6 +327,7 @@ class AjaxController extends Controller
 
     public function createAdmission($allotment_id)
     {
+
         $data = [
             'allotment_id' => $allotment_id,
             'sessn_id' => request()->sessn_id,
@@ -334,12 +335,13 @@ class AjaxController extends Controller
             'amount' => request()->amount,
             'payment_dt' => request()->payment_dt,
         ];
-
-        $out = \App\Models\Admission::do_admission((object)$data);
-        if($out->status){
-            return $admission;
-        }
-        else{
+        $data = (object)$data;
+        // return $data->allotment_id;
+        $output = \App\Models\Admission::do_admission($data);
+        // return $output->allotment_id;
+        if ($output->status == true) {
+            return $output;
+        } else {
             return "Error";
         }
 
@@ -378,7 +380,7 @@ class AjaxController extends Controller
                 ]
             );
 
-            if(auth()->user()->can('verify-admission', $allot_hostel->hostel)){
+            if (auth()->user()->can('verify-admission', $allot_hostel->hostel)) {
                 $admission->update([
                     'verified' => 1,
                     'verified_by' => auth()->user()->id,
@@ -394,7 +396,7 @@ class AjaxController extends Controller
 
             $allotment->save();
             $semfee = \App\Models\Semfee::where('allotment_id', $allotment->id)->where('sessn_id', $admission->sessn_id)->first();
-            if($semfee){
+            if ($semfee) {
                 $semfee->update([
                     'status' => 'Paid'
                 ]);
