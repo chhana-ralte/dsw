@@ -36,12 +36,8 @@ class Admission extends Model
                 $detail = "Semester admission payment";
             }
             // return $request;
-            $admission = Admission::updateOrCreate(
-                [
-                    'allotment_id' => $allotment->id,
-                    'sessn_id' => $request->sessn_id,
-                ],
-                [
+
+            $admission = Admission::create([
                     'allotment_id' => $allotment->id,
                     'sessn_id' => $request->sessn_id,
                     'ref' => $request->ref,
@@ -59,7 +55,6 @@ class Admission extends Model
                     'verified_by' => auth()->user()->id,
                 ]);
             }
-            $admission->save();
 
             $allotment->update([
                 'admitted' => 1,
@@ -67,7 +62,6 @@ class Admission extends Model
                 'valid' => 1,
             ]);
 
-            $allotment->save();
             $semfee = \App\Models\Semfee::where('allotment_id', $allotment->id)->where('sessn_id', $admission->sessn_id)->first();
             if ($semfee) {
                 $semfee->update([
@@ -78,6 +72,23 @@ class Admission extends Model
         } else { // No valid hostel allotment
             return (object)['status' => false, 'data' => ['reason' => 'No valid allotment']];
         }
+    }
+
+    public function update_admission($request){
+        $admission = Admission::findOrFail($request->admission_id);
+        if(isset($request->sessn_id)){
+            $admission->sessn_id = $request->sessn_id;
+        }
+        if(isset($request->amount)){
+            $admission->amount = $request->amount;
+        }
+        if(isset($request->ref)){
+            $admission->ref = $request->ref;
+        }
+        if(isset($request->payment_dt)){
+            $admission->payment_dt = $request->payment_dt;
+        }
+        $admission->save();
     }
 
     public function remove_admission($request)

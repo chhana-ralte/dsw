@@ -329,7 +329,9 @@ class AjaxController extends Controller
     {
 
         $data = [
+            'type' => isset(request()->type) ? request()->type : 'create',
             'allotment_id' => $allotment_id,
+            'admission_id' => isset(request()->admission_id) ? request()->admission_id : 0,
             'sessn_id' => request()->sessn_id,
             'ref' => request()->ref,
             'amount' => request()->amount,
@@ -337,7 +339,12 @@ class AjaxController extends Controller
         ];
         $data = (object)$data;
         // return $data->allotment_id;
-        $output = \App\Models\Admission::do_admission($data);
+        if($data->type == 'create'){
+            $output = \App\Models\Admission::do_admission($data);
+        }
+        else{
+            $output = \App\Models\Admission::update_admission($data);
+        }
         // return $output->allotment_id;
         if ($output->status == true) {
             return $output;

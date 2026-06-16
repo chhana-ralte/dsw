@@ -204,7 +204,7 @@ class AdmissionController extends Controller
      */
     public function show(Admission $admission)
     {
-        //
+        return $admission;
     }
 
     /**

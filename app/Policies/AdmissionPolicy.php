@@ -60,6 +60,15 @@ class AdmissionPolicy
         return $user->isWardenOf($hostel->id);
     }
 
+    public function update_admission(User $user, Admission $admission){
+        if($user->isDsw() || $user->isFinance() || ($user->allotment() && $admission->verified == 0)){
+            return true;
+        }
+        else{
+            return $user->isWardenOf($admission->allot_hostel->hostel_id);
+        }
+    }
+
     public function verify_admission(User $user, Admission $admission){
         if($user->isAdmin() || $user->isDsw()){
             return true;

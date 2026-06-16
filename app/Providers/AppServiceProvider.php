@@ -12,6 +12,7 @@ use App\Models\Allotment;
 use App\Policies\HostelPolicy;
 use App\Policies\RoomPolicy;
 use App\Policies\AllotmentPolicy;
+use App\Policies\AdmissionPolicy;
 use App\Policies\SearchPolicy;
 
 class AppServiceProvider extends ServiceProvider
@@ -48,7 +49,9 @@ class AppServiceProvider extends ServiceProvider
             return $user->isWardenOf($hostel->id) || $user->isDsw() || $user->isFinance();
         });
 
-        Gate::define('update-admission', function (User $user, Allotment $allotment) {
+        Gate::define('update-admission', [AdmissionPolicy::class, 'update_admission']);
+
+        Gate::define('create-admission', function (User $user, Allotment $allotment) {
             if ($user->isDsw() || ($user->allotment() && $user->allotment()->id == $allotment->id)) {
                 return true;
             } else {

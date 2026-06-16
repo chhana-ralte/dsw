@@ -145,7 +145,7 @@ Route::resource('notiMaster', NotiMasterController::class);
 Route::resource('notiMaster.notification', NotificationController::class)->middleware('auth')->shallow();
 Route::resource('notification.allotment', AllotmentController::class)->shallow()->middleware('auth');
 Route::resource('notification.sem_allot', SemAllotController::class)->shallow()->middleware('auth');
-Route::resource('allotment.admission', AdmissionController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->shallow()->middleware('auth');
+Route::resource('allotment.admission', AdmissionController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy'])->shallow()->middleware('auth');
 Route::resource('allotment.allot_hostel', AllotHostelController::class)->shallow()->middleware('auth');
 Route::resource('allotment.cancelSeat', CancelSeatController::class)->shallow()->middleware('auth');
 Route::resource('allotment.requirement', RequirementController::class)->shallow()->only(['index', 'create', 'store'])->middleware('auth');
@@ -200,16 +200,7 @@ Route::controller(RequirementController::class)->group(function () {
 
 
 
-Route::controller(\App\Http\Controllers\SemfeeController::class)->group(function () {
-    Route::get('/semfee/', 'index')->middleware(['auth']);
-    Route::post('/hostel/{id}/semfee/approveall', 'approveAll')->middleware(['auth']);
-    Route::post('/hostel/{id}/semfee/confirmall', 'confirmAll')->middleware(['auth']);
-    Route::post('/hostel/{id}/semfee/sendall', 'sendAll')->middleware(['auth']);
-    Route::get('/allot_hostel/{id}/semfee/create', 'create')->middleware(['auth']);
-    Route::post('/allot_hostel/{id}/semfee', 'store')->middleware(['auth']);
-    Route::get('/semfee/list/hostel/{id?}/{status?}', 'list')->middleware(['auth']);
-    Route::post('/semfee/{id}/paymentUpdate', 'paymentUpdate')->middleware(['auth']);
-});
+
 
 Route::controller(\App\Http\Controllers\FinanceController::class)->group(function () {
     Route::get('/finance/', 'index')->middleware(['auth']);
@@ -247,3 +238,4 @@ require __DIR__ . '/ajax.php';
 require __DIR__ . '/test.php';
 require __DIR__ . '/diktei.php';
 require __DIR__ . '/warden.php';
+require __DIR__ . '/semfee.php';

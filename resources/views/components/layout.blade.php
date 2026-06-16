@@ -68,27 +68,44 @@
                         </li>
                     @endif
 
-                    {{-- @can('viewList', App\Models\Requirement::class)
+                    {{--
+                    @can('viewList', App\Models\Requirement::class)
                         <li class="nav-item">
                             <a class="nav-link" href="/requirement/list">Requirements</a>
                         </li>
-                    @endcan --}}
+                    @endcan
+                    --}}
+
                     @if(auth()->user())
-                        <li class="nav-item">
+
                             @if(auth()->user()->isWarden() || auth()->user()->isDsw())
-                                <a class="nav-link" href="/semfee">Semester Fees</a>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/semfee">Semester Fees</a>
+                                </li>
                             @elseif(auth()->user()->allotment())
                                 @if(auth()->user()->allotment()->valid_allot_hostel())
-                                    <a class="nav-link" href="/allot_hostel/{{ auth()->user()->allotment()->valid_allot_hostel()->id }}/semfee/create">
-                                        My semester fees
-                                    </a>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/allot_hostel/{{ auth()->user()->allotment()->valid_allot_hostel()->id }}/semfee/create">
+                                            My semester fees
+                                        </a>
+                                    </li>
+
                                 @endif
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/allotment/{{ auth()->user()->allotment()->id }}/admission">
+                                        My admissions
+                                    </a>
+                                </li>
                             @endif
-                        </li>
+
                     @endif
-                    {{-- <li class="nav-item">
+
+                    {{--
+                    <li class="nav-item">
                             <a class="nav-link" href="/admissioncheck">Check admission status</a>
-                        </li> --}}
+                        </li>
+                    --}}
+
                     <li class="nav-item">
                         <a class="nav-link" href="/warden">Wardens</a>
                     </li>
@@ -110,6 +127,7 @@
                                 @endif
                             @endforeach
                         @endif
+
                         @if (auth()->user()->isAdmin() || auth()->user()->isDsw() || auth()->user()->isWarden())
                             <li class="nav-item">
                                 <a class="nav-link" href="/user">Users</a>
@@ -124,6 +142,7 @@
                                 </li>
                             @endif
                         @endif
+
                         @if (auth()->user()->allotment())
                             <li class="nav-item">
                                 <a class="nav-link" href="/allotment/{{ auth()->user()->allotment()->id }}">My details</a>
@@ -136,6 +155,7 @@
                             </li>
                         @endcan
                     @endauth
+
                     @if (auth()->user() && auth()->user()->isAdmin())
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
