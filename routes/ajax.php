@@ -23,6 +23,9 @@ Route::controller(AjaxController::class)->group(function () {
     Route::post('/ajax/requirement/{id}/delete', 'requirementDelete');
     Route::post('/ajax/allotment/{id}/allot_hostel/store', 'createAllotHostel');
     Route::post('/ajax/allotment/{id}/admission/store', 'createAdmission');
+    Route::post('/ajax/admission/{id}/update', 'updateAdmission');
+    Route::post('/ajax/admission/{id}/verify', 'verifyAdmission');
+    Route::post('/ajax/admission/{id}/undo-verify', 'undoVerifyAdmission');
     Route::post('/ajax/admission/{id}/delete', 'deleteAdmission');
     Route::get('/ajax/allotment/{id}/application', 'getApplication');
     Route::post('/ajax/allotment/{id}/decline', 'declineAllotment');

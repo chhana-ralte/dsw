@@ -44,6 +44,13 @@
                                             {{-- <a class="btn btn-secondary btn-sm btn-edit" href="/admission/{{ $adm->id }}/edit?back_link=/allotment/{{ $adm->allotment->id }}/admission?back_link={{ $back_link }}">Edit</a> --}}
                                             <button class="btn btn-secondary btn-sm btn-edit" value="{{ $adm->id }}">Edit</button>
                                             <button class="btn btn-danger btn-sm btn-delete" value="{{ $adm->id }}">Delete</button>
+                                            @can('verify-admission', $adm)
+                                                @if(!$adm->verified)
+                                                    <button class="btn btn-primary btn-sm btn-verify" value="{{ $adm->id }}">Verify</button>
+                                                @else
+                                                    <button class="btn btn-primary btn-sm btn-undo-verify" value="{{ $adm->id }}">Undo Verify</button>
+                                                @endif
+                                            @endcan
                                         </div>
                                     @endcan
                                 </td>
@@ -127,10 +134,42 @@ $(document).ready(function(){
         $("input#allotment_id").val($(this).val());
         $("input[name='ref']").val('');
         $("input[name='amount']").val('');
-        $("button[name='dt']").val('');
-        $("button[name='type']").val('create');
+        $("input[name='dt']").val('');
+        $("input[name='type']").val('create');
         $("button.btn-add-admission").text("Add admission");
         $("div#admissionModal").modal("show");
+    });
+
+    $("button.btn-verify").click(function(){
+        if(confirm("Do you want to verify?")){
+            $.ajax({
+                type : 'post',
+                url : '/ajax/admission/' + $(this).val() + '/verify',
+                success : function(data, status){
+                    alert("Verified");
+                    location.reload();
+                },
+                error : function(){
+                    alert("Error");
+                }
+            });
+        }
+    });
+
+    $("button.btn-undo-verify").click(function(){
+        if(confirm("Do you want to undo verification?")){
+            $.ajax({
+                type : 'post',
+                url : '/ajax/admission/' + $(this).val() + '/undo-verify',
+                success : function(data, status){
+                    alert("Verification undone");
+                    location.reload();
+                },
+                error : function(){
+                    alert("Error");
+                }
+            });
+        }
     });
 
     $("button.btn-edit").click(function(){
@@ -144,10 +183,11 @@ $(document).ready(function(){
                 $("input[name='ref']").val(data.ref);
                 $("input[name='amount']").val(data.amount);
                 $("input[name='dt']").val(data.payment_dt);
-                $("button[name='type']").val('update');
+                $("input[name='type']").val('update');
                 $("button.btn-add-admission").text("Update admission");
                 $("select[name='sessn']").val(data.sessn_id).trigger('change');
                 $("div#admissionModal").modal("show");
+
             },
             error : function(){
                 alert("Error");
@@ -163,8 +203,14 @@ $(document).ready(function(){
             exit();
         }
         else{
+            if($("input[name='type']").val() == 'create'){
+                var url = "/ajax/allotment/" + $("input#allotment_id").val() + "/admission/store";
+            }
+            else{
+                var url = "/ajax/admission/" + $("input[name='admission_id']").val() + "/update";
+            }
             $.ajax({
-                url : "/ajax/allotment/" + $("input#allotment_id").val() + "/admission/store",
+                url : url,
                 type : "post",
                 data : {
                     admission_id : $("input[name='admission_id']").val(),
@@ -178,6 +224,7 @@ $(document).ready(function(){
                     // alert(data);
                     if(data.status == true){
                         alert("Successful");
+                        console.log(JSON.stringify(data));
                         location.reload();
                     }
                     else{

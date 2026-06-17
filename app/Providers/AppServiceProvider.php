@@ -51,6 +51,8 @@ class AppServiceProvider extends ServiceProvider
 
         Gate::define('update-admission', [AdmissionPolicy::class, 'update_admission']);
 
+        Gate::define('verify-admission', [AdmissionPolicy::class, 'verify_admission']);
+
         Gate::define('create-admission', function (User $user, Allotment $allotment) {
             if ($user->isDsw() || ($user->allotment() && $user->allotment()->id == $allotment->id)) {
                 return true;

@@ -74,7 +74,7 @@ class Admission extends Model
         }
     }
 
-    public function update_admission($request){
+    public static function update_admission($request){
         $admission = Admission::findOrFail($request->admission_id);
         if(isset($request->sessn_id)){
             $admission->sessn_id = $request->sessn_id;
@@ -89,6 +89,29 @@ class Admission extends Model
             $admission->payment_dt = $request->payment_dt;
         }
         $admission->save();
+        return (object)['status' => true, 'data' => ['admission' => $admission]];
+    }
+
+    public static function verify_admission($request){
+        $admission = Admission::findOrFail($request->admission_id);
+        if(auth()->user()){
+            $admission->update([
+                'verified' => 1,
+                'verified_by' => auth()->user()->id,
+            ]);
+        }
+        return (object)['status' => true, 'data' => $admission];
+    }
+
+    public static function undo_verify_admission($request){
+        $admission = Admission::findOrFail($request->admission_id);
+        if(auth()->user()){
+            $admission->update([
+                'verified' => 0,
+                'verified_by' => 0,
+            ]);
+        }
+        return (object)['status' => true, 'data' => $admission];
     }
 
     public function remove_admission($request)

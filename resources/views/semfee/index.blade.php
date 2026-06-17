@@ -7,11 +7,6 @@
                     <a class="btn btn-secondary btn-sm" href="/semfee/list/hostel">
                         Back
                     </a>
-                    @can('verify-admission', $hostel)
-                        Can verify
-                    @else
-                        Can not Verify
-                    @endif
                 </p>
             </x-slot>
             <div style="width: 100%; overflow-x:auto">

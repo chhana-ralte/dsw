@@ -48,18 +48,14 @@
                                 @endif
                                 <td>
                                     @if($ah->allotment->admission($sessn->id))
-                                        @can('verify_admission', $ah->allotment->admission($sessn->id))
-                                            <label id="label_{{ $ah->id }}">Done</label>
-                                        @else
-                                            <label id="label_{{ $ah->id }}">Donee</label>
-                                        @endcan
+                                        <label id="label_{{ $ah->id }}">Done</label>
                                     @else
                                         <label id="label_{{ $ah->id }}">Not done</label>
                                     @endif
                                 </td>
                                 <td>
                                     <div class="btn-group">
-                                        @can('verify-admission', $hostel)
+                                        @can('update-admission', $ah->allotment)
                                             @if($ah->allotment->admission($sessn->id))
                                                 <button class="btn btn-danger btn-sm btn-undo" name="admit_{{ $ah->id }}" value="{{ $ah->allotment->admission($sessn->id)->id }}">Undo</button>
                                             @else

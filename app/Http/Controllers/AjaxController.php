@@ -337,6 +337,7 @@ class AjaxController extends Controller
             'amount' => request()->amount,
             'payment_dt' => request()->payment_dt,
         ];
+
         $data = (object)$data;
         // return $data->allotment_id;
         if($data->type == 'create'){
@@ -411,6 +412,51 @@ class AjaxController extends Controller
             return "Successful";
         } else {
             return "Valid allotment of seat is required";
+        }
+    }
+
+    public function updateAdmission($admission_id)
+    {
+        $data = [
+            'admission_id' => $admission_id,
+            'sessn_id' => request()->sessn_id,
+            'ref' => request()->ref,
+            'amount' => request()->amount,
+            'payment_dt' => request()->payment_dt,
+        ];
+
+        $data = (object)$data;
+        $output = \App\Models\Admission::update_admission($data);
+        // return $output->allotment_id;
+        if ($output->status == true) {
+            return $output;
+        } else {
+            return "Error";
+        }
+
+    }
+
+    public static function verifyAdmission($admission_id){
+        $data = [
+            'admission_id' => $admission_id,
+        ];
+        $output = \App\Models\Admission::verify_admission((object)$data);
+        if ($output->status == true) {
+            return $output;
+        } else {
+            return "Error";
+        }
+    }
+
+    public static function undoVerifyAdmission($admission_id){
+        $data = [
+            'admission_id' => $admission_id,
+        ];
+        $output = \App\Models\Admission::undo_verify_admission((object)$data);
+        if ($output->status == true) {
+            return $output;
+        } else {
+            return "Error";
         }
     }
 
