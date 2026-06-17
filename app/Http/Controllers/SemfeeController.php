@@ -35,6 +35,15 @@ class SemfeeController extends Controller
         }
     }
 
+    public function allot_hostel_index(\App\Models\AllotHostel $allot_hostel)
+    {
+        $data = [
+            'allot_hostel' => $allot_hostel,
+            'semfees' => Semfee::where('allotment_id', $allot_hostel->allotment->id)->orWhere('allot_hostel_id', $allot_hostel->id)->orderBy('sessn_id')->get()
+        ];
+        return view('semfee.allot_hostel-index', $data);
+    }
+
     /**
      * Show the form for creating a new resource.
      */

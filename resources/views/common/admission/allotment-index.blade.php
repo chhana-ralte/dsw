@@ -24,9 +24,9 @@
                             <th>Session</th>
                             <th>Payment amount</th>
                             <th>Payment date</th>
+                            <th>Reference</th>
                             <th>Status</th>
                             <th>Actions</th>
-
                         </tr>
                     </thead>
                     <tbody>
@@ -37,6 +37,7 @@
                                 <td>{{ $adm->sessn->name() }}</td>
                                 <td>{{ $adm->amount }}</td>
                                 <td>{{ $adm->payment_dt }}</td>
+                                <td>{{ $adm->ref }}</td>
                                 <td>{{ $adm->verified?'Verified':'Created' }}</td>
                                 <td>
                                     @can('update-admission', $adm)
@@ -48,7 +49,7 @@
                                                 @if(!$adm->verified)
                                                     <button class="btn btn-primary btn-sm btn-verify" value="{{ $adm->id }}">Verify</button>
                                                 @else
-                                                    <button class="btn btn-primary btn-sm btn-undo-verify" value="{{ $adm->id }}">Undo Verify</button>
+                                                    <button class="btn btn-outline-primary btn-sm btn-undo-verify" value="{{ $adm->id }}">Undo Verify</button>
                                                 @endif
                                             @endcan
                                         </div>
