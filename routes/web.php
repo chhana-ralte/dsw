@@ -213,15 +213,6 @@ Route::controller(FeedbackController::class)->group(function () {
 Route::resource('zirlai', ZirlaiController::class)->middleware('auth')->shallow();
 
 
-
-
-
-
-
-
-
-
-
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

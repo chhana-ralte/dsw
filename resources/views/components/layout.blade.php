@@ -85,7 +85,7 @@
                             @elseif(auth()->user()->allotment())
                                 @if(auth()->user()->allotment()->valid_allot_hostel())
                                     <li class="nav-item">
-                                        <a class="nav-link" href="/allot_hostel/{{ auth()->user()->allotment()->valid_allot_hostel()->id }}/semfee/create">
+                                        <a class="nav-link" href="/allot_hostel/{{ auth()->user()->allotment()->valid_allot_hostel()->id }}/semfee">
                                             My semester demand
                                         </a>
                                     </li>

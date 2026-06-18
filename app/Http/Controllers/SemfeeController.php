@@ -37,9 +37,15 @@ class SemfeeController extends Controller
 
     public function allot_hostel_index(\App\Models\AllotHostel $allot_hostel)
     {
+        $for_sessn = \App\Models\Sessn::where('start_yr', '2026')->where('odd_even', 1)->first();
         $data = [
             'allot_hostel' => $allot_hostel,
-            'semfees' => Semfee::where('allotment_id', $allot_hostel->allotment->id)->orWhere('allot_hostel_id', $allot_hostel->id)->orderBy('sessn_id')->get()
+            'semfees' => Semfee::where('allotment_id', $allot_hostel->allotment->id)
+                ->orWhere('allot_hostel_id', $allot_hostel->id)
+                ->orderBy('sessn_id')
+                ->get(),
+            'for_sessn' => $for_sessn,
+            'semfee' => Semfee::where('sessn_id', $for_sessn->id)->first()
         ];
         return view('semfee.allot_hostel-index', $data);
     }

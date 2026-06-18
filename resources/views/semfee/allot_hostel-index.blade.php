@@ -86,6 +86,14 @@
                 </form>
             @endcan
         </x-block>
+        <x-block>
+            @if($semfee)
+                Requirement for the semester {{ $semfee->sessn->name() }} has been submitted.
+            @else
+                Do you want to submit requirement for {{ $for_sessn->name() }}?
+            @endif
+
+        </x-block>
 
     </x-container>
 
