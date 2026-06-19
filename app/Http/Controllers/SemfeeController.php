@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Semfee;
+use App\Models\Hostel;
+use App\Models\Sessn;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,28 +15,43 @@ class SemfeeController extends Controller
      */
     public function index()
     {
-        if (isset(request()->hostel_id)) {
-            // $allot_hostel = \App\Models\AllotHostel::find(3);
-            $hostel = \App\Models\Hostel::find(request()->hostel_id);
-            if (isset(request()->sessn_id)) {
-                $sessn = \App\Models\Sessn::find(request()->sessn_id);
-            } else {
+        if (isset(request()->sessn_id)) {
+            $sessn = \App\Models\Sessn::find(request()->sessn_id);
+        } else {
+            $sessn = \App\Models\Sessn::current();
+        }
+
+        $sql = "SELECT hostels.id, hostels.name, hostels.gender, count(allot_hostels.id) - count(semfees.id) AS 'Null',
+            count(if(semfees.status = 'Forwarded',1,null)) AS 'Forwarded',
+            count(if(semfees.status = 'Sent',1,null)) AS 'Sent',
+            count(if(semfees.status = 'Paid',1,null)) AS 'Paid',
+            count(if(semfees.status = 'Cancelled',1,null)) AS 'Cancelled'
+            FROM hostels JOIN allot_hostels ON hostels.id=allot_hostels.hostel_id AND allot_hostels.valid = 1
+            LEFT JOIN semfees ON allot_hostels.id = semfees.allot_hostel_id AND semfees.sessn_id = '" . $sessn->id . "'
+            GROUP BY hostels.id,hostels.name, hostels.gender
+            ORDER BY hostels.gender, hostels.name";
+        $semfees = DB::select($sql);
+        return view('semfee.index', ['semfees' => $semfees, 'sessn' => $sessn]);
+
+    }
+    public function hostel_index(Hostel $hostel){
+        if (isset(request()->sessn_id)) {
+            $sessn = \App\Models\Sessn::findOrFail(request()->sessn_id);
+            if(!$sessn){
                 $sessn = \App\Models\Sessn::current();
             }
-            if ($hostel) {
-                $data = [
-                    'sessn' => $sessn,
-                    'hostel' => $hostel,
-                    'allot_hostels' => $hostel->valid_allot_hostels()
-                ];
-                return view('semfee.index', $data);
-            }
         } else {
-            return redirect('/semfee/list/hostel');
-            return view('semfee.index-none');
+            $sessn = \App\Models\Sessn::current();
+        }
+        if ($hostel) {
+            $data = [
+                'sessn' => $sessn,
+                'hostel' => $hostel,
+                'allot_hostels' => $hostel->valid_allot_hostels()
+            ];
+            return view('semfee.hostel-index', $data);
         }
     }
-
     public function allot_hostel_index(\App\Models\AllotHostel $allot_hostel)
     {
         $for_sessn = \App\Models\Sessn::where('start_yr', '2026')->where('odd_even', 1)->first();
@@ -45,6 +62,7 @@ class SemfeeController extends Controller
                 ->orderBy('sessn_id')
                 ->get(),
             'for_sessn' => $for_sessn,
+            'sessn' => $for_sessn,
             'semfee' => Semfee::where('sessn_id', $for_sessn->id)->first()
         ];
         return view('semfee.allot_hostel-index', $data);
@@ -187,7 +205,7 @@ class SemfeeController extends Controller
             }
         }
 
-        return redirect('/semfee?hostel_id=' . $request->hostel_id)->with(['message' => ['type' => 'info', 'text' => 'Successfully done']]);
+        return redirect('/hostel/' . $request->hostel_id . '/semfee?sessn_id=' . $request->sessn_id)->with(['message' => ['type' => 'info', 'text' => 'Successfully done']]);
         return $str;
         $allot_hostel_ids = $request->allot_hostel_id;
         $allot_hostels = \App\Models\AllotHostel::whereIn('id', $allot_hostel_ids)->get();
@@ -210,48 +228,7 @@ class SemfeeController extends Controller
 
     public function list(?int $hostel_id = 0, ?string $status = "Forwarded", ?int $sessn_id = 0)
     {
-        if (isset(request()->sessn_id)) {
-            $sessn = \App\Models\Sessn::find(request()->sessn_id);
-        } else if ($sessn_id) {
-            $sessn = \App\Models\Sessn::find($sessn_id);
-        } else {
-            $sessn = \App\Models\Sessn::current();
-        }
-        if ($hostel_id) {
-            $hostel = \App\Models\Hostel::find($hostel_id);
-            $allot_hostels = $hostel->valid_allot_hostels();
-            if ($status == 'Null') {
-                $data = [
-                    'hostel' => $hostel,
-                    'allot_hostels' => $allot_hostels,
-                    'sessn' => $sessn,
-                    'status' => $status
-                ];
-                return view('semfee.null-list', $data);
-            } else {
-                $semfees = Semfee::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->where('status', $status)->get();
-                $data = [
-                    'semfees' => $semfees,
-                    'hostel' => $hostel,
-                    'allot_hostels' => $allot_hostels,
-                    'sessn' => $sessn,
-                    'status' => $status
-                ];
-                return view('semfee.list', $data);
-            }
-        } else {
-            $sql = "SELECT hostels.id, hostels.name, hostels.gender, count(allot_hostels.id) - count(semfees.id) AS 'Null',
-                count(if(semfees.status = 'Forwarded',1,null)) AS 'Forwarded',
-                count(if(semfees.status = 'Sent',1,null)) AS 'Sent',
-                count(if(semfees.status = 'Paid',1,null)) AS 'Paid',
-                count(if(semfees.status = 'Cancelled',1,null)) AS 'Cancelled'
-                FROM hostels JOIN allot_hostels ON hostels.id=allot_hostels.hostel_id AND allot_hostels.valid = 1
-                LEFT JOIN semfees ON allot_hostels.id = semfees.allot_hostel_id AND semfees.sessn_id = '" . $sessn->id . "'
-                GROUP BY hostels.id,hostels.name, hostels.gender
-                ORDER BY hostels.gender, hostels.name";
-            $semfees = DB::select($sql);
-            return view('semfee.index-none', ['semfees' => $semfees, 'sessn' => $sessn]);
-        }
+
     }
 
     public function paymentUpdate($semfee_id, Request $request)

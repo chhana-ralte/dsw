@@ -4,8 +4,9 @@
         <x-block>
             <x-slot name="heading">
                 Semester fee demand portal
+
                 <p>
-                    <a href="/semfee?hostel_id={{ $allot_hostel->hostel->id }}" class="btn btn-secondary btn-sm" >Back</a>
+                    <a href="/hostel/{{ $allot_hostel->hostel->id }}/semfee" class="btn btn-secondary btn-sm" >Back</a>
                 </p>
             </x-slot>
             @if(count($semfees) > 0)
@@ -13,7 +14,7 @@
                     <table class="table">
                         <tr>
                             <th>Session</th>
-                            <th>Current room type</th>
+                            <th>Requested room type</th>
                             <th>Status</th>
                             <th>Action</th>
                             <th>Update payment</th>
@@ -47,44 +48,7 @@
                     @endforeach
                 </div>
             @endif
-            @can('manage_semfee', $allot_hostel)
-                <form class="col-md-7" name="frm_submit" method="post" action="/allot_hostel/{{ $allot_hostel->id }}/semfee" onsubmit="return validate();">
-                    @csrf
 
-
-                    <div class="mb-3 form-group row">
-                        <label class="col-md-5">Session</label>
-                        <div class="col-md-7">
-                            <input type="text" class="form-control" name="sessn" readonly value="{{ $sessn->name() }}">
-                            <input type='hidden' name='sessn_id' value="{{ $sessn->id }}">
-                        </div>
-                    </div>
-                    <div class="mb-3 form-group row">
-                        <label for="capacity" class="col-md-5">Room type</label>
-                        <div class="col-md-7">
-                            <select name='capacity' class='form-control' placeholder="Room type" required>
-                                <option disabled selected>Select Room type</option>
-                                <option value='1' {{ $capacity =='1' ? ' selected ' : '' }} >Single</option>
-                                <option value='2' {{ $capacity =='2' ? ' selected ' : '' }} >Double</option>
-                                <option value='3' {{ $capacity =='3' ? ' selected ' : '' }} >Triple</option>
-                                <option value='4' {{ $capacity > 3 ? ' selected ' : '' }} >Dorm</option>
-                            </select>
-                            @error('capacity')
-                            <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="mb-3 form-group row">
-                        <label class="col-md-5"></label>
-                        <div class="col-md-7">
-                            <button class="btn btn-primary" type="submit">Submit</button>
-
-                        </div>
-                    </div>
-
-                </form>
-            @endcan
         </x-block>
         <x-block>
             @if($semfee)

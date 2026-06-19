@@ -4,6 +4,7 @@ use App\Http\Controllers\SemfeeController;
 
 Route::controller(\App\Http\Controllers\SemfeeController::class)->group(function () {
     Route::get('/semfee/', 'index')->middleware(['auth']);
+    Route::get('/hostel/{hostel}/semfee', 'hostel_index')->middleware(['auth']);
     Route::post('/hostel/{id}/semfee/approveall', 'approveAll')->middleware(['auth']);
     Route::post('/hostel/{id}/semfee/confirmall', 'confirmAll')->middleware(['auth']);
     Route::post('/hostel/{id}/semfee/sendall', 'sendAll')->middleware(['auth']);

@@ -92,6 +92,16 @@
             @endauth
         </x-block>
 
+        <x-block class="col-sm-12 col-md-5 col-lg-3">
+            <h3 class="text-center">Requirements for semester</h3>
+            <p>Students who would require hostel seat for next academic session</p>
+            @auth
+                <div class="text-center">
+                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/semfee">View</a>
+                </div>
+            @endauth
+        </x-block>
+
     </x-container>
     <x-container>
         <x-block>
