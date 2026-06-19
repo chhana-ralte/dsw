@@ -365,7 +365,7 @@
                 }
             })
 
-            
+
             // $("input[name='person_id']").val($(this).val());
             // // alert($("input[name='person_id']").val());
             // $.ajax({
@@ -395,7 +395,7 @@
                     alert('Error');
                 }
             });
-            
+
         });
         $("button#sendall").click(function(){
             if($("input[name='semfee_id[]']:checked").length == 0){

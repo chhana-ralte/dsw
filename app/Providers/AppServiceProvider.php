@@ -64,5 +64,9 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
         });
+
+        Gate::define('update-semfee', function(User $user, Hostel $hostel){
+            return $user->isDsw() || $user->isWardenOf($hostel->id);
+        });
     }
 }

@@ -2,7 +2,7 @@
     <x-container>
         <x-block>
             <x-slot name='heading'>
-                Semester fee payment status
+                Semester fee payment status for academic session {{ $sessn->name() }}
                 {{-- <p>
                     <a class="btn btn-primary btn-sm" href="/section/create">
                         asdasd
@@ -28,7 +28,7 @@
                             <td>{{ $sl++ }}</td>
                             <td>
 
-                                <a href="/semfee?hostel_id={{ $h->id }}">{{ $h->name }}</a>
+                                <a href="/semfee?hostel_id={{ $h->id }}&sessn_id={{ $sessn->id }}">{{ $h->name }}</a>
 
                             </td>
                             <td>
@@ -36,7 +36,7 @@
                             </td>
                             <td>
                                 @if(auth()->user() && auth()->user()->isFinance())
-                                    <a href="/semfee/list/hostel/{{ $h->id }}/Null">
+                                    <a href="/semfee/list/hostel/{{ $h->id }}/Null?sessn_id={{ $sessn->id }}">
                                         {{ $h->Null }}
                                     </a>
                                 @else
@@ -45,7 +45,7 @@
                             </td>
                             <td>
                                 @if(auth()->user() && auth()->user()->isFinance())
-                                    <a href="/semfee/list/hostel/{{ $h->id }}/Forwarded">
+                                    <a href="/semfee/list/hostel/{{ $h->id }}/Forwarded?sessn_id={{ $sessn->id }}">
                                         {{ $h->Forwarded }}
                                     </a>
                                 @else
@@ -54,7 +54,7 @@
                             </td>
                             <td>
                                 @if(auth()->user() && auth()->user()->isFinance())
-                                    <a href="/semfee/list/hostel/{{ $h->id }}/Sent">
+                                    <a href="/semfee/list/hostel/{{ $h->id }}/Sent?sessn_id={{ $sessn->id }}">
                                         {{ $h->Sent }}
                                     </a>
                                 @else
@@ -63,7 +63,7 @@
                             </td>
                             <td>
                                 @if(auth()->user() && auth()->user()->isFinance())
-                                    <a href="/semfee/list/hostel/{{ $h->id }}/Paid">
+                                    <a href="/semfee/list/hostel/{{ $h->id }}/Paid?sessn_id={{ $sessn->id }}">
                                         {{ $h->Paid }}
                                     </a>
                                 @else
@@ -72,7 +72,7 @@
                             </td>
                             <td>
                                 @if(auth()->user() && auth()->user()->isFinance())
-                                    <a href="/semfee/list/hostel/{{ $h->id }}/Cancelled">
+                                    <a href="/semfee/list/hostel/{{ $h->id }}/Cancelled?sessn_id={{ $sessn->id }}">
                                         {{ $h->Cancelled }}
                                     </a>
                                 @else

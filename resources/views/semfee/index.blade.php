@@ -4,7 +4,7 @@
             <x-slot name='heading'>
                 List of students currently in the Hostel in the {{ $sessn->name() }}
                 <p>
-                    <a class="btn btn-secondary btn-sm" href="/semfee/list/hostel">
+                    <a class="btn btn-secondary btn-sm" href="/semfee/list/hostel?sessn_id={{ $sessn->id }}">
                         Back
                     </a>
                 </p>
@@ -85,7 +85,7 @@
                                 </tr>
                             @endif
                         @endforeach
-                        @can('manage_semfee', $ah)
+                        @can('update-semfee', $hostel)
                         <tr>
                             <td colspan=4>
                                 <button type="button" class="btn btn-primary btn-submit-all">Submit selected</button>
