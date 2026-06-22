@@ -9,7 +9,7 @@
                 @endforeach
                 </select>
                 <p>
-                    <a class="btn btn-secondary btn-sm" href="/semfee/list/hostel?sessn_id={{ $sessn->id }}">
+                    <a class="btn btn-secondary btn-sm" href="/semfee?sessn_id={{ $sessn->id }}">
                         Back
                     </a>
                 </p>

@@ -4,22 +4,22 @@
             <x-slot name='heading'>
                 List of {{ $status }} students in the  {{ $hostel->name }} Hostel in the {{ $sessn->name() }}
                 <p>
-                    <a class="btn btn-secondary btn-sm" href="/semfee/list/hostel">
+                    <a class="btn btn-secondary btn-sm" href="/semfee?sessn_id={{ $sessn->id }}">
                         Back
                     </a>
-                    <a class="btn btn-primary btn-sm" href="/semfee/list/hostel/{{ $hostel->id }}/Null">
+                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/semfee/list/Null?sessn_id={{ $sessn->id }}">
                         Null
                     </a>
-                    <a class="btn btn-primary btn-sm" href="/semfee/list/hostel/{{ $hostel->id }}/Forwarded">
+                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/semfee/list/Forwarded?sessn_id={{ $sessn->id }}">
                         Forwarded
                     </a>
-                    <a class="btn btn-primary btn-sm" href="/semfee/list/hostel/{{ $hostel->id }}/Sent">
+                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/semfee/list/Sent?sessn_id={{ $sessn->id }}">
                         Sent
                     </a>
-                    <a class="btn btn-primary btn-sm" href="/semfee/list/hostel/{{ $hostel->id }}/Paid">
+                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/semfee/list/Paid?sessn_id={{ $sessn->id }}">
                         Paid
                     </a>
-                    <a class="btn btn-primary btn-sm" href="/semfee/list/hostel/{{ $hostel->id }}/Cancelled">
+                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/semfee/list/Cancelled?sessn_id={{ $sessn->id }}">
                         Cancelled
                     </a>
                 </p>

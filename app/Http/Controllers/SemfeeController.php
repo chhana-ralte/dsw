@@ -103,6 +103,7 @@ class SemfeeController extends Controller
     public function store($allot_hostel_id, Request $request)
     {
         $allot_hostel = \App\Models\AllotHostel::find($allot_hostel_id);
+        // return $request;
         $semfee = Semfee::updateOrCreate(
             [
                 'allot_hostel_id' => $allot_hostel_id,
@@ -118,7 +119,7 @@ class SemfeeController extends Controller
                 'status' => 'Forwarded',
             ]
         );
-        return redirect('/allot_hostel/' . $allot_hostel_id . '/semfee/create')->with(['message' => ['type' => 'success', 'text' => 'Successfully done.']]);
+        return redirect('/allot_hostel/' . $allot_hostel_id . '/semfee/create?sessn_id=' . $request->sessn_id)->with(['message' => ['type' => 'success', 'text' => 'Successfully done.']]);
         return $semfee;
     }
 
@@ -205,7 +206,8 @@ class SemfeeController extends Controller
             }
         }
 
-        return redirect('/hostel/' . $request->hostel_id . '/semfee?sessn_id=' . $request->sessn_id)->with(['message' => ['type' => 'info', 'text' => 'Successfully done']]);
+        return redirect('/hostel/' . $request->hostel_id . '/semfee?sessn_id=' . $request->sessn_id)
+            ->with(['message' => ['type' => 'info', 'text' => 'Successfully done']]);
         return $str;
         $allot_hostel_ids = $request->allot_hostel_id;
         $allot_hostels = \App\Models\AllotHostel::whereIn('id', $allot_hostel_ids)->get();
@@ -226,9 +228,44 @@ class SemfeeController extends Controller
         return view('semfee.confirmall', $data);
     }
 
-    public function list(?int $hostel_id = 0, ?string $status = "Forwarded", ?int $sessn_id = 0)
+    public function list(Hostel $hostel, string $status = "Forwarded")
     {
+        if (isset(request()->sessn_id)) {
+            $sessn = \App\Models\Sessn::find(request()->sessn_id);
+        } else {
+            $sessn = \App\Models\Sessn::current();
+        }
+        $semfees = Semfee::join('allot_hostels','allot_hostels.id','semfees.allot_hostel_id')
+            ->where('allot_hostels.hostel_id', $hostel->id)
+            ->where('sessn_id', $sessn->id)
+            ->select("semfees.*");
 
+        if($status == 'Null'){
+            $allot_hostels = \App\Models\AllotHostel::where('hostel_id', $hostel->id)
+                ->where('valid', 1)
+                ->whereNotIn('id', $semfees->pluck('allot_hostel_id'))
+                ->get();
+            $data = [
+                'allot_hostels' => $allot_hostels,
+                'hostel' => $hostel,
+                'sessn' => $sessn,
+                'status' => $status
+            ];
+            return view('semfee.null-list', $data);
+        }
+        else{
+
+            $semfees = $semfees->where('status', $status)->get();
+            $data = [
+                'semfees' => $semfees,
+                'hostel' => $hostel,
+                'sessn' => $sessn,
+                'status' => $status
+            ];
+            return view('semfee.list', $data);
+        }
+
+        return $hostel->id;
     }
 
     public function paymentUpdate($semfee_id, Request $request)

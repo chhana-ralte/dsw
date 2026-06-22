@@ -4,9 +4,8 @@
         <x-block>
             <x-slot name="heading">
                 Semester fee demand portal
-
                 <p>
-                    <a href="/hostel/{{ $allot_hostel->hostel->id }}/semfee" class="btn btn-secondary btn-sm" >Back</a>
+                    <a href="/hostel/{{ $allot_hostel->hostel->id }}/semfee" class="btn btn-secondary btn-sm">Back</a>
                 </p>
             </x-slot>
             @if(count($semfees) > 0)
