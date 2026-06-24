@@ -1,6 +1,13 @@
 <x-layout>
     <x-container>
+        <x-block>
+            @if($allot_hostel->semfee($for_sessn->id))
+                Requirement for the semester {{ $semfee->sessn->name() }} has been submitted.
+            @else
+                You have not submitted requirement for {{ $for_sessn->name() }}
+            @endif
 
+        </x-block>
         <x-block>
             <x-slot name="heading">
                 Semester fee demand portal
@@ -49,14 +56,8 @@
             @endif
 
         </x-block>
-        <x-block>
-            @if($semfee)
-                Requirement for the semester {{ $semfee->sessn->name() }} has been submitted.
-            @else
-                Do you want to submit requirement for {{ $for_sessn->name() }}?
-            @endif
 
-        </x-block>
+
 
     </x-container>
 
@@ -70,6 +71,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="post" name='frmEdit'>
+                    @method('put')
                     <div class="modal-body">
                         @csrf
                         <input type="hidden" name="semfee_id" value="">
@@ -191,6 +193,8 @@
                     url : '/ajax/semfee/' + $(this).val() + '/getDetail',
                     success : function(data, status){
                         // alert(data.id);
+                        console.log(JSON.stringify(data));
+                        $("form[name='frmEdit']").attr('action','/semfee/' + data.id);
                         $("select[name='sessn_id'] option#sessn_" + data.sessn_id).prop('selected','true');
                         $("select[name='roomcapacity'] option#room_" + data.roomcapacity).prop('selected','true');
                         $("select[name='status'] option#" + data.status).prop('selected','true');
@@ -229,6 +233,21 @@
                 $("#frmUpdatePayment").submit();
 
 
+            });
+
+            $("button.btn-delete").click(function(){
+                console.log($(this).val());
+                $.ajax({
+                    'type' : 'delete',
+                    'url' : '/semfee/' + $(this).val(),
+                    success : function(data,status){
+                        console.log('deleted');
+                        location.reload();
+                    },
+                    error : function(xhr){
+                        alert("error occured");
+                    }
+                });
             });
 
         });

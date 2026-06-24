@@ -1,6 +1,5 @@
 <x-layout>
     <x-container>
-
         <x-block>
             <x-slot name="heading">
                 Semester fee demand portal
@@ -249,14 +248,14 @@
                         alert('error occured');
                     }
                 });
-                
+
 
             });
             $("button.btn-update-payment").click(function(){
                 // alert("asdadsada");
                 $("#frmUpdatePayment").attr('action', '/semfee/' + $("input[name='semfee_id']").val() + '/paymentUpdate');
                 $("#frmUpdatePayment").submit();
-                
+
 
             });
 

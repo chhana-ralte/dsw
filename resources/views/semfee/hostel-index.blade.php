@@ -12,8 +12,10 @@
                     <a class="btn btn-secondary btn-sm" href="/semfee?sessn_id={{ $sessn->id }}">
                         Back
                     </a>
+
                 </p>
             </x-slot>
+            <span class="text-info">Wardens may select and forward the selected students to finance.</span>
             <div style="width: 100%; overflow-x:auto">
                 <form name='frmMain' method="post" action="/hostel/{{ $hostel->id }}/semfee/approveall">
                     @csrf
@@ -48,7 +50,7 @@
                                     </td>
                                     <td>
                                         @if($ah->allotment->person->email && $ah->valid_allot_seat())
-                                            <a href="/allot_hostel/{{ $ah->id }}/semfee/create?sessn_id={{ $sessn->id }}">{{ $ah->allotment->person->name }}<a>
+                                            <a href="/allot_hostel/{{ $ah->id }}/semfee?sessn_id={{ $sessn->id }}">{{ $ah->allotment->person->name }}<a>
                                         @else
                                             {{ $ah->allotment->person->name }}
                                         @endif
@@ -78,8 +80,10 @@
                                                 <button type="button" class="btn-payment-detail" value="{{ $ah->semfee($sessn->id)->id }}">
                                                     <span class="text-primary">Paid</span>
                                                 </button>
+                                                ({{ \App\Models\Room::room_type($ah->semfee($sessn->id)->roomcapacity) }})
                                             @else
                                                 {{ $ah->semfee($sessn->id)->status }}
+                                                ({{ \App\Models\Room::room_type($ah->semfee($sessn->id)->roomcapacity) }})
                                             @endif
                                         @endif
                                         @if(auth()->user() && auth()->user()->isFinance() && $ah->semfee($sessn->id) && $ah->semfee($sessn->id)->status == 'Created')

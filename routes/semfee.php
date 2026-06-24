@@ -11,6 +11,8 @@ Route::controller(\App\Http\Controllers\SemfeeController::class)->group(function
     Route::get('/allot_hostel/{id}/semfee/create', 'create')->middleware(['auth']);
     Route::get('/allot_hostel/{allot_hostel}/semfee', 'allot_hostel_index')->middleware(['auth']);
     Route::post('/allot_hostel/{id}/semfee', 'store')->middleware(['auth']);
+    Route::put('/semfee/{semfee}', 'update')->middleware(['auth']);
+    Route::delete('/semfee/{semfee}', 'destroy')->middleware(['auth']);
     // Route::get('/semfee/list/hostel/{id?}/{status?}', 'list')->middleware(['auth']);
     Route::get('/hostel/{hostel}/semfee/list/{status?}', 'list')->middleware(['auth']);
     Route::post('/semfee/{id}/paymentUpdate', 'paymentUpdate')->middleware(['auth']);

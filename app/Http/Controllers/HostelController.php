@@ -54,6 +54,8 @@ class HostelController extends Controller
         $no_seat_cancelled = CancelSeat::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->count();
         $no_requirement = Requirement::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->count();
         $sessn = \App\Models\Sessn::default();
+        $for_sessn = \App\Models\Sessn::where('start_yr', 2026)->where('odd_even',1)->first();
+
         $data = [
             'hostel' => $hostel,
             'no_seats' => $no_seats,
@@ -66,6 +68,7 @@ class HostelController extends Controller
             'no_seat_cancelled' => $no_seat_cancelled,
             'no_requirement' => $no_requirement,
             'sessn' => $sessn,
+            'for_sessn' => $for_sessn,
         ];
 
         // return $data;

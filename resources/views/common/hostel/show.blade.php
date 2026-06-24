@@ -81,7 +81,7 @@
                 </div>
             @endauth
         </x-block>
-
+{{--
         <x-block class="col-sm-12 col-md-5 col-lg-3">
             <h3 class="text-center">Requirements</h3>
             <p>Students whose submitted requirement for next semester: {{$no_requirement }}</p>
@@ -90,14 +90,14 @@
                     <a class="btn btn-primary btn-sm" href="/requirement/list?hostel_id={{ $hostel->id }}">View</a>
                 </div>
             @endauth
-        </x-block>
+        </x-block> --}}
 
         <x-block class="col-sm-12 col-md-5 col-lg-3">
-            <h3 class="text-center">Requirements for semester</h3>
-            <p>Students who would require hostel seat for next academic session</p>
+            <h3 class="text-center">Requirements</h3>
+            <p>Students who would require hostel seat for next academic session {{ $for_sessn->name() }}</p>
             @auth
                 <div class="text-center">
-                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/semfee">View</a>
+                    <a class="btn btn-primary btn-sm" href="/hostel/{{ $hostel->id }}/semfee?sessn_id={{ $for_sessn->id }}">View</a>
                 </div>
             @endauth
         </x-block>

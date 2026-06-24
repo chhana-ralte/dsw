@@ -102,6 +102,7 @@ class SemfeeController extends Controller
      */
     public function store($allot_hostel_id, Request $request)
     {
+        // return $request;
         $allot_hostel = \App\Models\AllotHostel::find($allot_hostel_id);
         // return $request;
         $semfee = Semfee::updateOrCreate(
@@ -113,13 +114,13 @@ class SemfeeController extends Controller
                 'allotment_id' => $allot_hostel->allotment_id,
                 'allot_hostel_id' => $allot_hostel_id,
                 'sessn_id' => $request->sessn_id,
-                'roomcapacity' => $request->capacity,
+                'roomcapacity' => $request->roomcapacity,
                 'user_id' => auth()->user()->id,
                 'valid' => 1,
                 'status' => 'Forwarded',
             ]
         );
-        return redirect('/allot_hostel/' . $allot_hostel_id . '/semfee/create?sessn_id=' . $request->sessn_id)->with(['message' => ['type' => 'success', 'text' => 'Successfully done.']]);
+        return redirect('/allot_hostel/' . $allot_hostel_id . '/semfee?sessn_id=' . $request->sessn_id)->with(['message' => ['type' => 'success', 'text' => 'Successfully done.']]);
         return $semfee;
     }
 
@@ -144,7 +145,37 @@ class SemfeeController extends Controller
      */
     public function update(Request $request, Semfee $semfee)
     {
-        //
+        // return $request;
+        // $allot_hostel = \App\Models\AllotHostel::find($allot_hostel_id);
+        // return $request;
+        $semfee->update([
+            'sessn_id' => $request->sessn_id,
+            'roomcapacity' => $request->roomcapacity,
+            'user_id' => auth()->user()->id,
+            'valid' => 1,
+            'status' => $request->status,
+        ]);
+        return redirect('/allot_hostel/' . $semfee->allot_hostel_id . '/semfee?sessn_id=' . $semfee->sessn_id)
+            ->with(['message' => ['type' => 'success', 'text' => 'Successfully updated.']]);
+
+
+        $semfee = Semfee::updateOrCreate(
+            [
+                'allot_hostel_id' => $allot_hostel_id,
+                'sessn_id' => $request->sessn_id
+            ],
+            [
+                'allotment_id' => $allot_hostel->allotment_id,
+                'allot_hostel_id' => $allot_hostel_id,
+                'sessn_id' => $request->sessn_id,
+                'roomcapacity' => $request->roomcapacity,
+                'user_id' => auth()->user()->id,
+                'valid' => 1,
+                'status' => 'Forwarded',
+            ]
+        );
+        return redirect('/allot_hostel/' . $allot_hostel_id . '/semfee?sessn_id=' . $request->sessn_id)->with(['message' => ['type' => 'success', 'text' => 'Successfully done.']]);
+        return $semfee;
     }
 
     /**
@@ -152,7 +183,7 @@ class SemfeeController extends Controller
      */
     public function destroy(Semfee $semfee)
     {
-        //
+        return $semfee->delete();
     }
 
     public function approveAll($hostel_id, Request $request)
