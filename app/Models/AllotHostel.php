@@ -61,24 +61,31 @@ class AllotHostel extends Model
         if ($sessn_id == 0) {
             $sessn_id = Sessn::current()->id;
         }
-        return Semfee::where('allot_hostel_id', $this->id)->where('sessn_id', $sessn_id)->where('valid',1)->first();
+        return Semfee::where('allot_hostel_id', $this->id)->where('sessn_id', $sessn_id)->where('valid', 1)->first();
     }
 
-    public function valid_room(){
-        if($this->valid_allot_seat()){
+    public function valid_room()
+    {
+        if ($this->valid_allot_seat()) {
             return $this->valid_allot_seat()->seat->room->roomno;
-        }
-        else{
+        } else {
             return false;
         }
     }
 
-    public function room_capacity(){
-        if($this->valid_allot_seat()){
+    public function room_capacity()
+    {
+        if ($this->valid_allot_seat()) {
             return $this->valid_allot_seat()->seat->room->capacity;
-        }
-        else{
+        } else {
             return false;
         }
+    }
+
+    public function reqs()
+    {
+        return Req::where('allot_hostel_id', $this->id)
+            ->orderBy('created_at')
+            ->get();
     }
 }

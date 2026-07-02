@@ -96,6 +96,13 @@
                                         My admissions
                                     </a>
                                 </li>
+                                @if(auth()->user()->allotment()->valid_allot_hostel())
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/allot_hostel/{{ auth()->user()->allotment()->valid_allot_hostel()->id }}/req">
+                                            Hostel change request
+                                        </a>
+                                    </li>
+                                @endif
                             @endif
 
                     @endif

@@ -108,7 +108,6 @@ Route::get('/application/{id}/duplicate', [ApplicationController::class, 'duplic
 Route::get('/duplicate/application', [ApplicationController::class, 'duplicates'])->middleware('auth');
 
 
-
 Route::get('/login', [UserController::class, 'login'])->name('login');
 Route::post('/login', [UserController::class, 'logincheck']);
 Route::get('/user/{id}/changePassword', [UserController::class, 'changePassword'])->middleware('auth');
@@ -230,3 +229,4 @@ require __DIR__ . '/test.php';
 require __DIR__ . '/diktei.php';
 require __DIR__ . '/warden.php';
 require __DIR__ . '/semfee.php';
+require __DIR__ . '/req.php';
