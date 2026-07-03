@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Req;
 use App\Models\AllotHostel;
+use App\Models\AllotSeat;
+use App\Models\Hostel;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReqController extends Controller
 {
@@ -13,25 +17,15 @@ class ReqController extends Controller
      */
     public function index()
     {
-        if (auth()->user()) {
-            if (auth()->user()->isWarden() && isset(request()->hostel_id)) {
-                if (isset(request()->status) && request()->status == 'applied') {
-                    $hostel = \App\Models\Hostel::findOrFail(request()->hostel_id);
-                }
-            } else if (auth()->user()->allotment()) {
-                $allotment = auth()->user()->allotment();
-                if ($allotment->valid_allot_hostel()) {
-                    $allot_hostel = $allotment->valid_allot_hostel();
-                    // return $allot_hostel;
-                    return $allot_hostel->reqs();
-                }
-
-                return "Allotment";
-            } else {
-                return "Not yet";
-            }
-        } else {
-            return "User not authenticated";
+        if(auth()->user() && auth()->user()->isDsw()){
+            $reqs = Req::where('recommended1_by','<>',0)
+                ->where('recommended2_by','<>',0)
+                ->where('approved_by',0)
+                ->get();
+            $data = [
+                'reqs' => $reqs
+            ];
+            return view('req.index', $data);
         }
     }
 
@@ -42,19 +36,35 @@ class ReqController extends Controller
             'reqs' => $allot_hostel->reqs(),
         ];
         return view('req.allot_hostel_index', $data);
-        return $allot_hostel;
-        return $allot_hostel->reqs();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    public function hostel_index(Hostel $hostel)
+    {
+        if(isset(request()->type) && request()->type == 'incoming'){
+            $reqs = Req::where('to_hostel_id', $hostel->id)
+                ->whereNot('recommended1_by',0)
+                ->where('recommended2_by',0)
+                ->orderBy('recommended1_on')
+                ->get();
+        }
+        else{
+            $reqs = Req::where('from_hostel_id', $hostel->id)->where('recommended1_by',0)->orderBy('created_at')->get();
+        }
+        $data = [
+            'hostel' => $hostel,
+            'reqs' => $reqs,
+        ];
+        // return $data;
+        return view('req.hostel_index', $data);
+    }
+
+
     public function create(AllotHostel $allot_hostel)
     {
         // return $allot_hostel;
         $data = [
             'allot_hostel' => $allot_hostel,
-            'hostels' => \App\Models\Hostel::where('gender', $allot_hostel->hostel->gender)->orderBy('name')->get(),
+            'hostels' => \App\Models\Hostel::where('gender', $allot_hostel->hostel->gender)->whereNot('id',$allot_hostel->hostel_id)->orderBy('name')->get(),
         ];
         return view('req.create', $data);
     }
@@ -86,7 +96,7 @@ class ReqController extends Controller
      */
     public function edit(Req $req)
     {
-        //
+        return $req->id;
     }
 
     /**
@@ -94,7 +104,58 @@ class ReqController extends Controller
      */
     public function update(Request $request, Req $req)
     {
-        //
+        if($request->type == 'recommended1'){
+            $req->update([
+                'recommended1_by' => auth()->user()->id,
+                'recommended1_on' => today(),
+                'status' => 'Recommended1'
+            ]);
+        }
+        else if($request->type == 'recommended2'){
+            $req->update([
+                'recommended2_by' => auth()->user()->id,
+                'recommended2_on' => today(),
+                'status' => 'Recommended2'
+            ]);
+        }
+        else if($request->type == 'approved'){
+            try{
+                DB::transaction(function(){
+                    $req->update([
+                        'approved_by' => auth()->user()->id,
+                        'approved_on' => today(),
+                        'status' => 'Approved'
+                    ]);
+
+                    $allot_hostel = AllotHostel::find($req->allot_hostel_id);
+
+                    $new_allot_hostel = AllotHostel::create([
+                        'allotment_id' => $allot_hostel->allotment_id,
+                        'hostel_id' => $req->to_hostel_id,
+                        'from_dt' => today(),
+                        'to_dt' => $allot_hostel->to_dt,
+                        'valid' => 1
+                    ]);
+
+                    AllotSeat::where('allot_hostel_id', $allot_hostel->id)->where('valid',1)->update([
+                        'valid' => 0,
+                        'to_dt' => today(),
+                        'leave_dt' => today()
+                    ]);
+
+                    $allot_hostel->update([
+                        'to_dt' => today(),
+                        'leave_dt' => today(),
+                        'valid' => 0
+                    ]);
+                });
+            }
+            catch(\Throwable $e){
+                return response()->json(['error' => $e->getMessage()], 500);
+            }
+
+        }
+        return $req;
     }
 
     /**

@@ -14,6 +14,11 @@ class Req extends Model
         return $this->belongsTo(AllotHostel::class);
     }
 
+    public function from_hostel()
+    {
+        return Hostel::where('id', $this->from_hostel_id)->first();
+    }
+
     public function to_hostel()
     {
         return Hostel::where('id', $this->to_hostel_id)->first();

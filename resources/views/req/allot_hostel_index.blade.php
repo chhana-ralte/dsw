@@ -12,12 +12,12 @@
                             <th>Change hostel to</th>
                             <th>Date of request</th>
                             <th>Status</th>
-                            <th>Action</th>
+
                         </tr>
                         @foreach($reqs as $r)
                         <tr>
                             <td>{{ $r->id }}</td>
-                            
+
                             <td>{{ $r->to_hostel()->name }}</td>
                             <td>{{ $r->created_at }}</td>
 
@@ -32,23 +32,7 @@
                                     Approved
                                 @endif
                             </td>
-                            <td>
-                                @if($r->recommended1_by == 0 && auth()->user()->isWardenOf($r->from_hostel_id))
-                                    <button class="btn btn-primary btn-recommend1" value="{{ $r->id }}">
-                                        Recommend
-                                    </button>
-                                @elseif($r->recommended1_by != 0 && $r->recommended2_by == 0 && auth()->user()->isWardenOf($r->to_hostel_id))
-                                    <button class="btn btn-primary btn-recommend2" value="{{ $r->id }}">
-                                        Recommend
-                                    </button>
-                                @elseif($r->recommended1_by != 0 && $r->recommended1_by != 0 && auth()->user()->isDsw())
-                                    <button class="btn btn-primary btn-approve" value="{{ $r->id }}">
-                                        Approve
-                                    </button>
-                                @else
-                                    No action
-                                @endif
-                            </td>
+
                         </tr>
                         @endforeach
                         <form id="frmDelete" method="post" action="/testing">
