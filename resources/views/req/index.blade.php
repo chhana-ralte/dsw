@@ -9,6 +9,7 @@
                     <table class="table">
                         <tr>
                             <th>Request ID</th>
+                            <th>Name</th>
                             <th>Change hostel from</th>
                             <th>Change hostel to</th>
                             <th>Date of request</th>
@@ -17,7 +18,12 @@
                         </tr>
                         @foreach($reqs as $r)
                         <tr>
-                            <td>{{ $r->id }}</td>
+                            <td>
+                                <button class="btn btn-link p-0 m-0 align-baseline req-detail" value="{{ $r->id }}">{{ $r->id }}</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-link p-0 m-0 align-baseline detail" value="{{ $r->allot_hostel->allotment->id }}">{{ $r->allot_hostel->allotment->person->name }}</button>
+                            </td>
                             <td>{{ $r->from_hostel()->name }}</td>
                             <td>{{ $r->to_hostel()->name }}</td>
                             <td>{{ $r->created_at }}</td>
@@ -74,6 +80,71 @@
 
         </x-block>
     </x-container>
+
+    {{-- Modal for personal detail --}}
+    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailModalLabel">Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <table class="table">
+                        <tr>
+                            <td>Name</td>
+                            <td class="name"></td>
+                        </tr>
+                        <tr>
+                            <td>Mobile</td>
+                            <td class="mobile"></td>
+                        </tr>
+                        <tr>
+                            <td>Email</td>
+                            <td class="email"></td>
+                        </tr>
+                        <tr>
+                            <td>Course</td>
+                            <td class="course"></td>
+                        </tr>
+                        <tr>
+                            <td>Department</td>
+                            <td class="department"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- End Modal for personal detail --}}
+
+
+    {{-- Modal for req detail --}}
+    <div class="modal fade" id="reqModal" tabindex="-1" aria-labelledby="reqModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reqModalLabel">Request detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <table class="table content">
+
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- End Modal for req detail --}}
+
     <script>
         $(document).ready(function() {
             $.ajaxSetup({
@@ -81,6 +152,44 @@
                 'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
                }
             });
+
+            $("button.detail").click(function(){
+                $.ajax({
+                    type : 'get',
+                    url : '/ajax/allotment/' + $(this).val() + '/getDetail',
+                    success : function(data, status){
+                        $("td.name").text(data.name);
+                        $("td.mobile").text(data.mobile);
+                        $("td.email").text(data.email);
+                        $("td.course").text(data.course);
+                        $("td.department").text(data.department);
+                    },
+                    error : function(){
+                        alert("Error");
+                    }
+                });
+                $("#detailModal").modal("show");
+            });
+
+            $("button.req-detail").click(function(){
+                $.ajax({
+                    type : 'get',
+                    url : '/ajax/req/' + $(this).val() + '/getDetail',
+                    success : function(data, status){
+                        var str = "<tr><td>Request ID</td><td>" + data.id + "</td></tr>"
+                            + "<tr><td>From</td><td>" + data.from_hostel + "</td></tr>"
+                            + "<tr><td>To</td><td>" + data.to_hostel + "</td></tr>"
+                        $("table.content").html(str);
+                        console.log(JSON.stringify(data));
+
+                    },
+                    error : function(){
+                        alert("Error");
+                    }
+                })
+                $("#reqModal").modal("show");
+            });
+
             $(".btn-delete").click(function(){
                 if(confirm("Are you sure you want to delete?")){
                     $("#frmDelete").attr('action', '/testing/' + $(this).val());

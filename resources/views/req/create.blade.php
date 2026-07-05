@@ -34,13 +34,19 @@
                         </div>
                     </div>
 
-                    
+
 
                     <div class="row mb-3">
                         <div class="col col-md-4">
                         </div>
                         <div class="col col-md-4">
-                            <button class="btn btn-primary" type="submit">Apply</button>
+                            <button class="btn btn-primary" type="submit">
+                                @can('edit', $allot_hostel->allotment)
+                                    Forward
+                                @else
+                                    Apply
+                                @endif
+                            </button>
                         </div>
                     </div>
                 </form>

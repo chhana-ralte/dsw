@@ -542,6 +542,38 @@ class AjaxController extends Controller
         return "Successful";
     }
 
+    public function getAllotmentDetail($allotment_id){
+        $allotment = \App\Models\Allotment::find($allotment_id);
+        $data = [
+            'name' => $allotment->person->name,
+            'mobile' => $allotment->person->mobile,
+            'email' => $allotment->person->email,
+        ];
+        if($allotment->person->student()){
+            $data['course'] = $allotment->person->student()->course;
+            $data['department'] = $allotment->person->student()->department;
+        }
+
+        return (object)$data;
+    }
+
+    public function getReqDetail($req_id){
+        // return $req_id;
+        $req = \App\Models\Req::findOrFail($req_id);
+        $data = [
+            'id' => $req->id,
+            'req_id' => $req->id,
+            'from_hostel' => $req->from_hostel()->name,
+            'from_hostel_id' => $req->from_hostel_id,
+            'to_hostel' => $req->to_hostel()->name,
+            'to_hostel_id' => $req->to_hostel_id,
+            // 'recommended1_by' => $req->recommended1_by->username,
+            // 'recommended2_by' => $req->recommended2_by->username,
+            'status' => $req->status
+        ];
+        return $data;
+    }
+
 
 
     public function getZirlai($zirlai_id)

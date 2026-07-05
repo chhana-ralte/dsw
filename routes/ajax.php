@@ -29,6 +29,7 @@ Route::controller(AjaxController::class)->group(function () {
     Route::post('/ajax/admission/{id}/delete', 'deleteAdmission');
     Route::get('/ajax/allotment/{id}/application', 'getApplication');
     Route::post('/ajax/allotment/{id}/decline', 'declineAllotment');
+    Route::get('/ajax/allotment/{id}/getDetail', 'getAllotmentDetail');
     Route::get('/ajax/notiMaster/{id}/getNotifications', 'getNotifications');
 
     Route::post('/ajax/course/{id}/addStudent', 'addStudent');
@@ -47,5 +48,7 @@ Route::controller(AjaxController::class)->group(function () {
     Route::post('/ajax/semfee/{id}/updateStatus', 'updateSemfeeStatus');
     Route::post('/ajax/semfee/{id}/updatePayment', 'updateSemfeePayment');
     Route::get('/ajax/semfee/{id}/paymentDetail', 'semfeePaymentDetail');
+
+    Route::get('/ajax/req/{id}/getDetail', 'getReqDetail');
 })->middleware('auth');
 

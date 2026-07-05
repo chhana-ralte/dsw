@@ -9,6 +9,7 @@
                     <table class="table">
                         <tr>
                             <th>Request ID</th>
+                            <th>Name</th>
                             <th>Change hostel to</th>
                             <th>Date of request</th>
                             <th>Status</th>
@@ -17,7 +18,7 @@
                         @foreach($reqs as $r)
                         <tr>
                             <td>{{ $r->id }}</td>
-
+                            <td>{{ $r->allot_hostel->allotment->person->name }}</td>
                             <td>{{ $r->to_hostel()->name }}</td>
                             <td>{{ $r->created_at }}</td>
 

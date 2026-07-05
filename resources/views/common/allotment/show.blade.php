@@ -47,6 +47,7 @@
     </x-container>
     <x-container>
         <x-block>
+
             @include('common.allotment.partials.seat')
 
         </x-block>

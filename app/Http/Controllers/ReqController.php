@@ -40,19 +40,19 @@ class ReqController extends Controller
 
     public function hostel_index(Hostel $hostel)
     {
-        if(isset(request()->type) && request()->type == 'incoming'){
-            $reqs = Req::where('to_hostel_id', $hostel->id)
-                ->whereNot('recommended1_by',0)
-                ->where('recommended2_by',0)
-                ->orderBy('recommended1_on')
-                ->get();
-        }
-        else{
-            $reqs = Req::where('from_hostel_id', $hostel->id)->where('recommended1_by',0)->orderBy('created_at')->get();
-        }
+
+        $inbound_reqs = Req::where('to_hostel_id', $hostel->id)
+            ->whereNot('recommended1_by',0)
+            ->where('recommended2_by',0)
+            ->orderBy('recommended1_on')
+            ->get();
+
+        $outbound_reqs = Req::where('from_hostel_id', $hostel->id)->where('recommended1_by',0)->orderBy('created_at')->get();
+
         $data = [
             'hostel' => $hostel,
-            'reqs' => $reqs,
+            'inbound_reqs' => $inbound_reqs,
+            'outbound_reqs' => $outbound_reqs,
         ];
         // return $data;
         return view('req.hostel_index', $data);
@@ -79,6 +79,12 @@ class ReqController extends Controller
             'from_hostel_id' => $request->from_hostel_id,
             'to_hostel_id' => $request->to_hostel_id,
         ]);
+        if(auth()->user()->can('edit', $allot_hostel->allotment)){
+            $req->update([
+                'recommended1_by' => auth()->user()->id,
+                'recommended1_on' => today()
+            ]);
+        }
         return redirect('/allot_hostel/' . $allot_hostel->id . '/req')
             ->with(['message' => ['type' => 'info', 'text' => 'Request Successfully submitted']]);
     }
@@ -119,40 +125,41 @@ class ReqController extends Controller
             ]);
         }
         else if($request->type == 'approved'){
-            try{
-                DB::transaction(function(){
-                    $req->update([
-                        'approved_by' => auth()->user()->id,
-                        'approved_on' => today(),
-                        'status' => 'Approved'
-                    ]);
 
-                    $allot_hostel = AllotHostel::find($req->allot_hostel_id);
+            $allot_hostel = AllotHostel::findOrFail($req->allot_hostel_id);
+            DB::transaction(function() use ($req, $allot_hostel){
+                $req->update([
+                    'approved_by' => auth()->user()->id,
+                    'approved_on' => today(),
+                    'status' => 'Approved'
+                ]);
 
-                    $new_allot_hostel = AllotHostel::create([
-                        'allotment_id' => $allot_hostel->allotment_id,
-                        'hostel_id' => $req->to_hostel_id,
-                        'from_dt' => today(),
-                        'to_dt' => $allot_hostel->to_dt,
-                        'valid' => 1
-                    ]);
+                //
 
-                    AllotSeat::where('allot_hostel_id', $allot_hostel->id)->where('valid',1)->update([
-                        'valid' => 0,
-                        'to_dt' => today(),
-                        'leave_dt' => today()
-                    ]);
+                $new_allot_hostel = AllotHostel::create([
+                    'allotment_id' => $allot_hostel->allotment_id,
+                    'hostel_id' => $req->to_hostel_id,
+                    'from_dt' => today(),
+                    'to_dt' => $allot_hostel->to_dt,
+                    'valid' => 1
+                ]);
 
-                    $allot_hostel->update([
-                        'to_dt' => today(),
-                        'leave_dt' => today(),
-                        'valid' => 0
-                    ]);
-                });
-            }
-            catch(\Throwable $e){
-                return response()->json(['error' => $e->getMessage()], 500);
-            }
+                AllotSeat::where('allot_hostel_id', $allot_hostel->id)->where('valid',1)->update([
+                    'valid' => 0,
+                    'to_dt' => today(),
+                    'leave_dt' => today()
+                ]);
+
+                $allot_hostel->update([
+                    'to_dt' => today(),
+                    'leave_dt' => today(),
+                    'valid' => 0
+                ]);
+            });
+            // }
+            // catch(\Throwable $e){
+            //     return response()->json(['error' => $e->getMessage()], 500);
+            // }
 
         }
         return $req;

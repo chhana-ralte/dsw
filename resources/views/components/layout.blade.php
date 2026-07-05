@@ -82,6 +82,11 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="/semfee">Semester Fees</a>
                                 </li>
+                                @if(auth()->user()->isDsw())
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/req">Room change requests</a>
+                                    </li>
+                                @endif
                             @elseif(auth()->user()->allotment())
                                 @if(auth()->user()->allotment()->valid_allot_hostel())
                                     <li class="nav-item">
@@ -117,10 +122,10 @@
                         <a class="nav-link" href="/warden">Wardens</a>
                     </li>
                     @auth
-                        @if (count(auth()->user()->wardens()) > 0)
-                            @foreach (auth()->user()->wardens() as $wd)
+                        @if (count(auth()->user()->isWardensOf()) > 0)
+                            @foreach (auth()->user()->isWardensOf() as $h)
                                 <li class="nav-item">
-                                    <a class="nav-link" href="/hostel/{{ $wd->hostel->id }}/">{{ $wd->hostel->name }}</a>
+                                    <a class="nav-link" href="/hostel/{{ $h->id }}/">{{ $h->name }}</a>
                                 </li>
                             @endforeach
                         @endif

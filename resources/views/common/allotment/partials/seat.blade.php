@@ -18,7 +18,10 @@
         @can('edit', $allotment)
             <a class="btn btn-primary"
                 href="/allot_hostel/{{ $allotment->valid_allot_hostel()->id }}/allotSeat">Change room/seat</a>
+            <a class="btn btn-primary"
+                href="/allot_hostel/{{ $allotment->valid_allot_hostel()->id }}/req/create">Forward hostel change request</a>
             <a class="btn btn-danger" href="/allotment/{{ $allotment->id }}/cancelSeat/create">Cancel the seat</a>
+
         @endcan
         @if (auth()->user()->isDsw())
             <a class="btn btn-primary" href="/allotment/{{ $allotment->id }}/allot_hostel/create">Allot another
