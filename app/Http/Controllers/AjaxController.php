@@ -327,7 +327,7 @@ class AjaxController extends Controller
 
     public function createAdmission($allotment_id)
     {
-
+        // return $allotment_id;
         $data = [
             'type' => isset(request()->type) ? request()->type : 'create',
             'allotment_id' => $allotment_id,
@@ -339,18 +339,19 @@ class AjaxController extends Controller
         ];
 
         $data = (object)$data;
+        // return $data;
         // return $data->allotment_id;
-        if($data->type == 'create'){
+        if ($data->type == 'create') {
             $output = \App\Models\Admission::do_admission($data);
-        }
-        else{
+        } else {
             $output = \App\Models\Admission::update_admission($data);
         }
         // return $output->allotment_id;
+        // return $output;
         if ($output->status == true) {
             return $output;
         } else {
-            return "Error";
+            return $output->reason;
         }
 
 
@@ -433,10 +434,10 @@ class AjaxController extends Controller
         } else {
             return "Error";
         }
-
     }
 
-    public static function verifyAdmission($admission_id){
+    public static function verifyAdmission($admission_id)
+    {
         $data = [
             'admission_id' => $admission_id,
         ];
@@ -448,7 +449,8 @@ class AjaxController extends Controller
         }
     }
 
-    public static function undoVerifyAdmission($admission_id){
+    public static function undoVerifyAdmission($admission_id)
+    {
         $data = [
             'admission_id' => $admission_id,
         ];
@@ -542,14 +544,15 @@ class AjaxController extends Controller
         return "Successful";
     }
 
-    public function getAllotmentDetail($allotment_id){
+    public function getAllotmentDetail($allotment_id)
+    {
         $allotment = \App\Models\Allotment::find($allotment_id);
         $data = [
             'name' => $allotment->person->name,
             'mobile' => $allotment->person->mobile,
             'email' => $allotment->person->email,
         ];
-        if($allotment->person->student()){
+        if ($allotment->person->student()) {
             $data['course'] = $allotment->person->student()->course;
             $data['department'] = $allotment->person->student()->department;
         }
@@ -557,7 +560,8 @@ class AjaxController extends Controller
         return (object)$data;
     }
 
-    public function getReqDetail($req_id){
+    public function getReqDetail($req_id)
+    {
         // return $req_id;
         $req = \App\Models\Req::findOrFail($req_id);
         $data = [

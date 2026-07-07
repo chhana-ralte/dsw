@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Admission extends Model
 {
@@ -36,20 +37,21 @@ class Admission extends Model
                 $detail = "Semester admission payment";
             }
             // return $request;
+            // DB::transaction(function () use ($allotment, $request, $allot_hostel, $detail) {
+            $data = [
+                'allotment_id' => $allotment->id,
+                'sessn_id' => $request->sessn_id,
+                'ref' => $request->ref,
+                'allot_hostel_id' => $allot_hostel->id,
+                'amount' => $request->amount,
+                'payment_dt' => $request->payment_dt,
+                'detail' => $detail,
+                'updated_by' => auth()->user()->id,
+            ];
+            // return $data;
+            $admission = Admission::create($data);
 
-            $admission = Admission::create([
-                    'allotment_id' => $allotment->id,
-                    'sessn_id' => $request->sessn_id,
-                    'ref' => $request->ref,
-                    'allot_hostel_id' => $allot_hostel->id,
-                    'amount' => $request->amount,
-                    'payment_dt' => $request->payment_dt,
-                    'detail' => $detail,
-                    'updated_by' => auth()->user()->id,
-                ]
-            );
-
-            if (auth()->user()->can('verify-admission', $allot_hostel->hostel)) {
+            if (auth()->user()->can('verify-admission', $admission)) {
                 $admission->update([
                     'verified' => 1,
                     'verified_by' => auth()->user()->id,
@@ -62,39 +64,42 @@ class Admission extends Model
                 'valid' => 1,
             ]);
 
-            $semfee = \App\Models\Semfee::where('allotment_id', $allotment->id)->where('sessn_id', $admission->sessn_id)->first();
+            $semfee = Semfee::where('allotment_id', $allotment->id)->where('sessn_id', $admission->sessn_id)->first();
             if ($semfee) {
                 $semfee->update([
                     'status' => 'Paid'
                 ]);
             }
+            // });
             return (object)['status' => true, 'data' => ['admission' => $admission]];
         } else { // No valid hostel allotment
             return (object)['status' => false, 'data' => ['reason' => 'No valid allotment']];
         }
     }
 
-    public static function update_admission($request){
+    public static function update_admission($request)
+    {
         $admission = Admission::findOrFail($request->admission_id);
-        if(isset($request->sessn_id)){
+        if (isset($request->sessn_id)) {
             $admission->sessn_id = $request->sessn_id;
         }
-        if(isset($request->amount)){
+        if (isset($request->amount)) {
             $admission->amount = $request->amount;
         }
-        if(isset($request->ref)){
+        if (isset($request->ref)) {
             $admission->ref = $request->ref;
         }
-        if(isset($request->payment_dt)){
+        if (isset($request->payment_dt)) {
             $admission->payment_dt = $request->payment_dt;
         }
         $admission->save();
         return (object)['status' => true, 'data' => ['admission' => $admission]];
     }
 
-    public static function verify_admission($request){
+    public static function verify_admission($request)
+    {
         $admission = Admission::findOrFail($request->admission_id);
-        if(auth()->user()){
+        if (auth()->user()) {
             $admission->update([
                 'verified' => 1,
                 'verified_by' => auth()->user()->id,
@@ -103,9 +108,10 @@ class Admission extends Model
         return (object)['status' => true, 'data' => $admission];
     }
 
-    public static function undo_verify_admission($request){
+    public static function undo_verify_admission($request)
+    {
         $admission = Admission::findOrFail($request->admission_id);
-        if(auth()->user()){
+        if (auth()->user()) {
             $admission->update([
                 'verified' => 0,
                 'verified_by' => 0,

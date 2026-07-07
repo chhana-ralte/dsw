@@ -66,8 +66,8 @@
 {{-- Modal for admission --}}
 
 <form>
-    <input type="hidden" name="allotment_id" id="allotment_id">
-    <input type="hidden" name="admission_id" id="admission_id">
+    <input type="hidden" name="allotment_id" id="allotment_id" value="0">
+    <input type="hidden" name="admission_id" id="admission_id" value="0">
     <input type="hidden" name="type" id="type">
 </form>
 
@@ -75,7 +75,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="admissionModalLabel">Assign admission</h5>
+                <h5 class="modal-title" id="admissionModalLabel">Admission payment entry</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -222,7 +222,7 @@ $(document).ready(function(){
                     payment_dt : $("input[name='dt']").val(),
                 },
                 success : function(data,status){
-                    // alert(data);
+                    console.log(JSON.stringify(data));
                     if(data.status == true){
                         alert("Successful");
                         console.log(JSON.stringify(data));

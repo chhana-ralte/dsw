@@ -598,7 +598,6 @@
                     </div>
                 </div>
 
-
                 <div class="mb-3 form-group row">
                     <div class="col-md-5"></div>
                     <div class="col-md-7">
@@ -609,34 +608,32 @@
                     </div>
                 </div>
 
-
-
             </form>
         </x-block>
 
         <div class="modal fade" id="termsConditions" tabindex="-1" aria-labelledby="termsConditionsLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="termsConditionsLabel">Terms and conditions</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Terms and conditions:
-                    <ol>
-                        <li>I shall always abide by the rules and regulations of the Mizoram University Hostel Manual.</li>
-                        <li>I shall obey the authorities to take care of the hostels.</li>
-                        <li>I shall not cook inside hostel room, and I shall avail whatever mess provided to me.</li>
-                        <li>In the case of defaulting against the rules and regulations, I shall accept whatever action taken against me by the authority.</li>
-                        <li>I shall not involve in any kind of ragging, fignting and violence.</li>
-                        <li>I shall not damage the property in the hostel and I shall pay any fine imposed on me as a result.</li>
-                        <li>I shall sign online undertaking regarding ragging if my application is granted.</li>
-                    </ol>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    {{-- <button type="button" class="btn btn-primary">Save changes</button> --}}
-                </div>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="termsConditionsLabel">Terms and conditions</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Terms and conditions:
+                        <ol>
+                            <li>I shall always abide by the rules and regulations of the Mizoram University Hostel Manual.</li>
+                            <li>I shall obey the authorities to take care of the hostels.</li>
+                            <li>I shall not cook inside hostel room, and I shall avail whatever mess provided to me.</li>
+                            <li>In the case of defaulting against the rules and regulations, I shall accept whatever action taken against me by the authority.</li>
+                            <li>I shall not involve in any kind of ragging, fighting and violence.</li>
+                            <li>I shall not damage the property in the hostel and I shall pay any fine imposed on me as a result.</li>
+                            <li>I shall sign online undertaking regarding ragging if my application is granted.</li>
+                        </ol>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        {{-- <button type="button" class="btn btn-primary">Save changes</button> --}}
+                    </div>
                 </div>
             </div>
         </div>
