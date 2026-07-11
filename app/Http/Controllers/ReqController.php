@@ -42,12 +42,14 @@ class ReqController extends Controller
     {
 
         $inbound_reqs = Req::where('to_hostel_id', $hostel->id)
-            ->whereNot('recommended1_by',0)
-            ->where('recommended2_by',0)
+            // ->whereNot('recommended1_by',0)
+            // ->where('recommended2_by',0)
             ->orderBy('recommended1_on')
             ->get();
 
-        $outbound_reqs = Req::where('from_hostel_id', $hostel->id)->where('recommended1_by',0)->orderBy('created_at')->get();
+        $outbound_reqs = Req::where('from_hostel_id', $hostel->id)
+            // ->where('recommended1_by',0)
+            ->orderBy('created_at')->get();
 
         $data = [
             'hostel' => $hostel,
