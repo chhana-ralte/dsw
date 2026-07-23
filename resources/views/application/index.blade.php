@@ -23,7 +23,7 @@
                     <li>Click <a href="/application/create">here</a> to apply for hostel admission.</li>
                 @endif
                 <li>Click <a href="/application/search">here</a> to view and access your application.</li>
-                <li><b>The existing boarders should apply through their login credentials in the portal. Only new applicants should apply through this online application form.</b></li>
+                <li><b>The existing boarders need not apply here. Only new applicants should apply through this online application form.</b></li>
             </ul>
         </x-block>
     </x-container>
@@ -80,9 +80,7 @@
                         alert("Error");
                     }
                 })
-
             });
-
         });
     </script>
 </x-layout>

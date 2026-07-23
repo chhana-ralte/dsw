@@ -49,7 +49,7 @@
                                     <button class="btn btn-primary btn-recommend2" value="{{ $r->id }}">
                                         Recommend
                                     </button>
-                                @elseif($r->recommended1_by != 0 && $r->recommended1_by != 0 && auth()->user()->isDsw())
+                                @elseif($r->recommended1_by != 0 && $r->recommended2_by != 0 && $r->approved_by == 0 && auth()->user()->isDsw())
                                     <button class="btn btn-primary btn-approve" value="{{ $r->id }}">
                                         Approve
                                     </button>

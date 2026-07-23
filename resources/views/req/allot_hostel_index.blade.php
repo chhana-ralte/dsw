@@ -44,10 +44,58 @@
                     </table>
                 </div>
             @else
+                <a class="btn btn-primary btn-sm" href="/allot_hostel/{{ $allot_hostel->id }}/req/create">Submit request</a>
+            @endif
+        </x-block>
+        <x-block class="col-md-10">
+            <x-slot name="heading">
+                Previous requests
+            </x-slot>
+
+            @if(count($prev_reqs) > 0)
+                <div style="width: 100%, overflow-x: auto">
+                    <table class="table">
+                        <tr>
+                            <th>Request ID</th>
+                            <th>Name</th>
+                            <th>Change hostel from</th>
+                            <th>Change hostel to</th>
+                            <th>Date of request</th>
+                            <th>Status</th>
+
+                        </tr>
+                        @foreach($prev_reqs as $r)
+                        <tr>
+                            <td>{{ $r->id }}</td>
+                            <td>{{ $r->allot_hostel->allotment->person->name }}</td>
+                            <td>{{ $r->from_hostel()->name }}</td>
+                            <td>{{ $r->to_hostel()->name }}</td>
+                            <td>{{ $r->created_at }}</td>
+
+                            <td>
+                                @if($r->recommended1_by == 0)
+                                    Pending by current warden
+                                @elseif($r->recommended2_by == 0)
+                                    Pending by intended warden
+                                @elseif($r->approved_by == 0)
+                                    Pending at DSW
+                                @else
+                                    Approved
+                                @endif
+                            </td>
+
+                        </tr>
+                        @endforeach
+                        <form id="frmDelete" method="post" action="/testing">
+                            @csrf
+                            @method("delete")
+                            <input type="hidden" name="test_id" value="100">
+                        </form>
+                    </table>
+                </div>
+            @else
                 No hostel change request submitted
             @endif
-            <a class="btn btn-primary btn-sm" href="/allot_hostel/{{ $allot_hostel->id }}/req/create">Submit request</a>
-
 
 
 

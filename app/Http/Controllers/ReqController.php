@@ -31,10 +31,29 @@ class ReqController extends Controller
 
     public function allot_hostel_index(AllotHostel $allot_hostel)
     {
+        if($allot_hostel->allotment->valid_allot_hostel()){
+            $reqs = $allot_hostel->allotment->valid_allot_hostel()->reqs();
+            $prev_reqs = Req::join('allot_hostels', 'allot_hostels.id', 'reqs.allot_hostel_id')
+                ->join('allotments', 'allotments.id', 'allot_hostels.allotment_id')
+                ->where('allotments.id', $allot_hostel->allotment_id)
+                ->whereNot('allot_hostels.id', $allot_hostel->allotment->valid_allot_hostel()->id)
+                ->select('reqs.*')
+                ->get();
+        }
+        else{
+            $reqs = [];
+            $prev_reqs = Req::join('allot_hostels', 'allot_hostels.id', 'reqs.allot_hostel_id')
+                ->join('allotments', 'allotments.id', 'allot_hostels.allotment_id')
+                ->where('allotments.id', $allot_hostel->allotment_id)
+                ->select('reqs.*')
+                ->get();
+        }
         $data = [
             'allot_hostel' => $allot_hostel,
-            'reqs' => $allot_hostel->reqs(),
+            'reqs' => $reqs,
+            'prev_reqs' => $prev_reqs
         ];
+        // return $data;
         return view('req.allot_hostel_index', $data);
     }
 

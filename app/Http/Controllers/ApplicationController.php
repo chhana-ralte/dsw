@@ -56,8 +56,9 @@ class ApplicationController extends Controller
             'gender' => 'required',
             'mobile' => 'required|numeric',
             'email' => 'required|email',
+            // 'photo' => 'required|image|max:2048',
             'category' => 'required',
-            'PWD' => 'required|numeric',
+            'PWD' => 'required',
             'state' => 'required|min:3',
             'address' => 'required|min:4',
             'AMC' => 'required|numeric',
@@ -69,12 +70,14 @@ class ApplicationController extends Controller
             'mzuid' => 'required|min:6',
             'percent' => 'required|numeric|min:30|max:100'
         ]);
+        // return "No error";
         // return $validated;
         $validated['person_id'] = 0;
         $validated['department'] = \App\Models\Department::find($request->department)->name;
         $validated['course'] = \App\Models\Course::find($request->course)->name;
         $validated['dt'] = now();
         $validated['reason'] = $request->reason;
+        $validated['PWD'] = $request->PWD == 'yes'? 1 : 0;
 
 
 
@@ -88,7 +91,13 @@ class ApplicationController extends Controller
         //     exit();
         // }
         // return $validated;
+
         $application = Application::create($validated);
+
+        if($application){
+            return redirect('/application/' . $application->id . '/upload')
+                ->with('Application submitted... Kindly upload necessary documents');
+        }
 
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('photos', 'public');
@@ -97,7 +106,7 @@ class ApplicationController extends Controller
 
         $application->save();
 
-        return redirect('/application')->with(['message' => ['type' => 'info', 'text' => 'Application created successfully. Your MZU ID is: ' . $application->mzuid . ' and your date of birth is ' . $application->dob]]);
+        return redirect('/application')->with(['message' => ['type' => 'info', 'text' => 'Application submitted successfully. Your MZU ID is: ' . $application->mzuid . ' and your date of birth is ' . $application->dob]]);
     }
 
     public function show($id)
@@ -194,6 +203,37 @@ class ApplicationController extends Controller
         }
 
         return redirect('/application/' . $application->id . "?mzuid=" . $application->mzuid)->with(['message' => ['type' => 'info', 'text' => 'Application updated successfully']]);
+    }
+
+    public function upload(Application $application){
+        return view('application.upload', ['application' => $application]);
+    }
+
+    public function uploadStore(Application $application, Request $request){
+        $application->update([
+            'PWD' => isset($request->PWD)?($request->PWD == 'yes'? 1:0):'0',
+            'BPL' => isset($request->BPL)?$request->BPL:'None',
+        ]);
+        $err = [];
+        if(!$request->has('photo')){
+            $err['photo'] = 'Photo is required';
+            // array_push($err, 'photo' => ['Photo is required']);
+            // return "Photo is there";
+        }
+        if(isset($request->PWD) && $request->PWD == 'yes' && !$request->has('PWD_proof')){
+            $err['PWD_proof'] = 'PWD proof is required';
+            // array_push($err, {'PWD_proof' => ['PWD proof is required']});
+        }
+        if(isset($request->BPL) && $request->BPL != 'None' && !$request->has('BPL_proof')){
+            $err['BPL_proof'] = 'BPL/AAY proof is required';
+            // array_push($err, {'AAY_proof' => ['BPL/AAY proof is required']});
+        }
+        if(count($err) > 0){
+            $error = \Illuminate\Validation\ValidationException::withMessages($err);
+            throw $error;
+        }
+
+        return $request;
     }
 
     public function statusUpdate(Request $request, $id)

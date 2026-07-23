@@ -24,14 +24,17 @@ class Application extends Model
     {
         return Application::where('valid', 1)->where('status', 'Approved')->where('hostel_id', 0);
     }
+
     public static function approved_hostel()
     {
         return Application::where('valid', 1)->where('status', 'Approved')->where('hostel_id', '<>', 0);
     }
+
     public static function notified()
     {
         return Application::where('valid', 1)->where('status', 'Notified')->where('hostel_id', '<>', 0);
     }
+
     public static function declined()
     {
         return Application::where('valid', 0)->orWhere('status', 'Declined')->orderBy('id');

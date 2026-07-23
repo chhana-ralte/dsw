@@ -62,7 +62,6 @@ Route::get('/reshuffledata', [App\Http\Controllers\DikteiController::class, 'res
 
 Route::get('/test', [App\Http\Controllers\PdfController::class, 'download']);
 
-
 Route::get('/', function () {
     return view('home');
 });
@@ -105,6 +104,8 @@ Route::post('/noti_master/fileupload', [NotiMasterController::class, 'fileupload
 //     return "Hello";
 // })->middleware('auth');
 Route::get('/application/{id}/duplicate', [ApplicationController::class, 'duplicate'])->middleware('auth');
+Route::get('/application/{application}/upload', [ApplicationController::class, 'upload']);
+Route::post('/application/{application}/upload', [ApplicationController::class, 'uploadStore']);
 Route::get('/duplicate/application', [ApplicationController::class, 'duplicates'])->middleware('auth');
 
 

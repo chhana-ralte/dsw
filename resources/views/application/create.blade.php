@@ -1,6 +1,5 @@
 <x-layout>
     <x-container>
-
         <x-block>
             <x-slot name="heading">
                 Application form
@@ -18,7 +17,6 @@
                 name="frm_submit"
                 method="post"
                 action="/application/"
-
             >
                 @csrf
 
@@ -271,15 +269,15 @@
                             type="radio"
                             name="PWD"
                             id="PWD-yes"
-                            value="1"
-                            {{ old('PWD')==1?' checked ':''}}
+                            value="yes"
+                            {{ old('PWD')=="yes"?' checked ':''}}
                         ><label for="PWD-yes">Yes</label>
                         <input
                             type="radio"
                             name="PWD"
                             id="PWD-no"
-                            value="0"
-                            {{ old('PWD')==0?' checked ':''}}
+                            value="no"
+                            {{ old('PWD')=="no"?' checked ':''}}
                         ><label for="PWD-no">No</label>
                         @error('PWD')
                         <span class="text-danger">{{ $message }}</span>
@@ -287,6 +285,38 @@
                     </div>
                 </div>
 
+                <div class="mb-3 form-group row">
+                    <label
+                        for="BPL"
+                        class="col-md-5"
+                    >Whether belonging to BPL/AAY?</label>
+                    <div class="col-md-7">
+                        <input
+                            type="radio"
+                            name="BPL"
+                            id="BPL"
+                            value="BPL"
+                            {{ old('BPL')=='BPL'?' checked ':''}}
+                        ><label for="BPL">BPL</label>
+                        <input
+                            type="radio"
+                            name="BPL"
+                            id="AAY"
+                            value="AAY"
+                            {{ old('BPL')=="AAY"?' checked ':''}}
+                        ><label for="AAY">AAY</label>
+                        <input
+                            type="radio"
+                            name="BPL"
+                            id="None"
+                            value="None"
+                            {{ old('BPL')=="None"?' checked ':''}}
+                        ><label for="None">None</label>
+                        @error('None')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
 
                 <div class="mb-3 form-group row">
                     <label
@@ -308,6 +338,9 @@
                                 <option value="{{ $value }}">
                             @endforeach
                         </datalist>
+                        @error('state')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
@@ -445,9 +478,10 @@
                         <select
                             class="form-control"
                             name="department"
+                            value="{{ old('department') }}"
                             required
                         >
-                            <option disabled selected>Select Department/Centre</option>
+                            <option disabled>Select Department/Centre</option>
                             @foreach (App\Models\Department::orderBy('name')->get() as $dept)
                                 <option value="{{ $dept->id }}" {{ old('department')==$dept->name?' selected ':''}}>{{ $dept->name }}</option>
                             @endforeach
@@ -487,6 +521,7 @@
                         <select
                             class="form-control"
                             name="course"
+                            value="{{ old('course') }}"
                             required
                         >
                         </select>
@@ -500,11 +535,12 @@
                     <label
                         for="semester"
                         class="col-md-5"
-                    >Semester* (Next session i.e., 2025-26)</label>
+                    >Semester* (in Session i.e., 2026-27)</label>
                     <div class="col-md-7">
                         <Select
                             class="form-control"
                             name="semester"
+                            value="{{ old('semester') }}"
                             required
                         >
                     </select>
@@ -525,7 +561,7 @@
                             class="form-control"
                             name="mzuid"
                             value="{{ old('mzuid') }}"
-                            placeholder="e.g., MZU250001234"
+                            placeholder="e.g., MZU260001234"
                             required
                         >
                         @error('mzuid')
@@ -628,6 +664,7 @@
                             <li>I shall not involve in any kind of ragging, fighting and violence.</li>
                             <li>I shall not damage the property in the hostel and I shall pay any fine imposed on me as a result.</li>
                             <li>I shall sign online undertaking regarding ragging if my application is granted.</li>
+                            <li>In case of incomplete or incorrect information entered here, the application may be summarily rejected and I shall be responsible for it</li>
                         </ol>
                     </div>
                     <div class="modal-footer">
@@ -649,11 +686,15 @@
             $("div.student").hide();
             $("div.other").hide();
 
+            $("div#PWD").hide();
+            $("div#BPL").hide();
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
                 }
             });
+
 
 
             $("button.submit").click(function(){
