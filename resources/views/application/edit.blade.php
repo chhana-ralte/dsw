@@ -271,16 +271,49 @@
                             type="radio"
                             name="PWD"
                             id="PWD-yes"
-                            value="1"
-                            {{ old('PWD')?' checked ':($application->PWD? 'checked ':'')}}
+                            value="yes"
+                            {{ old('PWD')?' checked ':($application->PWD == 1? 'checked ':'')}}
                         ><label for="PWD-yes">Yes</label>
                         <input
                             type="radio"
                             name="PWD"
                             id="PWD-no"
-                            value="0"
+                            value="no"
                             {{ old('PWD')?' checked ':($application->PWD==0? 'checked ':'')}}
                         ><label for="PWD-no">No</label>
+                        @error('PWD')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="mb-3 form-group row">
+                    <label
+                        for="BPL"
+                        class="col-md-5"
+                    >Whether belonging to BPL/AAY?</label>
+                    <div class="col-md-7">
+                        <input
+                            type="radio"
+                            name="BPL"
+                            value="BPL"
+                            id="BPL"
+                            {{ old('BPL') == 'BPL'?' checked ':($application->BPL == "BPL"? 'checked ':'')}}
+                        ><label for="BPL">BPL</label>
+                        <input
+                            type="radio"
+                            name="BPL"
+                            value="AAY"
+                            id="AAY"
+                            {{ old('BPL') == 'AAY'?' checked ':($application->BPL == "AAY"? 'checked ':'')}}
+                        ><label for="AAY">AAY</label>
+                        <input
+                            type="radio"
+                            name="BPL"
+                            value="None"
+                            id="None"
+                            {{ old('BPL') == 'None'?' checked ':($application->BPL=="None"? 'checked ':'')}}
+                        ><label for="None">None</label>
                         @error('PWD')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror

@@ -13,10 +13,10 @@
             </x-slot>
             <ul>
                 <li>This portal is for applying accommodation to the halls of residence, Mizoram University.</li>
-                <li>Only registered students of Mizoram University will be entertained.</li>
-                <li>Preference shall be given on merit basis, performance and distance.</li>
+                <li>Only admitted students of Mizoram University will be entertained.</li>
+                <li>Preference shall be given on merit basis, financial condition, distance, programme based and application seniority.</li>
                 <li>Seats will be given as per availability.</li>
-                <li>Be ready with your basic personal information and student information to fill up the form.</li>
+                <li>Be ready with your basic personal information, student information and photo of proof for disability, BPL/AAY proof etc. to fill up the form.</li>
                 <li>Once the form is filled up, you may be allowed to access and edit your application with your MZU ID and your date of birth.</li>
                 <li>Your MZU ID is your application ID in the CUET/Samarth portal.</li>
                 @if(\App\Models\Application::status() == "open")

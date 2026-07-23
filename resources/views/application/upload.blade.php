@@ -9,6 +9,9 @@
                     <tr>
                         <td>Name of applicant</td>
                         <td>{{ $application->name }}</td>
+                        <td rowspan="4"><img width="200px" src="{{ $application->photo }}" alt=""
+                                srcset=""></td>
+                        
                     </tr>
                     <tr>
                         <td>Department</td>
@@ -25,6 +28,7 @@
                 </table>
                 <form method="post" action="/application/{{ $application->id }}/upload" enctype="multipart/form-data">
                     @csrf
+                    @if(!$application->photo)
                     <div class="mb-3 form-group row">
                         <label
                             for="photo"
@@ -43,6 +47,7 @@
                             @enderror
                         </div>
                     </div>
+                    @endif
 
                     @if($application->PWD == 1)
                         <div class="mb-3 form-group row">

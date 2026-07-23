@@ -105,6 +105,8 @@ Route::post('/noti_master/fileupload', [NotiMasterController::class, 'fileupload
 // })->middleware('auth');
 Route::get('/application/{id}/duplicate', [ApplicationController::class, 'duplicate'])->middleware('auth');
 Route::get('/application/{application}/upload', [ApplicationController::class, 'upload']);
+Route::get('/application/{application}/PWD-proof', [ApplicationController::class, 'PWD_proof']);
+Route::get('/application/{application}/BPL-proof', [ApplicationController::class, 'BPL_proof']);
 Route::post('/application/{application}/upload', [ApplicationController::class, 'uploadStore']);
 Route::get('/duplicate/application', [ApplicationController::class, 'duplicates'])->middleware('auth');
 

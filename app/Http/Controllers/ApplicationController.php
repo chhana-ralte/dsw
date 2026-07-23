@@ -58,7 +58,8 @@ class ApplicationController extends Controller
             'email' => 'required|email',
             // 'photo' => 'required|image|max:2048',
             'category' => 'required',
-            'PWD' => 'required',
+            'PWD' => 'required|max:3',
+            'BPL' => 'required|max:4',
             'state' => 'required|min:3',
             'address' => 'required|min:4',
             'AMC' => 'required|numeric',
@@ -74,15 +75,17 @@ class ApplicationController extends Controller
         // return $validated;
         $validated['person_id'] = 0;
         $validated['department'] = \App\Models\Department::find($request->department)->name;
+        $validated['department_id'] = $request->department;
         $validated['course'] = \App\Models\Course::find($request->course)->name;
+        $validated['course_id'] = $request->course;
         $validated['dt'] = now();
         $validated['reason'] = $request->reason;
-        $validated['PWD'] = $request->PWD == 'yes'? 1 : 0;
+        $validated['PWD'] = $request->PWD == 'yes' ? 1 : 0;
+        $validated['BPL'] = $request->BPL;
 
 
-
-        if (Application::where('mzuid', $validated['mzuid'])->where('dob', $validated['dob'])->exists()) {
-            return redirect()->back()->with(['message' => ['type' => 'warning', 'text' => 'Application already exists.'], 'exists' => '1'])->withInput();
+        if (Application::where('mzuid', $validated['mzuid'])->where('dob', $validated['dob'])->where('id', '<=', '1298')->exists()) {
+            return redirect()->back()->with(['message' => ['type' => 'warning', 'text' => 'Application already exists. Access your application using MZU ID and your date of birth<a href="#">Here</a>'], 'exists' => '1'])->withInput();
             exit();
         }
 
@@ -94,9 +97,9 @@ class ApplicationController extends Controller
 
         $application = Application::create($validated);
 
-        if($application){
+        if ($application) {
             return redirect('/application/' . $application->id . '/upload')
-                ->with('Application submitted... Kindly upload necessary documents');
+                ->with(['message' => ['type' => 'info', 'text' => 'Application submitted... Kindly upload necessary documents']]);
         }
 
         if ($request->hasFile('photo')) {
@@ -172,7 +175,8 @@ class ApplicationController extends Controller
             'mobile' => 'required|numeric',
             'email' => 'required|email',
             'category' => 'required',
-            'PWD' => 'required|numeric',
+            'PWD' => 'required|min:2|max:3',
+            'BPL' => 'required|min:3|max:4',
             'state' => 'required|min:3',
             'address' => 'required|min:4',
             'AMC' => 'required|numeric',
@@ -185,12 +189,9 @@ class ApplicationController extends Controller
             'percent' => 'required|numeric|min:30|max:100'
         ]);
         $validated['reason'] = $request->reason;
+        $validated['PWD'] = $request->PWD == 'yes' ? 1 : 0;
         $application->update($validated);
 
-        if ($request->hasFile('photo')) {
-            $path = $request->file('photo')->store('photos', 'public');
-            $application->photo = "/storage/" . $path;
-        }
         $application->save();
         if ($application->valid_allotment()) {
             $allotment = $application->valid_allotment();
@@ -201,41 +202,84 @@ class ApplicationController extends Controller
                 $student->save();
             }
         }
-
+        return view('application.upload', ['application' => $application]);
         return redirect('/application/' . $application->id . "?mzuid=" . $application->mzuid)->with(['message' => ['type' => 'info', 'text' => 'Application updated successfully']]);
     }
 
-    public function upload(Application $application){
-        return view('application.upload', ['application' => $application]);
+    public function upload(Application $application)
+    {
+        $flag = false;
+        if (!$application->photo) {
+            $flag = true;
+        } else if ($application->PWD == 1 && !$application->PWD_proof) {
+            $flag = true;
+        } else if ($application->BPL != "None" && !$application->BPL_proof) {
+            $flag = true;
+        }
+        if ($flag) {
+            return view('application.upload', ['application' => $application]);
+        } else {
+            return redirect('/application/' . $application->id . '?mzuid=' . $application->mzuid)
+                ->with(['message' => ['type' => 'info', 'text' => 'Application Completed']]);
+        }
     }
 
-    public function uploadStore(Application $application, Request $request){
+    public function uploadStore(Application $application, Request $request)
+    {
         $application->update([
-            'PWD' => isset($request->PWD)?($request->PWD == 'yes'? 1:0):'0',
-            'BPL' => isset($request->BPL)?$request->BPL:'None',
+            'PWD' => isset($request->PWD) ? ($request->PWD == 'yes' ? 1 : 0) : '0',
+            'BPL' => isset($request->BPL) ? $request->BPL : 'None',
         ]);
         $err = [];
-        if(!$request->has('photo')){
+        if (isset($request->photo) && !$request->has('photo')) {
             $err['photo'] = 'Photo is required';
-            // array_push($err, 'photo' => ['Photo is required']);
-            // return "Photo is there";
         }
-        if(isset($request->PWD) && $request->PWD == 'yes' && !$request->has('PWD_proof')){
+
+        if (isset($request->PWD) && $request->PWD == 'yes' && !$request->has('PWD_proof')) {
             $err['PWD_proof'] = 'PWD proof is required';
-            // array_push($err, {'PWD_proof' => ['PWD proof is required']});
         }
-        if(isset($request->BPL) && $request->BPL != 'None' && !$request->has('BPL_proof')){
+
+        if (isset($request->BPL) && $request->BPL != 'None' && !$request->has('BPL_proof')) {
             $err['BPL_proof'] = 'BPL/AAY proof is required';
-            // array_push($err, {'AAY_proof' => ['BPL/AAY proof is required']});
         }
-        if(count($err) > 0){
+
+        if (count($err) > 0) {
             $error = \Illuminate\Validation\ValidationException::withMessages($err);
             throw $error;
         }
 
+        // Store the file
+        if (isset($request->photo)) {
+            $path = $request->file('photo')->store('photos', 'public');
+            $application->photo = "/storage/" . $path;
+        }
+        // return $path;
+
+        if (isset($request->BPL) && $request->BPL != 'None') {
+            $path = $request->file('BPL_proof')->store('BPL', 'public');
+            $application->BPL_proof = "/storage/" . $path;
+        }
+
+        if (isset($request->PWD) && $request->PWD != 'no') {
+            $path = $request->file('PWD_proof')->store('PWD', 'public');
+            $application->PWD_proof = "/storage/" . $path;
+        }
+        $application->save();
+        return redirect('/application/' . $application->id . '?mzuid=' . $application->mzuid);
+
         return $request;
     }
 
+    public function PWD_proof(Application $application)
+    {
+        // return view('/application/' . $application->id . '/PWD-proof')
+        return view('application.PWD_proof', ['application' => $application]);
+    }
+    public function BPL_proof(Application $application)
+    {
+        // return view('/application/' . $application->id . '/BPL-proof')
+        return view('application.BPL_proof', ['application' => $application]);
+    }
     public function statusUpdate(Request $request, $id)
     {
         // return "Hello";
@@ -248,8 +292,7 @@ class ApplicationController extends Controller
                 $allotments = \App\Models\Allotment::where('application_id', $application->id)->get();
                 $allot_hostels = \App\Models\AllotHostel::whereIn('allotment_id', $allotments->pluck('id'))->get();
                 $allot_seats = \App\Models\AllotSeat::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->get();
-                if(count($allot_hostels) == 0)
-                {
+                if (count($allot_hostels) == 0) {
                     $people = \App\Models\Person::whereIn('id', $allotments->pluck('person_id'))->get();
                     \App\Models\Student::whereIn('person_id', $people->pluck('id'))->delete();
                     \App\Models\Other::whereIn('person_id', $people->pluck('id'))->delete();
@@ -257,10 +300,9 @@ class ApplicationController extends Controller
                     \App\Models\AllotSeat::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->delete();
                     \App\Models\AllotHostel::whereIn('id', $allot_hostels->pluck('id'))->delete();
                     \App\Models\Allotment::where('application_id', $application->id)->delete();
-                }
-                else{
+                } else {
                     \App\Models\Allotment::where('application_id', $application->id)->update([
-                            'valid' => 0
+                        'valid' => 0
                     ]);
                     \App\Models\AllotHostel::where('allotment_id', $allotments->pluck('id'))->update([
                         'valid' => 0

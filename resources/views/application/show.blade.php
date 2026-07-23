@@ -103,7 +103,21 @@
                     </tr>
                     <tr>
                         <th>Person with disability?</th>
-                        <td>{{ $application->PWD ? 'Yes' : 'No' }}</td>
+                        <td>
+                            {{ $application->PWD ? 'Yes' : 'No' }}
+                            @if($application->PWD)
+                                <button class="btn btn-primary btn-sm btn-show-PWD-proof" value="{{ $application->id }}">Show</button>
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Whether belonging to BPL/AAY?</th>
+                        <td>
+                            {{ $application->BPL }}
+                            @if($application->BPL != 'None')
+                                <button class="btn btn-primary btn-sm btn-show-BPL-proof" value="{{ $application->id }}">Show</button>
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <th>State/UT</th>
@@ -543,6 +557,30 @@
                 headers: {
                     'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
                 }
+            });
+
+            $('button.btn-show-PWD-proof').click(function(e) {
+                e.preventDefault(); // Prevents default link action if using an <a> tag
+                
+                var url = '/application/' + $(this).val() + '/PWD-proof';
+                var windowName = 'popupWindow';
+                
+                // Settings to remove the menu bar and request a popup window
+                var windowFeatures = 'width=800,height=600,menubar=no,toolbar=no,location=no,status=no';
+                
+                window.open(url, windowName, windowFeatures);
+            });
+
+            $('button.btn-show-BPL-proof').click(function(e) {
+                e.preventDefault(); // Prevents default link action if using an <a> tag
+                
+                var url = '/application/' + $(this).val() + '/BPL-proof';
+                var windowName = 'popupWindow';
+                
+                // Settings to remove the menu bar and request a popup window
+                var windowFeatures = 'width=800,height=600,menubar=no,toolbar=no,location=no,status=no';
+                
+                window.open(url, windowName, windowFeatures);
             });
 
             $("button.btn-status").click(function() {
