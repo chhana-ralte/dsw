@@ -17,10 +17,10 @@ class ReqController extends Controller
      */
     public function index()
     {
-        if(auth()->user() && auth()->user()->isDsw()){
-            $reqs = Req::where('recommended1_by','<>',0)
-                ->where('recommended2_by','<>',0)
-                ->where('approved_by',0)
+        if (auth()->user() && auth()->user()->isDsw()) {
+            $reqs = Req::where('recommended1_by', '<>', 0)
+                ->where('recommended2_by', '<>', 0)
+                ->where('approved_by', 0)
                 ->get();
             $data = [
                 'reqs' => $reqs
@@ -31,7 +31,7 @@ class ReqController extends Controller
 
     public function allot_hostel_index(AllotHostel $allot_hostel)
     {
-        if($allot_hostel->allotment->valid_allot_hostel()){
+        if ($allot_hostel->allotment->valid_allot_hostel()) {
             $reqs = $allot_hostel->allotment->valid_allot_hostel()->reqs();
             $prev_reqs = Req::join('allot_hostels', 'allot_hostels.id', 'reqs.allot_hostel_id')
                 ->join('allotments', 'allotments.id', 'allot_hostels.allotment_id')
@@ -39,8 +39,7 @@ class ReqController extends Controller
                 ->whereNot('allot_hostels.id', $allot_hostel->allotment->valid_allot_hostel()->id)
                 ->select('reqs.*')
                 ->get();
-        }
-        else{
+        } else {
             $reqs = [];
             $prev_reqs = Req::join('allot_hostels', 'allot_hostels.id', 'reqs.allot_hostel_id')
                 ->join('allotments', 'allotments.id', 'allot_hostels.allotment_id')
@@ -85,7 +84,7 @@ class ReqController extends Controller
         // return $allot_hostel;
         $data = [
             'allot_hostel' => $allot_hostel,
-            'hostels' => \App\Models\Hostel::where('gender', $allot_hostel->hostel->gender)->whereNot('id',$allot_hostel->hostel_id)->orderBy('name')->get(),
+            'hostels' => \App\Models\Hostel::where('gender', $allot_hostel->hostel->gender)->whereNot('id', $allot_hostel->hostel_id)->orderBy('name')->get(),
         ];
         return view('req.create', $data);
     }
@@ -95,12 +94,23 @@ class ReqController extends Controller
      */
     public function store(AllotHostel $allot_hostel, Request $request)
     {
-        $req = Req::create([
-            'allot_hostel_id' => $allot_hostel->id,
-            'from_hostel_id' => $request->from_hostel_id,
-            'to_hostel_id' => $request->to_hostel_id,
-        ]);
-        if(auth()->user()->can('edit', $allot_hostel->allotment)){
+        if (Req::where('allot_hostel_id', $allot_hostel->id)->where('to_hostel_id', $request->to_hostel_id)->exists()) {
+            return redirect()->back()
+                ->with(['message' => ['type' => 'info', 'text' => 'Request has already been made']]);
+        } else {
+            $req = Req::updateOrCreate(
+                [
+                    'allot_hostel_id' => $allot_hostel->id,
+                    'from_hostel_id' => $request->from_hostel_id,
+                ],
+                [
+                    'allot_hostel_id' => $allot_hostel->id,
+                    'from_hostel_id' => $request->from_hostel_id,
+                    'to_hostel_id' => $request->to_hostel_id,
+                ]
+            );
+        }
+        if (auth()->user()->can('edit', $allot_hostel->allotment)) {
             $req->update([
                 'recommended1_by' => auth()->user()->id,
                 'recommended1_on' => today()
@@ -131,24 +141,22 @@ class ReqController extends Controller
      */
     public function update(Request $request, Req $req)
     {
-        if($request->type == 'recommended1'){
+        if ($request->type == 'recommended1') {
             $req->update([
                 'recommended1_by' => auth()->user()->id,
                 'recommended1_on' => today(),
                 'status' => 'Recommended1'
             ]);
-        }
-        else if($request->type == 'recommended2'){
+        } else if ($request->type == 'recommended2') {
             $req->update([
                 'recommended2_by' => auth()->user()->id,
                 'recommended2_on' => today(),
                 'status' => 'Recommended2'
             ]);
-        }
-        else if($request->type == 'approved'){
+        } else if ($request->type == 'approved') {
 
             $allot_hostel = AllotHostel::findOrFail($req->allot_hostel_id);
-            DB::transaction(function() use ($req, $allot_hostel){
+            DB::transaction(function () use ($req, $allot_hostel) {
                 $req->update([
                     'approved_by' => auth()->user()->id,
                     'approved_on' => today(),
@@ -165,7 +173,7 @@ class ReqController extends Controller
                     'valid' => 1
                 ]);
 
-                AllotSeat::where('allot_hostel_id', $allot_hostel->id)->where('valid',1)->update([
+                AllotSeat::where('allot_hostel_id', $allot_hostel->id)->where('valid', 1)->update([
                     'valid' => 0,
                     'to_dt' => today(),
                     'leave_dt' => today()

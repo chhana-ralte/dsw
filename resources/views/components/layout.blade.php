@@ -121,6 +121,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/warden">Wardens</a>
                     </li>
+                    @if(\App\Models\Application::status() == 'open')
+                        <li class="nav-item">
+                            <a class="nav-link" href="/application">Hostel admission</a>
+                        </li>
+                    @endif
                     @auth
                         @if (count(auth()->user()->isWardensOf()) > 0)
                             @foreach (auth()->user()->isWardensOf() as $h)

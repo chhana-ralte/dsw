@@ -70,7 +70,7 @@
                 No inbound hostel change request.
             @endif
         </x-block>
-<x-block class="col-md-10">
+        <x-block class="col-md-10">
             <x-slot name="heading">
                 Outbound requests
             </x-slot>
@@ -79,6 +79,7 @@
                     <table class="table">
                         <tr>
                             <th>Request ID</th>
+                            <th>Name</th>
                             <th>Change hostel from</th>
                             <th>Change hostel to</th>
                             <th>Date of request</th>
@@ -88,6 +89,7 @@
                         @foreach($outbound_reqs as $r)
                         <tr>
                             <td>{{ $r->id }}</td>
+                            <td>{{ $r->allot_hostel->allotment->person->name }}</td>
                             <td>{{ $r->from_hostel()->name }}</td>
                             <td>{{ $r->to_hostel()->name }}</td>
                             <td>{{ $r->created_at }}</td>
