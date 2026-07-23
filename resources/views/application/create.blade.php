@@ -411,24 +411,7 @@
                 </div>
 
 
-                <div class="mb-3 form-group row">
-                    <label
-                        for="photo"
-                        class="col-md-5"
-                    >Passport size photo/ Selfie</label>
-                    <div class="col-md-7">
-                        <input
-                            type="file"
-                            class="form-control"
-                            name="photo"
-                            value="{{ old('photo') }}"
-                            placeholder="Passport size/selfie"
-                        >
-                        @error('photo')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
+
 
                 <div class="mb-3 form-group row">
                     <label
