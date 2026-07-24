@@ -544,7 +544,7 @@
                             class="form-control"
                             name="mzuid"
                             value="{{ old('mzuid') }}"
-                            placeholder="e.g., MZU260001234"
+                            placeholder="e.g., MZU26000xxxx, CUETxxxxx"
                             required
                         >
                         @error('mzuid')
