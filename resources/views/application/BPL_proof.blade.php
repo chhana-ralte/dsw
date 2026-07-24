@@ -9,9 +9,9 @@ img {
 </head>
 <body>
 
-<img src="{{ $application->PWD_proof }}" alt="HTML5 Icon" style="width:100%;">
+<img src="{{ $application->BPL_proof }}" alt="BPL/AAY Proof" style="width:100%;">
 
 </body>
 </html>
-            
-        
+
+
