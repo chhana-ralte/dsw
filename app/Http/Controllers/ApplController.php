@@ -162,7 +162,7 @@ class ApplController extends Controller
             'no_hostel' => $no_hostel,
 
         ];
-        return $data;
+        // return $data;
         return view('appl.allotment_summary', $data);
         return $departments;
     }
