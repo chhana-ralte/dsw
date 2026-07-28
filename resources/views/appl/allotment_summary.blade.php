@@ -16,7 +16,7 @@
                         </tr>
                         @foreach($departments as $dept)
                             <tr>
-                                <td><a href="/appl/department/{{ $dept->id }}">{{ $dept->department }}</a></td>
+                                <td>{{ $dept->department }}</td>
                                 <td>{{ $dept->male }}</td>
                                 <td>{{ $dept->female }}</td>
                             </tr>
