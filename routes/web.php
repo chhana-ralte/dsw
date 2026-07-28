@@ -212,7 +212,7 @@ Route::controller(FeedbackController::class)->group(function () {
     Route::post('/feedback/temp/action', 'action')->middleware(['auth']);
 });
 
-Route::resource('zirlai', ZirlaiController::class)->middleware('auth')->shallow();
+// Route::resource('zirlai', ZirlaiController::class)->middleware('auth')->shallow();
 
 
 Route::get('/dashboard', function () {

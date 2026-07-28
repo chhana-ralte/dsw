@@ -4,22 +4,7 @@
             <x-slot name="heading">
                 Applications
             </x-slot>
-                <div style="width=100%; overflow-x: auto">
-                    <table class="table">
-                        <tr>
-                            <th>State</th>
-                            <th>Male</th>
-                            <th>Female</th>
-                        </tr>
-                        @foreach($states as $state)
-                            <tr>
-                                <td>{{ $state->state }}</td>
-                                <td>{{ $state->male }}</td>
-                                <td>{{ $state->female }}</td>
-                            </tr>
-                        @endforeach
-                    </table>
-                </div>
+                
                 <div style="width=100%; overflow-x: auto">
                     <table class="table">
                         <tr>
@@ -32,6 +17,23 @@
                                 <td><a href="/appl/department/{{ $dept->id }}">{{ $dept->department }}</a></td>
                                 <td>{{ $dept->male }}</td>
                                 <td>{{ $dept->female }}</td>
+                            </tr>
+                        @endforeach
+                    </table>
+                </div>
+
+                <div style="width=100%; overflow-x: auto">
+                    <table class="table">
+                        <tr>
+                            <th>State</th>
+                            <th>Male</th>
+                            <th>Female</th>
+                        </tr>
+                        @foreach($states as $state)
+                            <tr>
+                                <td>{{ $state->state }}</td>
+                                <td>{{ $state->male }}</td>
+                                <td>{{ $state->female }}</td>
                             </tr>
                         @endforeach
                     </table>

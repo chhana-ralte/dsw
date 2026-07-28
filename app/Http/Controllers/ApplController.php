@@ -14,7 +14,7 @@ class ApplController extends Controller
 {
     public function index()
     {
-        $sql="SELECT state, count(if(gender='Male',1,NULL)) AS male, count(if(gender='Female',1,NULL)) AS female
+        $sql = "SELECT state, count(if(gender='Male',1,NULL)) AS male, count(if(gender='Female',1,NULL)) AS female
             FROM applications GROUP BY state ORDER BY count(*) DESC";
         $states = DB::select($sql);
         $sql = "SELECT departments.id AS id, departments.name AS department, count(if(gender='Male',1,NULL)) AS male, count(if(gender='Female',1,NULL)) AS female
@@ -30,9 +30,32 @@ class ApplController extends Controller
         return view("appl.index", $data);
     }
 
-    public function department(\App\Models\Department $department){
-        $males = Application::where('gender', 'Male')->where('department_id', $department->id)->get();
-        $females = Application::where('gender', 'Female')->where('department_id', $department->id)->get();
+    public function show(Application $application)
+    {
+
+        $hostels = \App\Models\Hostel::where('gender', $application->gender)
+            ->orderBy('name')
+            ->get();
+
+        $data = [
+            'application' => $application,
+            'hostels' => $hostels,
+        ];
+        return view('appl.show', $data);
+    }
+
+    public function department(\App\Models\Department $department)
+    {
+        $males = Application::where('gender', 'Male')
+            ->where('department_id', $department->id)
+            ->orderBy('total_score', 'desc')
+            ->orderBy('id')
+            ->get();
+        $females = Application::where('gender', 'Female')
+            ->where('department_id', $department->id)
+            ->orderBy('total_score', 'desc')
+            ->orderBy('id')
+            ->get();
 
         $data = [
             'males' => $males,
@@ -42,5 +65,75 @@ class ApplController extends Controller
         return view('appl.department', $data);
     }
 
+    public function statusUpdate(Request $request, $id)
+    {
+        // return "Hello";
+        // return $request->all();
+        $application = Application::findOrFail($id);
+        // return $request;
+        if ($request->has('status')) {
+            if ($application->status == 'Notified') {
+                // If already notified, previous allotment records are to be invalidated/Deleted //
+                $allotments = \App\Models\Allotment::where('application_id', $application->id)->get();
+                $allot_hostels = \App\Models\AllotHostel::whereIn('allotment_id', $allotments->pluck('id'))->get();
+                $allot_seats = \App\Models\AllotSeat::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->get();
+                if (count($allot_hostels) == 0) {
+                    $people = \App\Models\Person::whereIn('id', $allotments->pluck('person_id'))->get();
+                    \App\Models\Student::whereIn('person_id', $people->pluck('id'))->delete();
+                    \App\Models\Other::whereIn('person_id', $people->pluck('id'))->delete();
+                    \App\Models\Person::whereIn('id', $allotments->pluck('person_id'))->delete();
+                    \App\Models\AllotSeat::whereIn('allot_hostel_id', $allot_hostels->pluck('id'))->delete();
+                    \App\Models\AllotHostel::whereIn('id', $allot_hostels->pluck('id'))->delete();
+                    \App\Models\Allotment::where('application_id', $application->id)->delete();
+                } else {
+                    \App\Models\Allotment::where('application_id', $application->id)->update([
+                        'valid' => 0
+                    ]);
+                    \App\Models\AllotHostel::where('allotment_id', $allotments->pluck('id'))->update([
+                        'valid' => 0
+                    ]);
+                    \App\Models\AllotSeat::where('allot_hostel_id', $allot_hostels->pluck('id'))->update([
+                        'valid' => 0
+                    ]);
+                }
+            }
 
+            if ($request->status == 'approve') {
+                $application->update([
+                    'status' => 'Approved',
+                    'hostel_id' => 0,
+                    'roomtype' => 0,
+                ]);
+            } else if ($request->status == 'decline') {
+                $application->update([
+                    'status' => 'Declined',
+                    'hostel_id' => 0,
+                    'roomtype' => 0,
+                ]);
+            } else if ($request->status == 'pending') {
+                $application->update([
+                    'status' => 'Pending',
+                    'hostel_id' => 0,
+                    'roomtype' => 0,
+                ]);
+            } else if ($request->status == 'approve-hostel') {
+                $application->update([
+                    'status' => 'Approved',
+                    'hostel_id' => $request->hostel_id,
+                    'roomtype' => $request->roomtype,
+                ]);
+            } else {
+                // Do nothing
+            }
+
+            $application->save();
+            return redirect('/appl/' . $application->id)
+                ->with(['message' => ['type' => 'info', 'text' => 'Application updated successfully']]);
+        } else {
+            return redirect('/appl/' . $application->id)
+                ->with(['message' => ['type' => 'warning', 'text' => 'Unknown status!!']]);
+        }
+        // $application->update($request->all());
+        return redirect('/appl/' . $application->id)->with(['message' => ['type' => 'info', 'text' => 'Application updated successfully']]);
+    }
 }

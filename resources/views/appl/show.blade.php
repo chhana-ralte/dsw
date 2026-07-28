@@ -1,0 +1,740 @@
+<x-layout>
+    <x-container>
+        <x-block>
+            <x-slot name="heading">
+                @can('view_status', $application)
+                    Applications status:
+                    @if($application->status == 'Notified')
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#financeModal"
+                            data-bs-whatever="Remark">Notified</button>
+                    @else
+                        {{ $application->status }} {{ $application->valid ? '' : ' (Declined)' }}
+                    @endif
+                @else
+                    Application details
+                @endif
+                <p>
+                    @can('manage', $application)
+                        <a href="/appl/department/{{ $application->department_id }}" class="btn btn-secondary btn-sm">Back</a>
+                    @endcan
+                    <a href="/application/{{ $application->id }}/edit?mzuid={{ $application->mzuid }}"
+                        class="btn btn-secondary btn-sm">Edit</a>
+                    @if (auth()->user() && (auth()->user()->isDsw() || auth()->user()->isAdmin()))
+                        <button class="btn btn-danger btn-delete btn-sm" value="{{ $application->id }}">Delete</button>
+                    @endif
+                </p>
+                <form name="frm-navigate" method="post" action="/application/navigate">
+                    @csrf
+                    <input type="hidden" name="navigation" value="">
+                    @can('manages', App\Models\Application::class)
+                        <div class="btn-group">
+
+                            
+                            
+
+                            <input type=text style="text-align: center" size="3" name="application_id"
+                                value="{{ $application->id }}">
+                            <button class="btn btn-primary" type="submit">Go</button>
+                            
+                        </div>
+                    @endcan
+                </form>
+            </x-slot>
+        </x-block>
+    </x-container>
+    <x-container>
+        <x-block class="col-md-6">
+            <x-slot name="heading">
+                Personal information
+            </x-slot>
+            <div style="width: 100%; overflow-x:auto">
+                <table class="table table-auto">
+                    <tr>
+                        <th>Name</th>
+                        <td>{{ $application->name }}</td>
+                        <td rowspan=7><img width="200px" src="{{ $application->photo }}" alt=""
+                                srcset=""></td>
+                    </tr>
+                    <tr>
+                        <th>Father/Guardian's name</th>
+                        <td>{{ $application->father }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Date of birth</th>
+                        <td>{{ date_format(date_create($application->dob), 'd-m-Y') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Marital status</th>
+                        <td>{{ $application->married ? 'Married' : 'Single/Divorced' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Gender</th>
+                        <td>{{ $application->gender }}</td>
+                    </tr>
+                    <tr>
+                        <th>Mobile</th>
+                        <td>{{ $application->mobile }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ $application->email }}</td>
+                    </tr>
+                    <tr>
+                        <th>Category</th>
+                        <td>{{ $application->category }}</td>
+                    </tr>
+                    <tr>
+                        <th>Person with disability?</th>
+                        <td>
+                            {{ $application->PWD ? 'Yes' : 'No' }}
+                            @if($application->PWD)
+                                @if(!$application->PWD_proof)
+                                    <span class="text-warning">(No proof attached)</span>
+                                @elseif(substr($application->PWD_proof,-4) == '.pdf')
+                                    <a href="{{ $application->PWD_proof }}" class="btn btn-sm btn-primary" target="_blank">Show</a>
+                                @else
+                                    <button class="btn btn-primary btn-sm btn-show-PWD-proof" value="{{ $application->id }}">Show</button>
+                                @endif
+                            @endif
+                            @if($application->PWD)
+                                <button class="btn btn-primary btn-sm btn-show-PWD-proof" value="{{ $application->id }}">Show</button>
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Whether belonging to BPL/AAY?</th>
+                        <td>
+                            {{ $application->BPL }}
+                            @if($application->BPL != 'None')
+                                @if(!$application->BPL_proof)
+                                    <span class="text-warning">(No proof attached)</span>
+                                @elseif(substr($application->BPL_proof,-4) == '.pdf')
+                                    <a href="{{ $application->BPL_proof }}" class="btn btn-sm btn-primary" target="_blank">Show</a>
+                                @else
+                                    <button class="btn btn-primary btn-sm btn-show-BPL-proof" value="{{ $application->id }}">Show</button>
+                                @endif
+                            @endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>State/UT</th>
+                        <td>{{ $application->state }}</td>
+                    </tr>
+                    <tr>
+                        <th>Address</th>
+                        <td>{!! nl2br($application->address) !!}</td>
+                    </tr>
+                    <tr>
+                        <th>Whether in Aizawl Municipality Area?</th>
+                        <td>{{ $application->AMC ? 'Yes' : 'No' }}</td>
+                    </tr>
+                </table>
+            </div>
+        </x-block>
+
+        <x-block class="col-md-6">
+            <x-slot name="heading">
+                Students' information
+            </x-slot>
+            <table class="table table-auto">
+                <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
+                    <td>Rollno</td>
+                    <td>{{ $application->rollno == '' ? 'Not set' : $application->rollno }}</td>
+                </tr>
+                <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
+                    <td>Course name</td>
+                    <td>{{ $application->course }}</td>
+                </tr>
+                <tr>
+                    <td>Department</td>
+                    <td>{{ $application->department }}</td>
+                </tr>
+                <tr>
+                    <td>Semester</td>
+                    <td>{{ $application->semester }}</td>
+                </tr>
+                </tr>
+                <td>MZU ID</td>
+                <td>{{ $application->mzuid }}</td>
+                </tr>
+                <tr>
+                    <td>Last percentage</td>
+                    <td>{{ $application->percent }}</td>
+                </tr>
+            </table>
+        </x-block>
+    </x-container>
+    <x-container>
+        <x-block>
+            <x-slot name="heading">
+                Application information
+            </x-slot>
+            <table class="table table-auto">
+                <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
+                    <td>Application ID</td>
+                    <td>{{ $application->id }}</td>
+                </tr>
+                <tr class="bg-white-100 hover:bg-sky-700 text-white-900">
+                    <td>Submission date</td>
+                    <td>{{ $application->dt }}</td>
+                </tr>
+                @can('view_status', $application)
+                    <tr>
+                        <td>Status</td>
+                        <td>{{ $application->status }}</td>
+                    </tr>
+                    @if ($application->hostel)
+                        <tr>
+                            <td>Hostel allotted</td>
+                            <td>{{ $application->hostel->name }}</td>
+                        </tr>
+                        <tr>
+                            <td>Room type</td>
+                            <td>{{ App\Models\Room::room_type($application->roomtype) }}</td>
+                        </tr>
+                        @if ($application->valid_allotment())
+                            <tr>
+                                <td>Allotment reference</td>
+                                <td>
+                                    <a href="/allotment/{{ $application->valid_allotment()->id }}">
+                                        {{ $application->valid_allotment()->notification->id }}/{{ $application->valid_allotment()->rand }}/{{ $application->valid_allotment()->sl }}
+                                    </a>
+                                </td>
+                            </tr>
+                            @if (
+                                $application->valid_allotment()->valid_allot_hostel() &&
+                                    $application->valid_allotment()->valid_allot_hostel()->valid_allot_seat())
+                                <tr>
+                                    <td>Room/Seat allotted</td>
+                                    <td>{{ $application->valid_allotment()->valid_allot_hostel()->valid_allot_seat()->seat->room->roomno }}
+                                    </td>
+                                </tr>
+                            @endif
+                            <tr>
+                                <td>Admission confirmation</td>
+                                @if ($application->valid_allotment()->confirmed == 1)
+                                    <td>Confirmed</td>
+                                @else
+                                    <td>Not Confirmed</td>
+                                @endif
+                            </tr>
+                        @endif
+                    @endif
+                    </tr>
+                @endcan
+                <td>Whether valid?</td>
+                <td>{{ $application->valid ? 'Yes' : 'No' }}</td>
+                </tr>
+                </tr>
+                <td>Reason for hostel requirement</td>
+                <td>{!! nl2br($application->reason) !!}</td>
+                </tr>
+                @if ($application->remark)
+                    </tr>
+                    <td>Remark</td>
+                    <td>{!! nl2br($application->remark) !!}</td>
+                    </tr>
+                @endif
+                @can('manage', $application)
+                    </tr>
+                    <td></td>
+                    <td>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#remarkModal"
+                            data-bs-whatever="Remark">Add/Edit remark</button>
+                    </td>
+                    </tr>
+                @endcan
+
+
+            </table>
+        </x-block>
+    </x-container>
+
+    @if (count($application->allotments) > 0)
+        <x-container>
+
+            <x-block>
+                <x-slot name="heading">
+                    <span class="text-danger">The following allotment(s) are found for this application</span>
+                </x-slot>
+                <div style="width:100%; overflow-x:auto">
+                    <table class="table">
+                        <tr>
+                            <th>Allotment ID</th>
+                            <th>Name</th>
+                            <th>Course</th>
+                            <th>Department</th>
+                            <th>Current hostel</th>
+                            <th>Status</th>
+                        </tr>
+                        @foreach ($application->allotments as $allotment)
+                            <tr>
+                                <td>
+                                    <a href="/allotment/{{ $allotment->id }}">{{ $allotment->id }}</a>
+                                </td>
+                                <td>
+                                    {{ $allotment->person->name }}
+                                </td>
+                                @if ($allotment->person->student())
+                                    <td>
+                                        {{ $allotment->person->student()->course }}
+                                    </td>
+                                    <td>
+                                        {{ $allotment->person->student()->department }}
+                                    </td>
+                                @else
+                                    <td colspan=2>
+                                        Not a student
+                                    </td>
+                                @endif
+                                @if ($allotment->valid_allot_hostel())
+                                    <td>
+                                        {{ $allotment->valid_allot_hostel()->hostel->name }}
+                                    </td>
+                                @else
+                                    <td>
+                                        No valid hostel
+                                    </td>
+                                @endif
+                                <td>
+                                    {{ $allotment->valid? 'Valid': 'Invalid' }}
+                                </td>
+
+                            </tr>
+                        @endforeach
+                    </table>
+                </div>
+            </x-block>
+        </x-container>
+
+    @endif
+
+
+    @if (auth()->user() && auth()->user()->max_role_level() >= 3 && count($application->existing_allotments()) > 0)
+        <x-container>
+
+            <x-block>
+                <x-slot name="heading">
+                    <span class="text-danger">The following existing allotment(s) are found</span>
+                </x-slot>
+                <div style="width:100%; overflow-x:auto">
+                    <table class="table">
+                        <tr>
+                            <th>Allotment ID</th>
+                            <th>Name</th>
+                            <th>Course</th>
+                            <th>Department</th>
+                            <th>Current hostel</th>
+                        </tr>
+                        @foreach ($application->existing_allotments() as $allotment)
+                            <tr>
+                                <td>
+                                    <a href="/allotment/{{ $allotment->id }}">{{ $allotment->id }}</a>
+                                </td>
+                                <td>
+                                    {{ $allotment->person->name }}
+                                </td>
+                                @if ($allotment->person->student())
+                                    <td>
+                                        {{ $allotment->person->student()->course }}
+                                    </td>
+                                    <td>
+                                        {{ $allotment->person->student()->department }}
+                                    </td>
+                                @else
+                                    <td colspan=2>
+                                        Not a student
+                                    </td>
+                                @endif
+                                @if ($allotment->valid_allot_hostel())
+                                    <td>
+                                        {{ $allotment->valid_allot_hostel()->hostel->name }}
+                                    </td>
+                                @else
+                                    <td colspan=2>
+                                        No valid hostel
+                                    </td>
+                                @endif
+
+                            </tr>
+                        @endforeach
+                    </table>
+                </div>
+            </x-block>
+        </x-container>
+
+    @endif
+    @can('manage', $application)
+        <x-container>
+            <x-block>
+                <x-slot name="heading">
+                    Score
+                </x-slot>
+                    <form>
+                        <div class="form-group row mb-3">
+                            <div class="col col-md-6">
+                                <label>Academic score</label>
+                            </div>
+                            <div class="col col-md-6">
+                                <input type="text" class="form-control" value="{{ $application->acad_score }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <div class="col col-md-6">
+                                <label>Location score</label>
+                            </div>
+                            <div class="col col-md-6">
+                                <input type="text" class="form-control" value="{{ $application->loc_score }}" readonly>
+                                {{-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> --}}
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <div class="col col-md-6">
+                                <label>BPL/AAY score</label>
+                            </div>
+                            <div class="col col-md-6">
+                                <input type="text" class="form-control" value="{{ $application->BPL_score }}" readonly>
+                                {{-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> --}}
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <div class="col col-md-6">
+                                <label>Physically challenged score</label>
+                            </div>
+                            <div class="col col-md-6">
+                                <input type="text" class="form-control" value="{{ $application->PWD_score }}" readonly>
+                                {{-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> --}}
+                            </div>
+                        </div>
+                                <div class="form-group row mb-3">
+                            <div class="col col-md-6">
+                                <label><strong>Total score</strong></label>
+                            </div>
+                            <div class="col col-md-6">
+                                <input type="text" class="form-control" value="{{ $application->loc_score + $application->acad_score +$application->PWD_score +$application->BPL_score }}" readonly>
+                                {{-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> --}}
+                            </div>
+                        </div>
+
+
+                    </form>
+            </x-block>
+        </x-container>
+    @endif
+
+    @can('manage', $application)
+
+        <x-container>
+            <x-block>
+                <x-slot name="heading">
+                    Decision:
+                </x-slot>
+                @if ($application->valid)
+                    <div>
+                        <button class="btn btn-danger btn-status" value="decline">Decline</button>
+                        <button class="btn btn-warning btn-status" value="pending">Pending</button>
+                        {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#hostelModal"
+                            data-bs-whatever="Remark">Approve</button> --}}
+                        <button class="btn btn-warning btn-status" value="approve-modal">Approve</button>
+                        @if (auth()->user() && (auth()->user()->isAdmin() || auth()->user()->isDsw()))
+                            <a class="btn btn-warning btn-existing" href="/application/{{ $application->id }}/existing">Add
+                                as existing</a>
+                        @endif
+                    </div>
+                    <form type="hidden" action="/appl/{{ $application->id }}/statusUpdate" method="post"
+                        name="frm_submit">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="application_id" value="{{ $application->id }}">
+                        <input type="hidden" name="status" value="">
+                        <input type="hidden" name="hostel_id">
+                        <input type="hidden" name="roomtype">
+                    </form>
+                @else
+                    <h3 class="text-danger">Application already declined</h3>
+                @endif
+            </x-block>
+        </x-container>
+
+    @endcan
+
+
+    {{-- Modal for remarks --}}
+    <div class="modal fade" id="remarkModal" tabindex="-1" aria-labelledby="remarkModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="remarkModalLabel">Add/ Edit remark</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="remark" class="col-form-label">Remark:</label>
+                            <textarea class="form-control" id="remark" name="remark">{{ old('remark', $application->remark) }}</textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-save">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- End Modal for remarks --}}
+
+    {{-- Modal for hostel allotment --}}
+    <div class="modal fade" id="hostelModal" tabindex="-1" aria-labelledby="hostelModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="hostelModalLabel">Assign Hostel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="hostel" class="col-form-label">Hostel</label>
+                            <select id="hostel" name="hostel" class="form-control">
+                                <option value="" disabled selected>Select hostel</option>
+
+                                @foreach ($hostels as $h)
+                                    @if (auth()->user() && auth()->user()->isWardenOf($h->id))
+                                        <option value="{{ $h->id }}" selected>{{ $h->name }}</option>
+                                    @else
+                                        <option value="{{ $h->id }}">{{ $h->name }}</option>
+                                    @endif
+                                @endforeach
+
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="type" class="col-form-label">Room type:</label>
+                            <select id="type" name="type" class="form-control">
+                                <option value="1">Single</option>
+                                <option value="2" selected>Double</option>
+                                <option value="3">Triple</option>
+                                <option value="4">Dorm</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-status" value="approve">Just approve</button>
+                    <button type="button" class="btn btn-primary btn-status" value="approve-hostel">Approve hostel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- End Modal for hostel allotment --}}
+
+
+    {{-- Modal for finance printing --}}
+    @if($application->hostel_id)
+        <div class="modal fade" id="financeModal" tabindex="-1" aria-labelledby="financeModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="financeModalLabel">Brief allotment information</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="width: 100%; overflow-x:auto">
+                            <table class="table">
+                                <tr>
+                                    <th>Name</th>
+                                    <td>{{ $application->name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>email</th>
+                                    <td>{{ $application->email }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Mobile</th>
+                                    <td>{{ $application->mobile }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Course</th>
+                                    <td>{{ $application->course }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Semester</th>
+                                    <td>{{ $application->semester }}</td>
+                                </tr>
+                                <tr>
+                                    <th>MZU ID</th>
+                                    <td>{{ $application->mzuid }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Hostel</th>
+                                    <td>{{ $application->hostel->name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Room type</th>
+                                    <td>{{ App\Models\Room::room_type($application->roomtype) }}</td>
+                                </tr>
+
+                            </table>
+                        </div>
+                            {{-- <div class="mb-3">
+                                <label for="hostel" class="col-form-label">Hostel</label>
+
+                            </div>
+                            <div class="mb-3">
+                                <label for="type" class="col-form-label">Room type:</label>
+                                <select id="type" name="type" class="form-control">
+                                    <option value="1">Single</option>
+                                    <option value="2" selected>Double</option>
+                                    <option value="3">Triple</option>
+                                    <option value="4">Dorm</option>
+                                </select>
+                            </div> --}}
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+    {{-- End Modal for finance printing --}}
+
+
+    <script>
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
+                }
+            });
+
+            $('button.btn-show-PWD-proof').click(function(e) {
+                e.preventDefault(); // Prevents default link action if using an <a> tag
+
+                var url = '/application/' + $(this).val() + '/PWD-proof';
+                var windowName = 'popupWindow';
+
+                // Settings to remove the menu bar and request a popup window
+                var windowFeatures = 'width=800,height=600,menubar=no,toolbar=no,location=no,status=no';
+
+                window.open(url, windowName, windowFeatures);
+            });
+
+            $('button.btn-show-BPL-proof').click(function(e) {
+                e.preventDefault(); // Prevents default link action if using an <a> tag
+
+                var url = '/application/' + $(this).val() + '/BPL-proof';
+                var windowName = 'popupWindow';
+
+                // Settings to remove the menu bar and request a popup window
+                var windowFeatures = 'width=800,height=600,menubar=no,toolbar=no,location=no,status=no';
+
+                window.open(url, windowName, windowFeatures);
+            });
+
+            $("button.btn-status").click(function() {
+                //alert("asdsadsad");
+                if ($(this).val() == 'approve-modal') {
+                    $("#hostelModal").modal("show");
+                    // $("input[name='status']").val($(this).val());
+                    // $("input[name='hostel_id']").val($("select#hostel").val());
+                    // $("input[name='roomtype']").val($("select#type").val());
+                    // $("form[name='frm_submit']").submit();
+                }
+                else if ($(this).val() == 'approve-hostel'){
+                    if(!$("select#hostel").val()){
+                        alert("Select the hostel where student is to be allotted. Or click 'Just Approve' without hostel");
+                    }
+                    else{
+                        $("input[name='status']").val($(this).val());
+                        $("input[name='hostel_id']").val($("select#hostel").val());
+                        $("input[name='roomtype']").val($("select#type").val());
+                        $("form[name='frm_submit']").submit();
+                    }
+                }
+                else {
+                    $("input[name='status']").val($(this).val());
+                    $("form[name='frm_submit']").submit();
+                }
+            });
+
+            $("button.btn-approve").click(function() {
+                alert($(this).val());
+                $.ajax({
+                    type: "post",
+                    url: "/ajax/application/" + $(this).val() + "/accept",
+                    success: function(data, status) {
+                        alert("Application accepted successfully.");
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        alert("Error accepting application: " + xhr.responseText);
+                    }
+                });
+
+            });
+
+            $("button.btn-delete").click(function() {
+                if (confirm("Are you sure you want to delete this application?")) {
+                    $.ajax({
+                        type: "post",
+                        url: "/ajax/application/" + $(this).val() + "/delete",
+                        success: function(data, status) {
+                            alert("Application deleted successfully.");
+                            {{-- alert(data.id) --}}
+                            location.replace("/appl/" + data.id);
+                            {{-- location.reload(); --}}
+                        },
+                        error: function(xhr, status, error) {
+                            alert("Error deleting application: " + xhr.responseText);
+                        }
+                    });
+                }
+            });
+
+            {{-- $("button.btn-approve").click(function() {
+                if (confirm("Are you sure you want to approve this application?")) {
+                    $.ajax({
+                        type: "post",
+                        url: "/ajax/application/" + $(this).val() + "/accept",
+                        success: function(data, status) {
+                            alert("Application accepted successfully.");
+                            location.reload();
+                        },
+                        error: function(xhr, status, error) {
+                            alert("Error accepting application: " + xhr.responseText);
+                        }
+                    });
+                }
+            }); --}}
+            $("button.btn-save").click(function() {
+
+                $.ajax({
+                    type: "post",
+                    url: "/ajax/application/" + $("input[name='application_id']").val() + "/remark",
+                    data: {
+                        remark: $("#remark").val()
+                    },
+                    success: function(data, status) {
+                        {{-- alert("Remark saved successfully."); --}}
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        alert("Error saving remark: " + xhr.responseText);
+                    }
+                });
+
+            });
+
+            $("button.btn-navigate").click(function() {
+                $("input[name='navigation']").val($(this).val());
+                $("form[name='frm-navigate']").submit();
+            });
+
+        });
+    </script>
+</x-layout>

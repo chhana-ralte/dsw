@@ -35,7 +35,7 @@
                                 @endif
                                     <td>
                                         <a
-                                            href="/application/{{ $application->id }}?mzuid={{ $application->mzuid }}">{{ $application->name }}</a>
+                                            href="/appl/{{ $application->id }}?">{{ $application->name }}</a>
                                         @if (count($application->duplicates()) > 0)
                                             <br><button type="button" class="btn badge bg-warning btn-duplicate"
                                                 value="{{ $application->id }}">Possible duplicate</button>
