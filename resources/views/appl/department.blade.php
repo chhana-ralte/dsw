@@ -18,6 +18,7 @@
                                 <th>PWD?</th>
                                 <th>BPL/AAY?</th>
                                 <th>Status</th>
+                                <th>Score</th>
                                 @can('manages', App\Models\Application::class)
                                     <th>Action</th>
                                 @endif
@@ -54,6 +55,7 @@
                                     @else
                                         <td>{{ $application->status }}</td>
                                     @endif
+                                    <th>{{ $application->total_score }}</th>
 
                                     @can('manage', $application)
                                         <td>
