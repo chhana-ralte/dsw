@@ -32,7 +32,7 @@
                         </tr>
                         @foreach($hostels as $hostel)
                             <tr>
-                                <td><a href="/appl/allotted?hostel_id={{ $hostel->id }}>{{ $hostel->hostel }}</a></td>
+                                <td><a href="/appl/allotted?hostel_id={{ $hostel->id }}">{{ $hostel->hostel }}</a></td>
                                 <td>{{ $hostel->cnt }}</td>
                             </tr>
                         @endforeach
