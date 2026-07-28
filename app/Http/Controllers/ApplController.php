@@ -136,6 +136,21 @@ class ApplController extends Controller
         return redirect('/appl/' . $application->id)->with(['message' => ['type' => 'info', 'text' => 'Application updated successfully']]);
     }
 
+    public function allotment_summary()
+    {
+        $sql = "SELECT department, count(if(gender='Male',1,NULL)) AS male, count(if(gender='Female',1,NULL)) AS female
+            FROM applications 
+            WHERE status = 'Approved' 
+            GROUP BY department
+            ORDER BY department";
+        $departments = DB::select($sql);
+        $data = [
+            'departments' => $departments,
+        ];
+        return view('appl.allotment_summary', $data);
+        return $departments;
+    }
+
     public function destroy(Application $application)
     {
         $department_id = $application->department_id;
