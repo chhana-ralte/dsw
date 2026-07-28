@@ -36,7 +36,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($applications as $application)
+                            @foreach ($allotted as $application)
 
                                 <tr>
 
