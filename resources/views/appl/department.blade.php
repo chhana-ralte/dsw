@@ -124,8 +124,21 @@
                 });
                 $("button.btn-delete").click(function() {
                     if (confirm("Are you sure you want to delete this application?")) {
-                        $("form[name='frm-delete']").attr('action', '/application/' + $(this).val());
-                        $("form[name='frm-delete']").submit();
+                        $.ajax({
+                        type: "delete",
+                        url: "/ajax/appl/" + $(this).val() + "/delete",
+                        success: function(data, status) {
+                            alert("Application deleted successfully.");
+                            {{-- alert(data.id) --}}
+                            location.replace("/appl/department/" + data.department_id);
+                            {{-- location.reload(); --}}
+                        },
+                        error: function(xhr, status, error) {
+                            alert("Error deleting application: " + xhr.responseText);
+                        }
+                    });
+
+                        
                     }
                 });
             });

@@ -135,4 +135,11 @@ class ApplController extends Controller
         // $application->update($request->all());
         return redirect('/appl/' . $application->id)->with(['message' => ['type' => 'info', 'text' => 'Application updated successfully']]);
     }
+
+    public function destroy(Application $application)
+    {
+        $department_id = $application->department_id;
+        $application->delete();
+        return ['department_id' => $department_id];
+    }
 }

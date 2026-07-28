@@ -682,11 +682,11 @@
                 if (confirm("Are you sure you want to delete this application?")) {
                     $.ajax({
                         type: "post",
-                        url: "/ajax/application/" + $(this).val() + "/delete",
+                        url: "/ajax/appl/" + $(this).val() + "/delete",
                         success: function(data, status) {
                             alert("Application deleted successfully.");
                             {{-- alert(data.id) --}}
-                            location.replace("/appl/" + data.id);
+                            location.replace("/appl/" + data.department_id);
                             {{-- location.reload(); --}}
                         },
                         error: function(xhr, status, error) {
