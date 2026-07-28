@@ -145,7 +145,7 @@ class ApplController extends Controller
             ORDER BY department";
         $departments = DB::select($sql);
 
-        $sql = "SELECT hostels.name as hostel, count(*) AS cnt
+        $sql = "SELECT hostels.id, hostels.name as hostel, count(*) AS cnt
             FROM applications JOIN hostels ON hostels.id=applications.hostel_id
             WHERE status = 'Approved' 
             GROUP BY hostels.id, hostels.name, hostels.gender
