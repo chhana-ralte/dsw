@@ -24,6 +24,43 @@
                     </table>
                 </div>
 
+                <div style="width=100%; overflow-x: auto">
+                    <table class="table">
+                        <tr>
+                            <th>Hostel</th>
+                            <th>Count</th>
+                        </tr>
+                        @foreach($hostels as $hostel)
+                            <tr>
+                                <td>{{ $hostel->hostel }}</td>
+                                <td>{{ $hostel->cnt }}</td>
+                            </tr>
+                        @endforeach
+                    </table>
+                </div>
+
+                <div style="width=100%; overflow-x: auto">
+                    <table class="table">
+                        <tr>
+                            <th>Hostel</th>
+                            <th>Count</th>
+                        </tr>
+                        @foreach($hostels as $hostel)
+                            <tr>
+                                <td>{{ $hostel->hostel }}</td>
+                                <td>{{ $hostel->cnt }}</td>
+                            </tr>
+                        @endforeach
+                        <tr>
+                            <th colspan=2>No hostel assigned</th>
+                        </tr>
+                        <tr>
+                            <td>Male</td><td>{{ $no_hostel->male }}</td>
+                            <td>Male</td><td>{{ $no_hostel->male }}</td>
+                        </tr>
+                    </table>
+                </div>
+
         </x-block>
     </x-container>
 
