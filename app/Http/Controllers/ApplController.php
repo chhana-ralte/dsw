@@ -46,8 +46,7 @@ class ApplController extends Controller
 
     public function department(\App\Models\Department $department)
     {
-        $males = Application::where('gender', 'Male')
-            ->where('department_id', $department->id)
+        $applications = Application::where('department_id', $department->id)
             ->orderBy('total_score', 'desc')
             ->orderBy('id')
             ->get();
@@ -58,7 +57,7 @@ class ApplController extends Controller
             ->get();
 
         $data = [
-            'males' => $males,
+            'applications' => $applications,
             'females' => $females,
             'department' => $department,
         ];

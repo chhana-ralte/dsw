@@ -1,5 +1,5 @@
 <x-layout>
-    @foreach([$males,$females] as $gender)
+    {{-- @foreach([$males,$females] as $gender) --}}
         <x-container>
             <x-block>
                 <x-slot name="heading">
@@ -25,7 +25,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($gender as $application)
+                            @foreach ($applications as $application)
 
                                 <tr>
 
@@ -75,7 +75,7 @@
                 </div>
             </x-block>
         </x-container>
-    @endforeach
+    {{-- @endforeach --}}
         {{-- Modal for duplicate requirement --}}
 
         <div class="modal fade" id="duplicateModal" tabindex="-1" aria-labelledby="duplicateModalLabel" aria-hidden="true">
