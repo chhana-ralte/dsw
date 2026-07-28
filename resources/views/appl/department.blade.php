@@ -1,81 +1,30 @@
 <x-layout>
-    <x-container>
-        <x-block>
-            <x-slot name="heading">
-                Applications
-            </x-slot>
-                <div style="width=100%; overflow-x: auto">
-                    <div class="btn-group">
-                        <a href="/application/list" class="btn btn-primary">
-                            Applied
-                            <span class="badge bg-secondary">{{ App\Models\Application::applied_count() }}</span>
-                        </a>
-                        <a href="/application/list?status=Declined" class="btn btn-danger">
-                            Declined
-                            <span class="badge bg-secondary">{{ App\Models\Application::declined()->count() }}</span>
-                        </a>
-                        <a href="/application/list?status=Pending" class="btn btn-warning">
-                            Pending
-                            <span class="badge bg-secondary">{{ App\Models\Application::pending()->count() }}</span>
-                        </a>
-                        <a href="/application/list?status=Approved&hostel=0" class="btn btn-success">
-                            Approved (No hostel)
-                            <span class="badge bg-secondary">{{ App\Models\Application::approved()->count() }}</span>
-                        </a>
-                        <a href="/application/approved" class="btn btn-success">
-                            Approved
-                            <span class="badge bg-secondary">{{ App\Models\Application::approved_hostel()->count() }}</span>
-                        </a>
-                        <a href="/application/notified" class="btn btn-success">
-                            Notified
-                            <span class="badge bg-secondary">{{ App\Models\Application::notified()->count() }}</span>
-                        </a>
-                    </div>
-                </div>
-                <p>
-                    <a href="/application/" class="btn btn-secondary btn-sm">Back</a>
-                    <a href="/application/search" class="btn btn-primary btn-sm">Search</a>
-                </p>
+    @foreach([$males,$females] as $gender)
+        <x-container>
+            <x-block>
+                <x-slot name="heading">
+                    Applicants from {{ $department->name }}
+                </x-slot>
 
-        </x-block>
-    </x-container>
-    <x-container>
-        <x-block>
-            <x-slot name="heading">
-                Applications
-            </x-slot>
-            @if ($status == 'Approved' && $hostel_id != 0)
-                <p>
-                    Select the hostel:
-                    <select name="hostel" id="hostel">
-                        <option value="0">No Hostel</option>
-                        @foreach (App\Models\Hostel::orderBy('gender')->orderBy('name')->get() as $ht)
-                            <option value="{{ $ht->id }}">{{ $ht->name }}</option>
-                        @endforeach
-                    </select>
-                </p>
-            @endif
-            <div style="width: 100%; overflow-x:auto">
-                <table class="table table-auto">
-                    <thead>
-
-                        <tr>
-                            <th>Application ID</th>
-                            <th>Name</th>
-                            <th>Course</th>
-                            {{-- <th>Department</th> --}}
-                            <th>MZU ID</th>
-                            <th>AMC?</th>
-                            <th>PWD?</th>
-                            <th>BPL/AAY?</th>
-                            <th>Status</th>
-                            @can('manages', App\Models\Application::class)
-                                <th>Action</th>
+                <div style="width: 100%; overflow-x:auto">
+                    <table class="table table-auto">
+                        <thead>
+                            <tr>
+                                <th>Application ID</th>
+                                <th>Name</th>
+                                <th>Course</th>
+                                <th>MZU ID</th>
+                                <th>AMC?</th>
+                                <th>PWD?</th>
+                                <th>BPL/AAY?</th>
+                                <th>Status</th>
+                                @can('manages', App\Models\Application::class)
+                                    <th>Action</th>
                                 @endif
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($applications as $application)
+                            @foreach ($gender as $application)
 
                                 <tr>
 
@@ -118,18 +67,13 @@
                                     @endcan
                                 </tr>
                             @endforeach
-                            <form name="frm-delete" method="post">
-                                @csrf
-                                @method('delete')
-                            </form>
                         </tbody>
                     </table>
-                    <div class="d-flex justify-content-center">
-                        {{ $applications->links() }}
-                    </div>
+
                 </div>
             </x-block>
         </x-container>
+    @endforeach
         {{-- Modal for duplicate requirement --}}
 
         <div class="modal fade" id="duplicateModal" tabindex="-1" aria-labelledby="duplicateModalLabel" aria-hidden="true">

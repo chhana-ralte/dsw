@@ -19,6 +19,10 @@ class Application extends Model
     {
         return Application::where('valid', 1)->where('status', 'Applied');
     }
+    public static function applied_count()
+    {
+        return Application::where('valid', 1)->where('status', 'Applied')->count();
+    }
 
     public static function approved()
     {

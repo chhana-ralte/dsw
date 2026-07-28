@@ -46,7 +46,7 @@
 
                             <input type=text style="text-align: center" size="3" name="application_id"
                                 value="{{ $application->id }}">
-
+                            <button class="btn btn-primary" type="submit">Go</button>
                             @if ($next)
                                 <a class="btn btn-primary btn-navigate"
                                     href="/application/{{ $next->id }}?mzuid={{ $next->mzuid }}">Next&gt;&gt;</a>
@@ -106,6 +106,15 @@
                         <td>
                             {{ $application->PWD ? 'Yes' : 'No' }}
                             @if($application->PWD)
+                                @if(!$application->PWD_proof)
+                                    <span class="text-warning">(No proof attached)</span>
+                                @elseif(substr($application->PWD_proof,-4) == '.pdf')
+                                    <a href="{{ $application->PWD_proof }}" class="btn btn-sm btn-primary" target="_blank">Show</a>
+                                @else
+                                    <button class="btn btn-primary btn-sm btn-show-PWD-proof" value="{{ $application->id }}">Show</button>
+                                @endif
+                            @endif
+                            @if($application->PWD)
                                 <button class="btn btn-primary btn-sm btn-show-PWD-proof" value="{{ $application->id }}">Show</button>
                             @endif
                         </td>
@@ -115,7 +124,13 @@
                         <td>
                             {{ $application->BPL }}
                             @if($application->BPL != 'None')
-                                <button class="btn btn-primary btn-sm btn-show-BPL-proof" value="{{ $application->id }}">Show</button>
+                                @if(!$application->BPL_proof)
+                                    <span class="text-warning">(No proof attached)</span>
+                                @elseif(substr($application->BPL_proof,-4) == '.pdf')
+                                    <a href="{{ $application->BPL_proof }}" class="btn btn-sm btn-primary" target="_blank">Show</a>
+                                @else
+                                    <button class="btn btn-primary btn-sm btn-show-BPL-proof" value="{{ $application->id }}">Show</button>
+                                @endif
                             @endif
                         </td>
                     </tr>
@@ -221,8 +236,6 @@
                                     <td>Not Confirmed</td>
                                 @endif
                             </tr>
-
-
                         @endif
                     @endif
                     </tr>
@@ -368,6 +381,63 @@
             </x-block>
         </x-container>
 
+    @endif
+    @can('manage', $application)
+        <x-container>
+            <x-block>
+                <x-slot name="heading">
+                    Score
+                </x-slot>
+                    <form>
+                        <div class="form-group row mb-3">
+                            <div class="col col-md-6">
+                                <label>Academic score</label>
+                            </div>
+                            <div class="col col-md-6">
+                                <input type="text" class="form-control" value="{{ $application->acad_score }}" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <div class="col col-md-6">
+                                <label>Location score</label>
+                            </div>
+                            <div class="col col-md-6">
+                                <input type="text" class="form-control" value="{{ $application->loc_score }}" readonly>
+                                {{-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> --}}
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <div class="col col-md-6">
+                                <label>BPL/AAY score</label>
+                            </div>
+                            <div class="col col-md-6">
+                                <input type="text" class="form-control" value="{{ $application->BPL_score }}" readonly>
+                                {{-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> --}}
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <div class="col col-md-6">
+                                <label>Physically challenged score</label>
+                            </div>
+                            <div class="col col-md-6">
+                                <input type="text" class="form-control" value="{{ $application->PWD_score }}" readonly>
+                                {{-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> --}}
+                            </div>
+                        </div>
+                                <div class="form-group row mb-3">
+                            <div class="col col-md-6">
+                                <label><strong>Total score</strong></label>
+                            </div>
+                            <div class="col col-md-6">
+                                <input type="text" class="form-control" value="{{ $application->loc_score + $application->acad_score +$application->PWD_score +$application->BPL_score }}" readonly>
+                                {{-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> --}}
+                            </div>
+                        </div>
+
+
+                    </form>
+            </x-block>
+        </x-container>
     @endif
 
     @can('manage', $application)
@@ -561,25 +631,25 @@
 
             $('button.btn-show-PWD-proof').click(function(e) {
                 e.preventDefault(); // Prevents default link action if using an <a> tag
-                
+
                 var url = '/application/' + $(this).val() + '/PWD-proof';
                 var windowName = 'popupWindow';
-                
+
                 // Settings to remove the menu bar and request a popup window
                 var windowFeatures = 'width=800,height=600,menubar=no,toolbar=no,location=no,status=no';
-                
+
                 window.open(url, windowName, windowFeatures);
             });
 
             $('button.btn-show-BPL-proof').click(function(e) {
                 e.preventDefault(); // Prevents default link action if using an <a> tag
-                
+
                 var url = '/application/' + $(this).val() + '/BPL-proof';
                 var windowName = 'popupWindow';
-                
+
                 // Settings to remove the menu bar and request a popup window
                 var windowFeatures = 'width=800,height=600,menubar=no,toolbar=no,location=no,status=no';
-                
+
                 window.open(url, windowName, windowFeatures);
             });
 
@@ -591,7 +661,7 @@
                     // $("input[name='hostel_id']").val($("select#hostel").val());
                     // $("input[name='roomtype']").val($("select#type").val());
                     // $("form[name='frm_submit']").submit();
-                } 
+                }
                 else if ($(this).val() == 'approve-hostel'){
                     if(!$("select#hostel").val()){
                         alert("Select the hostel where student is to be allotted. Or click 'Just Approve' without hostel");
