@@ -154,7 +154,7 @@ class ApplController extends Controller
         $sql = "SELECT count(if(gender='Male',1,NULL)) AS male, count(if(gender='Female',1,NULL)) AS female
             FROM applications 
             WHERE status='Approved' AND hostel_id=0";
-        $no_hostel = DB::select($sql);
+        $no_hostel = DB::select($sql)->first();
         $data = [
             'hostels' => $hostels,
             'departments' => $departments,
