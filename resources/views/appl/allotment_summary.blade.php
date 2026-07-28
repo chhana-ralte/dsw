@@ -56,7 +56,7 @@
                         </tr>
                         <tr>
                             <td>Male</td><td>{{ $no_hostel->male }}</td>
-                            <td>Male</td><td>{{ $no_hostel->male }}</td>
+                            <td>Female</td><td>{{ $no_hostel->female }}</td>
                         </tr>
                     </table>
                 </div>
