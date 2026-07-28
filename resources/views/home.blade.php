@@ -22,7 +22,7 @@
                     Important notifications:
                     <ul>
                         <li>Application for accommodation to the Mizoram University Halls of Residence is opened.
-                            To apply for the 2025-26 academic session, click <a href="/application">here</a> to go to application
+                            To apply for the 2026-27 academic session, click <a href="/application">here</a> to go to application
                             portal.</li>
                         <li>All residents who are willing to stay in the next semester should register themselves in the portal
                             and apply for seat through the portal.</a>
