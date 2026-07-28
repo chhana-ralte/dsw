@@ -2,7 +2,7 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-                Applications
+                Allotment summary
                 <p>
                     <a class="btn btn-primary btn-sm" href='/appl/'>Back</a>
             </x-slot>
@@ -32,7 +32,7 @@
                         </tr>
                         @foreach($hostels as $hostel)
                             <tr>
-                                <td>{{ $hostel->hostel }}</td>
+                                <td><a href="/appl/allotted?hostel_id={{ $hostel->id }}>{{ $hostel->hostel }}</a></td>
                                 <td>{{ $hostel->cnt }}</td>
                             </tr>
                         @endforeach
@@ -52,7 +52,7 @@
                             </tr>
                         @endforeach
                         <tr>
-                            <th colspan=2>No hostel assigned</th>
+                            <th colspan=2><a href="/appl/allotted">No hostel assigned</a></th>
                         </tr>
                         <tr>
                             <td>Male</td><td>{{ $no_hostel->male }}</td>

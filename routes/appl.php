@@ -12,5 +12,6 @@ Route::controller(\App\Http\Controllers\ApplController::class)->group(function (
     Route::get('/appl/department/{department}', 'department')->middleware(['auth']);
     Route::get('/appl', 'index')->middleware(['auth']);
     Route::get('/appl/allotment_summary', 'allotment_summary')->middleware(['auth']);
+    Route::get('/appl/alloted', 'alloted')->middleware(['auth']);
     Route::get('/appl/{application}', 'show')->middleware(['auth']);
 });

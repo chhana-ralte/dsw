@@ -173,4 +173,21 @@ class ApplController extends Controller
         $application->delete();
         return ['department_id' => $department_id];
     }
+
+    public function allotted()
+    {
+        if (isset(request()->hostel_id)) {
+            $hostel = \App\Models\Hostel::findOrFail(request()->hostel_id);
+            $allotted = Application::where('status', 'Approved')->where('hostel_id', $hostel->id)->get();
+        } else {
+            $hostel = null;
+            $allotted = Application::where('status', 'Approved')->where('hostel_id', 0)->get();
+        }
+        $data = [
+            'allotted' => $allotted,
+            'hostel' => $hostel,
+            'back_link' => '/appl/allotment_summary',
+        ];
+        return view('appl.allotted', $data);
+    }
 }
