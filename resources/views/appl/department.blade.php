@@ -4,6 +4,9 @@
             <x-block>
                 <x-slot name="heading">
                     Applicants from {{ $department->name }}
+                    <p>
+                        <a class="btn btn-primary btn-sm" href="/appl">Back</a>
+                    </p>
                 </x-slot>
 
                 <div style="width: 100%; overflow-x:auto">
