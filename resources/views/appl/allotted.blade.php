@@ -158,10 +158,6 @@
                 });
             });
 
-            $("select#hostel").change(function() {
-                window.location.href = "/application/list?status=Approved&hostel=" + $(this).val();
-            });
-
             $("button.btn-allot").click(function() {
                 // alert($(this).val());
                 $("input[name='application_id']").val($(this).val());
