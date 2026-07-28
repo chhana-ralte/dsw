@@ -144,9 +144,24 @@ class ApplController extends Controller
             GROUP BY department
             ORDER BY department";
         $departments = DB::select($sql);
+
+        $sql = "SELECT hostels.name as hostel, count(*) AS cnt
+            FROM applications JOIN hostels ON hostels.id=applications.hostel_id
+            WHERE status = 'Approved' 
+            GROUP BY hostels.id, hostels.name, hostels.gender
+            ORDER BY  hostels.gender, hostels.name";
+        $hostels = DB::select($sql);
+        $sql = "SELECT count(if(gender='Male',1,NULL)) AS male, count(if(gender='Female',1,NULL)) AS female
+            FROM applications 
+            WHERE status='Approved' AND hostel_id=0";
+        $no_hostel = DB::select($sql);
         $data = [
+            'hostels' => $hostels,
             'departments' => $departments,
+            'no_hostel' => $no_hostel,
+
         ];
+        return $data;
         return view('appl.allotment_summary', $data);
         return $departments;
     }
