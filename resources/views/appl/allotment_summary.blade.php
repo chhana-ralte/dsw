@@ -4,7 +4,7 @@
             <x-slot name="heading">
                 Applications
                 <p>
-                    <a class="btn btn-primary btn-sm" href='/appl/allotment_summary'>Allotment summary</a>
+                    <a class="btn btn-primary btn-sm" href='/appl/'>Back</a>
             </x-slot>
                 
                 <div style="width=100%; overflow-x: auto">
