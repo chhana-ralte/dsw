@@ -52,11 +52,11 @@
                             </tr>
                         @endforeach
                         <tr>
-                            <th colspan=2><a href="/appl/allotted">No hostel assigned</a></th>
+                            <th colspan=2>No hostel assigned</th>
                         </tr>
                         <tr>
-                            <td>Male</td><td>{{ $no_hostel->male }}</td>
-                            <td>Female</td><td>{{ $no_hostel->female }}</td>
+                            <td><a href="/appl/allotted?gender=Male">Male</a></td><td>{{ $no_hostel->male }}</td>
+                            <td><a href="/appl/allotted?gender=Female">Female</a></td><td>{{ $no_hostel->female }}</td>
                         </tr>
                     </table>
                 </div>

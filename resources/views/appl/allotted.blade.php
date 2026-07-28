@@ -48,11 +48,6 @@
                                     <td>
                                         <a
                                             href="/appl/{{ $application->id }}?">{{ $application->name }}</a>
-                                        @if (count($application->duplicates()) > 0)
-                                            <br><button type="button" class="btn badge bg-warning btn-duplicate"
-                                                value="{{ $application->id }}">Possible duplicate</button>
-                                        @endif
-
                                     </td>
 
                                     <td>{{ $application->course }}</td>
@@ -61,10 +56,10 @@
                                     <td>{{ $application->AMC ? 'Yes' : 'No' }}</td>
                                     <td>{{ $application->PWD ? 'Yes' : 'No' }}</td>
                                     <td>{{ $application->BPL }}</td>
-                                    @if ($application->hostel)
-                                        <td>{{ $application->hostel->name }}</td>
+                                    @if ($application->hostel_id)
+                                        <td><button class="btn-allot" value="{{ $application->id }}">{{ $application->hostel->name }}({{ $application->roomtype }})</button></td>
                                     @else
-                                        <td>{{ $application->status }}</td>
+                                        <td><button class="btn-allot" value="{{ $application->id }}">{{ $application->status }}</button></td>
                                     @endif
                                     <th>{{ $application->total_score }}</th>
 
@@ -86,44 +81,53 @@
                 </div>
             </x-block>
         </x-container>
-    {{-- @endforeach --}}
-        {{-- Modal for duplicate requirement --}}
 
-        <div class="modal fade" id="duplicateModal" tabindex="-1" aria-labelledby="duplicateModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="duplicateModalLabel">Possible duplicates</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="mb-3">
-                                <label for="duplicate" class="col-form-label">Duplicates from existing allotment</label>
-                                <div class="col-md-12" style="width : 100%; overflow-x : auto" id="app">
-                                    <table class="table table-bordered table-striped">
-                                        <tr>
-                                            <th>Alltmt. ID</th>
-                                            <th>Name</th>
-                                            <th>Mobile</th>
-                                            <th>MZU ID</th>
-                                            <th>Course - Department</th>
-                                        </tr>
-                                        <tbody id="app-body">
-                                        </tbody>
-                                    </table>
-                                </div>
-                                {{-- <textarea class="form-control" id="duplicate" name="duplicate"></textarea> --}}
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
+            {{-- Modal for hostel allotment --}}
+    <div class="modal fade" id="hostelModal" tabindex="-1" aria-labelledby="hostelModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="hostelModalLabel">Assign Hostel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <input type="hidden" name="application_id">
+                        <div class="mb-3">
+                            <label for="hostel" class="col-form-label">Hostel</label>
+                            <select id="hostel" name="hostel" class="form-control">
+                                <option value="" disabled selected>Select hostel</option>
+
+                                @foreach ($hostels as $h)
+                                    @if (auth()->user() && auth()->user()->isWardenOf($h->id))
+                                        <option value="{{ $h->id }}" selected>{{ $h->name }}</option>
+                                    @else
+                                        <option value="{{ $h->id }}">{{ $h->name }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="type" class="col-form-label">Room type:</label>
+                            <select id="type" name="type" class="form-control">
+                                <option value="1">Single</option>
+                                <option value="2" selected>Double</option>
+                                <option value="3">Triple</option>
+                                <option value="4">Dorm</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-status" value="approve">Just approve</button>
+                    <button type="button" class="btn btn-primary btn-status" value="approve-hostel">Approve hostel</button>
                 </div>
             </div>
         </div>
-        {{-- Modal for duplicate requirement --}}
+    </div>
+    {{-- End Modal for hostel allotment --}}
+
 
         <script>
             $(document).ready(function() {
@@ -154,30 +158,62 @@
                 });
             });
 
-            $("button.btn-duplicate").click(function() {
-                $.ajax({
-                    type: "get",
-                    url: "/application/" + $(this).val() + "/duplicate",
-                    success: function(data, status) {
-                        $("#app-body").empty();
-                        for (var i = 0; i < data.length; i++) {
-                            $("#app-body").append("<tr><td>" + data[i].id + "</td><td>" + data[i].name +
-                                "</td><td>" + data[i].mobile + "</td><td>" + data[i].mzuid +
-                                "</td><td>" + data[i].course + " - " + data[i].department + "</td></tr>"
-                            );
-                        }
-
-                    },
-                    error: function(xhr, status, error) {
-                        alert("Error getting duplicate: " + xhr.responseText);
-                    }
-                })
-                $("textarea#duplicate").val($(this).val());
-                $("#duplicateModal").modal('show');
-            });
-
             $("select#hostel").change(function() {
                 window.location.href = "/application/list?status=Approved&hostel=" + $(this).val();
+            });
+
+            $("button.btn-allot").click(function() {
+                // alert($(this).val());
+                $("input[name='application_id']").val($(this).val());
+                $("#hostelModal").modal("show");
+            });
+
+
+            $("button.btn-status").click(function() {
+                //alert("asdsadsad");
+                if ($(this).val() == 'approve-hostel'){
+                    if(!$("select#hostel").val()){
+                        alert("Select the hostel where student is to be allotted. Or click 'Just Approve' without hostel");
+                    }
+                    else{
+                        $.ajax({
+                            url : '/appl/' + $("input[name='application_id']").val() + '/statusUpdate?ajax=1',
+                            type : 'put',
+                            data: {
+                                'ajax' : 1,
+                                'status' : 'approve',
+                                'hostel_id' : $("select#hostel").val(),
+                                'roomtype' : $("select#type").val(),
+                            },
+                            success : function(data, status){
+                                alert(data);
+                                location.reload();
+                            },
+                            error : function(){
+                                alert("Error");
+                            }
+                        });
+                    }
+                }
+                else {
+                    $.ajax({
+                        url : '/appl/' + $("input[name='application_id']").val() + '/statusUpdate?ajax=1',
+                        type : 'put',
+                        data: {
+                            'ajax' : 1,
+                            'status' : 'approve',
+                            'hostel_id' : 0,
+                            'roomtype' : 0,
+                        },
+                        success : function(data, status){
+                            alert(data);
+                            location.reload();
+                        },
+                        error : function(){
+                            alert("Error");
+                        }
+                    });
+                }
             });
         </script>
     </x-layout>

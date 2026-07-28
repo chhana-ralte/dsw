@@ -5,7 +5,7 @@ use App\Http\Controllers\ApplController;
 Route::controller(\App\Http\Controllers\ApplController::class)->group(function () {
     // Route::get('/appl/courses', 'courses')->
 
-    Route::put('/appl/{application}/statusUpdate', 'statusUpdate')->middleware(['auth']);
+    Route::put('/appl/{id}/statusUpdate', 'statusUpdate')->middleware(['auth']);
 
     Route::delete('/ajax/appl/{application}/delete', 'destroy')->middleware(['auth']);
 

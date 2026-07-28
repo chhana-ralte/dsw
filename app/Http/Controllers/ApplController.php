@@ -126,8 +126,13 @@ class ApplController extends Controller
             }
 
             $application->save();
-            return redirect('/appl/' . $application->id)
-                ->with(['message' => ['type' => 'info', 'text' => 'Application updated successfully']]);
+
+            if (request()->has('ajax') && request()->ajax == 1) {
+                return "success";
+            } else {
+                return redirect('/appl/' . $application->id)
+                    ->with(['message' => ['type' => 'info', 'text' => 'Application updated successfully']]);
+            }
         } else {
             return redirect('/appl/' . $application->id)
                 ->with(['message' => ['type' => 'warning', 'text' => 'Unknown status!!']]);
@@ -151,11 +156,13 @@ class ApplController extends Controller
             GROUP BY hostels.id, hostels.name, hostels.gender
             ORDER BY  hostels.gender, hostels.name";
         $hostels = DB::select($sql);
+
         $sql = "SELECT count(if(gender='Male',1,NULL)) AS male, count(if(gender='Female',1,NULL)) AS female
             FROM applications 
             WHERE status='Approved' AND hostel_id=0";
         $no_hostel = DB::select($sql);
         $no_hostel = $no_hostel[0];
+
         $data = [
             'hostels' => $hostels,
             'departments' => $departments,
@@ -178,16 +185,25 @@ class ApplController extends Controller
     {
         if (isset(request()->hostel_id)) {
             $hostel = \App\Models\Hostel::findOrFail(request()->hostel_id);
+            $hostels = \App\Models\Hostel::where('gender', $hostel->gender)->orderBy('name')->get();
             $allotted = Application::where('status', 'Approved')->where('hostel_id', $hostel->id)->get();
         } else {
+            if (isset(request()->gender)) {
+                $hostels = \App\Models\Hostel::where('gender', request()->gender)->orderBy('name')->get();
+                $allotted = Application::where('gender', request()->gender)->where('status', 'Approved')->where('hostel_id', 0)->get();
+            } else {
+                $hostels = \App\Models\Hostel::orderBy('gender')->orderBy('name')->get();
+                $allotted = Application::where('status', 'Approved')->where('hostel_id', 0)->get();
+            }
             $hostel = null;
-            $allotted = Application::where('status', 'Approved')->where('hostel_id', 0)->get();
         }
         $data = [
+            'hostels' => $hostels,
             'allotted' => $allotted,
             'hostel' => $hostel,
             'back_link' => '/appl/allotment_summary',
         ];
+        // return $data;
         return view('appl.allotted', $data);
     }
 }

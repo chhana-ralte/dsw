@@ -40,10 +40,7 @@
                                     <td>
                                         <a
                                             href="/appl/{{ $application->id }}?">{{ $application->name }}</a>
-                                        @if (count($application->duplicates()) > 0)
-                                            <br><button type="button" class="btn badge bg-warning btn-duplicate"
-                                                value="{{ $application->id }}">Possible duplicate</button>
-                                        @endif
+                                        
 
                                     </td>
 
@@ -54,7 +51,7 @@
                                     <td>{{ $application->PWD ? 'Yes' : 'No' }}</td>
                                     <td>{{ $application->BPL }}</td>
                                     @if ($application->hostel)
-                                        <td>{{ $application->hostel->name }}</td>
+                                        <td>{{ $application->hostel->name }}({{ $application->roomtype }})</td>
                                     @else
                                         <td>{{ $application->status }}</td>
                                     @endif
