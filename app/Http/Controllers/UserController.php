@@ -158,7 +158,7 @@ class UserController extends Controller
         if ($user->person()) {
             $person = $user->person();
         } else {
-            $person = Person::create([
+            $person = \App\Models\Person::create([
                 'name' => request()->name,
                 'mobile' => '',
                 'email' => ''
