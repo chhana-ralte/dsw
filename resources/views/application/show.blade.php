@@ -268,66 +268,6 @@
         </x-block>
     </x-container>
 
-    @if (count($application->allotments) > 0)
-        <x-container>
-
-            <x-block>
-                <x-slot name="heading">
-                    <span class="text-danger">The following allotment(s) are found for this application</span>
-                </x-slot>
-                <div style="width:100%; overflow-x:auto">
-                    <table class="table">
-                        <tr>
-                            <th>Allotment ID</th>
-                            <th>Name</th>
-                            <th>Course</th>
-                            <th>Department</th>
-                            <th>Current hostel</th>
-                            <th>Status</th>
-                        </tr>
-                        @foreach ($application->allotments as $allotment)
-                            <tr>
-                                <td>
-                                    <a href="/allotment/{{ $allotment->id }}">{{ $allotment->id }}</a>
-                                </td>
-                                <td>
-                                    {{ $allotment->person->name }}
-                                </td>
-                                @if ($allotment->person->student())
-                                    <td>
-                                        {{ $allotment->person->student()->course }}
-                                    </td>
-                                    <td>
-                                        {{ $allotment->person->student()->department }}
-                                    </td>
-                                @else
-                                    <td colspan=2>
-                                        Not a student
-                                    </td>
-                                @endif
-                                @if ($allotment->valid_allot_hostel())
-                                    <td>
-                                        {{ $allotment->valid_allot_hostel()->hostel->name }}
-                                    </td>
-                                @else
-                                    <td>
-                                        No valid hostel
-                                    </td>
-                                @endif
-                                <td>
-                                    {{ $allotment->valid? 'Valid': 'Invalid' }}
-                                </td>
-
-                            </tr>
-                        @endforeach
-                    </table>
-                </div>
-            </x-block>
-        </x-container>
-
-    @endif
-
-
     @if (auth()->user() && auth()->user()->max_role_level() >= 3 && count($application->existing_allotments()) > 0)
         <x-container>
 
@@ -654,7 +594,7 @@
             });
 
             $("button.btn-status").click(function() {
-                alert("asdsadsad");
+                // alert("asdsadsad");
                 if ($(this).val() == 'approve-modal') {
                     $("#hostelModal").modal("show");
                     // $("input[name='status']").val($(this).val());

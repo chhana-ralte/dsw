@@ -84,7 +84,7 @@ class ApplicationController extends Controller
         $validated['BPL'] = $request->BPL;
 
 
-        if (Application::where('mzuid', $validated['mzuid'])->where('dob', $validated['dob'])->where('id', '<=', '1298')->exists()) {
+        if (Application::where('mzuid', $validated['mzuid'])->where('dob', $validated['dob'])->exists()) {
             return redirect()->back()->with(['message' => ['type' => 'warning', 'text' => 'Application already exists. Access your application using MZU ID and your date of birth<a href="#">Here</a>'], 'exists' => '1'])->withInput();
             exit();
         }
