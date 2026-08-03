@@ -647,6 +647,7 @@
                             <li>I shall not involve in any kind of ragging, fighting and violence.</li>
                             <li>I shall not damage the property in the hostel and I shall pay any fine imposed on me as a result.</li>
                             <li>I shall sign online undertaking regarding ragging if my application is granted.</li>
+                            <li>I am aware that the mess fee is Rs. 100 per day and agreed to pay on time failing which action shall be taken against me.</li>
                             <li>In case of incomplete or incorrect information entered here, the application may be summarily rejected and I shall be responsible for it</li>
                         </ol>
                     </div>
