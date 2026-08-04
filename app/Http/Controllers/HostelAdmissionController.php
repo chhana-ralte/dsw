@@ -18,6 +18,7 @@ class HostelAdmissionController extends Controller
 {
     public function index(Hostel $hostel)
     {
+        // return "Hello";
         if (isset($_GET['sessn'])) {
             $sessn = Sessn::findOrFail($_GET['sessn']);
         } else {

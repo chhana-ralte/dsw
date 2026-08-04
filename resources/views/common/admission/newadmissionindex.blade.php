@@ -494,11 +494,11 @@
                         success: function(data, status) {
                             if (data == "Successful") {
                                 alert(data);
-                                location.reload();
+                                
                             } else {
-                                alert(data);
+                                alert("Success");
                             }
-
+                            location.reload();
                         },
                         error: function() {
                             alert("Error");
