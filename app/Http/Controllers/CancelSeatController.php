@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 use App\Models\Allotment;
@@ -118,19 +119,24 @@ class CancelSeatController extends Controller
 
     public function destroy(string $id)
     {
-        $allotment_id = CancelSeat::find($id)->allotment_id;
         $cancel_seat = CancelSeat::find($id);
-        AllotHostel::where('id', $cancel_seat->allot_hostel_id)->update(['valid' => 1]);
-        if($cancel_seat->allot_seat_id != 0){
-            $allot_seat = AllotSeat::findOrFail($cancel_seat->allot_seat_id);
-            if(!AllotSeat::where('seat_id', $allot_seat->seat_id)->where('valid', 1)->exists()){
-                AllotSeat::where('id', $cancel_seat->allot_seat_id)->update(['valid' => 1]);
+        // return $cancel_seat;
+        $allotment_id = $cancel_seat->allotment_id;
+        // return "Hello";
+        DB::transaction(function () use ($cancel_seat) {
+            AllotHostel::where('id', $cancel_seat->allot_hostel_id)->update(['valid' => 1]);
+            if ($cancel_seat->allot_seat_id != 0) {
+                $allot_seat = AllotSeat::where('id', $cancel_seat->allot_seat_id)->first();
+                if ($allot_seat && !AllotSeat::where('seat_id', $allot_seat->seat_id)->where('valid', 1)->exists()) {
+                    AllotSeat::where('id', $cancel_seat->allot_seat_id)->update(['valid' => 1]);
+                }
             }
-        }
 
-        Allotment::where('id', $cancel_seat->allotment_id)->update(['valid' => 1, 'finished' => 0]);
-        Clearance::where('cancel_seat_id', $id)->delete();
-        $cancel_seat->delete();
+            Allotment::where('id', $cancel_seat->allotment_id)->update(['valid' => 1, 'finished' => 0]);
+            Clearance::where('cancel_seat_id', $cancel_seat->id)->delete();
+            $cancel_seat->delete();
+        });
+
         return redirect('/allotment/' . $allotment_id)
             ->with(['message' => ['type' => 'info', 'text' => 'Seat cancellation undone.']]);
     }
