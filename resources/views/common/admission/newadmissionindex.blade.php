@@ -17,6 +17,7 @@
                     <input style="font-size:15px" type="text" name="find" />
                 </p>
             </x-slot>
+            
             <form>
                 <input type="hidden" id="allotment_id">
             </form>
@@ -301,7 +302,7 @@
                             <select class="form-control" name="sessn">
                                 @foreach (App\Models\Sessn::orderBy('start_yr')->orderBy('odd_even')->get() as $ssn)
                                     <option value="{{ $ssn->id }}"
-                                        {{ $allotment->start_sessn_id == $ssn->id ? ' selected ' : '' }}>
+                                        {{ $sessn->id == $ssn->id ? ' selected ' : '' }}>
                                         {{ $ssn->name() }}
                                     </option>
                                 @endforeach
@@ -317,7 +318,7 @@
                     <div class="mb-3 form-group">
                         <label for="amount" class="col">Payment amount</label>
                         <div class="col">
-                            <input type="text" class="form-control" name="amount" value="">
+                            <input type="number" class="form-control" name="amount" value="">
                         </div>
                     </div>
 
@@ -453,8 +454,7 @@
                     exit();
                 } else {
                     $.ajax({
-                        url: "/ajax/allotment/" + $("input#allotment_id").val() +
-                            "/allot_hostel/store",
+                        url: "/ajax/allotment/" + $("input#allotment_id").val() + "/allot_hostel/store",
                         type: "post",
                         data: {
                             seat: $("select[name='seat']").val()
@@ -487,14 +487,13 @@
                         type: "post",
                         data: {
                             sessn_id: $("select[name=sessn]").val(),
-                            ref: $("select[name=ref]").val(),
+                            ref: $("input[name=ref]").val(),
                             amount: $("input[name='amount']").val(),
                             payment_dt: $("input[name='dt']").val(),
                         },
                         success: function(data, status) {
                             if (data == "Successful") {
-                                alert(data);
-                                
+                                alert("Successful");
                             } else {
                                 alert("Success");
                             }
@@ -505,7 +504,6 @@
                         }
                     });
                 }
-
                 // alert("hehe");
             });
 
