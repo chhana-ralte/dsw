@@ -70,7 +70,7 @@ class StudentRegistrationController extends Controller
             $user = false;
         }
 
-        return $allotment;
+        // return $allotment;
         if ($allotment->valid == 0) {
             return "Invalid allotment";
         }

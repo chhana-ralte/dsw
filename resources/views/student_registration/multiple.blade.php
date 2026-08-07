@@ -16,7 +16,7 @@
                     <td>department</td>
                     <td>Mzu ID</td>
                     <td>Roll No.</td>
-                    <td></td>
+                    <td>Action</td>
                 </tr>
                 @foreach($allotments as $allotment)
                     <tr>
@@ -25,8 +25,13 @@
                     <td>{{ $allotment->person->student()->department }}</td>
                     <td>{{ $allotment->person->student()->mzuid }}</td>
                     <td>{{ $allotment->person->student()->rollno }}</td>
+
                     <td>
-                        <a class="btn btn-sm btn-primary" href="/studentRegistration?allotment={{ $allotment->id }}&rand={{ uniqid() }}">Select</a>
+                        @if($allotment->confirmed && $allotment->valid)
+                            <a class="btn btn-sm btn-primary" href="/studentRegistration?allotment={{ $allotment->id }}&rand={{ uniqid() }}">Select</a>
+                        @else
+                            <span class="text-warning">Invalid</span>
+                        @endif
                     </td>
                     </tr>
                 @endforeach

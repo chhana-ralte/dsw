@@ -31,14 +31,12 @@
                             </div>
                         </div>
 
-
                         <div class="form-group row mb-3">
                             <label for="course" class="col col-md-3">Course</label>
                             <div class="col col-md-4">
                                 <input type="text" class="form-control" name="course" value="{{ $student->course }}" disabled>
                             </div>
                         </div>
-
 
                         <div class="form-group row mb-3">
                             <label for="department" class="col col-md-3">Department</label>
@@ -51,9 +49,9 @@
                         <span class="text-secondary">Login information</span>
                     </div>
                     <div class="form-group row mb-3">
-                        <label for="username" class="col col-md-3">Select username</label>
+                        <label for="username" class="col col-md-3">Username</label>
                         <div class="col col-md-4">
-                            <input type="text" class="form-control" name="username" value="{{ old('username',$student->username) }}" required>
+                            <input type="text" class="form-control" name="username" value="{{ old('username',$student->mzuid) }}" required readonly>
                             @error('username')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -79,7 +77,7 @@
 
                     <div class="form-group row mb-3">
                         <div class="col col-md-3">
-                            
+
                         </div>
                         <div class="col col-md-4">
                             <button class="btn btn-primary btn-create" type="submit">Create</button>

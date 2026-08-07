@@ -206,9 +206,11 @@ $(document).ready(function(){
         else{
             if($("input[name='type']").val() == 'create'){
                 var url = "/ajax/allotment/" + $("input#allotment_id").val() + "/admission/store";
+                console.log("Allotment id : " + $("input#allotment_id").val())
             }
             else{
                 var url = "/ajax/admission/" + $("input[name='admission_id']").val() + "/update";
+                console.log("Admission id : " + $("input[name='admission_id']").val())
             }
             $.ajax({
                 url : url,
@@ -234,7 +236,7 @@ $(document).ready(function(){
                     }
                 },
                 error : function(){
-                    alert("Error");
+                    alert("Error occured");
                 }
             });
         }
