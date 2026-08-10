@@ -37,40 +37,47 @@ class Admission extends Model
                 $detail = "Semester admission payment";
             }
             // return $request;
-            // DB::transaction(function () use ($allotment, $request, $allot_hostel, $detail) {
-            $data = [
-                'allotment_id' => $allotment->id,
-                'sessn_id' => $request->sessn_id,
-                'ref' => $request->ref,
-                'allot_hostel_id' => $allot_hostel->id,
-                'amount' => $request->amount,
-                'payment_dt' => $request->payment_dt,
-                'detail' => $detail,
-                'updated_by' => auth()->user()->id,
-            ];
-            // return $data;
-            $admission = Admission::create($data);
+            DB::transaction($admission = function () use ($allotment, $request, $allot_hostel, $detail) {
+                $data = [
+                    'allotment_id' => $allotment->id,
+                    'sessn_id' => $request->sessn_id,
+                    'ref' => $request->ref,
+                    'allot_hostel_id' => $allot_hostel->id,
+                    'amount' => $request->amount,
+                    'payment_dt' => $request->payment_dt,
+                    'detail' => $detail,
+                    'updated_by' => auth()->user()->id,
+                ];
+                // return $data;
+                $admission = Admission::create($data);
+                $semfee = Semfee::where('allotment_id', $allotment->id)->where('sessn_id', $admission->sessn_id)->first();
 
-            if (auth()->user()->can('verify-admission', $admission)) {
-                $admission->update([
-                    'verified' => 1,
-                    'verified_by' => auth()->user()->id,
+                if (auth()->user()->can('verify-admission', $admission)) {
+                    $admission->update([
+                        'verified' => 1,
+                        'verified_by' => auth()->user()->id,
+                    ]);
+                    if ($semfee) {
+                        $semfee->update([
+                            'status' => 'Paid'
+                        ]);
+                    }
+                }
+                else{
+                    if ($semfee) {
+                        $semfee->update([
+                            'status' => 'Unverified'
+                        ]);
+                    }
+                }
+
+                $allotment->update([
+                    'admitted' => 1,
+                    'confirmed' => 1,
+                    'valid' => 1,
                 ]);
-            }
-
-            $allotment->update([
-                'admitted' => 1,
-                'confirmed' => 1,
-                'valid' => 1,
-            ]);
-
-            $semfee = Semfee::where('allotment_id', $allotment->id)->where('sessn_id', $admission->sessn_id)->first();
-            if ($semfee) {
-                $semfee->update([
-                    'status' => 'Paid'
-                ]);
-            }
-            // });
+                return $admission;
+            });
             return (object)['status' => true, 'data' => ['admission' => $admission]];
         } else { // No valid hostel allotment
             return (object)['status' => false, 'data' => ['reason' => 'No valid allotment']];
