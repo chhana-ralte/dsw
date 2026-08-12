@@ -19,25 +19,32 @@ class AdmissionController extends Controller
      */
     public function index(Allotment $allotment)
     {
-        $admissions = DB::select("SELECT AD.*
-                FROM admissions AD JOIN sessns SS ON SS.id=AD.sessn_id
-                WHERE allotment_id = " . $allotment->id . "
-                ORDER BY SS.start_yr, SS.odd_even
-            ");
+        if(auth()->user()->can('view-admission', $allotment)){
 
-        if(request()->has('back_link')){
-            $back_link = request()->back_link;
+
+            $admissions = DB::select("SELECT AD.*
+                    FROM admissions AD JOIN sessns SS ON SS.id=AD.sessn_id
+                    WHERE allotment_id = " . $allotment->id . "
+                    ORDER BY SS.start_yr, SS.odd_even
+                ");
+
+            if(request()->has('back_link')){
+                $back_link = request()->back_link;
+            }
+            else{
+                $back_link = "/allotment/" . $allotment->id;
+            }
+            $data = [
+                'allotment' => $allotment,
+                'admissions' => \App\Models\Admission::hydrate($admissions),
+                'back_link' => $back_link,
+            ];
+            // return $data;
+            return view('common.admission.allotment-index', $data);
         }
         else{
-            $back_link = "/allotment/" . $allotment->id;
+            return redirect('/message')->with(['message' => ['type' => 'info', 'text' => 'Unauthorized access.']]);
         }
-        $data = [
-            'allotment' => $allotment,
-            'admissions' => \App\Models\Admission::hydrate($admissions),
-            'back_link' => $back_link,
-        ];
-        // return $data;
-        return view('common.admission.allotment-index', $data);
     }
 
 

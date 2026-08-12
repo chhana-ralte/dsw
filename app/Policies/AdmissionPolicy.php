@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\Admission;
+use App\Models\Allotment;
 use Illuminate\Support\Facades\DB;
 
 class AdmissionPolicy
@@ -66,6 +67,15 @@ class AdmissionPolicy
         }
         else{
             return $user->isWardenOf($admission->allot_hostel->hostel_id);
+        }
+    }
+
+    public function view_admission(User $user, Allotment $allotment){
+        if($user->isDsw() || $user->isFinance() || ($user->allotment() && $user->allotment()->id == $allotment->id)){
+            return true;
+        }
+        else{
+            return false;
         }
     }
 
