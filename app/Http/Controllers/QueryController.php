@@ -8,15 +8,18 @@ use Illuminate\Support\Facades\DB;
 
 class QueryController extends Controller
 {
+    public function sql(){
+        return view('query.exec', ['sql' => '']);
+    }
     public function exec()
     {
         $results = DB::select(request()->sql);
-        $query_id = request()->query_id;
+        $sql = request()->sql;
         $data = [
-            'query_id' => $query_id,
+            'sql' => $sql,
             'results' => $results,
         ];
-        return view('query.create', $data);
+        return view('query.exec', $data);
     }
     /**
      * Display a listing of the resource.
@@ -40,13 +43,19 @@ class QueryController extends Controller
     public function store(Request $request)
     {
 
-        return $request;
-        Query::create([
+        // return $request;
+        $query = Query::create([
             'title' => $request->title,
             'sql' => $request->sql
         ]);
-        return redirect('/query')
+        if(request()->has('ajax')){
+            return $query;
+        }
+        else{
+            return redirect('/query')
             ->with(['message' => ['type' => 'info', 'text' => 'Query created successfully']]);
+        }
+
     }
 
     /**
@@ -78,6 +87,8 @@ class QueryController extends Controller
      */
     public function destroy(Query $query)
     {
-        //
+        $query->delete();
+        return redirect('/query')
+            ->with(['message' => ['type' => 'info', 'text' => 'Query deleted successfully']]);
     }
 }
