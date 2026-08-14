@@ -4,7 +4,7 @@
             <x-slot name="heading">
                 List of queries
                 <p>
-                    <a class="btn btn-primary btn-sm" href="/query/create">Create query</a>
+                    <a class="btn btn-primary btn-sm" href="/query/exec">New query</a>
                 </p>
             </x-slot>
             <div style="width: 100%; overflow-x: auto">
