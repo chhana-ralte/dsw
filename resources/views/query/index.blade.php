@@ -21,7 +21,7 @@
                         <td>
                             <div class="btn-group">
                                 <button class="btn btn-sm btn-primary" value="{{ $query->id }}">Run</button>
-                                <a href="/query/{{ $query }}/edit" class="btn btn-sm btn-secondary">Edit</a>
+                                <a href="/query/{{ $query->id }}/edit" class="btn btn-sm btn-secondary">Edit</a>
                                 <button class="btn btn-sm btn-danger btn-delete" value="{{ $query->id }}">Delete</button>
                             </div>
                         </td>

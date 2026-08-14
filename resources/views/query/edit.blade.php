@@ -33,36 +33,7 @@
                     </div>
                 </form>
             </div>
-            @if(isset($results))
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            @if($results->isNotEmpty())
-                                {{-- Extract column names from the first object --}}
-                                @foreach(array_keys(get_object_vars($results->first())) as $column)
-                                    <th>{{ ucwords(str_replace('_', ' ', $column)) }}</th>
-                                @endforeach
-                            @else
-                                <th>No Data Available</th>
-                            @endif
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($results as $row)
-                            <tr>
-                                {{-- Loop through every property/column in the current row --}}
-                                @foreach(get_object_vars($row) as $columnName => $value)
-                                    <td>{{ $value }}</td>
-                                @endforeach
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="100%">No records found.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            @endif
+            @include('query.partial.results')
         </x-block>
     </x-container>
 </x-layout>
