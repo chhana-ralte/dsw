@@ -2,25 +2,80 @@
     <x-container>
         <x-block>
             <x-slot name="heading">
-
+                List of payments received by Finance
             </x-slot>
 
             <div style="width: 100%; overflow-x:auto">
+                @include('bulk_update.partials.menu')
                 <table class="table table-hover table-auto">
-                    <thead>
-                        <tr>
-                            <th>Sl.</th>
-                            <th>Session</th>
-                            <th>Payment amount</th>
-                            <th>Payment date</th>
-                            <th>Reference</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>{{ $payment->id }}</th>
+                    </tr>
+                    <tr>
+                        <th>Name</th>
+                        <th>{{ $payment->name }}</th>
+                    </tr>
+                    <tr>
+                        <th>Course</th>
+                        <th>{{ $payment->course }}</th>
+                    </tr>
+                    <tr>
+                        <th>Amount</th>
+                        <th>{{ $payment->amount }}</th>
+                    </tr>
+                    <tr>
+                        <th>MZU ID</th>
+                        <th>{{ $payment->mzuid }}</th>
+                    </tr>
+                    <tr>
+                        <th>Status</th>
+                        <th>
+                            @if($payment->admission())
+                                Admission updated
+                            @elseif($payment->application_id)
+                                Application linked
+                                <button type="button" class='btn btn-primary btn-sm btn-update' value="{{ $payment->id }}">Update payment</button>
+                            @elseif($payment->appl_mzuid())
+                                Available for linking
+                                <button type="button" class='btn btn-primary btn-sm link-btn' value="{{ $payment->id }}">Link</button>
+                            @else
+                                No link available
+                                <a href='/bulkupdate/{{ $payment->id }}/search' class='btn btn-primary btn-sm'>Search link</a>
+                            @endif
+                        </th>
+                    </tr>
 
                 </table>
             </div>
+        </x-block>
+        <x-block>
+            <form>
+                <input type="hidden" name="payment_id" value="{{ $payment->id }}">
+                <table class="table">
+                    <tr>
+                        <th>Select</th>
+                        <th>Name</th>
+                        <th>MZU ID</th>
+                        <th>Course</th>
+                        <th>Status</th>
+                    </tr>
+                    @foreach($applications as $appl)
+                    <tr>
+                        <td><input type="radio" name="application_id" value="{{ $appl->id }}"></td>
+                        <td>{{ $appl->name }}</td>
+                        <td>{{ $appl->mzuid }}</td>
+                        <td>{{ $appl->course }}</td>
+                        <td>{{ $appl->status }}</td>
+                    </tr>
+                    @endforeach
+                    <tr id="tr_submit">
+                        <td colspan=5>
+                            <button type="button" class="btn btn-primary btn-submit">Update with selected application</button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
         </x-block>
     </x-container>
 
@@ -30,10 +85,36 @@
 <script>
 
 $(document).ready(function(){
+    $("#tr_submit").hide();
     $.ajaxSetup({
         headers : {
             'X-CSRF-TOKEN' : $("meta[name='csrf-token']").attr('content')
         }
+    });
+
+    $("input[name='application_id']").click(function(){
+        // alert("asdsadsd");
+        console.log($(this).val());
+        $("#tr_submit").show();
+    });
+
+    $("button.btn-submit").click(function(){
+        $.ajax({
+            url : "/bulkupdate/link",
+            type : 'post',
+            data : {
+                payment_id : $("input[name='payment_id']").val(),
+                application_id : $("input[name='application_id']:checked").val()
+            },
+            success : function(data, status){
+                // alert("Successful");
+                console.log(data);
+                location.replace('/bulkupdate?filter=nolink');
+            },
+            error : function(){
+                alert("Error");
+            }
+        });
     });
 
     $("button.btn-admission").click(function(){

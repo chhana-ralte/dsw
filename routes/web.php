@@ -236,3 +236,4 @@ require __DIR__ . '/req.php';
 // require __DIR__ . '/appl.php';
 require __DIR__ . '/bulk_adm_update.php';
 require __DIR__ . '/query.php';
+require __DIR__ . '/bulk_update.php';

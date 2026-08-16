@@ -24,12 +24,20 @@ class HostelController extends Controller
 
     public function create()
     {
-        //
+        // return "Hello";
+        return view('common.hostel.create');
     }
 
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|min:3',
+            'description' => '',
+            'gender' => 'required|min:4'
+        ]);
+        Hostel::create($validated);
+        return redirect('/hostel')
+            ->with(['message' => ['type' => 'info', 'text' => 'Hostel created successfully']]);
     }
 
     public function show(Hostel $hostel)

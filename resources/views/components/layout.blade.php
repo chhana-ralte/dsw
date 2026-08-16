@@ -182,6 +182,7 @@
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                 <li><a class="dropdown-item" href="/application/search">Appl search</a></li>
                                 <li><a class="dropdown-item" href="/feedbackMaster">Feedback</a></li>
+                                <li><a class="dropdown-item" href="/query">Query</a></li>
 
                             </ul>
                         </li>
