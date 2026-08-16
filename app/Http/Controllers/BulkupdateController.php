@@ -142,6 +142,11 @@ class BulkupdateController extends Controller
                     'verified_by' => 3,
                     'payment_dt' => '2026-08-07 00:00:00',
                 ]);
+                $allotment->update([
+                    'confirmed' => 1,
+                    'admitted' => 1,
+                    'valid' => 1
+                ]);
             }
         }
     }
