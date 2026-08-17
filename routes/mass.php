@@ -38,33 +38,35 @@ Route::post('/generateRooms', function () {
 
         // $dump = DB::table($hostel_name)->get();
 
-        $rooms = DB::table($hostel_name)
-            ->select('roomno', 'capacity', 'type')
-            ->where('roomno', '<>', '')
-            ->orderBy('roomno')
-            ->groupBy('roomno', 'capacity', 'type')
-            ->get();
+        // $rooms = DB::table($hostel_name)
+        //     ->select('roomno', 'capacity', 'type')
+        //     ->where('roomno', '<>', '')
+        //     ->orderBy('roomno')
+        //     ->groupBy('roomno', 'capacity', 'type')
+        //     ->get();
 
+        $rooms = \App\Models\Room::where('hostel_id', $hostel->id)->get();
 
         foreach ($rooms as $r) {
-            $room = \App\Models\Room::updateOrCreate([
-                'hostel_id' => $hostel->id,
-                'roomno' => $r->roomno,
-            ], [
-                'hostel_id' => $hostel->id,
-                'roomno' => $r->roomno,
-                'type' => $r->capacity == 1 ? 'Single' : ($r->capacity == 2 ? "double" : ($r->capacity == 3 ? "Triple" : "Dorm")),
-                'capacity' => $r->capacity,
-                'available' => $r->capacity,
-            ]);
+            // $room = \App\Models\Room::updateOrCreate([
+            //     'hostel_id' => $hostel->id,
+            //     'roomno' => $r->roomno,
+            // ], [
+            //     'hostel_id' => $hostel->id,
+            //     'roomno' => $r->roomno,
+            //     'type' => $r->capacity == 1 ? 'Single' : ($r->capacity == 2 ? "double" : ($r->capacity == 3 ? "Triple" : "Dorm")),
+            //     'capacity' => $r->capacity,
+            //     'available' => $r->capacity,
+            // ]);
 
-            $str .= "<br>New room created:" . $room->roomno;
+            // $str .= "<br>New room created:" . $room->roomno;
+
             for ($i = 0; $i < $r->capacity; $i++) {
                 $seat = \App\Models\Seat::updateOrCreate([
-                    'room_id' => $room->id,
+                    'room_id' => $r->id,
                     'serial' => $i + 1,
                 ], [
-                    'room_id' => $room->id,
+                    'room_id' => $r->id,
                     'serial' => $i + 1,
                     'available' => 1,
                 ]);
@@ -73,81 +75,81 @@ Route::post('/generateRooms', function () {
         }
 
 
-        $list_of_hostellers = DB::table($hostel->name)
-            ->select('*')
-            ->where('name', '<>', '')
-            ->get();
+        // $list_of_hostellers = DB::table($hostel->name)
+        //     ->select('*')
+        //     ->where('name', '<>', '')
+        //     ->get();
 
-        foreach ($list_of_hostellers as $l) {
-            $person = App\Models\Person::create([
-                'name' => $l->name,
-                'state' => $l->state,
-                'category' => $l->category,
-                'address' => $l->address,
-                'state' => $l->state,
-                'mobile' => $l->mobile,
-            ]);
+        // foreach ($list_of_hostellers as $l) {
+        //     $person = App\Models\Person::create([
+        //         'name' => $l->name,
+        //         'state' => $l->state,
+        //         'category' => $l->category,
+        //         'address' => $l->address,
+        //         'state' => $l->state,
+        //         'mobile' => $l->mobile,
+        //     ]);
 
-            $str .= "New person " . $person->name . " created <br>";
+        //     $str .= "New person " . $person->name . " created <br>";
 
-            if ($l->course != '' || $l->department != '') {
-                $student = App\Models\Student::create([
-                    'person_id' => $person->id,
-                    'course' => $l->course,
-                    'department' => $l->department,
-                    'mzuid' => $l->mzuid,
+        //     if ($l->course != '' || $l->department != '') {
+        //         $student = App\Models\Student::create([
+        //             'person_id' => $person->id,
+        //             'course' => $l->course,
+        //             'department' => $l->department,
+        //             'mzuid' => $l->mzuid,
 
-                ]);
-                $str .= "New student " . $person->name . " created <br>";
-            }
+        //         ]);
+        //         $str .= "New student " . $person->name . " created <br>";
+        //     }
 
 
 
-            $allotment = App\Models\Allotment::create([
-                'person_id' => $person->id,
-                'notification_id' => 1,
-                'hostel_id' => $hostel->id,
-                'from_dt' => $l->year . '-08-01',
-                'to_dt' => '2025-07-31',
-                'valid' => 1,
-                'qfix' => $l->qfix
-            ]);
+        //     $allotment = App\Models\Allotment::create([
+        //         'person_id' => $person->id,
+        //         'notification_id' => 1,
+        //         'hostel_id' => $hostel->id,
+        //         'from_dt' => $l->year . '-08-01',
+        //         'to_dt' => '2025-07-31',
+        //         'valid' => 1,
+        //         'qfix' => $l->qfix
+        //     ]);
 
-            $str .= "New allotment " . $allotment->id . " created <br>";
+        //     $str .= "New allotment " . $allotment->id . " created <br>";
 
-            $allot_hostel = App\Models\AllotHostel::create([
-                'allotment_id' => $allotment->id,
+        //     $allot_hostel = App\Models\AllotHostel::create([
+        //         'allotment_id' => $allotment->id,
 
-                'hostel_id' => $hostel->id,
-                'from_dt' => $l->year . '-08-01',
-                'to_dt' => '2025-07-31',
-                'valid' => 1
-            ]);
+        //         'hostel_id' => $hostel->id,
+        //         'from_dt' => $l->year . '-08-01',
+        //         'to_dt' => '2025-07-31',
+        //         'valid' => 1
+        //     ]);
 
-            $str .= "New allot_hostel in " . $hostel->name . " created <br>";
+        //     $str .= "New allot_hostel in " . $hostel->name . " created <br>";
 
-            $room = Room::where('roomno', $l->roomno)
-                ->where('hostel_id', $hostel->id)
-                ->first();
+        //     $room = Room::where('roomno', $l->roomno)
+        //         ->where('hostel_id', $hostel->id)
+        //         ->first();
 
-            $seats = Seat::where('room_id', $room->id)->orderBy('serial')->get();
+        //     $seats = Seat::where('room_id', $room->id)->orderBy('serial')->get();
 
-            foreach ($seats as $s) {
-                if (App\Models\AllotSeat::where('seat_id', $s->id)->exists())
-                    continue;
-                else {
-                    App\Models\AllotSeat::create([
-                        'allot_hostel_id' => $allot_hostel->id,
-                        'seat_id' => $s->id,
-                        'from_dt' => $l->year . '-08-01',
-                        'to_dt' => '2025-07-31',
-                        'valid' => 1
-                    ]);
-                    $str .= "Allotment in seat " . $s->roomno . "/" . $s->serial . " done <br>";
-                    break;
-                }
-            }
-        }
+        //     foreach ($seats as $s) {
+        //         if (App\Models\AllotSeat::where('seat_id', $s->id)->exists())
+        //             continue;
+        //         else {
+        //             App\Models\AllotSeat::create([
+        //                 'allot_hostel_id' => $allot_hostel->id,
+        //                 'seat_id' => $s->id,
+        //                 'from_dt' => $l->year . '-08-01',
+        //                 'to_dt' => '2025-07-31',
+        //                 'valid' => 1
+        //             ]);
+        //             $str .= "Allotment in seat " . $s->roomno . "/" . $s->serial . " done <br>";
+        //             break;
+        //         }
+        //     }
+        // }
     }
     return $str;
 });
