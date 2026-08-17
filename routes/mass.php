@@ -3,7 +3,7 @@
 
 
 Route::get('/generateRooms', function () {
-    // return view('generateRooms');
+    return view('generateRooms');
 });
 
 Route::post('/generateRooms', function () {
@@ -22,18 +22,19 @@ Route::post('/generateRooms', function () {
             ]);
             $str .= "<br>New Hostel created";
         }
-        if (App\Models\User::where('username', $hostel_name)->exists()) {
-            $user = App\Models\User::where('username', $hostel_name)->first();
-            $str .= "<br>User already existed";
-        } else {
-            $user = App\Models\User::create([
-                'name' => $Hostel_name,
-                'username' => $hostel_name,
-                'email' => $hostel_name . '@mzu.edu.in',
-                'password' => Hash::make('password')
-            ]);
-            $str .= "<br>New user created";
-        }
+        // Create User
+        // if (App\Models\User::where('username', $hostel_name)->exists()) {
+        //     $user = App\Models\User::where('username', $hostel_name)->first();
+        //     $str .= "<br>User already existed";
+        // } else {
+        //     $user = App\Models\User::create([
+        //         'name' => $Hostel_name,
+        //         'username' => $hostel_name,
+        //         'email' => $hostel_name . '@mzu.edu.in',
+        //         'password' => Hash::make('password')
+        //     ]);
+        //     $str .= "<br>New user created";
+        // }
 
         // $dump = DB::table($hostel_name)->get();
 

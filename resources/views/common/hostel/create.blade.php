@@ -26,7 +26,7 @@
                         </label>
                         <div class="col col-md-6">
                             <select class="form-control" name='gender'>
-                                <option disabled selected>Select hostel</option>
+                                <option disabled selected>Select gender</option>
                                 <option value="Male" {{ old('gender')=='Male'?'selected':''}}>Male</option>
                                 <option value="Female" {{ old('gender')=='Female'?'selected':''}}>Female</option>
                             </select>

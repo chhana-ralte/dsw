@@ -100,9 +100,8 @@ Route::post('/application/navigate', [ApplicationController::class, 'navigate'])
 Route::post('/notiMaster/addToNotiMaster', [NotiMasterController::class, 'addToNotiMaster'])->middleware('auth');
 Route::post('/sop/fileupload', [SopController::class, 'fileupload']);
 Route::post('/noti_master/fileupload', [NotiMasterController::class, 'fileupload']);
-// Route::post('/application/navigate', function(){
-//     return "Hello";
-// })->middleware('auth');
+
+
 Route::get('/application/{id}/duplicate', [ApplicationController::class, 'duplicate'])->middleware('auth');
 Route::get('/application/{application}/upload', [ApplicationController::class, 'upload']);
 Route::get('/application/{application}/PWD-proof', [ApplicationController::class, 'PWD_proof']);
