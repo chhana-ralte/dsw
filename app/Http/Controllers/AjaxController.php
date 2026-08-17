@@ -489,12 +489,12 @@ class AjaxController extends Controller
                 'remark' => 'Application declined',
             ]);
         }
+
         $allotment->update([
             'valid' => 0,
             'admitted' => 0,
             'confirmed' => 0,
         ]);
-
 
         $allotment->save();
 
