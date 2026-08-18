@@ -12,6 +12,17 @@ use App\Models\Application;
 
 class ApplController extends Controller
 {
+    public function toggleStatus(){
+        if(\App\Models\Manage::where('name','allotment')->first()->status == 'open'){
+            \App\Models\Manage::where('name','allotment')->update(['status' => 'closed']);
+            return "Allotment closed";
+        }
+        else{
+            \App\Models\Manage::where('name','allotment')->update(['status' => 'open']);
+            return "Allotment opened";
+        }
+
+    }
     public function index()
     {
         $sql = "SELECT state, count(if(gender='Male',1,NULL)) AS male, count(if(gender='Female',1,NULL)) AS female
@@ -28,6 +39,29 @@ class ApplController extends Controller
         ];
 
         return view("appl.index", $data);
+    }
+
+    public function list($status){
+        // return $status;
+        $statuses = DB::select("SELECT distinct status FROM applications");
+        if($status == 'All'){
+            $applications = Application::where('admitted',0)->orderBy('id');
+        }
+        else{
+            $applications = Application::where('status',$status)->orderBy('id');
+        }
+        $applications_count = $applications->count();
+        $applications = $applications->paginate();
+        $data = [
+            'applications_count' => $applications_count,
+            'status' => $status,
+            'statuses' => $statuses,
+            'applications' => $applications
+        ];
+
+        // return $data;
+        return view('appl.list', $data);
+
     }
 
     public function show(Application $application)
@@ -144,21 +178,21 @@ class ApplController extends Controller
     public function allotment_summary()
     {
         $sql = "SELECT department, count(if(gender='Male',1,NULL)) AS male, count(if(gender='Female',1,NULL)) AS female
-            FROM applications 
-            WHERE status = 'Approved' 
+            FROM applications
+            WHERE status = 'Approved'
             GROUP BY department
             ORDER BY department";
         $departments = DB::select($sql);
 
-        $sql = "SELECT hostels.id, hostels.name as hostel, count(*) AS cnt
+        $sql = "SELECT hostels.id, hostels.name as hostel, applications.roomtype AS type, count(*) AS cnt
             FROM applications JOIN hostels ON hostels.id=applications.hostel_id
-            WHERE status = 'Approved' 
-            GROUP BY hostels.id, hostels.name, hostels.gender
+            WHERE status = 'Approved'
+            GROUP BY hostels.id, hostels.name, hostels.gender, applications.roomtype
             ORDER BY  hostels.gender, hostels.name";
         $hostels = DB::select($sql);
 
         $sql = "SELECT count(if(gender='Male',1,NULL)) AS male, count(if(gender='Female',1,NULL)) AS female
-            FROM applications 
+            FROM applications
             WHERE status='Approved' AND hostel_id=0";
         $no_hostel = DB::select($sql);
         $no_hostel = $no_hostel[0];

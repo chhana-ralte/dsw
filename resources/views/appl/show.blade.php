@@ -1,4 +1,4 @@
-<x-layout>
+<x-appl-layout>
     <x-container>
         <x-block>
             <x-slot name="heading">
@@ -29,13 +29,13 @@
                     @can('manages', App\Models\Application::class)
                         <div class="btn-group">
 
-                            
-                            
+
+
 
                             <input type=text style="text-align: center" size="3" name="application_id"
                                 value="{{ $application->id }}">
                             <button class="btn btn-primary" type="submit">Go</button>
-                            
+
                         </div>
                     @endcan
                 </form>
@@ -432,14 +432,17 @@
                 </x-slot>
                 @if ($application->valid)
                     <div>
-                        <button class="btn btn-danger btn-status" value="decline">Decline</button>
-                        <button class="btn btn-warning btn-status" value="pending">Pending</button>
-                        {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#hostelModal"
-                            data-bs-whatever="Remark">Approve</button> --}}
-                        <button class="btn btn-warning btn-status" value="approve-modal">Approve</button>
-                        @if (auth()->user() && (auth()->user()->isAdmin() || auth()->user()->isDsw()))
-                            <a class="btn btn-warning btn-existing" href="/application/{{ $application->id }}/existing">Add
-                                as existing</a>
+                        @if($application->admitted)
+                            <strong>Already admitted</strong>
+                        @else
+                            <button class="btn btn-danger btn-status" value="decline">Decline</button>
+                            <button class="btn btn-warning btn-status" value="pending">Pending</button>
+                            {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#hostelModal"
+                                data-bs-whatever="Remark">Approve</button> --}}
+                            <button class="btn btn-warning btn-status" value="approve-modal">Approve</button>
+                            @if (auth()->user() && (auth()->user()->isAdmin() || auth()->user()->isDsw()))
+                                <a class="btn btn-warning btn-existing" href="/application/{{ $application->id }}/existing">Add as existing</a>
+                            @endif
                         @endif
                     </div>
                     <form type="hidden" action="/appl/{{ $application->id }}/statusUpdate" method="post"
@@ -737,4 +740,4 @@
 
         });
     </script>
-</x-layout>
+</x-appl-layout>

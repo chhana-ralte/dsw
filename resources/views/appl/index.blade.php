@@ -1,12 +1,16 @@
-<x-layout>
+<x-appl-layout>
     <x-container>
         <x-block>
             <x-slot name="heading">
                 Applications
                 <p>
-                    <a class="btn btn-primary btn-sm" href='/appl/allotment_summary'>Allotment summary</a>
+                    @if(auth()->user()->isAdmin())
+                        Status: {{ App\Models\Manage::where('name','allotment')->first()->status }}
+                        <button type='button' class="btn btn-primary btn-toggle-status">Toggle status</button>
+                    @endif
+                </p>
             </x-slot>
-                
+
                 <div style="width=100%; overflow-x: auto">
                     <table class="table">
                         <tr>
@@ -95,6 +99,20 @@
                     $("form[name='frm-delete']").submit();
                 }
             });
+
+            $("button.btn-toggle-status").click(function(){
+                $.ajax({
+                    url : '/appl/toggleStatus',
+                    type : 'post',
+                    success : function(data,status){
+                        alert(data);
+                        location.reload();
+                    },
+                    error : function(){
+                        alert("Error");
+                    }
+                });
+            });
         });
 
         $("button.btn-duplicate").click(function() {
@@ -123,4 +141,4 @@
             window.location.href = "/application/list?status=Approved&hostel=" + $(this).val();
         });
     </script>
-</x-layout>
+</x-appl-layout>

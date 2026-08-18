@@ -18,7 +18,7 @@
                     <tr>
                         {{-- Loop through every property/column in the current row --}}
                         @foreach(get_object_vars($row) as $columnName => $value)
-                            <td>{{ $value }}</td>
+                            <td>{{ substr($value,0,40) }}</td>
                         @endforeach
                     </tr>
                 @empty

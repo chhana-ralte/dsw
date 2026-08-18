@@ -1,29 +1,40 @@
 <x-appl-layout>
-    {{-- @foreach([$males,$females] as $gender) --}}
-        <x-container>
-            <x-block>
-                <x-slot name="heading">
-                    Applicants from {{ $department->name }}
-                    <p>
-                        <a class="btn btn-primary btn-sm" href="/appl">Back</a>
-                    </p>
-                </x-slot>
+    <x-container>
+        <x-block>
+            <x-slot name="heading">
+                Applications : {{ $status }} ({{ $applications_count }})
+            </x-slot>
+                <div style="width=100%; overflow-x: auto">
+                    <div class="btn-group">
+                        @foreach($statuses as $st)
+                            <a href="/appl/list/{{ $st->status }}" class="btn btn-primary">{{ $st->status }}</a>
+                        @endforeach
+                    </div>
+                </div>
+        </x-block>
+    </x-container>
+    <x-container>
+        <x-block>
+            <x-slot name="heading">
+                Applications
+            </x-slot>
 
-                <div style="width: 100%; overflow-x:auto">
-                    <table class="table table-auto">
-                        <thead>
-                            <tr>
-                                <th>Application ID</th>
-                                <th>Name</th>
-                                <th>Course</th>
-                                <th>MZU ID</th>
-                                <th>AMC?</th>
-                                <th>PWD?</th>
-                                <th>BPL/AAY?</th>
-                                <th>Status</th>
-                                <th>Score</th>
-                                @can('manages', App\Models\Application::class)
-                                    <th>Action</th>
+            <div style="width: 100%; overflow-x:auto">
+                <table class="table table-auto">
+                    <thead>
+
+                        <tr>
+                            <th>Application ID</th>
+                            <th>Name</th>
+                            <th>Course</th>
+                            {{-- <th>Department</th> --}}
+                            <th>MZU ID</th>
+                            <th>AMC?</th>
+                            <th>PWD?</th>
+                            <th>BPL/AAY?</th>
+                            <th>Status</th>
+                            @can('manages', App\Models\Application::class)
+                                <th>Action</th>
                                 @endif
                             </tr>
                         </thead>
@@ -39,7 +50,7 @@
                                 @endif
                                     <td>
                                         <a
-                                            href="/appl/{{ $application->id }}?">{{ $application->name }}</a>
+                                            href="/appl/{{ $application->id }}?mzuid={{ $application->mzuid }}">{{ $application->name }}</a>
 
 
                                     </td>
@@ -51,11 +62,10 @@
                                     <td>{{ $application->PWD ? 'Yes' : 'No' }}</td>
                                     <td>{{ $application->BPL }}</td>
                                     @if ($application->hostel)
-                                        <td>{{ $application->hostel->name }}({{ $application->roomtype }})</td>
+                                        <td>{{ $application->hostel->name }}</td>
                                     @else
                                         <td>{{ $application->status }}</td>
                                     @endif
-                                    <th>{{ $application->total_score }}</th>
 
                                     @can('manage', $application)
                                         <td>
@@ -69,13 +79,18 @@
                                     @endcan
                                 </tr>
                             @endforeach
+                            <form name="frm-delete" method="post">
+                                @csrf
+                                @method('delete')
+                            </form>
                         </tbody>
                     </table>
-
+                    <div class="d-flex justify-content-center">
+                        {{ $applications->links() }}
+                    </div>
                 </div>
             </x-block>
         </x-container>
-    {{-- @endforeach --}}
         {{-- Modal for duplicate requirement --}}
 
         <div class="modal fade" id="duplicateModal" tabindex="-1" aria-labelledby="duplicateModalLabel" aria-hidden="true">
@@ -124,21 +139,8 @@
                 });
                 $("button.btn-delete").click(function() {
                     if (confirm("Are you sure you want to delete this application?")) {
-                        $.ajax({
-                        type: "delete",
-                        url: "/ajax/appl/" + $(this).val() + "/delete",
-                        success: function(data, status) {
-                            alert("Application deleted successfully.");
-                            {{-- alert(data.id) --}}
-                            location.replace("/appl/department/" + data.department_id);
-                            {{-- location.reload(); --}}
-                        },
-                        error: function(xhr, status, error) {
-                            alert("Error deleting application: " + xhr.responseText);
-                        }
-                    });
-
-
+                        $("form[name='frm-delete']").attr('action', '/application/' + $(this).val());
+                        $("form[name='frm-delete']").submit();
                     }
                 });
             });

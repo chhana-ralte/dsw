@@ -82,6 +82,11 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="/semfee">Semester Fees</a>
                                 </li>
+                                @if(App\Models\Manage::where('name','allotment')->first()->status == 'open')
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/appl">Allotment</a>
+                                    </li>
+                                @endif
                                 @if(auth()->user()->isDsw())
                                     <li class="nav-item">
                                         <a class="nav-link" href="/req">Room change requests</a>
@@ -183,6 +188,7 @@
                                 <li><a class="dropdown-item" href="/application/search">Appl search</a></li>
                                 <li><a class="dropdown-item" href="/feedbackMaster">Feedback</a></li>
                                 <li><a class="dropdown-item" href="/query">Query</a></li>
+                                <li><a class="dropdown-item" href="/appl">Allotment</a></li>
 
                             </ul>
                         </li>

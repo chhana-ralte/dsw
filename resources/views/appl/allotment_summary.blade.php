@@ -1,4 +1,4 @@
-<x-layout>
+<x-appl-layout>
     <x-container>
         <x-block>
             <x-slot name="heading">
@@ -6,7 +6,7 @@
                 <p>
                     <a class="btn btn-primary btn-sm" href='/appl/'>Back</a>
             </x-slot>
-                
+
                 <div style="width=100%; overflow-x: auto">
                     <table class="table">
                         <tr>
@@ -24,30 +24,19 @@
                     </table>
                 </div>
 
-                <div style="width=100%; overflow-x: auto">
-                    <table class="table">
-                        <tr>
-                            <th>Hostel</th>
-                            <th>Count</th>
-                        </tr>
-                        @foreach($hostels as $hostel)
-                            <tr>
-                                <td><a href="/appl/allotted?hostel_id={{ $hostel->id }}">{{ $hostel->hostel }}</a></td>
-                                <td>{{ $hostel->cnt }}</td>
-                            </tr>
-                        @endforeach
-                    </table>
-                </div>
+
 
                 <div style="width=100%; overflow-x: auto">
                     <table class="table">
                         <tr>
                             <th>Hostel</th>
+                            <th>Room type</th>
                             <th>Count</th>
                         </tr>
                         @foreach($hostels as $hostel)
                             <tr>
                                 <td>{{ $hostel->hostel }}</td>
+                                <td>{{ App\Models\Room::room_type($hostel->type) }}</td>
                                 <td>{{ $hostel->cnt }}</td>
                             </tr>
                         @endforeach
@@ -144,4 +133,4 @@
             window.location.href = "/application/list?status=Approved&hostel=" + $(this).val();
         });
     </script>
-</x-layout>
+</x-appl-layout>

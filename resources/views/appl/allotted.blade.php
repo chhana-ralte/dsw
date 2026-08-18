@@ -1,4 +1,4 @@
-<x-layout>
+<x-appl-layout>
     {{-- @foreach([$males,$females] as $gender) --}}
         <x-container>
             <x-block>
@@ -153,7 +153,7 @@
                         }
                     });
 
-                        
+
                     }
                 });
             });
@@ -212,4 +212,4 @@
                 }
             });
         </script>
-    </x-layout>
+    </x-appl-layout>
