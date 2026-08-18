@@ -34,11 +34,11 @@
                     <tr>
                         <th>Hostel</th>
                         <th>Room type</th>
-                        <th>Count</th>
+                        <th>Approved</th>
                     </tr>
                     @foreach($hostels as $hostel)
                         <tr>
-                            <td>{{ $hostel->hostel }}</td>
+                            <td><a href="/appl/hostel/{{ $hostel->id }}">{{ $hostel->hostel }}</a></td>
                             <td>{{ App\Models\Room::room_type($hostel->type) }}</td>
                             <td>{{ $hostel->cnt }}</td>
                         </tr>
