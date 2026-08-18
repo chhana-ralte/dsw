@@ -119,22 +119,23 @@
                         >
                     </div>
                 </div>
-
-                <div class="mb-3 form-group row">
-                    <label
-                        class="col col-md-4"
-                    >Status</label>
-                    <div class="col col-md-4">
-                        <input
-                            type="text"
-                            class="form-control"
-                            name="status"
-                            value="{{ $application->status }}"
-                            placeholder="Your name"
-                            readonly
-                        >
+                @if( $application->status == 'Notified' || $application->status == 'Admitted')
+                    <div class="mb-3 form-group row">
+                        <label
+                            class="col col-md-4"
+                        >Status</label>
+                        <div class="col col-md-4">
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="status"
+                                value="{{ $application->status }}"
+                                placeholder="Status"
+                                readonly
+                            >
+                        </div>
                     </div>
-                </div>
+                @endif
                 @if($application->remark)
                     <div class="mb-3 form-group row">
                         <label
