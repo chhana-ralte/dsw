@@ -10,6 +10,9 @@
                             <a href="/appl/list/{{ $st->status }}" class="btn btn-primary">{{ $st->status }}</a>
                         @endforeach
                     </div>
+                    <a>
+                        <a href="/appl/search" class="btn btn-primary btn-sm">Search</a>
+                    </a>
                 </div>
         </x-block>
     </x-container>

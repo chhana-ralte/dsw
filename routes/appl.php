@@ -4,7 +4,9 @@ use App\Http\Controllers\ApplController;
 
 Route::controller(\App\Http\Controllers\ApplController::class)->group(function () {
     // Route::get('/appl/courses', 'courses')->
-    Route::post('/appl/toggleStatus', 'toggleStatus')->middleware(['auth','admin']);
+    Route::post('/appl/toggleStatus', 'toggleStatus')->middleware(['auth', 'admin']);
+    Route::get('/appl/search', 'search')->middleware(['auth']);
+    Route::post('/appl/search', 'searchStore')->middleware(['auth']);
     Route::get('/appl/list/{status}', 'list')->middleware(['auth']);
     Route::put('/appl/{id}/statusUpdate', 'statusUpdate')->middleware(['auth']);
 

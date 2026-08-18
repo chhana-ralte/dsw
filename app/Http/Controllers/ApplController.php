@@ -12,17 +12,42 @@ use App\Models\Application;
 
 class ApplController extends Controller
 {
-    public function toggleStatus(){
-        if(\App\Models\Manage::where('name','allotment')->first()->status == 'open'){
-            \App\Models\Manage::where('name','allotment')->update(['status' => 'closed']);
+    public function toggleStatus()
+    {
+        if (\App\Models\Manage::where('name', 'allotment')->first()->status == 'open') {
+            \App\Models\Manage::where('name', 'allotment')->update(['status' => 'closed']);
             return "Allotment closed";
-        }
-        else{
-            \App\Models\Manage::where('name','allotment')->update(['status' => 'open']);
+        } else {
+            \App\Models\Manage::where('name', 'allotment')->update(['status' => 'open']);
             return "Allotment opened";
         }
-
     }
+
+    public function search()
+    {
+        return view('appl.search');
+    }
+
+    public function searchStore(Request $request)
+    {
+
+        $applications = Application::where('name', 'like', '%' . $request->str . '%')->get();
+        if (count($applications) > 0) {
+            $data = [
+                'applications' => $applications,
+                'str' => request()->str,
+
+            ];
+        } else {
+            $data = [
+                'str' => request()->str,
+            ];
+        }
+
+        // return $data;
+        return view('appl.search', $data);
+    }
+
     public function index()
     {
         $sql = "SELECT state, count(if(gender='Male',1,NULL)) AS male, count(if(gender='Female',1,NULL)) AS female
@@ -41,14 +66,14 @@ class ApplController extends Controller
         return view("appl.index", $data);
     }
 
-    public function list($status){
+    public function list($status)
+    {
         // return $status;
         $statuses = DB::select("SELECT distinct status FROM applications");
-        if($status == 'All'){
-            $applications = Application::where('admitted',0)->orderBy('id');
-        }
-        else{
-            $applications = Application::where('status',$status)->orderBy('id');
+        if ($status == 'All') {
+            $applications = Application::where('admitted', 0)->orderBy('id');
+        } else {
+            $applications = Application::where('status', $status)->orderBy('id');
         }
         $applications_count = $applications->count();
         $applications = $applications->paginate();
@@ -61,7 +86,6 @@ class ApplController extends Controller
 
         // return $data;
         return view('appl.list', $data);
-
     }
 
     public function show(Application $application)
