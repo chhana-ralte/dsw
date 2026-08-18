@@ -6,48 +6,52 @@
                 <p>
                     <a class="btn btn-primary btn-sm" href='/appl/'>Back</a>
             </x-slot>
-                <div style="width=100%; overflow-x: auto">
-                    <table class="table">
+            <div style="width=100%; overflow-x: auto">
+                <table class="table">
+                    <tr>
+                        <th>Department</th>
+                        <th>Male</th>
+                        <th>Female</th>
+                    </tr>
+                    @foreach($departments as $dept)
                         <tr>
-                            <th>Department</th>
-                            <th>Male</th>
-                            <th>Female</th>
+                            <td>{{ $dept->department }}</td>
+                            <td>{{ $dept->male }}</td>
+                            <td>{{ $dept->female }}</td>
                         </tr>
-                        @foreach($departments as $dept)
-                            <tr>
-                                <td>{{ $dept->department }}</td>
-                                <td>{{ $dept->male }}</td>
-                                <td>{{ $dept->female }}</td>
-                            </tr>
-                        @endforeach
-                    </table>
-                </div>
+                    @endforeach
+                </table>
+            </div>
+        </x-block>
+        <x-block>
+            <x-slot name="heading">
+                Hostel-wise allotment
+            </x-slot>
 
 
-
-                <div style="width=100%; overflow-x: auto">
-                    <table class="table">
+            <div style="width=100%; overflow-x: auto">
+                <table class="table">
+                    <tr>
+                        <th>Hostel</th>
+                        <th>Room type</th>
+                        <th>Count</th>
+                    </tr>
+                    @foreach($hostels as $hostel)
                         <tr>
-                            <th>Hostel</th>
-                            <th>Room type</th>
-                            <th>Count</th>
+                            <td>{{ $hostel->hostel }}</td>
+                            <td>{{ App\Models\Room::room_type($hostel->type) }}</td>
+                            <td>{{ $hostel->cnt }}</td>
                         </tr>
-                        @foreach($hostels as $hostel)
-                            <tr>
-                                <td>{{ $hostel->hostel }}</td>
-                                <td>{{ App\Models\Room::room_type($hostel->type) }}</td>
-                                <td>{{ $hostel->cnt }}</td>
-                            </tr>
-                        @endforeach
-                        <tr>
-                            <th colspan=2>No hostel assigned</th>
-                        </tr>
-                        <tr>
-                            <td><a href="/appl/allotted?gender=Male">Male</a></td><td>{{ $no_hostel->male }}</td>
-                            <td><a href="/appl/allotted?gender=Female">Female</a></td><td>{{ $no_hostel->female }}</td>
-                        </tr>
-                    </table>
-                </div>
+                    @endforeach
+                    <tr>
+                        <th colspan=2>No hostel assigned</th>
+                    </tr>
+                    <tr>
+                        <td><a href="/appl/allotted?gender=Male">Male</a></td><td>{{ $no_hostel->male }}</td>
+                        <td><a href="/appl/allotted?gender=Female">Female</a></td><td>{{ $no_hostel->female }}</td>
+                    </tr>
+                </table>
+            </div>
 
         </x-block>
         <x-block>
