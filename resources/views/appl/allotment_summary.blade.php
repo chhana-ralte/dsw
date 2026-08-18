@@ -6,7 +6,6 @@
                 <p>
                     <a class="btn btn-primary btn-sm" href='/appl/'>Back</a>
             </x-slot>
-
                 <div style="width=100%; overflow-x: auto">
                     <table class="table">
                         <tr>
@@ -50,6 +49,34 @@
                     </table>
                 </div>
 
+        </x-block>
+        <x-block>
+            <x-slot name="heading">
+                Vacancy
+            </x-slot>
+            <div style="width:100%; overflow-x: auto">
+                <table class="table">
+                    <tr>
+                        <th>Hostel</th>
+                        <th>Room type</th>
+                        <th>Total</th>
+                        <th>Occupied</th>
+                        <th>Vacant</th>
+                    </tr>
+                    @foreach($vacancies as $vacancy)
+                        <tr>
+                            <td>{{ $vacancy->Hostel }}</td>
+                            <td>{{ $vacancy->Type }}</td>
+                            <td>{{ $vacancy->Total }}</td>
+                            <td>{{ $vacancy->Occupied }}</td>
+                            <td>{{ $vacancy->Vacant }}</td>
+                        </tr>
+                    @endforeach
+                    <tr>
+                        <th colspan=2></th>
+                    </tr>
+                </table>
+            </div>
         </x-block>
     </x-container>
 

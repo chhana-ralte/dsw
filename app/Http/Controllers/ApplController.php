@@ -224,11 +224,20 @@ class ApplController extends Controller
         $no_hostel = DB::select($sql);
         $no_hostel = $no_hostel[0];
 
+        $sql = "select hostels.name AS Hostel, if(rooms.capacity=1,'Single',if(rooms.capacity=2,'Double',if(rooms.capacity=3,'Triple','Dorm'))) AS Type, count(if(seats.available,1,NULL)) AS Total,count(if(allot_seats.id,1,NULL)) AS Occupied, count(if(seats.available,1,NULL))-count(if(allot_seats.id,1,NULL)) AS Vacant
+            from hostels join rooms on hostels.id=rooms.hostel_id
+            join seats on rooms.id=seats.room_id
+            left join allot_seats on seats.id=allot_seats.seat_id and allot_seats.valid=1
+            group by hostels.name, rooms.capacity
+            order by hostels.name";
+        $vacancies = DB::select($sql);
+
+        // return $vacancies;
         $data = [
             'hostels' => $hostels,
             'departments' => $departments,
             'no_hostel' => $no_hostel,
-
+            'vacancies' => $vacancies,
         ];
         // return $data;
         return view('appl.allotment_summary', $data);
