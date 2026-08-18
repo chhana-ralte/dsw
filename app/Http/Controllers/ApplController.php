@@ -105,6 +105,9 @@ class ApplController extends Controller
     public function department(\App\Models\Department $department)
     {
         $applications = Application::where('department_id', $department->id)
+            ->where('status', '<>', 'Admitted')
+            ->where('status', '<>', 'Declined')
+            ->where('valid', 1)
             ->orderBy('total_score', 'desc')
             ->orderBy('id')
             ->get();
