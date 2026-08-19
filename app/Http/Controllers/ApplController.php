@@ -276,4 +276,16 @@ class ApplController extends Controller
         // return $data;
         return view('appl.allotted', $data);
     }
+    public function navigate()
+    {
+        if (request()->has('application_id')) {
+            $id = request()->application_id;
+            $application = Application::find($id);
+            if ($application) {
+                return redirect('/appl/' . $application->id);
+            } else {
+                return redirect('/appl/list')->with(['message' => ['type' => 'info', 'text' => 'Application id not found']]);
+            }
+        }
+    }
 }

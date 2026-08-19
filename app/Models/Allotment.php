@@ -89,4 +89,9 @@ class Allotment extends Model
     {
         return $this->belongsTo(Application::class);
     }
+
+    public static function open()
+    {
+        return Manage::where('name', 'allotment')->where('status', 'open')->exists();
+    }
 }

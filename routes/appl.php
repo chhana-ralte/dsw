@@ -7,6 +7,7 @@ Route::controller(\App\Http\Controllers\ApplController::class)->group(function (
     Route::post('/appl/toggleStatus', 'toggleStatus')->middleware(['auth', 'admin']);
     Route::get('/appl/search', 'search')->middleware(['auth']);
     Route::post('/appl/search', 'searchStore')->middleware(['auth']);
+    Route::post('/appl/navigate', 'navigate')->middleware(['auth']);
     Route::get('/appl/list/{status}', 'list')->middleware(['auth']);
     Route::put('/appl/{id}/statusUpdate', 'statusUpdate')->middleware(['auth']);
 

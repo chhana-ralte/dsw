@@ -23,19 +23,14 @@
                         <button class="btn btn-danger btn-delete btn-sm" value="{{ $application->id }}">Delete</button>
                     @endif
                 </p>
-                <form name="frm-navigate" method="post" action="/application/navigate">
+                <form name="frm-navigate" method="post" action="/appl/navigate">
                     @csrf
                     <input type="hidden" name="navigation" value="">
                     @can('manages', App\Models\Application::class)
                         <div class="btn-group">
-
-
-
-
                             <input type=text style="text-align: center" size="3" name="application_id"
                                 value="{{ $application->id }}">
                             <button class="btn btn-primary" type="submit">Go</button>
-
                         </div>
                     @endcan
                 </form>
