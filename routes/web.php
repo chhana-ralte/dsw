@@ -90,6 +90,9 @@ Route::get('/application/search', [ApplicationController::class, 'search']);
 Route::post('/application/search', [ApplicationController::class, 'searchStore']);
 Route::put('/application/{id}/statusUpdate', [ApplicationController::class, 'statusUpdate'])->middleware('auth');
 Route::get('/application/list', [ApplicationController::class, 'list'])->middleware('auth');
+Route::get('/application/{id}/existing', [ApplicationController::class, 'existing'])->middleware(['auth', 'admin']);
+Route::put('/application/{id}/existing', [ApplicationController::class, 'existingStore'])->middleware('auth');
+
 Route::get('/application/approved', [ApplicationController::class, 'approved'])->middleware('auth');
 Route::post('/application/approved', [ApplicationController::class, 'notify'])->middleware('auth');
 Route::get('/application/notified', [ApplicationController::class, 'notified'])->middleware('auth');

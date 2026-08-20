@@ -78,6 +78,4 @@
             </x-block>
         </x-container>
     @endcan
-
-    
 </x-layout>

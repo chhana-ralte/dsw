@@ -694,6 +694,7 @@ class ApplicationController extends Controller
             'person_id' => $person->id,
             'notification_id' => $validated['notification'],
             'hostel_id' => $request->hostel,
+            'roomtype' => 2,
             'admitted' => 0,
             'valid' => 1,
             'finished' => 0,
