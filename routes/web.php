@@ -100,6 +100,7 @@ Route::get('/application/summary', [ApplicationController::class, 'summary'])->m
 Route::get('/application/summary-hostel', [ApplicationController::class, 'summary_hostel'])->middleware('auth');
 Route::get('/application/priority-list', [ApplicationController::class, 'priority_list'])->middleware('auth');
 Route::post('/application/navigate', [ApplicationController::class, 'navigate'])->middleware('auth');
+Route::post('/application/notify-all', [ApplicationController::class, 'notify_all'])->middleware(['auth', 'admin']);
 Route::post('/notiMaster/addToNotiMaster', [NotiMasterController::class, 'addToNotiMaster'])->middleware('auth');
 Route::post('/sop/fileupload', [SopController::class, 'fileupload']);
 Route::post('/noti_master/fileupload', [NotiMasterController::class, 'fileupload']);

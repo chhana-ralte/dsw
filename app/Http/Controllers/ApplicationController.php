@@ -558,12 +558,12 @@ class ApplicationController extends Controller
                         'person_id' => $person->id,
                         'notification_id' => $notification->id,
                         'hostel_id' => $appl->hostel_id,
-                        'from_dt' => '2025-08-01',
-                        'to_dt' => '2026-07-31',
+                        'from_dt' => '2026-08-01',
+                        'to_dt' => '2028-07-31',
                         'admitted' => 0,
                         'valid' => 1,
                         'finished' => 0,
-                        'start_sessn_id' => 15,
+                        'start_sessn_id' => 17,
                         'application_id' => $appl->id,
                         'sl' => $sl++,
                         'rand' => \App\Models\Lib::rand(2),
@@ -795,5 +795,106 @@ class ApplicationController extends Controller
             }
         }
         return redirect('/');
+    }
+
+    public function notify_all()
+    {
+        $validated = (object)request()->validate([
+            'no' => 'required',
+            'subject' => 'required',
+            'dt' => 'date|required',
+            'type' => 'required'
+        ]);
+
+
+
+        // return $validated->no;
+        DB::transaction($validated = function () use ($validated) {
+            //     return $validated;
+            $hostels = \App\Models\Hostel::whereIn('id', Application::where('status', 'Approved')->where('hostel_id', '>', 0)->pluck('hostel_id'))
+                ->orderBy('gender')
+                ->orderBy('name')
+                ->get();
+
+            $noti_master = \App\Models\NotiMaster::create([
+                'no' => $validated->no,
+                'subject' => $validated->subject,
+                'dt' => $validated->dt,
+                'content' => $validated->subject,
+                'type' => $validated->type,
+            ]);
+
+            foreach ($hostels as $hos) {
+                $notification = \App\Models\Notification::create([
+                    'noti_master_id' => $noti_master->id,
+                    'no' => $hos->name,
+                    'dt' => $validated->dt,
+                    'content' => $validated->subject,
+                    'type' => $validated->type,
+                    'status' => 'active'
+                ]);
+
+                $applications = Application::where('status', 'Approved')->where('hostel_id', '>', 0)
+                    ->where('hostel_id', $hos->id)
+                    ->orderBy('roomtype')
+                    ->orderBy('name')
+                    ->get();
+
+                $sl = 1;
+                foreach ($applications as $appl) {
+
+                    $person = \App\Models\Person::create([
+                        'name' => $appl->name,
+                        'father' => $appl->father,
+                        'state' => $appl->state,
+                        'category' => $appl->category,
+                        'PWD' => $appl->PWD,
+                        'mobile' => $appl->mobile,
+                        'dob' => $appl->dob,
+                        'email' => $appl->email,
+                        'address' => $appl->address,
+                        'photo' => $appl->photo,
+                        'gender' => $appl->gender,
+                        'religion' => $appl->religion,
+                    ]);
+
+                    $student = \App\Models\Student::create([
+                        'person_id' => $person->id,
+                        'course' => $appl->course,
+                        'department' => $appl->department,
+                        'mzuid' => $appl->mzuid,
+                        'rollno' => $appl->rollno,
+                    ]);
+
+                    $allotment = \App\Models\Allotment::updateOrCreate(
+                        [
+                            'application_id' => $appl->id
+                        ],
+                        [
+                            'person_id' => $person->id,
+                            'notification_id' => $notification->id,
+                            'hostel_id' => $appl->hostel_id,
+                            'from_dt' => '2026-08-01',
+                            'to_dt' => '2028-07-31',
+                            'admitted' => 0,
+                            'valid' => 1,
+                            'finished' => 0,
+                            'start_sessn_id' => 17,
+                            'application_id' => $appl->id,
+                            'sl' => $sl++,
+                            'rand' => \App\Models\Lib::rand(2),
+                            'roomtype' => $appl->roomtype,
+                        ]
+                    );
+
+                    $appl->update([
+                        'status' => 'Notified'
+                    ]);
+                    $appl->save();
+                }
+            }
+        });
+        // return $validated;
+        return redirect('/application')->with(['message' => ['type' => 'info', 'text' => 'Successful']]);
     }
 }
