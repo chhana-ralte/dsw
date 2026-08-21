@@ -71,15 +71,18 @@ class Application extends Model
         return Allotment::hydrate($existing_allotments);
     }
 
-    public function allotments(){
+    public function allotments()
+    {
         return $this->hasMany(Allotment::class);
     }
 
-    public function valid_allotments(){
+    public function valid_allotments()
+    {
         return Allotment::where('application_id', $this->id)->where('valid', 1)->get();
     }
 
-    public function invalid_allotments(){
+    public function invalid_allotments()
+    {
         return Allotment::where('application_id', $this->id)->where('valid', 0)->get();
     }
 
@@ -106,5 +109,14 @@ class Application extends Model
     public function valid_allotment()
     {
         return Allotment::where('application_id', $this->id)->where('valid', 1)->first();
+    }
+
+    public static function cnt(Int $hostel_id, String $status, Int $roomcapacity = 0)
+    {
+        $applications = Application::where('hostel_id', $hostel_id)->where('status', $status);
+        if ($roomcapacity != 0) {
+            $applications = $applications->where('roomtype', $roomcapacity);
+        }
+        return $applications->count();
     }
 }

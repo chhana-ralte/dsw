@@ -66,14 +66,23 @@
                         <th>Total</th>
                         <th>Occupied</th>
                         <th>Vacant</th>
+                        <th>Allotted</th>
                     </tr>
                     @foreach($vacancies as $vacancy)
+                    <?php $allotted = App\Models\Application::cnt($vacancy->hostel_id,'Approved',$vacancy->roomcapacity); ?>
                         <tr>
                             <td>{{ $vacancy->Hostel }}</td>
                             <td>{{ $vacancy->Type }}</td>
                             <td>{{ $vacancy->Total }}</td>
                             <td>{{ $vacancy->Occupied }}</td>
                             <td>{{ $vacancy->Vacant }}</td>
+                            <td>
+                                @if($allotted > $vacancy->Vacant)
+                                    <strong class="text-danger">{{ $allotted }}</strong>
+                                @else
+                                    {{ $allotted }}
+                                @endif
+                            </td>
                         </tr>
                     @endforeach
                     <tr>

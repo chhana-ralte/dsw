@@ -14,6 +14,7 @@ Route::controller(\App\Http\Controllers\ApplController::class)->group(function (
     Route::delete('/ajax/appl/{application}/delete', 'destroy')->middleware(['auth']);
 
     Route::get('/appl/department/{department}', 'department')->middleware(['auth']);
+    Route::get('/appl/hostel/{hostel}', 'hostel')->middleware(['auth']);
     Route::get('/appl', 'index')->middleware(['auth']);
     Route::get('/appl/allotment_summary', 'allotment_summary')->middleware(['auth']);
     Route::get('/appl/allotted', 'allotted')->middleware(['auth']);

@@ -125,6 +125,21 @@ class ApplController extends Controller
         return view('appl.department', $data);
     }
 
+    public function hostel(\App\Models\Hostel $hostel)
+    {
+        $applications = Application::where('hostel_id', $hostel->id)
+            ->where('status', 'Approved')
+            ->where('valid', 1)
+            ->orderBy('roomtype')
+            ->get();
+
+        $data = [
+            'applications' => $applications,
+            'hostel' => $hostel,
+        ];
+        return view('appl.hostel', $data);
+    }
+
     public function statusUpdate(Request $request, $id)
     {
         // return "Hello";
@@ -224,7 +239,7 @@ class ApplController extends Controller
         $no_hostel = DB::select($sql);
         $no_hostel = $no_hostel[0];
 
-        $sql = "select hostels.id,hostels.name AS Hostel, if(rooms.capacity=1,'Single',if(rooms.capacity=2,'Double',if(rooms.capacity=3,'Triple','Dorm'))) AS Type, count(if(seats.available,1,NULL)) AS Total,count(if(allot_seats.id,1,NULL)) AS Occupied, count(if(seats.available,1,NULL))-count(if(allot_seats.id,1,NULL)) AS Vacant
+        $sql = "select hostels.id AS hostel_id,hostels.name AS Hostel, rooms.capacity AS roomcapacity, if(rooms.capacity=1,'Single',if(rooms.capacity=2,'Double',if(rooms.capacity=3,'Triple','Dorm'))) AS Type, count(if(seats.available,1,NULL)) AS Total,count(if(allot_seats.id,1,NULL)) AS Occupied, count(if(seats.available,1,NULL))-count(if(allot_seats.id,1,NULL)) AS Vacant
             from hostels join rooms on hostels.id=rooms.hostel_id
             join seats on rooms.id=seats.room_id
             left join allot_seats on seats.id=allot_seats.seat_id and allot_seats.valid=1
