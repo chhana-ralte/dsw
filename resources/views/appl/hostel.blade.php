@@ -18,7 +18,7 @@
                                 <th>Course</th>
                                 <th>MZU ID</th>
                                 
-                                <th>Status</th>
+                                <th>Room Type</th>
                                 
                                 @can('manages', App\Models\Application::class)
                                     <th>Action</th>
@@ -51,7 +51,7 @@
                                     @else
                                         <td>{{ $application->status }}</td>
                                     @endif
-                                    
+
 
                                     @can('manage', $application)
                                         <td>

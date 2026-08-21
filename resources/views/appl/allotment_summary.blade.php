@@ -39,7 +39,7 @@
                     @foreach($hostels as $hostel)
                         <tr>
                             <td><a href="/appl/hostel/{{ $hostel->id }}">{{ $hostel->hostel }}</a></td>
-                            <td>{{ App\Models\Room::room_type($hostel->type) }}</td>
+                            <td>{{ $hostel->roomcapacity }}</td>
                             <td>{{ $hostel->cnt }}</td>
                         </tr>
                     @endforeach
@@ -72,7 +72,7 @@
                     <?php $allotted = App\Models\Application::cnt($vacancy->hostel_id,'Approved',$vacancy->roomcapacity); ?>
                         <tr>
                             <td>{{ $vacancy->Hostel }}</td>
-                            <td>{{ $vacancy->Type }}</td>
+                            <td>{{ $vacancy->roomcapacity }}</td>
                             <td>{{ $vacancy->Total }}</td>
                             <td>{{ $vacancy->Occupied }}</td>
                             <td>{{ $vacancy->Vacant }}</td>
