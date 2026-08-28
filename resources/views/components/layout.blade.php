@@ -189,6 +189,7 @@
                                 <li><a class="dropdown-item" href="/feedbackMaster">Feedback</a></li>
                                 <li><a class="dropdown-item" href="/query">Query</a></li>
                                 <li><a class="dropdown-item" href="/appl">Allotment</a></li>
+                                <li><a class="dropdown-item" href="/att">Attendance</a></li>
 
                             </ul>
                         </li>

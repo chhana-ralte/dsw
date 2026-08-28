@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attmasters', function (Blueprint $table) {
+        Schema::create('enrolls', function (Blueprint $table) {
             $table->id();
-            $table->ForeignIdFor(App\Models\User::class);
             $table->ForeignIdFor(App\Models\Course::class);
+            $table->ForeignIdFor(App\Models\Std::class);
             $table->ForeignIdFor(App\Models\Sessn::class);
-            $table->string('subject_code',20);
-            $table->string('subject_name',20);
-            $table->boolean('active')->default(1);
+            $table->integer('semester');
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attmasters');
+        Schema::dropIfExists('enrolls');
     }
 };

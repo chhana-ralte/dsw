@@ -23,6 +23,32 @@
                 </table>
             </div>
         </x-block>
+        {{-- <x-block class="col col-md-6">
+            <x-slot name="heading">
+                Allotment summary
+            </x-slot>
+            <div style="width=100%; overflow-x: auto">
+                <table class="table">
+                    <tr>
+                        <th>Hostel</th>
+                        <th>Available</th>
+                        <th>Occupied</th>
+                    </tr>
+                    @foreach(App\Models\Hostel::all() as $hos)
+                        <tr>
+                            <td>{{ $hos->name }}</td>
+                            @if(isset($hostel_data['hos_data'][$hos->id]))
+                                <td>{{ $hostel_data['hos_data'][$hos->id]->available }}</td>
+                                <td>{{ $hostel_data['hos_data'][$hos->id]->occupied }}</td>
+                            @else
+                                asds
+                            @endif
+                            <td>{{ $hostel_data->hos_data[$hos->id]->occupied }}</td>
+                        </tr>
+                    @endforeach
+                </table>
+            </div>
+        </x-block> --}}
         <x-block>
             <x-slot name="heading">
                 Hostel-wise allotment

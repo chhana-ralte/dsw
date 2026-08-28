@@ -6,5 +6,8 @@ use Illuminate\Http\Request;
 
 class AttController extends Controller
 {
-    //
+    public function index(){
+        return view('att.index');
+    }
+
 }

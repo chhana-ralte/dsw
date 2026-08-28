@@ -219,6 +219,10 @@ class ApplController extends Controller
 
     public function allotment_summary()
     {
+        $hostel_data = $this->build_data();
+        // return $hostel_data['appl_data'][1]->name;
+        // return $results;
+
         $sql = "SELECT department, count(if(gender='Male',1,NULL)) AS male, count(if(gender='Female',1,NULL)) AS female
             FROM applications
             WHERE status = 'Approved'
@@ -228,7 +232,7 @@ class ApplController extends Controller
 
         $sql = "SELECT hostels.id, hostels.name as hostel, applications.roomtype AS roomcapacity, count(*) AS cnt
             FROM applications JOIN hostels ON hostels.id=applications.hostel_id
-            WHERE status = 'Approved' 
+            WHERE status = 'Approved'
             GROUP BY hostels.id, hostels.name, hostels.gender, applications.roomtype
             ORDER BY  hostels.gender, hostels.name";
         $hostels = DB::select($sql);
@@ -253,10 +257,46 @@ class ApplController extends Controller
             'departments' => $departments,
             'no_hostel' => $no_hostel,
             'vacancies' => $vacancies,
+            'hostel_data' => $hostel_data
         ];
         // return $data;
         return view('appl.allotment_summary', $data);
         return $departments;
+    }
+
+    private function build_data(){
+        return "Hello";
+        $hostels = \App\Models\Hostel::orderBy('gender')->orderBy('name')->get();
+
+        $sql = "SELECT hostels.id, hostels.name, count(*) AS total, count(if(roomtype=1,1,NULL)) AS Single, count(if(roomtype=2,1,NULL)) AS `Double`, count(if(roomtype=3,1,NULL)) AS Triple, count(if(roomtype>3,1,NULL)) AS Dorm
+            FROM applications JOIN hostels ON hostels.id=applications.hostel_id
+            WHERE applications.status='Approved'
+            GROUP BY hostels.id,hostels.gender,hostels.name
+            ORDER BY hostels.gender,hostels.name";
+        $appl_data = DB::select($sql);
+        $appl_arr = [];
+        foreach($appl_data as $row){
+            $appl_arr[$row->id] = $row;
+        }
+
+        // return $appl_arr;
+
+        $sql = "SELECT hostels.id, hostels.name, count(allot_hostels.id) as occupied, count(allot_seats.id) as seats, count(if(rooms.capacity=1,1,NULL)) AS Single, count(if(rooms.capacity=2,1,NULL)) AS `Double`, count(if(rooms.capacity=3,1,NULL)) AS Triple, count(if(rooms.capacity>3,1,NULL)) AS Dorm
+            FROM hostels JOIN allot_hostels ON hostels.id=allot_hostels.hostel_id AND allot_hostels.valid=1
+            LEFT JOIN (allot_seats JOIN seats ON seats.id=allot_seats.seat_id AND allot_seats.valid=1 JOIN rooms ON rooms.id=seats.room_id)
+            ON allot_hostels.id=allot_seats.allot_hostel_id AND allot_seats.valid=1
+            GROUP BY hostels.id,hostels.gender,hostels.name
+            ORDER BY hostels.gender,hostels.name";
+        $hos_data = DB::select($sql);
+        $hos_arr = [];
+        foreach($hos_data as $row){
+            $hos_arr[$row->id] = $row;
+        }
+        $results = [
+            'appl_data' => $appl_arr,
+            'hos_data' => $hos_arr
+        ];
+        return $results;
     }
 
     public function destroy(Application $application)

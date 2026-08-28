@@ -17,7 +17,7 @@ return new class extends Migration
             $table->dateTime('dt');
             $table->integer('duration');
             $table->timestamps();
-        });+
+        });
     }
 
     /**
