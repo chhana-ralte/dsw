@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Admission;
@@ -19,7 +20,8 @@ class AdmissionController extends Controller
      */
     public function index(Allotment $allotment)
     {
-        if(auth()->user()->can('view-admission', $allotment)){
+        // return "Hasdadada";
+        if (auth()->user()->can('view-admission', $allotment)) {
 
 
             $admissions = DB::select("SELECT AD.*
@@ -28,10 +30,9 @@ class AdmissionController extends Controller
                     ORDER BY SS.start_yr, SS.odd_even
                 ");
 
-            if(request()->has('back_link')){
+            if (request()->has('back_link')) {
                 $back_link = request()->back_link;
-            }
-            else{
+            } else {
                 $back_link = "/allotment/" . $allotment->id;
             }
             $data = [
@@ -41,8 +42,7 @@ class AdmissionController extends Controller
             ];
             // return $data;
             return view('common.admission.allotment-index', $data);
-        }
-        else{
+        } else {
             return redirect('/message')->with(['message' => ['type' => 'info', 'text' => 'Unauthorized access.']]);
         }
     }
@@ -66,8 +66,7 @@ class AdmissionController extends Controller
             ];
 
             return view('common.admission.create-existing', $data);
-        }
-        else { // new admission
+        } else { // new admission
             if (isset($_GET['sessn_id'])) {
                 $sessn = Sessn::findOrFail($_GET['sessn_id']);
             } else {
@@ -91,18 +90,18 @@ class AdmissionController extends Controller
             abort(403);
         }
 
-        if($request->has('admitted')){
+        if ($request->has('admitted')) {
             $errors = [];
-            if(!is_numeric($request->amount)){
+            if (!is_numeric($request->amount)) {
                 //array_push($errors, ['amount' => "It should be number"]);
                 $errors['amount'] = "It should be number";
             }
-            if($request->dt == ''){
+            if ($request->dt == '') {
                 //array_push($errors, ['dt' => "Date can not be empty"]);
                 $errors['dt'] = "Date can not be empty";
             }
             // return $errors;
-            if(count($errors) > 0){
+            if (count($errors) > 0) {
                 return redirect()->back()->withErrors($errors)->withInput();
             }
         }
@@ -195,11 +194,9 @@ class AdmissionController extends Controller
             $allotment->update(['confirmed' => 1]);
             $allotment->save();
         }
-        if($allotment->start_sessn_id == \App\Models\Sessn::current()->id)
-        {
+        if ($allotment->start_sessn_id == \App\Models\Sessn::current()->id) {
             $adm_type = 'new';
-        }
-        else{
+        } else {
             $adm_type = 'old';
         }
         return redirect('/hostel/' . $allotment->hostel->id . '/admission?adm_type=' . $adm_type)
@@ -224,10 +221,9 @@ class AdmissionController extends Controller
             return redirect('/')->with(['message' => ['type' => 'info', 'text' => 'Unauthorised.']]);
             abort(403);
         }
-        if(request()->has('back_link')){
+        if (request()->has('back_link')) {
             $back_link = request()->back_link;
-        }
-        else{
+        } else {
             $back_link = "/allotment/" . $admission->allotment;
         }
         $data = [
