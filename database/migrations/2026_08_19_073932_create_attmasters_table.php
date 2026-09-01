@@ -16,8 +16,9 @@ return new class extends Migration
             $table->ForeignIdFor(App\Models\User::class);
             $table->ForeignIdFor(App\Models\Course::class);
             $table->ForeignIdFor(App\Models\Sessn::class);
-            $table->string('subject_code',20);
-            $table->string('subject_name',20);
+            $table->string('subject_code', 20);
+            $table->string('subject_name', 100);
+            $table->integer('semester');
             $table->boolean('active')->default(1);
             $table->timestamps();
         });

@@ -30,10 +30,10 @@
             <div class="collapse navbar-collapse" id="mynavbar">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/appl">Allotment Home</a>
+                        <a class="nav-link" href="/att">Attendance Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/appl/allotment_summary">Summary</a>
+                        <a class="nav-link" href="/att/course">Courses home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/appl/list/all">Applications</a>

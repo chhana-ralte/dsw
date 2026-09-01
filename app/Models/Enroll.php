@@ -7,5 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Enroll extends Model
 {
-    use HasFactory;
+    protected $guarded = [];
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
+
+    public function std()
+    {
+        return $this->belongsTo(Std::class);
+    }
+
+    public function sessn()
+    {
+        return $this->belongsTo(Sessn::class);
+    }
 }

@@ -3,50 +3,63 @@
         <x-slot name="heading">
             Create master subject
         </x-slot>
-        <form method="post" action="/att/attmaster">
+        <form method="post" action="/att/course/{{ $course->id }}/sessn/{{ $sessn->id }}/enroll_store">
             @csrf
+            <input type='hidden' name='std_id' value='{{ $std->id }}'>
             <div class="form-group row mb-3">
                 <label class="col col-md-6">
-                    Select the Course
+                    Roll number
                 </label>
                 <div class="col col-md-6">
-                    <select name='course_id' class="form-control">
-                        @foreach($courses as $crs)
-                            <option value="{{ $crs->id }}">{{ $crs->name }}</option>
-                        @endforeach
-                    </select>
+                    <input name='rollno' class="form-control" value="{{ $std->rollno }}" readonly>
                 </div>
             </div>
+
             <div class="form-group row mb-3">
                 <label class="col col-md-6">
-                    Select the Session
+                    Name
                 </label>
                 <div class="col col-md-6">
-                    <select name='sessn_id' class="form-control">
-                        @foreach($sessns as $ssn)
-                            <option value="{{ $ssn->id }}" {{ $ssn->id==App\Models\Sessn::current()->id?'selected':''}}>
-                                {{ $ssn->name() }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <input type='text' class='form-control' name='name' value="{{ $std->name }}" required>
                 </div>
             </div>
+
             <div class="form-group row mb-3">
                 <label class="col col-md-6">
-                    Select the Subject code
+                    Phone
                 </label>
                 <div class="col col-md-6">
-                    <input type='text' class='form-control' name='subject_code'>
+                    <input type='number' class='form-control' name='phone' value="{{ $std->phone }}">
                 </div>
             </div>
+
             <div class="form-group row mb-3">
                 <label class="col col-md-6">
-                    Select the Subject code
+                    email
                 </label>
                 <div class="col col-md-6">
-                    <input type='text' class='form-control' name='subject_name'>
+                    <input type='email' class='form-control' name='email' value="{{ $std->email }}">
                 </div>
             </div>
+
+            <div class="form-group row mb-3">
+                <label class="col col-md-6">
+                    Course/Programme
+                </label>
+                <div class="col col-md-6">
+                    <input type='text' class='form-control' name='course' value="{{ $course->name }}" readonly>
+                </div>
+            </div>
+
+            <div class="form-group row mb-3">
+                <label class="col col-md-6">
+                    Session
+                </label>
+                <div class="col col-md-6">
+                    <input type='text' class='form-control' name='sessn' value="{{ $sessn->name() }}" readonly>
+                </div>
+            </div>
+
             <div class="form-group row mb-3">
                 <label class="col col-md-6">
                     Semester
@@ -54,7 +67,7 @@
                 <div class="col col-md-6">
                     <select name='semester' class="form-control">
                         @for($i=1; $i<=8; $i++)
-                            <option value="{{ $i }}">{{ $i }}</option>
+                            <option value="{{ $i }}" {{ $semester == $i?'selected':'' }}>{{ $i }}</option>
                         @endfor
                     </select>
                 </div>

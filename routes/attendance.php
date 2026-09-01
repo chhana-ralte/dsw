@@ -5,21 +5,27 @@ use App\Http\Controllers\EnrollController;
 use App\Http\Controllers\AttmasterController;
 use App\Http\Controllers\StdController;
 
-Route::controller(\App\Http\Controllers\AttmasterController::class)->group(function () {
+Route::controller(AttmasterController::class)->group(function () {
     Route::get('/att/', 'index'); //->middleware(['auth']);
     Route::get('/att/attmaster/create', 'create'); //->middleware(['auth']);
+    Route::get('/att/attmaster/{attmaster}', 'show'); //->middleware(['auth']);
     Route::post('/att/attmaster/', 'store'); //->middleware(['auth']);
-
 });
 
-Route::controller(\App\Http\Controllers\AttController::class)->group(function () {
+Route::controller(AttController::class)->group(function () {
     //Route::get('/att/', 'index'); //->middleware(['auth']);
-
-
+    Route::get('/att/attmaster/{attmaster}/take', 'take'); //->middleware(['auth']);
+    Route::get('/att/attmaster/{attmaster}/show', 'show'); //->middleware(['auth']);
 });
 
-Route::controller(\App\Http\Controllers\EnrollController::class)->group(function () {
+Route::controller(EnrollController::class)->group(function () {
     //Route::get('/att/', 'index'); //->middleware(['auth']);
-    Route::get('/att/course/{course}/enroll', 'index');
+    Route::get('/att/course/{course}/sessn/{sessn}/enroll/{semester?}', 'index');
+    Route::post('/att/course/{course}/sessn/{sessn}/enroll/{semester?}', 'tmp_store');
+    Route::post('/att/course/{course}/sessn/{sessn}/enroll_store/{semester?}', 'store');
+});
 
+Route::controller(StdController::class)->group(function () {
+    // Route::get('/att/', 'index'); //->middleware(['auth']);
+    // Route::get('/att/course/{course}', 'index');
 });

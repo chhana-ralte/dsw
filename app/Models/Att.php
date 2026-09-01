@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Att extends Model
 {
-    use HasFactory;
+    protected $guarded = [];
 }

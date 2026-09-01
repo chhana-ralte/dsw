@@ -7,5 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Attmaster extends Model
 {
-    use HasFactory;
+    protected $guarded = [];
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
+
+    public function sessn()
+    {
+        return $this->belongsTo(Sessn::class);
+    }
 }

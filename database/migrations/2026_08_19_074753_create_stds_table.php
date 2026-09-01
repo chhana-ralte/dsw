@@ -14,11 +14,10 @@ return new class extends Migration
         Schema::create('stds', function (Blueprint $table) {
             $table->id();
             $table->ForeignIdFor(App\Models\Course::class);
-            $table->integer('semester');
-            $table->string('rollno',10);
-            $table->string('name',50);
-            $table->string('phone',20);
-            $table->string('email',20);
+            $table->string('rollno', 10);
+            $table->string('name', 50);
+            $table->string('phone', 20)->nullable();
+            $table->string('email', 50)->nullable();
             $table->timestamps();
         });
     }
