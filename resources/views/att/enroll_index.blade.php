@@ -2,10 +2,16 @@
     <x-block>
         <x-slot name="heading">
             Enrollment in the {{ $course->name }}
-            <p>
-                <a class="btn btn-primary btn-sm" href="/att/attmaster/create">Create subject</a>
-            </p>
+            @if($semester != 0)
+                Semester : {{ $semester }}
+            @endif
         </x-slot>
+        Semester : 
+        <div class="btn-group">
+            @foreach($semesters as $sem)
+            <a class="btn btn-outline-primary btn-sm" href="/att/course/{{ $course->id }}/sessn/{{ $sessn->id }}/enroll/{{ $sem->semester }}">{{ $sem->semester }}</a>
+            @endforeach
+        </div>
         @if(count($enrolls) > 0)
             <div style="width: 100%; overflow-x: auto">
                 <table class="table">
@@ -13,11 +19,15 @@
                         <th>Sl</th>
                         <th>Rollno</th>
                         <th>Name</th>
+                        <th>Semester</th>
                     </tr>
+                    <?php $sl=1 ?>
                     @foreach($enrolls as $er)
                         <tr>
-                            <td>{{ $er->std->name }}</td>
+                            <td>{{ $sl++ }}</td>
                             <td>{{ $er->std->rollno }}</td>
+                            <td>{{ $er->std->name }}</td>
+                            <td>{{ $er->semester }}</td>
                         </tr>
                     @endforeach
                 </table>

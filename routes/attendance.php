@@ -15,6 +15,7 @@ Route::controller(AttmasterController::class)->group(function () {
 Route::controller(AttController::class)->group(function () {
     //Route::get('/att/', 'index'); //->middleware(['auth']);
     Route::get('/att/attmaster/{attmaster}/take', 'take'); //->middleware(['auth']);
+    Route::post('/att/attmaster/{attmaster}/take', 'store'); //->middleware(['auth']);
     Route::get('/att/attmaster/{attmaster}/show', 'show'); //->middleware(['auth']);
 });
 

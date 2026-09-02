@@ -17,7 +17,11 @@
                     <a href='/att/attmaster/{{ $am->id }}'>Detail&gt;&gt;</a>
                 </p>
                 <p>
-                    <a href='/att/course/{{ $am->course_id }}/sessn/{{ App\Models\Sessn::current()->id }}/enroll'>Course Detail&gt;&gt;</a>
+                    <a href='/att/course/{{ $am->course_id }}/sessn/{{ App\Models\Sessn::current()->id }}/enroll/{{ $am->semester }}'>Course Detail&gt;&gt;</a>
+                </p>
+                <p>
+                    <a class="btn btn-primary" href='/att/attmaster/{{ $am->id }}/take/'>Take</a>
+                    <a class="btn btn-primary" href='/att/attmaster/{{ $am->id }}/show/'>Show</a>
                 </p>
             </x-block>
         @endforeach

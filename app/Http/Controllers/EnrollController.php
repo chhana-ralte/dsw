@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Course;
 use App\Models\Std;
@@ -18,11 +19,15 @@ class EnrollController extends Controller
             $enrolls = $enrolls->where('semester', $semester);
         }
         $enrolls = $enrolls->get();
+
+        $sql = "SELECT DISTINCT semester FROM enrolls WHERE course_id=" . $course->id . " AND sessn_id = " . $sessn->id . " ORDER BY semester";
+        $semesters = DB::select($sql);
         $data = [
             'enrolls' => $enrolls,
             'course' => $course,
             'sessn' => $sessn,
-            'semester' => $semester
+            'semester' => $semester,
+            'semesters' => $semesters
         ];
         return view('att.enroll_index', $data);
     }
