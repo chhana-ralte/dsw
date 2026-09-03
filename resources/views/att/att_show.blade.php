@@ -13,6 +13,7 @@
                     @foreach($attslots as $as)
                         <th>{{ date_format(date_create($as->dt), 'd-M') }}</th>
                     @endforeach
+                    <th>Total</th>
                 </tr>
                 <?php $sl=1 ?>
                 @foreach($stds as $std)
@@ -20,13 +21,16 @@
                     <td>{{ $sl++ }}</td>
                     <td>{{ $std->rollno }}</td>
                     <td>{{ $std->name }}</td>
+                    <?php $count=0 ?>
                     @foreach($attslots as $as)
                         @if(isset($atts[$std->id][$as->id]))
                             <td align=center>{{ $atts[$std->id][$as->id] }}</td>
+                            <?php $count++ ?>
                         @else
                             <td align=center>X</td>
                         @endif
                     @endforeach
+                    <td>{{ $count }}</td>
                 </tr>
                 @endforeach
             </table>
