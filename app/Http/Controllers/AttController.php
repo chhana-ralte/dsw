@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 use App\Models\Attmaster;
 use App\Models\Att;
 use App\Models\Std;
@@ -19,7 +21,24 @@ class AttController extends Controller
 
     public function show(Attmaster $attmaster)
     {
-        return $attmaster;
+        $attslots = Attslot::where('attmaster_id', $attmaster->id)->orderBy('dt')->get();
+
+        $enrolls = Enroll::where('course_id', $attmaster->course_id)->where('semester', $attmaster->semester)->where('sessn_id', $attmaster->sessn_id);
+        $stds = Std::whereIn('id', $enrolls->pluck('std_id'))->orderBy('rollno')->get();
+        $atts = Att::whereIn('attslot_id', $attslots->pluck('id'))->get();
+
+        $arr  = [];
+        foreach ($atts as $att) {
+            $arr[$att->std_id][$att->attslot_id] = 'P';
+        }
+
+        $data = [
+            'attslots' => $attslots,
+            'stds' => $stds,
+            'atts' => $arr,
+            'attmaster' => $attmaster
+        ];
+        return view('att.att_show', $data);
     }
 
     public function take(Attmaster $attmaster)
@@ -39,19 +58,34 @@ class AttController extends Controller
 
     public function store(Attmaster $attmaster)
     {
-        if (request()->has('marking')) {
-            $attslot = Attslot::create([
+        if (request()->has('stds')) {
+            $attslot = Attslot::updateOrCreate([
+                'attmaster_id' => $attmaster->id,
+                'dt' => request()->dt,
+                'duration' => request()->duration,
+            ], [
                 'attmaster_id' => $attmaster->id,
                 'dt' => request()->dt,
                 'duration' => request()->duration,
             ]);
 
-            foreach (request()->marking as $marking) {
-                Att::create([
-                    'attslot_id' => $attslot->id,
-                    'marking' => 'P',
-                    'std_id' => $marking,
-                ]);
+            Att::where('attslot_id', $attslot->id)
+                ->whereNotIn('std_id', request()->stds)
+                ->delete();
+
+            foreach (request()->stds as $std) {
+                Att::updateOrCreate(
+                    [
+                        'attslot_id' => $attslot->id,
+                        'marking' => 'P',
+                        'std_id' => $std,
+                    ],
+                    [
+                        'attslot_id' => $attslot->id,
+                        'marking' => 'P',
+                        'std_id' => $std,
+                    ]
+                );
             }
 
             return redirect('/att/')
@@ -61,9 +95,5 @@ class AttController extends Controller
                 ->with(['message' => ['type' => 'danger', 'text' => 'No attendance selected']])
                 ->withInput();
         }
-
-
-
-        return request();
     }
 }
