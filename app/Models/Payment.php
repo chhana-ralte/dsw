@@ -8,45 +8,45 @@ use Illuminate\Support\Facades\DB;
 
 class Payment extends Model
 {
-    protected $table = 'payment_list';
+    protected $table = 'payment2';
     protected $guarded = [];
     public $timestamps = false;
 
-    public function application(){
+    public function application()
+    {
         return Application::where('id', $this->application_id)->first();
     }
 
-    public function paid(){
+    public function paid() {}
 
-    }
-
-    public function appl_mzuid(){
+    public function appl_mzuid()
+    {
         return Application::where('mzuid', $this->mzuid)->first();
     }
 
-    public function allotment(){
+    public function allotment()
+    {
         return Allotment::where('application_id', $this->application_id)->first();
     }
 
-    public function admission(){
+    public function admission()
+    {
         $sql = "SELECT admissions.*
-            FROM payment_list JOIN applications ON applications.id=payment_list.application_id
+            FROM payment2 JOIN applications ON applications.id=payment2.application_id
             JOIN allotments ON applications.id = allotments.application_id
             JOIN admissions ON allotments.id = admissions.allotment_id
-            WHERE payment_list.id = " . $this->id;
+            WHERE payment2.id = " . $this->id;
 
         $admissions = DB::select($sql);
 
-        if($admissions){
+        if ($admissions) {
             return $admissions[0];
-        }
-        else{
+        } else {
             return false;
         }
-        if($this->application()){
+        if ($this->application()) {
             return $this->application()->admission();
-        }
-        else{
+        } else {
             return false;
         }
     }

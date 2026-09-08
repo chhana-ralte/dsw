@@ -14,28 +14,28 @@ class BulkupdateController extends Controller
     {
         if (request()->has('filter')) {
             if (request()->filter == 'all') {
-                $sql = "SELECT payment_list.id,payment_list.name, payment_list.amount, payment_list.course, applications.name as appl_name, payment_list.application_id
-                    FROM payment_list LEFT JOIN applications ON payment_list.mzuid=applications.mzuid";
+                $sql = "SELECT payment2.id,payment2.name, payment2.amount, payment2.course, applications.name as appl_name, payment2.application_id
+                    FROM payment2 LEFT JOIN applications ON payment2.mzuid=applications.mzuid";
             } else if (request()->filter == 'nopair') {
-                $sql = "SELECT payment_list.id,payment_list.name, payment_list.amount, payment_list.course, applications.name as appl_name, payment_list.application_id
-                    FROM payment_list LEFT JOIN applications ON payment_list.mzuid=applications.mzuid
-                    WHERE applications.id is NULL";
+                $sql = "SELECT payment2.id,payment2.name, payment2.amount, payment2.course, applications.name as appl_name, payment2.application_id
+                    FROM payment2 LEFT JOIN applications ON payment2.mzuid=applications.mzuid
+                    WHERE payment2.application_id =0";
             } else if (request()->filter == 'nolink') {
-                $sql = "SELECT payment_list.id,payment_list.name, payment_list.amount, payment_list.course, applications.name as appl_name, payment_list.application_id
-                    FROM payment_list LEFT JOIN applications ON payment_list.mzuid=applications.mzuid
-                    WHERE payment_list.application_id = 0";
+                $sql = "SELECT payment2.id,payment2.name, payment2.amount, payment2.course, applications.name as appl_name, payment2.application_id
+                    FROM payment2 LEFT JOIN applications ON payment2.mzuid=applications.mzuid
+                    WHERE payment2.application_id = 0";
             } else {
-                $sql = "SELECT payment_list.id,payment_list.name, payment_list.amount, payment_list.course, applications.name as appl_name, payment_list.application_id
-                    FROM payment_list LEFT JOIN applications ON payment_list.mzuid=applications.mzuid";
+                $sql = "SELECT payment2.id,payment2.name, payment2.amount, payment2.course, applications.name as appl_name, payment2.application_id
+                    FROM payment2 LEFT JOIN applications ON payment2.application_id=applications.id";
             }
         } else {
-            $sql = "SELECT payment_list.id,payment_list.name, payment_list.amount, payment_list.course, applications.name as appl_name, payment_list.application_id
-                    FROM payment_list LEFT JOIN applications ON payment_list.mzuid=applications.mzuid";
+            $sql = "SELECT payment2.id,payment2.name, payment2.amount, payment2.course, applications.name as appl_name, payment2.application_id
+                    FROM payment2 LEFT JOIN applications ON payment2.mzuid=applications.mzuid";
         }
         $results = DB::select($sql);
         // return Payment::all();
-        // $sql = "SELECT payment_list.name, payment_list.amount, payment_list.course, applications.name as appl_name
-        //     FROM payment_list LEFT JOIN applications ON payment_list.mzuid=applications.mzuid";
+        // $sql = "SELECT payment2.name, payment2.amount, payment2.course, applications.name as appl_name
+        //     FROM payment2 LEFT JOIN applications ON payment2.mzuid=applications.mzuid";
 
         return view('bulk_update.index', ['results' => $results]);
     }
@@ -135,13 +135,16 @@ class BulkupdateController extends Controller
                     'updated_by' => '3',
                     'verified' => 1,
                     'verified_by' => 3,
-                    'payment_dt' => '2026-08-07 00:00:00',
+                    'payment_dt' => '2026-08-28 00:00:00',
                 ]);
                 if ($application && $application->valid) {
                     $allotment->update([
                         'confirmed' => 1,
                         'admitted' => 1,
                         'valid' => 1
+                    ]);
+                    $application->update([
+                        'status' => 'Admitted'
                     ]);
                 } else {
                     $allotment->update([
