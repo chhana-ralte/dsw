@@ -388,6 +388,7 @@
                     Decision:
                 </x-slot>
                 @if ($application->valid)
+                    @if(auth()->user()->isAdmin())
                     <div>
                         <button class="btn btn-danger btn-status" value="decline">Decline</button>
                         <button class="btn btn-warning btn-status" value="pending">Pending</button>
@@ -408,6 +409,7 @@
                         <input type="hidden" name="hostel_id">
                         <input type="hidden" name="roomtype">
                     </form>
+                    @endif
                 @else
                     <h3 class="text-danger">Application already declined</h3>
                 @endif
