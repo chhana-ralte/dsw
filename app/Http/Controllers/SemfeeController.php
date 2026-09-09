@@ -28,16 +28,18 @@ class SemfeeController extends Controller
             count(if(semfees.status = 'Cancelled',1,null)) AS 'Cancelled'
             FROM hostels JOIN allot_hostels ON hostels.id=allot_hostels.hostel_id AND allot_hostels.valid = 1
             LEFT JOIN semfees ON allot_hostels.id = semfees.allot_hostel_id AND semfees.sessn_id = '" . $sessn->id . "'
+            JOIN allotments ON allotments.id = allot_hostels.allotment_id
+            WHERE allotment.start_sessn_id <> '" . $sessn->id . "'
             GROUP BY hostels.id,hostels.name, hostels.gender
             ORDER BY hostels.gender, hostels.name";
         $semfees = DB::select($sql);
         return view('semfee.index', ['semfees' => $semfees, 'sessn' => $sessn]);
-
     }
-    public function hostel_index(Hostel $hostel){
+    public function hostel_index(Hostel $hostel)
+    {
         if (isset(request()->sessn_id)) {
             $sessn = \App\Models\Sessn::findOrFail(request()->sessn_id);
-            if(!$sessn){
+            if (!$sessn) {
                 $sessn = \App\Models\Sessn::current();
             }
         } else {
@@ -266,12 +268,12 @@ class SemfeeController extends Controller
         } else {
             $sessn = \App\Models\Sessn::current();
         }
-        $semfees = Semfee::join('allot_hostels','allot_hostels.id','semfees.allot_hostel_id')
+        $semfees = Semfee::join('allot_hostels', 'allot_hostels.id', 'semfees.allot_hostel_id')
             ->where('allot_hostels.hostel_id', $hostel->id)
             ->where('sessn_id', $sessn->id)
             ->select("semfees.*");
 
-        if($status == 'Null'){
+        if ($status == 'Null') {
             $allot_hostels = \App\Models\AllotHostel::where('hostel_id', $hostel->id)
                 ->where('valid', 1)
                 ->whereNotIn('id', $semfees->pluck('allot_hostel_id'))
@@ -283,8 +285,7 @@ class SemfeeController extends Controller
                 'status' => $status
             ];
             return view('semfee.null-list', $data);
-        }
-        else{
+        } else {
 
             $semfees = $semfees->where('status', $status)->get();
             $data = [
