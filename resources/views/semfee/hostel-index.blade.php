@@ -32,7 +32,7 @@
                         </tr>
                         <?php $sl=1 ?>
                         @foreach($allot_hostels as $ah)
-                            @if($ah->allotment->sessn_id != $sessn->id)
+                            @if($ah->allotment->start_sessn_id != $sessn->id)
                                 <tr>
                                     <td class="check">
                                         @if($ah->allotment->person->email && !$ah->semfee($sessn->id) && $ah->valid_allot_seat())
