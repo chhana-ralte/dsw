@@ -29,7 +29,7 @@ class SemfeeController extends Controller
             FROM hostels JOIN allot_hostels ON hostels.id=allot_hostels.hostel_id AND allot_hostels.valid = 1
             LEFT JOIN semfees ON allot_hostels.id = semfees.allot_hostel_id AND semfees.sessn_id = '" . $sessn->id . "'
             JOIN allotments ON allotments.id = allot_hostels.allotment_id
-            WHERE allotment.start_sessn_id <> '" . $sessn->id . "'
+            WHERE allotments.start_sessn_id <> '" . $sessn->id . "'
             GROUP BY hostels.id,hostels.name, hostels.gender
             ORDER BY hostels.gender, hostels.name";
         $semfees = DB::select($sql);
