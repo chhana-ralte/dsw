@@ -799,7 +799,27 @@ class ApplicationController extends Controller
 
     public function notify_all()
     {
+        $hostels = \App\Models\Hostel::whereIn('id', Application::where('status', 'Approved')->where('hostel_id', '>', 0)->pluck('hostel_id'))
+            ->orderBy('gender')
+            ->orderBy('name')
+            ->get();
+
+        $notimasters = \App\Models\NotiMaster::where('type', 'allotment')->orderBy('dt', 'desc')->get();
+        $data = [
+            'hostels' => $hostels,
+            'notimasters' => $notimasters,
+
+        ];
+        // return $data;
+        return view('application.notify-all', $data);
+    }
+
+    public function notify_all_store()
+    {
+        return request();
         $validated = (object)request()->validate([
+            'notimaster_id' => 'required',
+            'hostel_ids' => 'required',
             'no' => 'required',
             'subject' => 'required',
             'dt' => 'date|required',
@@ -834,7 +854,7 @@ class ApplicationController extends Controller
                     'status' => 'active'
                 ]);
 
-                $applications = Application::where('status', 'Approved')->where('hostel_id', '>', 0)
+                $applications = Application::where('status', 'Approved')
                     ->where('hostel_id', $hos->id)
                     ->orderBy('roomtype')
                     ->orderBy('name')

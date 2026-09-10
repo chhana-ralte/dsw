@@ -55,59 +55,11 @@
                 <x-slot name='heading'>
                     Generate notification
                 </x-slot>
-                <button type="button" class="btn btn-primary btn-generate">Generate Approved applications for notification</button>
+                <a class="btn btn-primary btn-generate" href="/application/notify-all">Generate Approved applications for notification</a>
             </x-block>
         @endif
         
     </x-container>
-    
-    
-    {{-- Modal for Notification details --}}
-    
-    <div class="modal fade" id="fileModal" tabindex="-1" aria-labelledby="fileModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <form id="notify-all" method="post" action="/application/notify-all">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="fileModalLabel">Enter file details</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                    
-                        @csrf
-                        <input type="hidden" id="type" name="type" value="allotment">
-                        <div class="mb-3">
-                            <label for="no" class="col-form-label">Notification no.:</label>
-                            <input type="text" class="form-control" id="no" name="no">
-                            @error('no')
-                                <small class="text-danger">{{  $message }}</small>
-                            @enderror
-                        </div>
-                        <div class="mb-3">
-                            <label for="subject" class="col-form-label">Subject:</label>
-                            <input type="text" class="form-control" id="subject" name="subject">
-                            @error('subject')
-                                <small class="text-danger">{{  $message }}</small>
-                            @enderror
-                        </div>
-                        <div class="mb-3">
-                            <label for="dt" class="col-form-label">Date:</label>
-                            <input type="date" class="form-control" id="dt" name="dt">
-                            @error('dt')
-                                <small class="text-danger">{{  $message }}</small>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary btn-confirm-generate">Notify all</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    {{-- End modal for Notification details --}}
 
     <script>
         $(document).ready(function() {
