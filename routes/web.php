@@ -105,6 +105,7 @@ Route::post('/application/notify-all', [ApplicationController::class, 'notify_al
 Route::post('/notiMaster/addToNotiMaster', [NotiMasterController::class, 'addToNotiMaster'])->middleware('auth');
 Route::post('/sop/fileupload', [SopController::class, 'fileupload']);
 Route::post('/noti_master/fileupload', [NotiMasterController::class, 'fileupload']);
+Route::get('/notimaster/{noti_master}/allotment', [NotiMasterController::class, 'allotment']);
 
 
 Route::get('/application/{id}/duplicate', [ApplicationController::class, 'duplicate'])->middleware('auth');

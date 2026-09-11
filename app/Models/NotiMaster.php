@@ -23,4 +23,12 @@ class NotiMaster extends Model
     {
         return $this->hasMany(Notification::class);
     }
+
+    public function allotments()
+    {
+        return Allotment::whereIn('notification_id', $this->notifications->pluck('id'))
+            ->orderBy('hostel_id')
+            ->orderBy('sl')
+            ->get();
+    }
 }

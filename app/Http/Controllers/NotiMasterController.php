@@ -128,4 +128,13 @@ class NotiMasterController extends Controller
         ]);
         return redirect('/noti_master/' . request()->noti_master_id)->with(['message' => ['type' => 'info', 'text' => 'File update successfully']]);
     }
+
+    public function allotment(NotiMaster $noti_master)
+    {
+        $data = [
+            'noti_master' => $noti_master,
+            'allotments' => $noti_master->allotments()
+        ];
+        return view('common.notiMaster.allotment', $data);
+    }
 }

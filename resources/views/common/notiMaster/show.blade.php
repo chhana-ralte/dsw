@@ -71,6 +71,7 @@
                     @can('manages', App\Models\Notification::class)
                         <p>
                             <a class="btn btn-primary btn-sm" href="/notiMaster/{{ $noti_master->id }}/notification/create">Create</a>
+                            <button type="button" class="btn btn-primary btn-sm" id="btn-printable" value="{{ $noti_master->id }}">View allotment list</button>
                         </p>
                     @endcan
                 </x-slot>
@@ -176,6 +177,10 @@
 
             $("button.btn-upload").click(function() {
                 $("form[name='frmFileUpload']").submit();
+            });
+
+            $("#btn-printable").click(function(){
+                window.open("/notimaster/" + $(this).val() + '/allotment');
             });
         });
     </script>
