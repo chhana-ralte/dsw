@@ -814,45 +814,59 @@ class ApplicationController extends Controller
         return view('application.notify-all', $data);
     }
 
-    public function notify_all_store()
+    public function notify_all_store(Request $request)
     {
-        return request();
-        $validated = (object)request()->validate([
-            'notimaster_id' => 'required',
-            'hostel_ids' => 'required',
-            'no' => 'required',
-            'subject' => 'required',
-            'dt' => 'date|required',
-            'type' => 'required'
-        ]);
 
+        if ($request->notimaster_id == 0) {
+            $request->validate([
+                'hostel_ids' => 'required',
+                'no' => 'required',
+                'subject' => 'required',
+                'dt' => 'date|required',
+                'type' => 'required'
+            ]);
+        }
 
+        // return request();
+        // return $validated;
 
         // return $validated->no;
-        DB::transaction($validated = function () use ($validated) {
+        DB::transaction($validated = function () use ($request) {
             //     return $validated;
-            $hostels = \App\Models\Hostel::whereIn('id', Application::where('status', 'Approved')->where('hostel_id', '>', 0)->pluck('hostel_id'))
+            // $hostels = \App\Models\Hostel::whereIn('id', Application::where('status', 'Approved')->where('hostel_id', '>', 0)->pluck('hostel_id'))
+            $hostels = \App\Models\Hostel::whereIn('id', $request->hostel_ids)
                 ->orderBy('gender')
                 ->orderBy('name')
                 ->get();
 
-            $noti_master = \App\Models\NotiMaster::create([
-                'no' => $validated->no,
-                'subject' => $validated->subject,
-                'dt' => $validated->dt,
-                'content' => $validated->subject,
-                'type' => $validated->type,
-            ]);
+            if ($request->notimaster_id == 0) {
+                $noti_master = \App\Models\NotiMaster::create([
+                    'no' => $request->no,
+                    'subject' => $request->subject,
+                    'dt' => $request->dt,
+                    'content' => $request->subject,
+                    'type' => $request->type,
+                ]);
+            } else {
+                $noti_master = \App\Models\NotiMaster::find($request->notimaster_id);
+            }
+
 
             foreach ($hostels as $hos) {
-                $notification = \App\Models\Notification::create([
-                    'noti_master_id' => $noti_master->id,
-                    'no' => $hos->name,
-                    'dt' => $validated->dt,
-                    'content' => $validated->subject,
-                    'type' => $validated->type,
-                    'status' => 'active'
-                ]);
+                $notification = \App\Models\Notification::updateOrCreate(
+                    [
+                        'noti_master_id' => $noti_master->id,
+                        'no' => $hos->name,
+                    ],
+                    [
+                        'noti_master_id' => $noti_master->id,
+                        'no' => $hos->name,
+                        'dt' => $request->dt,
+                        'content' => $request->subject,
+                        'type' => $request->type,
+                        'status' => 'active'
+                    ]
+                );
 
                 $applications = Application::where('status', 'Approved')
                     ->where('hostel_id', $hos->id)
@@ -860,7 +874,12 @@ class ApplicationController extends Controller
                     ->orderBy('name')
                     ->get();
 
-                $sl = 1;
+                if (\App\Models\Allotment::where('notification_id', $notification->id)->max('sl')) {
+                    $sl = \App\Models\Allotment::where('notification_id', $notification->id)->max('sl') + 1;
+                } else {
+                    $sl = 1;
+                }
+
                 foreach ($applications as $appl) {
 
                     $person = \App\Models\Person::create([
@@ -899,7 +918,7 @@ class ApplicationController extends Controller
                             'admitted' => 0,
                             'valid' => 1,
                             'finished' => 0,
-                            'start_sessn_id' => 17,
+                            'start_sessn_id' => \App\Models\Sessn::current()->id,
                             'application_id' => $appl->id,
                             'sl' => $sl++,
                             'rand' => \App\Models\Lib::rand(2),

@@ -45,8 +45,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary btn-confirm-generate">Notify all</button>
+                        <button type="submit" class="btn btn-primary btn-confirm-generate">Notify for selected Hostel(s)</button>
                     </div>
                 </div>
                 <div>
@@ -70,7 +69,9 @@
     
     <script>
         function validate(){
-            alert($(hostel_ids));
+            // alert("asdasdasd");
+        //    alert($("input[name='hostel_ids[]']:checked").length);
+            // alert($(hostel_ids[]).length);
             if(!$(notimaster_id).val()){
                 alert("Select the notification type");
                 return false;
@@ -81,7 +82,7 @@
                     return false;
                 }
             }
-            if(count($(hostel_ids)) < 1){
+            if($("input[name='hostel_ids[]']:checked").length < 1){
                 alert("Select hostel(s)");
                 return false;
             }
