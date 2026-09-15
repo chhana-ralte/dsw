@@ -5,7 +5,7 @@
                 Request for change of hostel
             </x-slot>
             @if(count($reqs) > 0)
-                <div style="width: 100%, overflow-x: auto">
+                <div style="width: 100%; overflow-x: auto">
                     <table class="table">
                         <tr>
                             <th>Request ID</th>
