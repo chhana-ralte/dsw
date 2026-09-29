@@ -274,10 +274,28 @@ class SemfeeController extends Controller
             ->select("semfees.*");
 
         if ($status == 'Null') {
-            $allot_hostels = \App\Models\AllotHostel::where('hostel_id', $hostel->id)
-                ->where('valid', 1)
-                ->whereNotIn('id', $semfees->pluck('allot_hostel_id'))
-                ->get();
+            // $allot_hostels = \App\Models\AllotHostel::where('hostel_id', $hostel->id)
+            //     ->where('valid', 1)
+            //     ->where('sessn_id', '<>', $sessn->id)
+            //     ->whereNotIn('id', $semfees->pluck('allot_hostel_id'))
+            //     ->get();
+
+            // $allot_hostels = DB::table('allot_hostels')->join('allotments', 'allotments.id', 'allot_hostels.allotment_id')
+            //     ->where('allot_hostels.hostel_id', $hostel->id)
+            //     ->where('allot_hostels.valid', 1)
+            //     ->whereNotIn('allot_hostels.id', $semfees->pluck('allot_hostel_id'))
+            //     ->get();
+            $sql = "SELECT allot_hostels.* 
+                FROM allotments JOIN allot_hostels ON allotments.id=allot_hostels.allotment_id
+                LEFT JOIN semfees ON allot_hostels.id = semfees.allot_hostel_id
+                WHERE semfees.id IS NULL
+                AND allot_hostels.hostel_id = " . $hostel->id . " 
+                AND allot_hostels.valid = 1
+                AND allotments.start_sessn_id <> " . $sessn->id . " ";
+            // return $sql;
+            $allot_hostels = \App\Models\AllotHostel::hydrate(DB::select($sql));
+            // return $allot_hostels;
+
             $data = [
                 'allot_hostels' => $allot_hostels,
                 'hostel' => $hostel,
