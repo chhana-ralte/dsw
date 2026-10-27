@@ -287,7 +287,7 @@ class SemfeeController extends Controller
             //     ->get();
             $sql = "SELECT allot_hostels.* 
                 FROM allotments JOIN allot_hostels ON allotments.id=allot_hostels.allotment_id
-                LEFT JOIN semfees ON allot_hostels.id = semfees.allot_hostel_id
+                LEFT JOIN semfees ON allot_hostels.id = semfees.allot_hostel_id AND semfees.sessn_id = " . $sessn->id . "
                 WHERE semfees.id IS NULL
                 AND allot_hostels.hostel_id = " . $hostel->id . " 
                 AND allot_hostels.valid = 1
